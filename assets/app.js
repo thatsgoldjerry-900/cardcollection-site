@@ -264,12 +264,12 @@
     if (!words.length || norm(q).length < 3) return;
     loadHubQuiet().then(() => {
       const box = $("#pmatch"); if (!box || state.q !== q) return;
-      const hits = tier1().filter((p) => { const h = " " + norm(p.name) + " " + p.name.toLowerCase() + " "; return words.every((w) => h.includes(w)); }).slice(0, 8);
+      const hits = allPlayers().filter((p) => { const h = " " + norm(p.name) + " " + p.name.toLowerCase() + " "; return words.every((w) => h.includes(w)); }).slice(0, 8);
       if (!hits.length) return;
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
-        const sc = p.have ? bestScan(p.name) : null;
+        const sc = p.have ? bestScan(p.name, p.sport) : null;
         return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-          <span class="pm-t"><b>${hl(p.name, q)}</b><small>NFL Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+          <span class="pm-t"><b>${hl(p.name, q)}</b><small>${p.league} Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
@@ -285,14 +285,17 @@
   let CHECK = null;
   const CK = { list: 0, q: "", show: "all" };
   const norm = (t) => String(t).toLowerCase().replace(/"[^"]*"/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
-  let scanIndex = null;
-  function scansFor(name) {
-    if (!scanIndex) {
-      const want = new Set(SECTIONS.map((s, i) => (/husker/i.test(s.slug) ? i : -1)).filter((i) => i >= 0));
-      scanIndex = CARDS.filter((c) => want.has(c.si)).map((c) => [" " + norm(c.name) + " ", c]);
+  // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
+  // same name in different sports (e.g. Eric Johnson, football and basketball) never share cards.
+  const scanIndex = {};
+  const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball" };
+  function scansFor(name, sport = "football") {
+    if (!scanIndex[sport]) {
+      const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport);
+      scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si).map((c) => [" " + norm(c.name) + " ", c]);
     }
     const n = norm(name); if (n.split(" ").length < 2) return [];
-    return scanIndex.filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
+    return scanIndex[sport].filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
   }
   // One page per published list. #/checklist (no suffix) stays the NFL page so old links keep working.
   const CK_PAGES = [
@@ -352,10 +355,10 @@
       const rows = g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q)));
       count += rows.length; if (!rows.length) return "";
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
-        const have = r[ai] === "Yes", scans = have ? scansFor(r[0]) : [];
+        const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
         return `<tr class="${have ? "have" : "need"}"><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
-          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (l.slug === "nfl-tier-1-huskers" ? `<a class="pl-link" href="#/player/${pslug(r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) : esc(r[i])}</td>`).join("")}
-          <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
+          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : esc(r[i])}</td>`).join("")}
+          <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
     }).join("");
     $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
@@ -363,7 +366,7 @@
   }
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-scan]"); if (!b) return;
-    const list = scansFor(b.dataset.scan); if (list.length) openViewer(0, list);
+    const list = scansFor(b.dataset.scan, b.dataset.sport || "football"); if (list.length) openViewer(0, list);
   });
 
   /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
@@ -384,10 +387,34 @@
     ]);
   }
   const pslug = (n) => norm(n).replace(/ /g, "-");
-  function bestScan(name) {
-    const all = scansFor(name).filter((c) => !/\(back\)/i.test(c.name));
+  function bestScan(name, sport = "football") {
+    const all = scansFor(name, sport).filter((c) => !/\(back\)/i.test(c.name));
     return all.find((c) => c.tags.has("auto")) || all[0] || null;
   }
+  // Player pages for every name on the NFL, MLB and NBA lists. Slugs match scripts/build_players.py:
+  // a name already used by an earlier list gets "-baseball" or "-basketball" added.
+  const SPORT_LISTS = [["football", "nfl-tier-1-huskers", "NFL", "#/nfl-huskers", "NFL Huskers Player Pages"],
+    ["baseball", "baseball-mlb", "MLB", "#/checklist/mlb", "MLB Huskers Autograph List"],
+    ["basketball", "basketball-nba", "NBA", "#/checklist/nba", "NBA Huskers Autograph List"]];
+  let ALL = null;
+  function allPlayers() {
+    if (ALL) return ALL;
+    const used = new Set(); ALL = [];
+    SPORT_LISTS.forEach(([sport, listSlug, league, back, backLabel]) => {
+      const l = CHECK.lists.find((x) => x.slug === listSlug); if (!l) return;
+      const c = Object.fromEntries(l.columns.map((k, i) => [k, i]));
+      l.groups.flatMap((g) => g.rows).forEach((r) => {
+        const name = r[0].trim(); let slug = pslug(name);
+        if (used.has(slug)) slug += "-" + sport;
+        used.add(slug);
+        ALL.push({ sport, league, listSlug, back, backLabel, name, slug, year: r[c["Last Year"]], have: r[c["Autograph"]] === "Yes",
+          games: c["NFL Games Played"] >= 0 ? r[c["NFL Games Played"]] : "", notes: c["Career Notes"] >= 0 ? r[c["Career Notes"]] : "",
+          signed: c["Signed"] >= 0 ? r[c["Signed"]] : "", link: (l.links || {})[r[0]] || "" });
+      });
+    });
+    return ALL;
+  }
+  const slugFor = (listSlug, name) => (allPlayers().find((p) => p.listSlug === listSlug && p.name === name.trim()) || {}).slug || pslug(name);
   function tier1() {
     const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers");
     const c = Object.fromEntries(l.columns.map((k, i) => [k, i]));
@@ -400,7 +427,7 @@
   }
   // The stats page linked from each name in my checklist, labelled by site.
   const SITES = { "footballdb.com": "FootballDB", "profootballarchives.com": "Pro Football Archives", "pro-football-reference.com": "Pro Football Reference",
-    "sports-reference.com": "Sports Reference", "wikipedia.org": "Wikipedia", "huskers.com": "Huskers.com" };
+    "sports-reference.com": "Sports Reference", "baseball-reference.com": "Baseball Reference", "basketball-reference.com": "Basketball Reference", "wikipedia.org": "Wikipedia", "huskers.com": "Huskers.com" };
   function siteName(url) {
     let h = ""; try { h = new URL(url).hostname.replace(/^www\./, ""); } catch (e) { return ""; }
     const k = Object.keys(SITES).find((d) => h === d || h.endsWith("." + d));
@@ -449,23 +476,46 @@
     setNav("nfl-huskers");
     loadHub(() => {
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
-      const row = tier1().find((x) => x.slug === slug);
+      const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
       const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null;
-      const scans = scansFor(info.name).filter((c) => !/\(back\)/i.test(c.name));
-      const hero = info.have ? bestScan(info.name) : null;
+      const football = (info.sport || "football") === "football";
+      if (!football) setNav("checklist/" + (info.sport === "baseball" ? "mlb" : "nba"));
+      const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "NFL Huskers Player Pages";
+      const sport = info.sport || "football";
+      const scans = scansFor(info.name, sport).filter((c) => !/\(back\)/i.test(c.name));
+      // A Husker with his own collection on the site (Alex Gordon): show one of those autographs and link to it.
+      const pcIdx = SECTIONS.findIndex((x) => norm(x.title) === norm(info.name));
+      const pc = pcIdx >= 0 ? sectionCards(pcIdx) : [];
+      const hero = info.have ? bestScan(info.name, sport) || pc.find((c) => c.tags.has("auto")) || null : null;
       const sec = (w && w.sections) || {};
       const pick = (label) => Object.values(sec).flat().find((r) => r.length === 2 && r[0] === label);
+      // Baseball infoboxes put position, birth and bats/throws in single lines under the team heading.
+      const lines = [...((w && w.facts) || []), ...Object.values(sec).flat()].filter((r) => r.length === 1).map((r) => r[0]);
+      const line = (re) => (lines.find((t) => re.test(t)) || "").replace(re, "").trim();
+      // Active players' first heading is their team, with the position as its first line; retired players' isn't.
+      const [firstKey, firstSec = []] = Object.entries(sec)[0] || [];
+      const looksLikePos = (t) => t && !/[:\d]/.test(t) && t.length < 60;
+      const bbPos = football ? "" : (firstKey && !/debut|statistics|teams|appearance/i.test(firstKey) && firstSec[0] && firstSec[0].length === 1 && looksLikePos(firstSec[0][0]) ? firstSec[0][0]
+        : (((w && w.facts) || []).find((r) => r.length === 1 && looksLikePos(r[0])) || [""])[0]);
+      const debut = Object.entries(sec).find(([k]) => /debut$/i.test(k));
       // The College line can list several schools, e.g. "LSU (2019–2021)Nebraska (2022)".
       const schools = [...((pick("College") || [])[1] || "").matchAll(/([^()\n]+?)\s*\(([^)]*)\)/g)].map((m) => [m[1].trim(), m[2].trim()]);
-      const facts = [["Position", info.position || (pick("Position") || [])[1]], ["Final season at Nebraska", info.year || info.finalYear],
+      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", info.year || info.finalYear],
         ["Nebraska years", (schools.find(([n]) => /nebraska/i.test(n)) || [])[1]],
         ["Also played at", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
-        ["NFL draft", (pick("NFL draft") || [])[1]], ["NFL games", info.games || info.nflGames], ["Born", (pick("Born") || [])[1]],
+        ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
+        [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
+        ["NFL games", football ? info.games || info.nflGames : ""], ["Born", (pick("Born") || [])[1] || line(/^Born:\s*/)],
+        ["Bats / throws", line(/^(?=Bat(?:s|ted):)/).replace(/Bat(?:s|ted):\s*/, "").replace(/\s*Thr(?:ows|ew):\s*/, " / ")],
+        ...Object.entries(sec).filter(([k]) => /^Last .*appearance$/i.test(k)).map(([k, v]) => [k, (v[0] || [])[0]]),
         ["High school", (pick("High school") || [])[1]], ["Height / weight", [(pick("Listed height") || [])[1], (pick("Listed weight") || [])[1]].filter(Boolean).join(" · ")]]
         .filter(([, v]) => v && String(v).trim());
-      const statKey = Object.keys(sec).find((k) => /^Career .*statistics/i.test(k));
-      const list = (k) => (sec[k] || []).filter((r) => r.length === 1).map((r) => `<li>${esc(r[0])}</li>`).join("");
+      const statKey = Object.keys(sec).find((k) => /statistics/i.test(k));
+      // A list section, in whichever name this sport's infobox uses; "2022–2024 | Team" rows read as "Team (2022–2024)".
+      const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc(r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0])}</li>`).join("") : ""; };
+      const teams = list("Career history", "Playing", "Teams"), awards = list("Awards and highlights", "Career highlights and awards", "Career highlights");
+      const statsLink = football && /^https?:\/\//i.test(info.link || "") ? info.link : w && w.statsLink ? w.statsLink.url : "";
       const college = p && p.college;
       const DEF = /defensive|linebacker|cornerback|safety|end\b|tackle/i;
       const CATS = [["passing", "Passing", ["COMPLETIONS", "ATT", "PCT", "YDS", "YPA", "TD", "INT"]], ["rushing", "Rushing", ["CAR", "YDS", "YPC", "LONG", "TD"]],
@@ -488,28 +538,29 @@
         return `<div class="ct-wrap"><table class="ct"><thead>${head.map((r, i) => `<tr>${r.map(cell("th", head.length === 2 && i === 0 ? 2 : 0)).join("")}</tr>`).join("")}</thead><tbody>${body.map((r) => `<tr class="${/^(career|total)/i.test(r[0][0]) ? "tot" : ""}">${r.map(cell("td")).join("")}</tr>`).join("")}</tbody></table></div>`;
       }).join("");
       $("#app").innerHTML = `<div class="wrap pl c-husker">
-        <a class="back" href="#/nfl-huskers">← NFL Huskers Player Pages</a>
+        <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
-          <div class="pl-card">${hero ? `<button type="button" class="pl-ph" data-scan="${esc(info.name)}"><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="this.classList.add('ok')"></button><small>${esc(hero.name)}</small>`
-            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `Signed ${esc((info.signed || "").toLowerCase())}. Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>
+          <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="this.classList.add('ok')"></button><small>${esc(hero.name)}</small>`
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>
           <div class="pl-main">
-            <div class="kick">${esc(info.position || "Nebraska Cornhusker")}</div>
+            <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <h1>${esc(info.name)}</h1>
             <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
-            ${/^https?:\/\//i.test(info.link || "") ? `<a class="statlink" href="${esc(info.link)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(info.link))} ↗</a>` : ""}
+            ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
         <div class="pl-grid">
-          ${statKey ? `<section><h2>${esc(statKey.replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
-          <section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">From CollegeFootballData.com.</p>`
-            : `<p class="muted">${!(p && (p.checked || p.wiki)) ? "Stats coming soon." : DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>
-          ${list("Career history") ? `<section><h2>Pro teams</h2><ul class="plain">${list("Career history")}</ul></section>` : ""}
-          ${list("Awards and highlights") ? `<section><h2>Awards and highlights</h2><ul class="plain">${list("Awards and highlights")}</ul></section>` : ""}
+          ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
+          ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">From CollegeFootballData.com.</p>`
+            : `<p class="muted">${!(p && (p.checked || p.wiki)) ? "Stats coming soon." : DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>`}
+          ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
+          ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>
+        ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} cards in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
-        <p class="credit">${w ? `Biography and facts from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
+        <p class="credit">${w ? `Biography and facts from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
       </div>`;
       state.list = scans;
     });

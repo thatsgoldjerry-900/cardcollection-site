@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build data/players.json: a page's worth of facts for each NFL Tier 1 Husker in config/players.json.
+"""Build data/players.json: a page's worth of facts for each Husker on the NFL Tier 1, MLB and NBA lists.
 
 Sources (both allow reuse):
   - Wikipedia (text and infobox facts, CC BY-SA 4.0, credited and linked on every page)
-  - College Football Data API (season stats, 2004 onward). Needs CFBD_API_KEY, or a proxy that adds it.
+  - College Football Data API (football only; season stats, 2005 onward). Needs CFBD_API_KEY, or a proxy that adds it.
 Plus Ian's own checklist (data/lists/husker-pros.json) for final Nebraska season, games and what's signed.
 
     python3 scripts/build_players.py [path/to/husker-pros.json]
@@ -44,36 +44,53 @@ def wiki(params, tries=6):
     raise RuntimeError("Wikipedia kept rate-limiting")
 
 
-def is_husker_article(title):
+# Which checklist each sport's pages come from, and how to find that sport's Wikipedia articles.
+SPORTS = [
+    {"sport": "football", "list": "nfl-tier-1-huskers", "word": "football",
+     "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
+    {"sport": "baseball", "list": "baseball-mlb", "word": "baseball",
+     "suffixes": ["(baseball)", "(pitcher)", "(outfielder)", "(infielder)", "(catcher)"]},
+    {"sport": "basketball", "list": "basketball-nba", "word": "basketball", "suffixes": ["(basketball)"]},
+]
+
+
+def is_husker_article(title, word="football"):
     # One request per player: the whole article (infobox, intro and stat tables).
     d = wiki({"action": "parse", "page": title, "prop": "text", "redirects": 1, "disableeditsection": 1})
     if "error" in d: return None
     html = d["parse"]["text"]
     if "disambiguation" in html.lower() and "infobox" not in html.lower(): return None
-    # Only accept an article that ties this person to Nebraska football: the infobox's college
-    # line, or the opening paragraphs, must mention Nebraska, and the article must be about football.
+    # Only accept an article that ties this person to Nebraska in this sport: the infobox's college
+    # line or the opening paragraphs must mention Nebraska (for baseball and basketball, whose infoboxes
+    # often leave out college, a mention of the Nebraska Cornhuskers anywhere will do), and the article
+    # must be about the sport.
     soup = BeautifulSoup(html, "html.parser")
     box = soup.select_one("table.infobox")
     college = " ".join(text(td) for th in (box.select("th") if box else []) if "College" in th.get_text()
                        for td in [th.find_next_sibling("td")] if td)
     opening = " ".join(p.get_text(" ") for p in soup.select(".mw-parser-output > p")[:4])
-    if "Nebraska" not in college and "Nebraska" not in opening: return None
-    if "football" not in (college + opening + (box.get_text(" ") if box else "")).lower(): return None
+    body = soup.get_text(" ")
+    ties = "Nebraska" in college or "Nebraska" in opening
+    if not ties and word != "football":
+        ties = bool(re.search(r"Nebraska Cornhuskers|University of Nebraska|Nebraska[–-]Lincoln", body))
+    if not ties: return None
+    if word not in (college + opening + (box.get_text(" ") if box else "")).lower(): return None
     return d["parse"]["title"], html
 
 
-def find_article(name, override=None):
+def find_article(name, override=None, sport=SPORTS[0]):
     clean = re.sub(r'\s*"[^"]*"\s*', " ", name).strip()
-    tries = [override] if override else [clean, f"{clean} (American football)", f"{clean} (gridiron football)", f"{clean} (American football, born 1900s)"]
+    word = sport["word"]
+    tries = [override] if override else [clean] + [f"{clean} {x}" for x in sport["suffixes"]]
     for t in tries:
         if not t: continue
-        hit = is_husker_article(t)
+        hit = is_husker_article(t, word)
         if hit: return hit
     if override: return None
-    d = wiki({"action": "query", "list": "search", "srsearch": f'"{clean}" Nebraska Cornhuskers football', "srlimit": 5})
+    d = wiki({"action": "query", "list": "search", "srsearch": f'"{clean}" Nebraska Cornhuskers {word}', "srlimit": 5})
     for s in d.get("query", {}).get("search", []):
         if norm(s["title"]).startswith(norm(clean)):
-            hit = is_husker_article(s["title"])
+            hit = is_husker_article(s["title"], word)
             if hit: return hit
     return None
 
@@ -96,6 +113,11 @@ def parse_infobox(html):
     section = "facts"
     pfr = box.select_one('a[href*="pro-football-reference.com"]')
     if pfr: out["pfr"] = pfr["href"]
+    # Baseball and basketball infoboxes link their stats sites too.
+    for site, label in (("baseball-reference.com", "Baseball Reference"), ("basketball-reference.com", "Basketball Reference"),
+                        ("pro-football-reference.com", "Pro Football Reference")):
+        a = box.select_one(f'a[href*="{site}"]')
+        if a: out["statsLink"] = {"url": a["href"], "label": label}; break
     for tr in box.select("tr"):
         if tr.find("table"): continue            # a row that only wraps a nested table
         th, td = tr.find("th"), tr.find("td")
@@ -107,6 +129,10 @@ def parse_infobox(html):
         elif td and "infobox-full-data" in (td.get("class") or []) and section != "facts":
             items = [text(li) for li in td.select("li")] or [text(td)]
             out["sections"][section].extend([x] for x in items if x and not x.startswith("Stats at "))
+        elif td and section == "facts" and not td.find("img") and not set(td.get("class") or []) & {"infobox-image", "infobox-caption"}:
+            # Lines above the first heading, e.g. a retired baseball player's position and "Born: ..." line.
+            t = text(td)
+            if t and not t.startswith("Stats at "): out["facts"].append([t])
     return out
 
 
@@ -205,60 +231,63 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     lists_path = args[0] if args else os.path.join(ROOT, "data", "lists", "husker-pros.json")
     cfg = json.load(open(CONFIG))
-    lists = json.load(open(lists_path))
-    tier1 = next(l for l in lists["lists"] if l["slug"] == "nfl-tier-1-huskers")
-    cols = tier1["columns"]; c = {k: cols.index(k) for k in cols}
-    rows = {norm(r[0]): r for g in tier1["groups"] for r in g["rows"]}
+    lists = {l["slug"]: l for l in json.load(open(lists_path))["lists"]}
     old = {}
     if os.path.exists(OUT):
         old = {p["slug"]: p for p in json.load(open(OUT)).get("players", [])}
-    players = []
-    entries = cfg["players"]
-    if entries == "all":  # every NFL Tier 1 Husker, in checklist order, with any overrides applied
-        ov = cfg.get("overrides", {})
-        entries = [{"name": r[0].strip(), "wikipedia": ov[r[0].strip()]} if r[0].strip() in ov else r[0].strip()
-                   for g in tier1["groups"] for r in g["rows"]]
+    # Overrides are keyed by name, or "baseball:Name" / "basketball:Name" when a name is on two lists.
+    ov = cfg.get("overrides", {})
+    only = next((a.split("=")[1] for a in sys.argv if a.startswith("--sport=")), None)
     max_new = next((int(a.split("=")[1]) for a in sys.argv if a.startswith("--max-new=")), None)
     _rest[:] = list(old.values())
-    fetched = 0
-    for entry in entries:
-        name = entry if isinstance(entry, str) else entry["name"]
-        override = None if isinstance(entry, str) else entry.get("wikipedia")
-        r = rows.get(norm(name))
-        if not r:
-            print(f"  ! {name}: not on the NFL Tier 1 list, skipped", file=sys.stderr); continue
-        final_year = int(r[c["Last Year"]]) if r[c["Last Year"]].isdigit() else None
-        p = {"slug": slugify(name), "name": r[0].strip(), "finalYear": final_year,
-             "nflGames": r[c["NFL Games Played"]], "notes": r[c["Career Notes"]],
-             "signed": r[c["Signed"]], "have": r[c["Autograph"]] == "Yes"}
-        prev = old.get(p["slug"])
-        if prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv:
-            p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
-            players.append(p); continue
-        if max_new is not None and fetched >= max_new:
-            players.append(p); continue          # page still exists, info comes in a later batch
-        fetched += 1
-        p["checked"] = time.strftime("%Y-%m-%d")
-        try:
-            art = find_article(name, override)
-            if art:
-                title, html = art
-                p["wiki"] = {"title": title, "url": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
-                             "intro": intro_from_html(html), **parse_infobox(html)}
-                ct = college_tables(html)
-                if ct: p["collegeTables"] = ct
-            else:
-                print(f"  ! {name}: no Wikipedia article found", file=sys.stderr)
-            pos = next((v for sec in (p.get("wiki") or {}).get("sections", {}).values() for row in sec
-                        if len(row) == 2 and row[0] in ("Position", "Positions") for v in [row[1]]), "")
-            p["position"] = pos
-            p["college"] = college_stats(name, final_year, pos)
-        except Exception as e:  # keep the last good data rather than losing a page
-            print(f"  ! {name}: {e}; keeping previous data", file=sys.stderr)
-            if p["slug"] in old: p = {**old[p["slug"]], **{k: p[k] for k in ("finalYear", "nflGames", "notes", "signed", "have")}}
-        players.append(p)
-        save(players)  # save after every player so a stopped run keeps its progress
-        print(f"  {name}: wiki={'yes' if p.get('wiki') else 'no'} college={'yes' if p.get('college') else 'no'}", file=sys.stderr)
+    players, used, fetched = [], set(), 0
+    for sport in SPORTS:
+        lst = lists.get(sport["list"])
+        if not lst: continue
+        cols = lst["columns"]
+        get = lambda r, k: r[cols.index(k)] if k in cols else ""
+        for g in lst["groups"]:
+            for r in g["rows"]:
+                name = r[0].strip()
+                slug = slugify(name)
+                if slug in used: slug = f"{slug}-{sport['sport']}"   # same name on two lists
+                used.add(slug)
+                last = get(r, "Last Year")
+                p = {"slug": slug, "sport": sport["sport"], "name": name, "finalYear": int(last) if last.isdigit() else None,
+                     "have": get(r, "Autograph") == "Yes"}
+                if sport["sport"] == "football":
+                    p.update({"nflGames": get(r, "NFL Games Played"), "notes": get(r, "Career Notes"), "signed": get(r, "Signed")})
+                override = ov.get(f"{sport['sport']}:{name}") or (ov.get(name) if sport["sport"] == "football" else None)
+                prev = old.get(slug)
+                skip = (only and only != sport["sport"]) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
+                if skip and prev:
+                    p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
+                    players.append(p); continue
+                if skip or (max_new is not None and fetched >= max_new):
+                    players.append(p); continue      # page still exists, info comes in a later batch
+                fetched += 1
+                p["checked"] = time.strftime("%Y-%m-%d")
+                try:
+                    art = find_article(name, override, sport)
+                    if art:
+                        title, html = art
+                        p["wiki"] = {"title": title, "url": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
+                                     "intro": intro_from_html(html), **parse_infobox(html)}
+                        ct = college_tables(html)
+                        if ct: p["collegeTables"] = ct
+                    else:
+                        print(f"  ! {name} ({sport['sport']}): no Wikipedia article found", file=sys.stderr)
+                    pos = next((v for sec in [(p.get("wiki") or {}).get("facts", [])] + list((p.get("wiki") or {}).get("sections", {}).values())
+                                for row in sec if len(row) == 2 and row[0] in ("Position", "Positions") for v in [row[1]]), "")
+                    p["position"] = pos
+                    if sport["sport"] == "football": p["college"] = college_stats(name, p["finalYear"], pos)
+                except Exception as e:  # keep the last good data rather than losing a page
+                    print(f"  ! {name}: {e}; keeping previous data", file=sys.stderr)
+                    if slug in old: p = {**old[slug], **{k: v for k, v in p.items() if k not in ("wiki", "college", "collegeTables", "position", "checked")}}
+                players.append(p)
+                save(players)  # save after every player so a stopped run keeps its progress
+                print(f"  {name} ({sport['sport']}): wiki={'yes' if p.get('wiki') else 'no'}", file=sys.stderr)
+    _rest[:] = []   # every listed player is in this run; drop anyone no longer on a list
     save(players)
     print(f"Wrote {len(players)} players to {OUT}", file=sys.stderr)
 

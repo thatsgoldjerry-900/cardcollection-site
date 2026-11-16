@@ -291,3 +291,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .story p{color:#dfe4ec;margin:0;font-size:16px;line-height:1.6}
 .ck td.nm a.pl-link{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 .ck td.nm a.pl-link:hover{color:var(--acc);text-decoration-color:currentColor}
+.pc-link{margin:28px 0 0;font-size:16px}.pc-link a{color:var(--acc);font-weight:600;text-decoration:none}.pc-link a:hover{text-decoration:underline}
