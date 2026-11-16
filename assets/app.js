@@ -121,7 +121,7 @@
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
       if (!r.ok || $('#dd-menu a[href="#/checklist"]')) return;
       $("#dd-menu").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x, k) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}"${k === 0 ? ' class="sep"' : ""}>${x.label}</a>`).join("")}
-        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers player pages</a>`);
+        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers Player Pages</a>`);
       setNav(NAV_NOW);
     }).catch(() => {});
   }
@@ -175,7 +175,7 @@
         <div>
           <div class="kick">The collection of Ian Badeer</div>
           <h1>Alex Gordon & Jermaine Dye <em>super collector</em></h1>
-          <p>${esc(s.intro)}</p>
+          <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
           <div class="pills">${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
         ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="this.classList.add('ok')"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
@@ -266,7 +266,7 @@
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name) : null;
         return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-          <span class="pm-t"><b>${hl(p.name, q)}</b><small>NFL Tier 1 Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+          <span class="pm-t"><b>${hl(p.name, q)}</b><small>NFL Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
@@ -407,8 +407,8 @@
     loadHub(() => {
       const all = tier1(), have = all.filter((p) => p.have).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
-        <div class="c-head"><div class="kick">Autograph collection</div><h1>NFL Tier 1 Huskers</h1>
-          <p>Every Nebraska Cornhusker who played in at least one NFL game, with the autograph I have of each. Click any name for that player's page.</p>
+        <div class="c-head"><div class="kick">Autograph collection</div><h1>NFL Huskers Player Pages</h1>
+          <p>Every Nebraska Cornhusker who played in at least one NFL game. Pick a name for that player's page, with the autograph I have when I have one.</p>
           <div class="prog"><b>${Math.round((have / all.length) * 100)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
         <div class="tools">
           <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a bio"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
@@ -484,7 +484,7 @@
         return `<div class="ct-wrap"><table class="ct"><thead>${head.map((r, i) => `<tr>${r.map(cell("th", head.length === 2 && i === 0 ? 2 : 0)).join("")}</tr>`).join("")}</thead><tbody>${body.map((r) => `<tr class="${/^(career|total)/i.test(r[0][0]) ? "tot" : ""}">${r.map(cell("td")).join("")}</tr>`).join("")}</tbody></table></div>`;
       }).join("");
       $("#app").innerHTML = `<div class="wrap pl c-husker">
-        <a class="back" href="#/nfl-huskers">← NFL Tier 1 Huskers</a>
+        <a class="back" href="#/nfl-huskers">← NFL Huskers Player Pages</a>
         <div class="pl-top">
           <div class="pl-card">${hero ? `<button type="button" class="pl-ph" data-scan="${esc(info.name)}"><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="this.classList.add('ok')"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `Signed ${esc((info.signed || "").toLowerCase())}. Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>

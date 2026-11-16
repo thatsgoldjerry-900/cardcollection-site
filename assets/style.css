@@ -286,3 +286,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .dd-menu a:hover,.dd-menu a:focus-visible{background:var(--panel-2)}
 .dd-menu a[aria-current="page"]{background:var(--panel-2);box-shadow:inset 3px 0 0 var(--husker)}
 .dd-menu a.sep{border-top:1px solid var(--line);border-radius:0 0 6px 6px;margin-top:4px;padding-top:11px}
+.hero p a.inl{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
