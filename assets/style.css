@@ -374,3 +374,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (max-width:900px){.ck-top{grid-template-columns:1fr}.ck-fan{justify-content:center;padding:0 0 0 34px}.ck-fan .cd{width:min(27vw,112px)}}
 .ck-fan .cd{transition:transform .25s,opacity .45s}
 .ck-fan .cd.swap{opacity:0}
+.ck-side .ty.total{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);font-weight:600}
