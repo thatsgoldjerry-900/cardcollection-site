@@ -99,6 +99,12 @@ def main():
     site = {k: v for k, v in cfg.items() if k != "sections"}
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections,
            "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk"], "cards": cards}
+    if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
+        # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
+        # Keep the previous list so the site doesn't go blank and card dates aren't lost.
+        print(f"Found {len(cards)} cards, fewer than half of the {len(old['cards'])} last time. "
+              "Keeping the previous card list. Run with --allow-shrink if this drop is intended.", file=sys.stderr)
+        return
     if old and {k: v for k, v in old.items() if k != "generated"} == {k: v for k, v in out.items() if k != "generated"}:
         print("No changes in Drive; card list left as is.", file=sys.stderr)
         return
