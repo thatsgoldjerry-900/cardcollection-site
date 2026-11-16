@@ -50,7 +50,15 @@ def is_husker_article(title):
     if "error" in d: return None
     html = d["parse"]["text"]
     if "disambiguation" in html.lower() and "infobox" not in html.lower(): return None
-    if "Nebraska" not in html: return None
+    # Only accept an article that ties this person to Nebraska football: the infobox's college
+    # line, or the opening paragraphs, must mention Nebraska, and the article must be about football.
+    soup = BeautifulSoup(html, "html.parser")
+    box = soup.select_one("table.infobox")
+    college = " ".join(text(td) for th in (box.select("th") if box else []) if "College" in th.get_text()
+                       for td in [th.find_next_sibling("td")] if td)
+    opening = " ".join(p.get_text(" ") for p in soup.select(".mw-parser-output > p")[:4])
+    if "Nebraska" not in college and "Nebraska" not in opening: return None
+    if "football" not in (college + opening + (box.get_text(" ") if box else "")).lower(): return None
     return d["parse"]["title"], html
 
 
@@ -201,7 +209,14 @@ def main():
     if os.path.exists(OUT):
         old = {p["slug"]: p for p in json.load(open(OUT)).get("players", [])}
     players = []
-    for entry in cfg["players"]:
+    entries = cfg["players"]
+    if entries == "all":  # every NFL Tier 1 Husker, in checklist order, with any overrides applied
+        ov = cfg.get("overrides", {})
+        entries = [{"name": r[0].strip(), "wikipedia": ov[r[0].strip()]} if r[0].strip() in ov else r[0].strip()
+                   for g in tier1["groups"] for r in g["rows"]]
+    max_new = next((int(a.split("=")[1]) for a in sys.argv if a.startswith("--max-new=")), None)
+    fetched = 0
+    for entry in entries:
         name = entry if isinstance(entry, str) else entry["name"]
         override = None if isinstance(entry, str) else entry.get("wikipedia")
         r = rows.get(norm(name))
@@ -212,9 +227,13 @@ def main():
              "nflGames": r[c["NFL Games Played"]], "notes": r[c["Career Notes"]],
              "signed": r[c["Signed"]], "have": r[c["Autograph"]] == "Yes"}
         prev = old.get(p["slug"])
-        if prev and prev.get("wiki") and "--refresh" not in sys.argv:
-            p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables") if k in prev})
-            players.append(p); print(f"  {name}: kept saved data", file=sys.stderr); continue
+        if prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv:
+            p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
+            players.append(p); continue
+        if max_new is not None and fetched >= max_new:
+            players.append(p); continue          # page still exists, info comes in a later batch
+        fetched += 1
+        p["checked"] = time.strftime("%Y-%m-%d")
         try:
             art = find_article(name, override)
             if art:

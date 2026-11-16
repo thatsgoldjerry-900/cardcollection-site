@@ -251,3 +251,5 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ct td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
 .ct td:first-child,.ct th:first-child{text-align:left}
 .ct tr.tot td{font-weight:700;color:var(--fg);border-top:1px solid var(--mu)}
+.hub-name.nobio{color:var(--fg)}
+.hub-row.need .hub-name.nobio{color:#c3cad6;font-weight:500}

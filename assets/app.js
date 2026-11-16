@@ -329,7 +329,7 @@
   function tier1() {
     const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers");
     const c = Object.fromEntries(l.columns.map((k, i) => [k, i]));
-    const pages = new Set((PLAYERS.players || []).map((p) => p.slug));
+    const pages = new Set((PLAYERS.players || []).filter((p) => p.wiki).map((p) => p.slug));
     return l.groups.flatMap((g) => g.rows).map((r) => ({
       name: r[c["Player"]].trim(), games: r[c["NFL Games Played"]], notes: r[c["Career Notes"]], year: r[c["Last Year"]],
       signed: r[c["Signed"]], have: r[c["Autograph"]] === "Yes", slug: pslug(r[c["Player"]]), page: pages.has(pslug(r[c["Player"]])),
@@ -341,10 +341,10 @@
       const all = tier1(), have = all.filter((p) => p.have).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
         <div class="c-head"><div class="kick">Autograph collection</div><h1>NFL Tier 1 Huskers</h1>
-          <p>Every Nebraska Cornhusker who played in at least one NFL game, with the autograph I have of each. Click a highlighted name for that player's page.</p>
+          <p>Every Nebraska Cornhusker who played in at least one NFL game, with the autograph I have of each. Click any name for that player's page.</p>
           <div class="prog"><b>${Math.round((have / all.length) * 100)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
         <div class="tools">
-          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a page"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a bio"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
           <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}"><span class="count" id="hub-count"></span></div>
         </div>
         <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
@@ -364,7 +364,7 @@
     const next = HUB.rows.slice(HUB.shown, HUB.shown + 60); HUB.shown += next.length;
     list.insertAdjacentHTML("beforeend", next.map((p) => {
       const sc = p.have ? bestScan(p.name) : null;
-      const nm = p.page ? `<a class="hub-name" href="#/player/${p.slug}">${hl(p.name, HUB.q)}</a>` : `<span class="hub-name plain">${hl(p.name, HUB.q)}</span>`;
+      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.q)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
@@ -423,13 +423,13 @@
             <h1>${esc(info.name)}</h1>
             <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
-            ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">No biography available yet.</p>`}
+            ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
         <div class="pl-grid">
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
           <section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">From CollegeFootballData.com.</p>`
-            : `<p class="muted">${DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>
+            : `<p class="muted">${!(p && (p.checked || p.wiki)) ? "Stats coming soon." : DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>
           ${list("Career history") ? `<section><h2>Pro teams</h2><ul class="plain">${list("Career history")}</ul></section>` : ""}
           ${list("Awards and highlights") ? `<section><h2>Awards and highlights</h2><ul class="plain">${list("Awards and highlights")}</ul></section>` : ""}
         </div>

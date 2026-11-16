@@ -1,19 +1,5 @@
 {
-  "_help": "NFL Tier 1 Huskers who get their own page. Use a plain name, or {\"name\": ..., \"wikipedia\": \"Exact Article Title\"} when the automatic lookup picks the wrong article.",
-  "players": [
-    "Ndamukong Suh",
-    "Cam Jurgens",
-    "Lavonte David",
-    "Prince Amukamara",
-    "Ahman Green",
-    "Will Shields",
-    "Roger Craig",
-    "Irving Fryar",
-    "Johnny Rodgers",
-    "Guy Chamberlin",
-    "Rex Burkhead",
-    "Ameer Abdullah",
-    "Stanley Morgan Jr.",
-    "Harold \"Hal\" Wilder"
-  ]
+  "_help": "\"players\": \"all\" gives every NFL Tier 1 Husker a page. Add \"overrides\": {\"Player Name\": \"Exact Wikipedia Article Title\"} when the automatic lookup picks the wrong article or misses one.",
+  "players": "all",
+  "overrides": {}
 }
