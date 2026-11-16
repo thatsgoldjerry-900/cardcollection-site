@@ -377,5 +377,21 @@
     "In the mid-2000s, I started a project to collect one autograph of every Nebraska Cornhusker to play in the NFL. I had no idea what an incredible journey that decision would start.",
     "It began with picking up $5 autographed cards, which led to signed index cards for Huskers who never had a trading card. Years later, I made my first custom cards by designing them around some of those signed index cards. Eventually, I realized that no website had an accurate list of which Huskers actually played in the NFL; every one I found had errors or omissions. So I set out to build my own.",
     "I have spent countless hours digging through old newspapers, media guides, college yearbooks and more to check every list I could find. The list featured here is the most accurate one available (so far!). What started as an autograph project has become the joy of researching, documenting, and now sharing Husker history."
-  ]
+  ],
+  "customsPhotos": {
+    "_help": "Photos of athletes with custom cards I made for them, shown in a rotating strip on the Customs page. Put them in a Drive folder named 'Customs - With the Players' (inside the parent folder once it is switched on, or list its [id, resourcekey] under folders until then). The file name is the caption; the text before the first period is the short label on the strip. To replace an awkward file name, add it to captions: {\"file name without extension\": \"Caption to show\"}.",
+    "folders": [],
+    "captions": {},
+    "videos": [
+      {
+        "id": "scDrT6hoARA",
+        "caption": "Adrian Martinez showed off my custom creation at Husker Fan Day. Jump to 1:25 to see it!",
+        "start": 85
+      },
+      {
+        "id": "pDxGabVf3Ek",
+        "caption": ""
+      }
+    ]
+  }
 }

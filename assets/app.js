@@ -10,6 +10,7 @@
   const driveUrl = (id, rk) => `https://drive.google.com/file/d/${id}/view${rk ? `?resourcekey=${rk}` : ""}`;
 
   let DATA, CARDS, SECTIONS, NEW_CUTOFF;
+  let PHOTOS = [];
 
   /* ---------- File-name parsing ---------- */
   const RX = {
@@ -60,6 +61,14 @@
       const p = parse(name);
       if (backId) p.tags.add("back");
       return { i, id, rk, name, si, gi, added, backId, backRk, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
+    });
+    // Photos of athletes with my custom cards. The file name is the caption; the part before the first
+    // " - " or sentence break is the short label on the strip ("Jr." and similar don't count as a break).
+    const caps = (json.site.customsPhotos || {}).captions || {};
+    PHOTOS = (json.photos || []).map(([id, rk, name, added]) => {
+      const caption = (caps[name] || name).trim();
+      const short = caption.split(/\s+[-–—]\s+|(?<!\b(?:Jr|Sr|St|Dr|Mr|Mrs|No|vs|Jan|Feb|Aug|Sept|Oct|Nov|Dec))[.!?]\s+/)[0].replace(/[.!?]$/, "");
+      return { photo: true, id, rk, name, added, caption, short: short.length > 60 ? short.slice(0, 57) + "…" : short };
     });
     const dates = [...new Set(CARDS.map((c) => c.added))].sort().reverse();
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
@@ -246,6 +255,7 @@
         <div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>
         ${mg}
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
+        ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${FILTERS.map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r"><span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
@@ -285,6 +295,24 @@
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
+  // Customs page: a slowly rotating strip of photos with the players, then the videos.
+  function withPlayers() {
+    const cfg = DATA.site.customsPhotos || {}, vids = (cfg.videos || []).filter((v) => v.id);
+    const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
+      <img loading="lazy" decoding="async" alt="" src="${img(p.id, p.rk, 700)}" onload="this.classList.add('ok')"><span>${esc(p.short)}</span></button>`;
+    const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2>
+      <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(40, PHOTOS.length * 9)}s">
+        ${PHOTOS.map(tile).join("")}<div class="mq-dup" aria-hidden="true">${PHOTOS.map(tile).join("")}</div></div></section>` : "";
+    const videos = vids.length ? `<div class="vids">${vids.map((v) => `<figure class="vid">
+        <div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}${v.start ? `?start=${+v.start}` : ""}" title="${esc(v.caption || "Video")}" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+        ${v.caption ? `<figcaption>${esc(v.caption)}</figcaption>` : ""}</figure>`).join("")}</div>` : "";
+    return strip || videos ? `<div class="players">${strip}${videos}<h2 class="sub-h">The cards</h2></div>` : "";
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-photo]"); if (!b) return;
+    openViewer(+b.dataset.photo, PHOTOS);
+  });
   function more() {
     const grid = $("#grid"); if (!grid) return;
     const next = state.list.slice(state.shown, state.shown + 72);
@@ -651,6 +679,17 @@
   const isPair = (c) => wide.matches && !!c.backId && !V.zoom;
   function showCard() {
     const c = V.list[V.k]; if (!c) return;
+    $("#v-copy").hidden = !!c.photo;
+    if (c.photo) {   // a photo with a player: caption instead of card details
+      const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
+      loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
+      $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
+      $("#v-flip").hidden = true; $("#v-drive").href = driveUrl(c.id, c.rk); $("#v-drive").textContent = "Full-res in Drive ↗"; $("#v-drive2").hidden = true;
+      $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
+      $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
+      $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
+      return;
+    }
     const pair = isPair(c), stage = $("#v-stage"), im = $("#v-img"), im2 = $("#v-img2");
     const back = !pair && V.back;
     const id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;

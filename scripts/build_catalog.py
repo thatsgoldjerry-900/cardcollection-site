@@ -108,12 +108,19 @@ def drive_images(get, folder_id, depth=0):
     return files
 
 
+# Photos of athletes with the custom cards Ian made for them. Not cards, so they live in their own list.
+PHOTOS_FOLDER = "customs - with the players"
+_photos = []
+
+
 def sections_from_root(cfg, root_id):
     """Returns [(section_settings, [(group_slug, group_label, files)])] from the folder tree."""
     get = drive_session()
     known = {s["title"].lower(): s for s in cfg["sections"]}
     order = {s["title"].lower(): i for i, s in enumerate(cfg["sections"])}
     tops = [f for f in drive_children(get, root_id) if f["mimeType"] == FOLDER]
+    for f in [t for t in tops if t["name"].strip().lower() == PHOTOS_FOLDER]:
+        _photos.extend(drive_images(get, f["id"])); tops.remove(f)
     tops.sort(key=lambda f: (order.get(f["name"].strip().lower(), 999), natural(f["name"])))
     out = []
     for top in tops:
@@ -134,6 +141,8 @@ def sections_from_root(cfg, root_id):
 
 
 def sections_from_config(cfg):
+    for fid, rk in (cfg.get("customsPhotos") or {}).get("folders", []):
+        _photos.extend(list_folder(fid, rk))
     out = []
     for sec in cfg["sections"]:
         groups = []
@@ -148,13 +157,14 @@ def sections_from_config(cfg):
 
 def main():
     cfg = json.load(open(CONFIG))
-    prev, prev_name, old = {}, {}, None
+    prev, prev_name, prev_photo, old = {}, {}, {}, None
     if os.path.exists(OUT):
         try:
             old = json.load(open(OUT))
             for c in old["cards"]:
                 prev[c[0]] = c[5]
                 prev_name[c[2].lower()] = c[5]   # card name without extension
+            for ph in old.get("photos", []): prev_photo[ph[0]] = ph[3]
         except Exception: pass
     today = date.today().isoformat()
     cards, sections = [], []
@@ -185,7 +195,11 @@ def main():
         s = dict(sec); s["groups"] = groups
         sections.append(s)
     site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot")}
-    out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections,
+    if "customsPhotos" in site: site["customsPhotos"] = {k: v for k, v in site["customsPhotos"].items() if k != "folders"}
+    # Photo name without extension is its caption; newest first.
+    photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
+                     for f in _photos), key=lambda x: x[3], reverse=True)
+    out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos,
            "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk"], "cards": cards}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
         # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
