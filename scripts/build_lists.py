@@ -120,7 +120,7 @@ def main():
         else:
             if spec["fileId"] not in cache: cache[spec["fileId"]] = download(spec["fileId"], creds)
             data = cache[spec["fileId"]]
-        if not spec.get("columns"):
+        if not spec.get("columns") and spec.get("layout") != "side-by-side":
             # Access check only: confirm the file opens. Report counts, never names or values.
             wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
             print(f'Access check "{spec["name"]}": opened OK, {len(wb.sheetnames)} tab(s). No columns chosen yet, nothing published.')
