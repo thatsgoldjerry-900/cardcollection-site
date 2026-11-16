@@ -10,7 +10,7 @@
   const driveUrl = (id, rk) => `https://drive.google.com/file/d/${id}/view${rk ? `?resourcekey=${rk}` : ""}`;
 
   let DATA, CARDS, SECTIONS, NEW_CUTOFF;
-  let PHOTOS = [], INV = {}, SIGNED = {};
+  let PHOTOS = [], INV = {};
 
   /* ---------- File-name parsing ---------- */
   const RX = {
@@ -420,14 +420,8 @@
     let n = 0, y = 0; const types = {};
     l.groups.forEach((g) => g.rows.forEach((r) => { n++; if (r[ai] === "Yes") y++; if (si >= 0 && r[si]) types[r[si]] = (types[r[si]] || 0) + 1; }));
     const pct = n ? (y / n) * 100 : 0;
-    // The NFL page uses the live "Football Autograph Types" table from the master (type, count, %);
-    // otherwise the counts come from this list's Signed column.
-    const live = SPORT_OF_LIST[l.slug] === "football" && (SIGNED.football || []).length > 1 ? SIGNED.football : null;
-    const liveRows = live ? live.slice(1).filter((r) => r[0] && !/^total$/i.test(r[0])) : [];
-    const liveTotal = live ? live.find((r) => /^total$/i.test(r[0])) : null;
-    const typeRows = (live ? liveRows.map((r) => [r[0], parseInt(String(r[1]).replace(/\D/g, "")) || 0, r[2]]) : Object.entries(types)).sort((a, b) => b[1] - a[1]);
+    const typeRows = Object.entries(types).sort((a, b) => b[1] - a[1]);
     const tmax = typeRows.length ? typeRows[0][1] : 1;
-    const sideTitle = live ? live[0][0] : "What they signed";
     // Each autograph list: three autographed cards from players on the list, picked at random each visit.
     const sport = SPORT_OF_LIST[l.slug], showcase = [];
     {
@@ -454,8 +448,7 @@
           </div>
           <div class="ck-table" id="ck-table"></div>
         </div>
-        ${typeRows.length ? `<aside class="ck-side"><h4>${esc(sideTitle)}</h4>${typeRows.map(([t, c, pc]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}${pc ? ` · ${esc(pc)}` : ""}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}
-          ${liveTotal ? `<div class="ty total"><span>${esc(liveTotal[0])}</span><span class="tn">${esc(liveTotal[1])}</span></div>` : ""}</aside>` : ""}
+        ${typeRows.length ? `<aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>` : ""}
       </div></div>`;
     $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
     $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
@@ -849,10 +842,7 @@
 
   /* ---------- Boot ---------- */
   // The live Gordon and Dye numbers from the Inventory Stats master (published by the robot) load alongside the cards.
-  const statsReady = Promise.all([
-    fetch("data/lists/inventory-stats.json").then((r) => (r.ok ? r.json() : null)).catch(() => null).then((d) => (INV = (d && d.tables) || {})),
-    fetch("data/lists/husker-signed.json").then((r) => (r.ok ? r.json() : null)).catch(() => null).then((d) => (SIGNED = (d && d.tables) || {})),
-  ]);
+  const statsReady = fetch("data/lists/inventory-stats.json").then((r) => (r.ok ? r.json() : null)).catch(() => null).then((d) => (INV = (d && d.tables) || {}));
   if (window.CATALOG) statsReady.then(() => load(window.CATALOG));
   else Promise.all([fetch("data/catalog.json").then((r) => r.json()), statsReady]).then(([cat]) => load(cat))
     .catch(() => ($("#app").innerHTML = `<p class="empty">The card list didn't load. Refresh the page to try again.</p>`));
