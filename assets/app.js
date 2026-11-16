@@ -333,7 +333,16 @@
     return l.groups.flatMap((g) => g.rows).map((r) => ({
       name: r[c["Player"]].trim(), games: r[c["NFL Games Played"]], notes: r[c["Career Notes"]], year: r[c["Last Year"]],
       signed: r[c["Signed"]], have: r[c["Autograph"]] === "Yes", slug: pslug(r[c["Player"]]), page: pages.has(pslug(r[c["Player"]])),
+      link: (l.links || {})[r[c["Player"]]] || "",
     }));
+  }
+  // The stats page linked from each name in my checklist, labelled by site.
+  const SITES = { "footballdb.com": "FootballDB", "profootballarchives.com": "Pro Football Archives", "pro-football-reference.com": "Pro Football Reference",
+    "sports-reference.com": "Sports Reference", "wikipedia.org": "Wikipedia", "huskers.com": "Huskers.com" };
+  function siteName(url) {
+    let h = ""; try { h = new URL(url).hostname.replace(/^www\./, ""); } catch (e) { return ""; }
+    const k = Object.keys(SITES).find((d) => h === d || h.endsWith("." + d));
+    return k ? SITES[k] : h;
   }
   function hub() {
     setNav("nfl-huskers");
@@ -425,6 +434,7 @@
             <div class="kick">${esc(info.position || "Nebraska Cornhusker")}</div>
             <h1>${esc(info.name)}</h1>
             <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            ${/^https?:\/\//i.test(info.link || "") ? `<a class="statlink" href="${esc(info.link)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(info.link))} ↗</a>` : ""}
             <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>

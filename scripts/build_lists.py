@@ -60,10 +60,18 @@ def extract_side_by_side(xlsx_bytes, spec):
     Each list ends at its first blank row; a row with only a name is a subheading."""
     import re
     from datetime import date
-    wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), read_only=True, data_only=True)
+    # Not read-only: hyperlinks are only available on a fully loaded workbook.
+    wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True)
     if spec["tab"] not in wb.sheetnames:
         raise SystemExit(f'List "{spec["name"]}": the master has no tab named "{spec["tab"]}".')
-    rows = [[cell_text(v) for v in r] for r in wb[spec["tab"]].iter_rows(values_only=True)]
+    cells = list(wb[spec["tab"]].iter_rows())
+    rows = [[cell_text(c.value) for c in r] for r in cells]
+    def link_at(ri, ci):
+        """The web link on a cell (e.g. a player's name links to their stats page), if any."""
+        if ci >= len(cells[ri]): return ""
+        h = cells[ri][ci].hyperlink
+        t = (h.target or "").strip() if h else ""
+        return t if re.match(r"^https?://", t, re.I) else ""
     titles, headers = rows[spec["titleRow"] - 1], rows[spec["headerRow"] - 1]
     width = max(len(titles), len(headers))
     titles += [""] * (width - len(titles)); headers += [""] * (width - len(headers))
@@ -77,8 +85,9 @@ def extract_side_by_side(xlsx_bytes, spec):
         full = titles[s0]
         m = re.match(r"^(.*?)\s*\((.*)\)\s*$", full)
         title, sub = (m.group(1), m.group(2)) if m else (full, "")
-        groups, cur = [], {"title": "", "rows": []}
-        for r in rows[spec["headerRow"]:]:
+        groups, cur, links = [], {"title": "", "rows": []}, {}
+        for ri in range(spec["headerRow"], len(rows)):
+            r = rows[ri]
             vals = [r[i] if i < len(r) else "" for i in cols]
             if not vals[0]:
                 if cur["rows"] or groups: break      # first blank row ends the list
@@ -86,6 +95,7 @@ def extract_side_by_side(xlsx_bytes, spec):
             if not any(vals[1:]):                    # only a name: a subheading
                 groups.append(cur); cur = {"title": vals[0], "rows": []}; continue
             cur["rows"].append(vals)
+            if link_at(ri, cols[0]): links[vals[0]] = link_at(ri, cols[0])
         groups.append(cur)
         groups = [g for g in groups if g["rows"]]
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
@@ -93,8 +103,10 @@ def extract_side_by_side(xlsx_bytes, spec):
             continue                                  # private list: never published
         skipg = set(spec.get("skipGroups", []))
         groups = [g for g in groups if g["title"] not in skipg]
+        kept = {r[0] for g in groups for r in g["rows"]}
         lists.append({"slug": slug, "title": title, "subtitle": sub,
-                      "columns": [headers[i] for i in cols], "groups": groups})
+                      "columns": [headers[i] for i in cols], "groups": groups,
+                      "links": {n: u for n, u in links.items() if n in kept}})
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}
 
 
