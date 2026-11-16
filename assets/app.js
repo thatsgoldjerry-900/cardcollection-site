@@ -126,7 +126,7 @@
     setNav(null);
     const s = DATA.site;
     const feat = CARDS.find((c) => s.featured && c.name.includes(s.featured.match)) || CARDS.find((c) => c.one);
-    const newest = sortList(CARDS, "new").slice(0, 12);
+    const newest = sortList(CARDS, "new").slice(0, 40);
     const autos = CARDS.filter((c) => c.tags.has("auto")).length, ones = CARDS.filter((c) => c.one).length;
     const tiles = SECTIONS.map((sec, si) => {
       const list = sectionCards(si);
@@ -155,11 +155,15 @@
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<div class="stat"><b>${x.progress}%</b><span>${esc(x.title)}</span></div>`).join("")}
       </section>
-      <div class="sec-h"><h2>Collections</h2></div>
-      <section class="tiles">${tiles}</section>
       <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
-      <section class="grid small" style="margin-bottom:64px">${newest.map((c) => cardHTML(c)).join("")}</section>
+      <section class="mq" aria-label="Newest additions">
+        <div class="mq-track" style="--dur:${newest.length * 4}s">${newest.map((c) => cardHTML(c)).join("")}<div class="mq-dup" aria-hidden="true">${newest.map((c) => cardHTML(c)).join("")}</div></div>
+      </section>
+      <div class="sec-h"><h2>Collections</h2></div>
+      <section class="tiles" style="margin-bottom:64px">${tiles}</section>
     </div>`;
+    // The copy only exists so the loop looks seamless; keep it out of keyboard tab order.
+    document.querySelectorAll(".mq-dup .cd").forEach((b) => (b.tabIndex = -1));
     state.list = newest;
   }
 
@@ -195,6 +199,7 @@
       <div style="min-width:0">
         <div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>
         ${mg}
+        ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${FILTERS.map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r"><span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
@@ -217,6 +222,22 @@
     $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); });
     apply();
     io.observe($("#sentinel"));
+    if (slug === "search") playerMatches(state.q);
+  }
+  // Searching a name also offers that player's NFL Huskers page.
+  function playerMatches(q) {
+    const words = norm(q).split(" ").filter(Boolean);
+    if (!words.length || norm(q).length < 3) return;
+    loadHubQuiet().then(() => {
+      const box = $("#pmatch"); if (!box || state.q !== q) return;
+      const hits = tier1().filter((p) => { const h = " " + norm(p.name) + " " + p.name.toLowerCase() + " "; return words.every((w) => h.includes(w)); }).slice(0, 8);
+      if (!hits.length) return;
+      box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
+        const sc = p.have ? bestScan(p.name) : null;
+        return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+          <span class="pm-t"><b>${hl(p.name, q)}</b><small>NFL Tier 1 Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+      }).join("")}</div></div>`;
+    }).catch(() => {});
   }
   function more() {
     const grid = $("#grid"); if (!grid) return;
@@ -320,6 +341,12 @@
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
     Promise.all(need).then(then).catch(() => ($("#app").innerHTML = `<p class="empty">This page isn't available yet.</p>`));
+  }
+  function loadHubQuiet() {
+    return Promise.all([
+      CHECK || fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)),
+      PLAYERS || fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)),
+    ]);
   }
   const pslug = (n) => norm(n).replace(/ /g, "-");
   function bestScan(name) {
