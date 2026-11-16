@@ -109,16 +109,19 @@
   }
 
   /* ---------- Views ---------- */
+  // Nebraska sections and the Husker autograph pages share one "Nebraska Cornhuskers" dropdown.
+  const isNeb = (s) => /^husker-/.test(s.slug);
   function renderNav() {
-    $("#nav").innerHTML = SECTIONS.filter(shown).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
-    // The Husker autograph pages sit under one dropdown, shown once the checklist data has been published.
+    const neb = SECTIONS.filter((s) => shown(s) && isNeb(s));
+    $("#nav").innerHTML = SECTIONS.filter((s) => shown(s) && !isNeb(s)).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`
+      + `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`;
+    document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
+    $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
+    // The autograph pages appear once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (!r.ok || $("#dd-btn")) return;
-      $("#nav").insertAdjacentHTML("beforeend", `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
-      document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>
-        ${CK_PAGES.map((x) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}">${x.label}</a>`).join("")}
-        <a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers player pages</a></div>`);
-      $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
+      if (!r.ok || $('#dd-menu a[href="#/checklist"]')) return;
+      $("#dd-menu").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x, k) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}"${k === 0 ? ' class="sep"' : ""}>${x.label}</a>`).join("")}
+        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers player pages</a>`);
       setNav(NAV_NOW);
     }).catch(() => {});
   }
