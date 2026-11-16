@@ -569,7 +569,7 @@
         <div class="tools">
           <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a bio"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
           <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}">
-            <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
+            <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["most", "Most NFL games"], ["fewest", "Fewest NFL games"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
             <span class="count" id="hub-count"></span></div>
         </div>
         <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
@@ -578,7 +578,10 @@
         HUB.rows = all.filter((p) => (HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page)) && (!q || p.name.toLowerCase().includes(q)));
         // The checklist is newest first; "with autographs first" keeps that order within each group.
         const scanned = (p) => (p.have && bestScan(p.name) ? 0 : 1), yr = (p) => parseInt(p.year) || 0;
-        const by = { scans: (a, b) => scanned(a) - scanned(b), new: () => 0, old: (a, b) => yr(a) - yr(b), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
+        // Games like "1*" count as 1; players with no games listed go last either way.
+        const gm = (p) => { const n = parseInt(p.games); return isNaN(n) ? null : n; };
+        const byGames = (dir) => (a, b) => (gm(a) === null) - (gm(b) === null) || dir * ((gm(a) || 0) - (gm(b) || 0));
+        const by = { scans: (a, b) => scanned(a) - scanned(b), new: () => 0, old: (a, b) => yr(a) - yr(b), most: byGames(-1), fewest: byGames(1), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
         HUB.rows = HUB.rows.map((p, i) => [p, i]).sort((a, b) => by(a[0], b[0]) || a[1] - b[1]).map(([p]) => p);
         HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? "" : `<li class="empty">Nobody matches.</li>`;
         $("#hub-count").textContent = `${fmt(HUB.rows.length)} players`; hubMore();
