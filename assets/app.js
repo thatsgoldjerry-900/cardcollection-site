@@ -114,7 +114,7 @@
     // The Husker autograph pages sit under one dropdown, shown once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
       if (!r.ok || $("#dd-btn")) return;
-      $("#nav").insertAdjacentHTML("beforeend", `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Husker Autographs <span aria-hidden="true">▾</span></button>`);
+      $("#nav").insertAdjacentHTML("beforeend", `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
       document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>
         ${CK_PAGES.map((x) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}">${x.label}</a>`).join("")}
         <a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers player pages</a></div>`);
