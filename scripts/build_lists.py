@@ -89,6 +89,10 @@ def extract_side_by_side(xlsx_bytes, spec):
         groups.append(cur)
         groups = [g for g in groups if g["rows"]]
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+        if spec.get("onlyLists") and slug not in spec["onlyLists"]:
+            continue                                  # private list: never published
+        skipg = set(spec.get("skipGroups", []))
+        groups = [g for g in groups if g["title"] not in skipg]
         lists.append({"slug": slug, "title": title, "subtitle": sub,
                       "columns": [headers[i] for i in cols], "groups": groups})
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}

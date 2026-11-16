@@ -8,7 +8,14 @@
       "layout": "side-by-side",
       "titleRow": 12,
       "headerRow": 13,
-      "enabled": false
+      "onlyLists": [
+        "nfl-tier-1-huskers",
+        "baseball-mlb",
+        "basketball-nba"
+      ],
+      "skipGroups": [
+        "Baseball - Minors/College"
+      ]
     },
     {
       "name": "master-2",

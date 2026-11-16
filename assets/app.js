@@ -264,7 +264,7 @@
       <div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
         <h1>${esc(CHECK.title)}</h1>
-        <p>One autograph of every Husker who went pro, and then some. Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
+        <p>One autograph of every Husker who played in the NFL, MLB or NBA. Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${Math.round((tot.y / tot.n) * 100)}%</b><div class="bar"><i style="width:${(tot.y / tot.n) * 100}%"></i></div><small>${fmt(tot.y)} of ${fmt(tot.n)} signed</small></div>
       </div>
       <div class="ck-cats" role="tablist">${L.map((l, k) => `<button type="button" class="ck-cat" role="tab" aria-selected="${k === CK.list}" data-k="${k}">
