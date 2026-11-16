@@ -113,7 +113,7 @@
     $("#nav").innerHTML = SECTIONS.filter(shown).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
     // Show the checklist link only once its data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">NFL Huskers Autograph List</a><a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
+      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}">${x.label}</a>`).join("")}<a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
     }).catch(() => {});
   }
   function renderFoot() {
@@ -263,39 +263,40 @@
     const n = norm(name); if (n.split(" ").length < 2) return [];
     return scanIndex.filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
   }
-  function checklist() {
-    setNav("checklist");
+  // One page per published list. #/checklist (no suffix) stays the NFL page so old links keep working.
+  const CK_PAGES = [
+    { path: "", slug: "nfl-tier-1-huskers", label: "NFL Huskers Autograph List", blurb: "One autograph of every Husker who played in at least one NFL game." },
+    { path: "/mlb", slug: "baseball-mlb", label: "MLB Huskers Autograph List", blurb: "One autograph of every Husker who played in the major leagues." },
+    { path: "/nba", slug: "basketball-nba", label: "NBA Huskers Autograph List", blurb: "One autograph of every Husker who played in the NBA." },
+  ];
+  function checklist(which) {
+    const page = CK_PAGES.find((x) => x.path === (which ? "/" + which : "")) || CK_PAGES[0];
+    setNav("checklist" + page.path);
     if (!CHECK) {
       $("#app").innerHTML = `<p class="loading">Loading the checklist…</p>`;
       fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); })
-        .then((d) => { CHECK = d; checklist(); })
+        .then((d) => { CHECK = d; checklist(which); })
         .catch(() => ($("#app").innerHTML = `<p class="empty">The checklist isn't available yet.</p>`));
       return;
     }
-    const L = CHECK.lists;
-    const stat = (l) => {
-      const ai = l.columns.indexOf("Autograph"); let n = 0, y = 0;
-      l.groups.forEach((g) => g.rows.forEach((r) => { n++; if (r[ai] === "Yes") y++; }));
-      return { n, y, pct: n ? Math.round((y / n) * 100) : 0 };
-    };
-    const stats = L.map(stat);
-    const tot = stats.reduce((a, s) => ({ n: a.n + s.n, y: a.y + s.y }), { n: 0, y: 0 });
-    const types = {};
-    L.forEach((l) => { const si = l.columns.indexOf("Signed"); if (si < 0) return; l.groups.forEach((g) => g.rows.forEach((r) => { if (r[si]) types[r[si]] = (types[r[si]] || 0) + 1; })); });
+    CK.list = CHECK.lists.findIndex((x) => x.slug === page.slug);
+    if (CK.list < 0) return ($("#app").innerHTML = `<p class="empty">This list isn't available yet.</p>`);
+    if (CK.page !== page.path) { CK.page = page.path; CK.q = ""; CK.show = "all"; }
+    const l = CHECK.lists[CK.list], ai = l.columns.indexOf("Autograph"), si = l.columns.indexOf("Signed");
+    let n = 0, y = 0; const types = {};
+    l.groups.forEach((g) => g.rows.forEach((r) => { n++; if (r[ai] === "Yes") y++; if (si >= 0 && r[si]) types[r[si]] = (types[r[si]] || 0) + 1; }));
+    const pct = n ? (y / n) * 100 : 0;
     const typeRows = Object.entries(types).sort((a, b) => b[1] - a[1]);
     const tmax = typeRows.length ? typeRows[0][1] : 1;
     $("#app").innerHTML = `<div class="wrap ck c-husker">
       <div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
-        <h1>NFL Huskers Autograph List</h1>
-        <p>One autograph of every Husker who played in the NFL, MLB or NBA. Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
-        <div class="prog"><b>${Math.round((tot.y / tot.n) * 100)}%</b><div class="bar"><i style="width:${(tot.y / tot.n) * 100}%"></i></div><small>${fmt(tot.y)} of ${fmt(tot.n)} signed</small></div>
+        <h1>${esc(page.label)}</h1>
+        <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
+        <div class="prog"><b>${Math.round(pct)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
       </div>
-      <div class="ck-cats" role="tablist">${L.map((l, k) => `<button type="button" class="ck-cat" role="tab" aria-selected="${k === CK.list}" data-k="${k}">
-        <b>${esc(l.title.replace(/ Huskers$/, ""))}</b><span class="sub">${esc(l.subtitle || "")}</span>
-        <div class="bar"><i style="width:${stats[k].pct}%"></i></div>
-        <span class="num">${fmt(stats[k].y)} / ${fmt(stats[k].n)} · ${stats[k].pct}%</span></button>`).join("")}</div>
-      <div class="ck-body">
+      <nav class="ck-others" aria-label="Other autograph lists">${CK_PAGES.filter((x) => x !== page && CHECK.lists.some((m) => m.slug === x.slug)).map((x) => `<a href="#/checklist${x.path}">${esc(x.label)} →</a>`).join("")}</nav>
+      <div class="ck-body${typeRows.length ? "" : " solo"}">
         <div style="min-width:0">
           <div class="tools">
             <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${CK.show === k}">${t}</button>`).join("")}</div>
@@ -303,9 +304,8 @@
           </div>
           <div class="ck-table" id="ck-table"></div>
         </div>
-        <aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>
+        ${typeRows.length ? `<aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>` : ""}
       </div></div>`;
-    $(".ck-cats").addEventListener("click", (e) => { const b = e.target.closest(".ck-cat"); if (!b) return; CK.list = +b.dataset.k; document.querySelectorAll(".ck-cat").forEach((x) => x.setAttribute("aria-selected", x === b)); table(); });
     $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
     $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
     table();
@@ -497,7 +497,7 @@
     else if (a === "c") collection(b, c);
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
-    else if (a === "checklist") checklist();
+    else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
