@@ -193,7 +193,7 @@
       "title": "Nebraska Football",
       "kind": "team",
       "color": "husker",
-      "blurb": "Cornhusker football cards from my collection, many of them signed.",
+      "blurb": "One autograph of every Nebraska Cornhusker to play in the NFL started in the mid-2000s with $5 signed cards and grew into years of researching Husker history.",
       "groups": [
         {
           "slug": "2009-and-older",
@@ -215,6 +215,12 @@
             ]
           ]
         }
+      ],
+      "extraLinks": [
+        {
+          "label": "Read the story and see the full list on the NFL Huskers Autograph List",
+          "url": "#/checklist"
+        }
       ]
     },
     {
@@ -222,7 +228,7 @@
       "title": "Nebraska Baseball",
       "kind": "team",
       "color": "husker",
-      "blurb": "Cornhusker baseball cards from my collection, many of them signed.",
+      "blurb": "The Huskers who have logged time in the major leagues, each on an autographed card.",
       "groups": [
         {
           "slug": "all",
@@ -233,6 +239,12 @@
               "0-8k8we8ea1EivCqbcZsXhtA"
             ]
           ]
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "MLB Huskers Autograph List",
+          "url": "#/checklist/mlb"
         }
       ]
     },
@@ -366,5 +378,10 @@
     "_help": "One parent folder read by the robot: Parent / Section / Group / scans. Folder names become labels; section folders named like a section below keep its text and progress. Switch on with enabled: true.",
     "id": "18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV",
     "enabled": false
-  }
+  },
+  "nflListStory": [
+    "In the mid-2000s, I started a project to collect one autograph of every Nebraska Cornhusker to play in the NFL. I had no idea what an incredible journey that decision would start.",
+    "It began with picking up $5 autographed cards, which led to signed index cards for Huskers who never had a trading card. Years later, I made my first custom cards by designing them around some of those signed index cards. Eventually, I realized that no website had an accurate list of which Huskers actually played in the NFL; every one I found had errors or omissions. So I set out to build my own.",
+    "I have spent countless hours digging through old newspapers, media guides, college yearbooks and more to check every list I could find. The list featured here is the most accurate one available (so far!). What started as an autograph project has become the joy of researching, documenting, and now sharing Husker history."
+  ]
 }

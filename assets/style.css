@@ -287,3 +287,5 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .dd-menu a[aria-current="page"]{background:var(--panel-2);box-shadow:inset 3px 0 0 var(--husker)}
 .dd-menu a.sep{border-top:1px solid var(--line);border-radius:0 0 6px 6px;margin-top:4px;padding-top:11px}
 .hero p a.inl{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
+.story{display:flex;flex-direction:column;gap:12px;max-width:70ch;padding:4px 0 6px 18px;border-left:3px solid var(--husker)}
+.story p{color:#dfe4ec;margin:0;font-size:16px;line-height:1.6}

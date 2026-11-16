@@ -212,7 +212,10 @@
       gi = groups.findIndex((g) => g.slug === gslug);
       if (gi >= 0) base = base.filter((c) => c.gi === gi);
       if (sec.progress) prog = `<div class="prog"><b>${sec.progress}%</b><div class="bar"><i style="width:${sec.progress}%"></i></div><small>${esc(sec.progressLabel || "complete")}</small></div>`;
-      blurb = esc(blurb) + (sec.extraLinks || []).map((l) => ` <a href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--acc)">${esc(l.label)} ↗</a>`).join(" ·");
+      // Links to pages on this site open in place (→); outside links open a new tab (↗).
+      blurb = esc(blurb) + (sec.extraLinks || []).map((l) => l.url.startsWith("#")
+        ? ` <a href="${esc(l.url)}" style="color:var(--acc)">${esc(l.label)} →</a>`
+        : ` <a href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--acc)">${esc(l.label)} ↗</a>`).join(" ·");
     } else if (slug === "customs") {
       base = CARDS.filter((c) => c.tags.has("custom")); title = "Custom Cards"; kick = "Made by hand"; color = "gold";
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
@@ -320,6 +323,7 @@
       <div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
         <h1>${esc(page.label)}</h1>
+        ${page.path === "" && DATA.site.nflListStory ? `<div class="story">${DATA.site.nflListStory.map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : ""}
         <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${Math.round(pct)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
       </div>
