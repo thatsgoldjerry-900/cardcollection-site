@@ -411,9 +411,9 @@
     const pct = n ? (y / n) * 100 : 0;
     const typeRows = Object.entries(types).sort((a, b) => b[1] - a[1]);
     const tmax = typeRows.length ? typeRows[0][1] : 1;
-    // MLB and NBA pages: three autographed cards from players on the list, picked at random each visit.
+    // Each autograph list: three autographed cards from players on the list, picked at random each visit.
     const sport = SPORT_OF_LIST[l.slug], showcase = [];
-    if (page.path) {
+    {
       var pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
         .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !/\(back\)/i.test(c.name))).filter((x) => x.length);
       const rest = pool.slice();
