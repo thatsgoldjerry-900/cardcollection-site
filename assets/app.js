@@ -101,6 +101,8 @@
       <div class="cap"><b>${hl(c.title, q)}</b>${hl(c.sub, q)}${c.par ? `<br><span class="par">${hl(c.par, q)}</span>` : ""}</div></button>`;
   }
   function sectionCards(si) { return CARDS.filter((c) => c.si === si); }
+  // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
+  function shown(s) { const si = SECTIONS.indexOf(s); return CARDS.some((c) => c.si === si); }
   function search(list, q) {
     const words = q.toLowerCase().split(/\s+/).filter(Boolean);
     return words.length ? list.filter((c) => words.every((w) => c.hay.includes(w))) : list;
@@ -108,10 +110,10 @@
 
   /* ---------- Views ---------- */
   function renderNav() {
-    $("#nav").innerHTML = SECTIONS.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
+    $("#nav").innerHTML = SECTIONS.filter(shown).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
     // Show the checklist link only once its data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">Husker Checklist</a><a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
+      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">NFL Huskers Autograph List</a><a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
     }).catch(() => {});
   }
   function renderFoot() {
@@ -129,6 +131,7 @@
     const newest = sortList(CARDS, "new").slice(0, 40);
     const autos = CARDS.filter((c) => c.tags.has("auto")).length, ones = CARDS.filter((c) => c.one).length;
     const tiles = SECTIONS.map((sec, si) => {
+      if (!shown(sec)) return "";
       const list = sectionCards(si);
       const pick = [...list.filter((c) => c.one || c.tags.has("relic")), ...list].filter((c, k, a) => a.indexOf(c) === k);
       const step = Math.max(1, Math.floor(pick.length / 4));
@@ -191,7 +194,7 @@
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
         <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
         ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
-    const others = `<div><h4>Collections</h4><ul>${SECTIONS.map((x) => `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}
+    const others = `<div><h4>Collections</h4><ul>${SECTIONS.filter(shown).map((x) => `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}
         <li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li></ul></div>`;
     const mg = groups.length > 1 ? `<nav class="mgroups" aria-label="Groups"><a href="#/c/${slug}" aria-current="${gi < 0}">All</a>${groups.map((g, k) => `<a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}</a>`).join("")}</nav>` : "";
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
@@ -284,7 +287,7 @@
     $("#app").innerHTML = `<div class="wrap ck c-husker">
       <div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
-        <h1>${esc(CHECK.title)}</h1>
+        <h1>NFL Huskers Autograph List</h1>
         <p>One autograph of every Husker who played in the NFL, MLB or NBA. Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${Math.round((tot.y / tot.n) * 100)}%</b><div class="bar"><i style="width:${(tot.y / tot.n) * 100}%"></i></div><small>${fmt(tot.y)} of ${fmt(tot.n)} signed</small></div>
       </div>

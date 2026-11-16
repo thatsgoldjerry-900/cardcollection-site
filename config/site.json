@@ -190,12 +190,10 @@
     },
     {
       "slug": "husker-football",
-      "title": "Husker Autograph Chase",
-      "kind": "chase",
-      "progress": 86,
-      "progressLabel": "of NFL Huskers signed",
+      "title": "Nebraska Football",
+      "kind": "team",
       "color": "husker",
-      "blurb": "One autographed card of every Husker who played in the NFL. I started around 2007, first with players who had a licensed card, and now track every player. Some of these are cuts and signed customs I made myself.",
+      "blurb": "Cornhusker football cards from my collection, many of them signed.",
       "groups": [
         {
           "slug": "2009-and-older",
@@ -217,22 +215,14 @@
             ]
           ]
         }
-      ],
-      "extraLinks": [
-        {
-          "label": "Husker autographs I still need (spreadsheet)",
-          "url": "https://sites.google.com/view/ianbadeer/nebraska-cornhuskers/husker-autographs-needed"
-        }
       ]
     },
     {
       "slug": "husker-baseball",
-      "title": "Husker Baseball",
-      "kind": "chase",
-      "progress": 96,
-      "progressLabel": "of MLB Huskers signed",
+      "title": "Nebraska Baseball",
+      "kind": "team",
       "color": "husker",
-      "blurb": "The roughly 50 Huskers who have logged time in the majors, each on an autographed card.",
+      "blurb": "Cornhusker baseball cards from my collection, many of them signed.",
       "groups": [
         {
           "slug": "all",
@@ -245,6 +235,14 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "husker-basketball",
+      "title": "Nebraska Basketball",
+      "kind": "team",
+      "color": "husker",
+      "blurb": "Cornhusker basketball cards from my collection.",
+      "groups": []
     },
     {
       "slug": "royals",
