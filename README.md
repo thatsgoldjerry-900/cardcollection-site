@@ -10,7 +10,7 @@ This site reads the Drive folders and shows whatever is in them.
    - A back scan with the same name plus `(Back)` is shown as the back of that card.
    - `(Custom)` in the name puts the card on the Customs page too.
 3. Wait. The site checks Drive every 6 hours. To update right away, open the repository on GitHub,
-   go to **Actions → Update cards from Google Drive → Run workflow**.
+   go to **Actions → Update cards and publish → Run workflow**.
 
 New cards get a green **NEW** badge and appear under "Newest additions" on the home page.
 
@@ -26,17 +26,12 @@ Everything you might want to change lives in `config/site.json`:
 
 Folders must be shared as **Anyone with the link → Viewer**.
 
-## Hosting (free): Cloudflare Pages
+## Hosting (free)
 
-The site is plain files (no build step), hosted free on Cloudflare Pages from this private repository.
-
-1. In Cloudflare, go to **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
-2. Build settings: framework preset **None**, build command **empty**, output directory **/**.
-3. Cloudflare republishes the site every time this repository changes, including the automatic
-   card-list updates from the GitHub Action.
-4. **Custom domain**: in the Pages project, open **Custom domains** and add `ianbadeer.com` and `www.ianbadeer.com`.
-   Cloudflare shows the DNS records to add (or adds them for you if the domain's DNS is on Cloudflare).
-   Remove the old forwarding to Google Sites at the same time.
+- **GitHub Pages**: push this folder to a GitHub repository, then go to **Settings → Pages** and set the
+  Source to **GitHub Actions**. The workflow in `.github/workflows` builds and publishes the site.
+- **Custom domain**: in Settings → Pages, enter `ianbadeer.com`, then add the DNS records GitHub shows
+  at your domain registrar.
 
 ## Running it on your computer
 
