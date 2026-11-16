@@ -122,16 +122,22 @@
   }
 
   /* ---------- Views ---------- */
+  // One order everywhere (home tiles, sidebar): Gordon, Dye, the Nebraska sections, Customs,
+  // the other collections, Detroit Lions last. "customs" stands for the Customs page.
+  const LAST = ["lions"];
+  function siteOrder() {
+    const secs = SECTIONS.filter(shown), other = secs.filter((s) => !isNeb(s));
+    const lead = other.filter((s) => !LAST.includes(s.slug)).slice(0, 2);
+    return [...lead, ...secs.filter(isNeb), "customs", ...other.filter((s) => !lead.includes(s) && !LAST.includes(s.slug)), ...other.filter((s) => LAST.includes(s.slug))];
+  }
   // Nebraska sections and the Husker autograph pages share one "Nebraska Cornhuskers" dropdown.
   const isNeb = (s) => /^husker-/.test(s.slug);
   function renderNav() {
     const neb = SECTIONS.filter((s) => shown(s) && isNeb(s));
     // Menu order: Alex Gordon, Jermaine Dye, Nebraska Cornhuskers ▾, Customs, the other collections, Detroit Lions last.
-    const secs = SECTIONS.filter((s) => shown(s) && !isNeb(s)), last = ["lions"];
-    const links = [...secs.filter((s) => !last.includes(s.slug)), ...secs.filter((s) => last.includes(s.slug))]
-      .map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
-    links.splice(2, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`,
-      `<a href="#/customs" data-s="customs">Customs</a>`);
+    const links = siteOrder().filter((s) => s === "customs" || !isNeb(s))
+      .map((s) => s === "customs" ? `<a href="#/customs" data-s="customs">Customs</a>` : `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
+    links.splice(2, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
     $("#nav").innerHTML = links.join("");
     document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
     $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
@@ -178,8 +184,9 @@
     const feat = CARDS.find((c) => s.featured && c.name.includes(s.featured.match)) || CARDS.find((c) => c.one);
     const newest = sortList(CARDS, "new").slice(0, 40);
     const ones = CARDS.filter((c) => c.one).length;
-    const tiles = SECTIONS.map((sec, si) => {
-      if (!shown(sec)) return "";
+    const tiles = siteOrder().map((sec) => {
+      if (sec === "customs") return customsTile();
+      const si = SECTIONS.indexOf(sec);
       const list = sectionCards(si);
       const pick = [...list.filter((c) => c.one || c.tags.has("relic")), ...list].filter((c, k, a) => a.indexOf(c) === k);
       const step = Math.max(1, Math.floor(pick.length / 4));
@@ -189,12 +196,13 @@
         <h3>${esc(sec.title)}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
         <div class="tm"><span>${fmt(list.length)} cards</span><span>${sec.progress ? sec.progress + "% complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
-    }).join("") + (() => {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
+    }).join("");
+    function customsTile() {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
       const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
       const step = Math.max(1, Math.floor(list.length / 4)), four = [0, 1, 2, 3].map((k) => list[k * step]).filter(Boolean);
       return `<a class="tile c-gold" href="#/customs"><div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} cards</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
-    })();
+    }
     $("#app").innerHTML = `<div class="wrap">
       <section class="hero">
         <div>
@@ -211,10 +219,12 @@
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${x.progress}%</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
+      <div class="band">
       <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
       <section class="mq" aria-label="Newest additions">
         <div class="mq-track" style="--dur:${newest.length * 4}s">${newest.map((c) => cardHTML(c)).join("")}<div class="mq-dup" aria-hidden="true">${newest.map((c) => cardHTML(c)).join("")}</div></div>
       </section>
+      </div>
       <div class="sec-h"><h2>Collections</h2></div>
       <section class="tiles" style="margin-bottom:64px">${tiles}</section>
     </div>`;
@@ -257,8 +267,9 @@
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
         <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
         ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
-    const others = `<div><h4>Collections</h4><ul>${SECTIONS.filter(shown).map((x) => `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}
-        <li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li></ul></div>`;
+    const others = `<div><h4>Collections</h4><ul>${siteOrder().map((x) => x === "customs"
+        ? `<li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li>`
+        : `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}</ul></div>`;
     const mg = groups.length > 1 ? `<nav class="mgroups" aria-label="Groups"><a href="#/c/${slug}" aria-current="${gi < 0}">All</a>${groups.map((g, k) => `<a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}</a>`).join("")}</nav>` : "";
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
       <aside class="side">${side}${others}</aside>
