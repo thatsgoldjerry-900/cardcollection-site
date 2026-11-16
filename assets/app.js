@@ -126,8 +126,10 @@
   const isNeb = (s) => /^husker-/.test(s.slug);
   function renderNav() {
     const neb = SECTIONS.filter((s) => shown(s) && isNeb(s));
-    $("#nav").innerHTML = SECTIONS.filter((s) => shown(s) && !isNeb(s)).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`
-      + `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`;
+    // Menu order: Alex Gordon, Jermaine Dye, Nebraska Cornhuskers ▾, then the other collections and Customs.
+    const links = SECTIONS.filter((s) => shown(s) && !isNeb(s)).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
+    links.splice(2, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
+    $("#nav").innerHTML = links.join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
     document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
     $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
     // The autograph pages appear once the checklist data has been published.

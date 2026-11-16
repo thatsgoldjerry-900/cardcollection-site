@@ -293,9 +293,9 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ck td.nm a.pl-link:hover{color:var(--acc);text-decoration-color:currentColor}
 .pc-link{margin:28px 0 0;font-size:16px}.pc-link a{color:var(--acc);font-weight:600;text-decoration:none}.pc-link a:hover{text-decoration:underline}
 
-/* Phones: the Nebraska Cornhuskers menu comes first in the scrolling menu, with a fade hinting there is more */
+/* Phones: the Nebraska Cornhuskers menu stands out in the scrolling menu, with a fade hinting there is more */
 @media (max-width:900px){
-  .nav .dd-btn{order:-1;color:var(--fg);background:var(--panel)}
+  .nav .dd-btn{color:var(--fg);background:var(--panel)}
   .nav{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:24px}
 }
 /* Landscape cards get a landscape frame */
