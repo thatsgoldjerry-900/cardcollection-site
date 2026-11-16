@@ -1,0 +1,12 @@
+{
+  "_help": "Lists copied from private Excel masters in Google Drive. Only the columns named here are published. Each master must be shared (Viewer) with the site's service account.",
+  "lists": [
+    {
+      "name": "husker-nfl",
+      "fileId": "PASTE_MASTER_FILE_ID",
+      "tab": "Main",
+      "headerRow": 1,
+      "columns": ["Player", "Status"]
+    }
+  ]
+}

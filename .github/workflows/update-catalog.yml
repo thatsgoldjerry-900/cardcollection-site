@@ -20,13 +20,20 @@ jobs:
         with: { python-version: "3.12" }
       - name: Read Drive folders
         run: python3 scripts/build_catalog.py
+      - name: Read private lists (only the chosen columns)
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          pip install --quiet openpyxl google-auth requests
+          python3 scripts/build_lists.py
       - name: Save the updated card list
         run: |
-          if ! git diff --quiet data/catalog.json; then
+          git add -N data/lists 2>/dev/null || true
+          if ! git diff --quiet data/; then
             git config user.name "catalog-bot"
             git config user.email "catalog-bot@users.noreply.github.com"
-            git add data/catalog.json
-            git commit -m "Update card list from Google Drive"
+            git add data/
+            git commit -m "Update card list and stats from Google Drive"
             git push
           fi
       - uses: actions/configure-pages@v5
