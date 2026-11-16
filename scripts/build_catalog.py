@@ -56,6 +56,96 @@ def base_name(name):
     stem = re.sub(r"\.[a-z0-9]+$", "", name, flags=re.I)
     return BACK.sub("", stem).strip(), bool(BACK.search(stem))
 
+# ---------- Reading one parent folder through the Drive API (the robot) ----------
+# Layout:  Parent / Section folder / Group folder / scans   (deeper subfolders join their group)
+# Scans directly inside a section folder become a group named after the section.
+
+def natural(s):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", s)]
+
+
+def drive_session():
+    key = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
+    if not key:
+        raise SystemExit("driveRoot is enabled but GOOGLE_SERVICE_ACCOUNT_JSON is not set.")
+    import requests
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request
+    creds = service_account.Credentials.from_service_account_info(
+        json.loads(key), scopes=["https://www.googleapis.com/auth/drive.readonly"])
+    sess = requests.Session()
+    def get(params):
+        if not creds.valid: creds.refresh(Request())
+        r = sess.get("https://www.googleapis.com/drive/v3/files", params=params,
+                     headers={"Authorization": f"Bearer {creds.token}"}, timeout=60)
+        if r.status_code in (403, 404):
+            raise SystemExit(f"Drive said HTTP {r.status_code}. Is the parent folder shared (Viewer) with the robot?")
+        r.raise_for_status()
+        return r.json()
+    return get
+
+
+def drive_children(get, folder_id):
+    out, token = [], None
+    while True:
+        d = get({"q": f"'{folder_id}' in parents and trashed = false", "pageSize": 1000, "pageToken": token,
+                 "fields": "nextPageToken, files(id, name, mimeType, createdTime, resourceKey)",
+                 "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"})
+        out += d.get("files", [])
+        token = d.get("nextPageToken")
+        if not token: return out
+
+
+FOLDER = "application/vnd.google-apps.folder"
+
+def drive_images(get, folder_id, depth=0):
+    files = []
+    for f in drive_children(get, folder_id):
+        if f["mimeType"] == FOLDER:
+            if depth < 4: files += drive_images(get, f["id"], depth + 1)
+        elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
+            files.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10]})
+    return files
+
+
+def sections_from_root(cfg, root_id):
+    """Returns [(section_settings, [(group_slug, group_label, files)])] from the folder tree."""
+    get = drive_session()
+    known = {s["title"].lower(): s for s in cfg["sections"]}
+    order = {s["title"].lower(): i for i, s in enumerate(cfg["sections"])}
+    tops = [f for f in drive_children(get, root_id) if f["mimeType"] == FOLDER]
+    tops.sort(key=lambda f: (order.get(f["name"].strip().lower(), 999), natural(f["name"])))
+    out = []
+    for top in tops:
+        title = top["name"].strip()
+        meta = {k: v for k, v in known.get(title.lower(), {}).items() if k != "groups"}
+        meta.setdefault("slug", re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"))
+        meta.setdefault("title", title); meta.setdefault("kind", "team"); meta.setdefault("color", "royal")
+        kids = drive_children(get, top["id"])
+        groups = []
+        loose = [f for f in kids if f["mimeType"] != FOLDER]
+        if loose:
+            groups.append(("all", title, drive_images(get, top["id"], depth=99)))   # only files directly inside
+        for sub in sorted((f for f in kids if f["mimeType"] == FOLDER), key=lambda f: natural(f["name"])):
+            label = sub["name"].strip()
+            groups.append((re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-"), label, drive_images(get, sub["id"])))
+        out.append((meta, groups))
+    return out
+
+
+def sections_from_config(cfg):
+    out = []
+    for sec in cfg["sections"]:
+        groups = []
+        for grp in sec["groups"]:
+            files = []
+            for fid, rk in grp["folders"]:
+                files += list_folder(fid, rk)
+            groups.append((grp["slug"], grp["label"], files))
+        out.append(({k: v for k, v in sec.items() if k != "groups"}, groups))
+    return out
+
+
 def main():
     cfg = json.load(open(CONFIG))
     prev, prev_name, old = {}, {}, None
@@ -68,14 +158,12 @@ def main():
         except Exception: pass
     today = date.today().isoformat()
     cards, sections = [], []
-    for si, sec in enumerate(cfg["sections"]):
+    root = cfg.get("driveRoot") or {}
+    source = sections_from_root(cfg, root["id"]) if root.get("enabled") else sections_from_config(cfg)
+    for si, (sec, group_files) in enumerate(source):
         groups = []
-        for gi, grp in enumerate(sec["groups"]):
-            files = []
-            for fid, rk in grp["folders"]:
-                got = list_folder(fid, rk)
-                print(f"{sec['slug']}/{grp['slug']}: {len(got)} files", file=sys.stderr)
-                files += got
+        for gi, (gslug, glabel, files) in enumerate(group_files):
+            print(f"{sec['slug']}/{gslug}: {len(files)} files", file=sys.stderr)
             # pair backs with fronts
             fronts, backs = {}, {}
             for f in files:
@@ -93,10 +181,10 @@ def main():
                 cards.append([f["id"], f["rk"], card_name, si, gi, added,
                               back["id"] if back else "", back["rk"] if back else ""])
                 n += 1
-            groups.append({"slug": grp["slug"], "label": grp["label"], "count": n})
-        s = {k: v for k, v in sec.items() if k != "groups"}; s["groups"] = groups
+            groups.append({"slug": gslug, "label": glabel, "count": n})
+        s = dict(sec); s["groups"] = groups
         sections.append(s)
-    site = {k: v for k, v in cfg.items() if k != "sections"}
+    site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot")}
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections,
            "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk"], "cards": cards}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:

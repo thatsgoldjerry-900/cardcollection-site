@@ -3,75 +3,370 @@
   "tagline": "Alex Gordon & Jermaine Dye super collector · Kansas City Royals & Nebraska Cornhuskers team collector",
   "intro": "My name is Ian and my passion is collecting! Within this site you'll find thousands of high resolution scans of my cards (with a few game-used items as well). Every image is labeled with its database name. If you have a rare card of either player, have a Husker autograph I need, or see a card here you want to trade for, let me know!",
   "email": "ian.badeer@gmail.com",
-  "featured": { "match": "All-Star Jumbo Sleeve Team Patch", "caption": "Alex Gordon's 2013 All-Star Game jersey sleeve patch, 1 of 1" },
+  "featured": {
+    "match": "All-Star Jumbo Sleeve Team Patch",
+    "caption": "Alex Gordon's 2013 All-Star Game jersey sleeve patch, 1 of 1"
+  },
   "links": [
-    { "label": "Kansas City Star feature", "url": "https://drive.google.com/file/d/1SNgH16UXtK_ecSy4QUOrvqJYWVJq2G9E/view?usp=sharing" },
-    { "label": "The Card Life episode", "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM" },
-    { "label": "Trade on TCDb", "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan" },
-    { "label": "Instagram: Alex Gordon", "url": "https://www.instagram.com/alexgordoncollector/" },
-    { "label": "Instagram: Huskers", "url": "https://www.instagram.com/huskercardcollector/" }
+    {
+      "label": "Kansas City Star feature",
+      "url": "https://drive.google.com/file/d/1SNgH16UXtK_ecSy4QUOrvqJYWVJq2G9E/view?usp=sharing"
+    },
+    {
+      "label": "The Card Life episode",
+      "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM"
+    },
+    {
+      "label": "Trade on TCDb",
+      "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan"
+    },
+    {
+      "label": "Instagram: Alex Gordon",
+      "url": "https://www.instagram.com/alexgordoncollector/"
+    },
+    {
+      "label": "Instagram: Huskers",
+      "url": "https://www.instagram.com/huskercardcollector/"
+    }
   ],
   "sections": [
     {
-      "slug": "alex-gordon", "title": "Alex Gordon", "kind": "pc", "progress": 93, "progressLabel": "of Gordon's cards collected", "color": "royal",
+      "slug": "alex-gordon",
+      "title": "Alex Gordon",
+      "kind": "pc",
+      "progress": 93,
+      "progressLabel": "of Gordon's cards collected",
+      "color": "royal",
       "blurb": "I started collecting Alex's cards after he signed his extension to be a Royal for life. I watched him grow up as a Nebraska Cornhusker and was thrilled when the Royals drafted him #2 overall. My primary focus is game-used relic cards.",
       "groups": [
-        { "slug": "2003-2007", "label": "2003–2007", "folders": [["1NTDkBQSfGL3wT_kq9NHM-eZqFEQWLrtK", ""]] },
-        { "slug": "2008", "label": "2008", "folders": [["1qCqiM1KThOlXV_q2pQy_RsG0MRPIgv2H", ""]] },
-        { "slug": "2009-2012", "label": "2009–2012", "folders": [["0B9zOOzkfqijNM216UWM5R1cwdHM", "0-k-25Bayi86SwSTPHBEMCvw"]] },
-        { "slug": "2013-14", "label": "2013–14", "folders": [["1qjZ94i4urZ2TDq-XMF29aMLlFRPZwuRM", ""]] },
-        { "slug": "2015", "label": "2015", "folders": [["0B9zOOzkfqijNMF9zYVRFaXluVWs", "0-b68EAhaHsBTtmPSBr9g1fw"]] },
-        { "slug": "2016", "label": "2016", "folders": [["10OlQCHgasyQuM2SiJ2QOnWtU8qlN31YH", ""]] },
-        { "slug": "2017-19", "label": "2017–19", "folders": [["1X3yiFC-1YDX5Rf-ZjNqujdyBygiQDO_X", ""]] },
-        { "slug": "2020-present", "label": "2020–Present", "folders": [["1JTOIu6XZVwFvsrtC14PtK3y3HD8nuUqf", ""]] }
+        {
+          "slug": "2003-2007",
+          "label": "2003–2007",
+          "folders": [
+            [
+              "1NTDkBQSfGL3wT_kq9NHM-eZqFEQWLrtK",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2008",
+          "label": "2008",
+          "folders": [
+            [
+              "1qCqiM1KThOlXV_q2pQy_RsG0MRPIgv2H",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2009-2012",
+          "label": "2009–2012",
+          "folders": [
+            [
+              "0B9zOOzkfqijNM216UWM5R1cwdHM",
+              "0-k-25Bayi86SwSTPHBEMCvw"
+            ]
+          ]
+        },
+        {
+          "slug": "2013-14",
+          "label": "2013–14",
+          "folders": [
+            [
+              "1qjZ94i4urZ2TDq-XMF29aMLlFRPZwuRM",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2015",
+          "label": "2015",
+          "folders": [
+            [
+              "0B9zOOzkfqijNMF9zYVRFaXluVWs",
+              "0-b68EAhaHsBTtmPSBr9g1fw"
+            ]
+          ]
+        },
+        {
+          "slug": "2016",
+          "label": "2016",
+          "folders": [
+            [
+              "10OlQCHgasyQuM2SiJ2QOnWtU8qlN31YH",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2017-19",
+          "label": "2017–19",
+          "folders": [
+            [
+              "1X3yiFC-1YDX5Rf-ZjNqujdyBygiQDO_X",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2020-present",
+          "label": "2020–Present",
+          "folders": [
+            [
+              "1JTOIu6XZVwFvsrtC14PtK3y3HD8nuUqf",
+              ""
+            ]
+          ]
+        }
       ],
-      "extraLinks": [{ "label": "Gordon cards for trade (TCDb)", "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan" }]
+      "extraLinks": [
+        {
+          "label": "Gordon cards for trade (TCDb)",
+          "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan"
+        }
+      ]
     },
     {
-      "slug": "jermaine-dye", "title": "Jermaine Dye", "kind": "pc", "progress": 89, "progressLabel": "of Dye's cards collected", "color": "royal",
+      "slug": "jermaine-dye",
+      "title": "Jermaine Dye",
+      "kind": "pc",
+      "progress": 89,
+      "progressLabel": "of Dye's cards collected",
+      "color": "royal",
       "blurb": "I started collecting Jermaine Dye as a kid listening to Royals games on the radio in the late 1990s. He played for the Braves, Royals, Athletics and White Sox, where he won World Series MVP in 2005.",
       "groups": [
-        { "slug": "braves", "label": "Braves", "folders": [["1MAfv9Tqr1zrlzAoWA7eFktRxJEcjq_x5", ""]] },
-        { "slug": "royals", "label": "Royals", "folders": [["1xJ4ITQnUEqvC45d4upwTYOWUaqouoxc6", ""]] },
-        { "slug": "athletics", "label": "Athletics", "folders": [["1Lwu3fYce_RA-QvCfwhFMi0MoxEiwWrcH", ""]] },
-        { "slug": "white-sox", "label": "White Sox", "folders": [["1bZBa2Ai_aNeTcfC6QbwXm1jIAgiPBvws", ""]] },
-        { "slug": "white-sox-2008", "label": "White Sox 2008–Present", "folders": [["19ctVSIHlF2R_kFJG7pLtOtt2QG_nhoyw", ""]] }
+        {
+          "slug": "braves",
+          "label": "Braves",
+          "folders": [
+            [
+              "1MAfv9Tqr1zrlzAoWA7eFktRxJEcjq_x5",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "royals",
+          "label": "Royals",
+          "folders": [
+            [
+              "1xJ4ITQnUEqvC45d4upwTYOWUaqouoxc6",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "athletics",
+          "label": "Athletics",
+          "folders": [
+            [
+              "1Lwu3fYce_RA-QvCfwhFMi0MoxEiwWrcH",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "white-sox",
+          "label": "White Sox",
+          "folders": [
+            [
+              "1bZBa2Ai_aNeTcfC6QbwXm1jIAgiPBvws",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "white-sox-2008",
+          "label": "White Sox 2008–Present",
+          "folders": [
+            [
+              "19ctVSIHlF2R_kFJG7pLtOtt2QG_nhoyw",
+              ""
+            ]
+          ]
+        }
       ]
     },
     {
-      "slug": "husker-football", "title": "Husker Autograph Chase", "kind": "chase", "progress": 86, "progressLabel": "of NFL Huskers signed", "color": "husker",
+      "slug": "husker-football",
+      "title": "Husker Autograph Chase",
+      "kind": "chase",
+      "progress": 86,
+      "progressLabel": "of NFL Huskers signed",
+      "color": "husker",
       "blurb": "One autographed card of every Husker who played in the NFL. I started around 2007, first with players who had a licensed card, and now track every player. Some of these are cuts and signed customs I made myself.",
       "groups": [
-        { "slug": "2009-and-older", "label": "2009 and Older", "folders": [["11HRGoNvW_2rXJTNskM4-N9OvjEsyRqU5", ""]] },
-        { "slug": "2010-and-newer", "label": "2010 and Newer", "folders": [["14IkGSLAPEDb6lkyuIG7Fldz8M30Hd_QJ", ""]] }
+        {
+          "slug": "2009-and-older",
+          "label": "2009 and Older",
+          "folders": [
+            [
+              "11HRGoNvW_2rXJTNskM4-N9OvjEsyRqU5",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "2010-and-newer",
+          "label": "2010 and Newer",
+          "folders": [
+            [
+              "14IkGSLAPEDb6lkyuIG7Fldz8M30Hd_QJ",
+              ""
+            ]
+          ]
+        }
       ],
-      "extraLinks": [{ "label": "Husker autographs I still need (spreadsheet)", "url": "https://sites.google.com/view/ianbadeer/nebraska-cornhuskers/husker-autographs-needed" }]
-    },
-    {
-      "slug": "husker-baseball", "title": "Husker Baseball", "kind": "chase", "progress": 96, "progressLabel": "of MLB Huskers signed", "color": "husker",
-      "blurb": "The roughly 50 Huskers who have logged time in the majors, each on an autographed card.",
-      "groups": [ { "slug": "all", "label": "All", "folders": [["0B9zOOzkfqijNbW1uT3pyRGxFalk", "0-8k8we8ea1EivCqbcZsXhtA"]] } ]
-    },
-    {
-      "slug": "royals", "title": "KC Royals", "kind": "team", "color": "royal",
-      "blurb": "Some are PC and some are available for trade, but I'll always listen if you have a card I need. Start with the favorites: buttons, dirt and nameplate relics.",
-      "groups": [
-        { "slug": "buttons", "label": "Button Relics", "folders": [["1Umnc6Rb8XWefReUtTeUEnuErf5YUGkU2", ""]] },
-        { "slug": "dirt", "label": "Dirt Relics", "folders": [["1-e4q3BVwpBsZEhjTgVqhoJEGf8i7NnkV", ""]] },
-        { "slug": "nameplates", "label": "Nameplates", "folders": [["1y3uOcWTr3fi2vaQQ94Lw_5-9NovU3rdu", ""]] },
-        { "slug": "hits", "label": "Hits", "folders": [["1XbQylwULzoNpGPT3vvXi0YGJgi_SEL00", ""], ["1HuO3kr4dzKXHAfyY7vfPYJ-3SztneFJE", ""], ["1jzLPgIaDNMz8dx9-lZMxpqOS1Zl6vHDi", ""]] },
-        { "slug": "base-numbered", "label": "Base & Numbered", "folders": [["0B9zOOzkfqijNS2xXckdmc1cxazQ", "0-xZE9jT9hFm7mVkvT7lnRSw"], ["14BbS173D0eSxhyxV5dTN5AhrPixj7Tzr", ""], ["1cXpSeoP5tl4aMlXjwiEGY60xb9hZ6THL", ""], ["1xlr_VVmw1FlAGR4IkAbofyxd0-qe2I3H", ""]] }
+      "extraLinks": [
+        {
+          "label": "Husker autographs I still need (spreadsheet)",
+          "url": "https://sites.google.com/view/ianbadeer/nebraska-cornhuskers/husker-autographs-needed"
+        }
       ]
     },
     {
-      "slug": "lions", "title": "Detroit Lions", "kind": "team", "color": "lions",
-      "blurb": "Some are PC and some are available for trade.",
-      "groups": [ { "slug": "all", "label": "All", "folders": [["13OgiSScSkoa6K-UyuGb7jyfaEaA201Re", ""]] } ]
+      "slug": "husker-baseball",
+      "title": "Husker Baseball",
+      "kind": "chase",
+      "progress": 96,
+      "progressLabel": "of MLB Huskers signed",
+      "color": "husker",
+      "blurb": "The roughly 50 Huskers who have logged time in the majors, each on an autographed card.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "All",
+          "folders": [
+            [
+              "0B9zOOzkfqijNbW1uT3pyRGxFalk",
+              "0-8k8we8ea1EivCqbcZsXhtA"
+            ]
+          ]
+        }
+      ]
     },
     {
-      "slug": "want-list", "title": "Want List", "kind": "want", "color": "gold",
+      "slug": "royals",
+      "title": "KC Royals",
+      "kind": "team",
+      "color": "royal",
+      "blurb": "Some are PC and some are available for trade, but I'll always listen if you have a card I need. Start with the favorites: buttons, dirt and nameplate relics.",
+      "groups": [
+        {
+          "slug": "buttons",
+          "label": "Button Relics",
+          "folders": [
+            [
+              "1Umnc6Rb8XWefReUtTeUEnuErf5YUGkU2",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "dirt",
+          "label": "Dirt Relics",
+          "folders": [
+            [
+              "1-e4q3BVwpBsZEhjTgVqhoJEGf8i7NnkV",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "nameplates",
+          "label": "Nameplates",
+          "folders": [
+            [
+              "1y3uOcWTr3fi2vaQQ94Lw_5-9NovU3rdu",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "hits",
+          "label": "Hits",
+          "folders": [
+            [
+              "1XbQylwULzoNpGPT3vvXi0YGJgi_SEL00",
+              ""
+            ],
+            [
+              "1HuO3kr4dzKXHAfyY7vfPYJ-3SztneFJE",
+              ""
+            ],
+            [
+              "1jzLPgIaDNMz8dx9-lZMxpqOS1Zl6vHDi",
+              ""
+            ]
+          ]
+        },
+        {
+          "slug": "base-numbered",
+          "label": "Base & Numbered",
+          "folders": [
+            [
+              "0B9zOOzkfqijNS2xXckdmc1cxazQ",
+              "0-xZE9jT9hFm7mVkvT7lnRSw"
+            ],
+            [
+              "14BbS173D0eSxhyxV5dTN5AhrPixj7Tzr",
+              ""
+            ],
+            [
+              "1cXpSeoP5tl4aMlXjwiEGY60xb9hZ6THL",
+              ""
+            ],
+            [
+              "1xlr_VVmw1FlAGR4IkAbofyxd0-qe2I3H",
+              ""
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "lions",
+      "title": "Detroit Lions",
+      "kind": "team",
+      "color": "lions",
+      "blurb": "Some are PC and some are available for trade.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "All",
+          "folders": [
+            [
+              "13OgiSScSkoa6K-UyuGb7jyfaEaA201Re",
+              ""
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "want-list",
+      "title": "Want List",
+      "kind": "want",
+      "color": "gold",
       "blurb": "Cards I'm still hunting. If you know where to find one, please get in touch.",
-      "groups": [ { "slug": "all", "label": "All", "folders": [["0B9zOOzkfqijNZVdQUkl6Tmx4cVk", "0-J6mN-2-TOH3NFcLVM2aA3A"]] } ]
+      "groups": [
+        {
+          "slug": "all",
+          "label": "All",
+          "folders": [
+            [
+              "0B9zOOzkfqijNZVdQUkl6Tmx4cVk",
+              "0-J6mN-2-TOH3NFcLVM2aA3A"
+            ]
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "driveRoot": {
+    "_help": "One parent folder read by the robot: Parent / Section / Group / scans. Folder names become labels; section folders named like a section below keep its text and progress. Switch on with enabled: true.",
+    "id": "18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV",
+    "enabled": false
+  }
 }
