@@ -128,8 +128,7 @@
     const part = (list, cls) => list.length ? `<tbody class="${cls}">${list.map((r) => `<tr class="${/%$/.test(r[1]) || /^left to collect/i.test(r[0]) ? "key" : ""}"><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</tbody>` : "";
     return `<aside class="inv" aria-label="Collection stats"><table>
       <thead><tr><th>${esc(head[0])}</th><th>${esc(head[1] || "")}</th></tr></thead>
-      ${part(cut < 0 ? body : body.slice(0, cut), "got")}${cut < 0 ? "" : part(body.slice(cut), "left")}</table>
-      <small>Live from my inventory spreadsheet</small></aside>`;
+      ${part(cut < 0 ? body : body.slice(0, cut), "got")}${cut < 0 ? "" : part(body.slice(cut), "left")}</table></aside>`;
   }
   function sectionCards(si) { return CARDS.filter((c) => c.si === si); }
   // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
