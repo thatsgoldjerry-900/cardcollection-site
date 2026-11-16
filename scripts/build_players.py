@@ -54,7 +54,7 @@ SPORTS = [
 ]
 
 
-def is_husker_article(title, word="football"):
+def is_husker_article(title, word="football", trust=False):
     # One request per player: the whole article (infobox, intro and stat tables).
     d = wiki({"action": "parse", "page": title, "prop": "text", "redirects": 1, "disableeditsection": 1})
     if "error" in d: return None
@@ -73,7 +73,7 @@ def is_husker_article(title, word="football"):
     ties = "Nebraska" in college or "Nebraska" in opening
     if not ties and word != "football":
         ties = bool(re.search(r"Nebraska Cornhuskers|University of Nebraska|Nebraska[–-]Lincoln", body))
-    if not ties: return None
+    if not ties and not trust: return None   # an override was checked by hand, so trust it
     if word not in (college + opening + (box.get_text(" ") if box else "")).lower(): return None
     return d["parse"]["title"], html
 
@@ -84,7 +84,7 @@ def find_article(name, override=None, sport=SPORTS[0]):
     tries = [override] if override else [clean] + [f"{clean} {x}" for x in sport["suffixes"]]
     for t in tries:
         if not t: continue
-        hit = is_husker_article(t, word)
+        hit = is_husker_article(t, word, trust=bool(override))
         if hit: return hit
     if override: return None
     d = wiki({"action": "query", "list": "search", "srsearch": f'"{clean}" Nebraska Cornhuskers {word}', "srlimit": 5})

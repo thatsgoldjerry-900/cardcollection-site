@@ -1,5 +1,10 @@
 {
-  "_help": "\"players\": \"all\" gives every NFL Tier 1 Husker a page. Add \"overrides\": {\"Player Name\": \"Exact Wikipedia Article Title\"} when the automatic lookup picks the wrong article or misses one.",
+  "_help": "\"players\": \"all\" gives every Husker on the NFL Tier 1, MLB and NBA lists a page. Add \"overrides\": {\"Player Name\": \"Exact Wikipedia Article Title\"} when the automatic lookup picks the wrong article or misses one. For a baseball or basketball player, write the key as \"baseball:Player Name\" or \"basketball:Player Name\". An override is trusted even if the article does not mention Nebraska, so check it is the right person.",
   "players": "all",
-  "overrides": {}
+  "overrides": {
+    "baseball:Thad Weber": "Thad Weber",
+    "baseball:Marc Sagmoen": "Marc Sagmoen",
+    "baseball:Kevin Jordan": "Kevin Jordan (baseball)",
+    "baseball:Tim Burke": "Tim Burke (baseball)"
+  }
 }
