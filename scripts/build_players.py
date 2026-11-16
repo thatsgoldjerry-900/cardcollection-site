@@ -151,7 +151,8 @@ def college_tables(html):
             for tr in t.select("tr"):
                 cells = [[text(c).replace("\n", " "), int(c.get("colspan", 1) or 1)] for c in tr.find_all(["th", "td"])]
                 if any(x[0] for x in cells): rows.append(cells)
-            if len(rows) >= 2:
+            has_seasons = any(re.match(r"^(19|20)\d\d", r[0][0]) for r in rows)
+            if len(rows) >= 2 and has_seasons and not re.search(r"recruit", ctx, re.I):
                 out.append({"title": (text(t.caption) if t.caption else list(heads.values())[-1]), "rows": rows})
     return out
 
