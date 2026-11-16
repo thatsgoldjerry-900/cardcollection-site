@@ -162,7 +162,7 @@
     const s = DATA.site;
     const feat = CARDS.find((c) => s.featured && c.name.includes(s.featured.match)) || CARDS.find((c) => c.one);
     const newest = sortList(CARDS, "new").slice(0, 40);
-    const autos = CARDS.filter((c) => c.tags.has("auto")).length, ones = CARDS.filter((c) => c.one).length;
+    const ones = CARDS.filter((c) => c.one).length;
     const tiles = SECTIONS.map((sec, si) => {
       if (!shown(sec)) return "";
       const list = sectionCards(si);
@@ -187,7 +187,6 @@
       </section>
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
-        <div class="stat"><b>${fmt(autos)}</b><span>autographs</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${x.progress}%</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
