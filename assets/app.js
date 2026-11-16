@@ -262,7 +262,7 @@
     loadHubQuiet().then(() => {
       const t = allPlayers().filter((p) => p.sport === "football"), el = $("#stat-nfl");
       if (!el || !t.length) return;
-      el.querySelector("b").textContent = Math.round((t.filter((p) => p.have).length / t.length) * 100) + "%"; el.hidden = false;
+      el.querySelector("b").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.hidden = false;
     }).catch(() => {});
   }
 
