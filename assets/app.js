@@ -414,9 +414,10 @@
     // MLB and NBA pages: three autographed cards from players on the list, picked at random each visit.
     const sport = SPORT_OF_LIST[l.slug], showcase = [];
     if (page.path) {
-      const pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
+      var pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
         .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !/\(back\)/i.test(c.name))).filter((x) => x.length);
-      while (showcase.length < 3 && pool.length) { const k = Math.floor(Math.random() * pool.length), list = pool.splice(k, 1)[0]; showcase.push(list[Math.floor(Math.random() * list.length)]); }
+      const rest = pool.slice();
+      while (showcase.length < 3 && rest.length) { const k = Math.floor(Math.random() * rest.length), list = rest.splice(k, 1)[0]; showcase.push(list[Math.floor(Math.random() * list.length)]); }
     }
     $("#app").innerHTML = `<div class="wrap ck c-husker">
       <div class="${showcase.length ? "ck-top" : ""}"><div class="c-head">
@@ -441,7 +442,33 @@
     $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
     $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
     state.list = showcase;
+    if (showcase.length === 3 && pool.length > 3) cycleFan(pool, showcase);
     table();
+  }
+  // Every 5 seconds one of the three cards fades out and a different player's autograph fades in,
+  // taking turns left to right. Pauses under the mouse, in a background tab, and for reduced motion.
+  let fanTimer = null;
+  function cycleFan(pool, shown) {
+    clearInterval(fanTimer);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const fan = $(".ck-fan"); let slot = 0, busy = false;
+    fanTimer = setInterval(() => {
+      if (!document.body.contains(fan)) return clearInterval(fanTimer);
+      if (busy || document.hidden || fan.matches(":hover") || !$("#viewer").hidden) return;
+      const others = pool.filter((list) => !shown.some((c) => list.includes(c)));
+      if (!others.length) return;
+      const list = others[Math.floor(Math.random() * others.length)], next = list[Math.floor(Math.random() * list.length)];
+      const btn = fan.children[slot], im = btn.querySelector("img"); busy = true;
+      btn.classList.add("swap");
+      setTimeout(() => {
+        const pre = new Image();
+        pre.onload = pre.onerror = () => {
+          im.src = pre.src; btn.dataset.i = next.i; btn.setAttribute("aria-label", next.name);
+          shown[slot] = next; btn.classList.remove("swap"); slot = (slot + 1) % 3; busy = false;
+        };
+        pre.src = img(next.id, next.rk, 400);
+      }, 450);
+    }, 5000);
   }
   function table() {
     const l = CHECK.lists[CK.list], cols = l.columns, ai = cols.indexOf("Autograph");
