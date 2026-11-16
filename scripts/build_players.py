@@ -190,7 +190,11 @@ def college_stats(name, final_year, position=""):
     return {str(y): seasons[y] for y in sorted(seasons)} or None
 
 
+_rest = []   # saved entries not processed yet in this run, so every save writes the complete list
+
 def save(players):
+    done = {p["slug"] for p in players}
+    players = players + [p for p in _rest if p["slug"] not in done]
     out = {"source": {"wikipedia": "Text and facts from Wikipedia, CC BY-SA 4.0",
                       "cfbd": "College stats from CollegeFootballData.com"},
            "players": players}
@@ -215,6 +219,7 @@ def main():
         entries = [{"name": r[0].strip(), "wikipedia": ov[r[0].strip()]} if r[0].strip() in ov else r[0].strip()
                    for g in tier1["groups"] for r in g["rows"]]
     max_new = next((int(a.split("=")[1]) for a in sys.argv if a.startswith("--max-new=")), None)
+    _rest[:] = list(old.values())
     fetched = 0
     for entry in entries:
         name = entry if isinstance(entry, str) else entry["name"]
