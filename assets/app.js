@@ -396,6 +396,12 @@
       const DEF = /defensive|linebacker|cornerback|safety|end\b|tackle/i;
       const collegeHTML = college ? Object.entries(college).map(([y, cats]) => `<tr><th>${y}</th><td>${Object.entries(cats).map(([cat, st]) => `<b>${esc(cat)}</b> ${Object.entries(st).map(([k, v]) => `${esc(k)} ${esc(v)}`).join(" · ")}`).join("<br>")}</td></tr>`).join("")
         : "";
+      const isData = (r) => /^(\d{4}|career|total)/i.test((r[0] || [""])[0]);
+      const wtables = ((p && p.collegeTables) || []).map((t) => {
+        const first = t.rows.findIndex(isData), head = first > 0 ? t.rows.slice(0, first) : t.rows.slice(0, 1), body = t.rows.slice(first > 0 ? first : 1);
+        const cell = (tag) => ([v, n]) => `<${tag}${n > 1 ? ` colspan="${n}"` : ""}>${esc(v)}</${tag}>`;
+        return `<div class="ct-wrap"><table class="ct"><thead>${head.map((r) => `<tr>${r.map(cell("th")).join("")}</tr>`).join("")}</thead><tbody>${body.map((r) => `<tr class="${/^(career|total)/i.test(r[0][0]) ? "tot" : ""}">${r.map(cell("td")).join("")}</tr>`).join("")}</tbody></table></div>`;
+      }).join("");
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="#/nfl-huskers">← NFL Tier 1 Huskers</a>
         <div class="pl-top">
@@ -411,7 +417,7 @@
         </div>
         <div class="pl-grid">
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
-          <section><h2>College stats</h2>${collegeHTML ? `<table class="kv">${collegeHTML}</table><p class="note">From CollegeFootballData.com.</p>`
+          <section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `<table class="kv">${collegeHTML}</table><p class="note">From CollegeFootballData.com.</p>`
             : `<p class="muted">${DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>
           ${list("Career history") ? `<section><h2>Pro teams</h2><ul class="plain">${list("Career history")}</ul></section>` : ""}
           ${list("Awards and highlights") ? `<section><h2>Awards and highlights</h2><ul class="plain">${list("Awards and highlights")}</ul></section>` : ""}
