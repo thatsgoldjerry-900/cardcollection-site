@@ -271,7 +271,7 @@
     state.list = newest;
     // Live from the checklist: share of NFL Huskers whose autograph is in the collection.
     loadHubQuiet().then(() => {
-      const t = allPlayers().filter((p) => p.sport === "football"), el = $("#stat-nfl");
+      const t = allPlayers().filter((p) => p.listSlug === "nfl-tier-1-huskers"), el = $("#stat-nfl");
       if (!el || !t.length) return;
       el.querySelector("b").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.hidden = false;
     }).catch(() => {});
@@ -532,19 +532,23 @@
   }
   // Player pages for every name on the NFL, MLB and NBA lists. Slugs match scripts/build_players.py:
   // a name already used by an earlier list gets "-baseball" or "-basketball" added.
-  const SPORT_LISTS = [["football", "nfl-tier-1-huskers", "NFL", "#/nfl-huskers", "NFL Huskers Player Pages"],
-    ["baseball", "baseball-mlb", "MLB", "#/checklist/mlb", "MLB Huskers Autograph List"],
-    ["basketball", "basketball-nba", "NBA", "#/checklist/nba", "NBA Huskers Autograph List"]];
+  // [sport, list, label, back link, back label, slug suffix for a name already used by an earlier list].
+  // Order matters (it decides who gets the plain slug) and must match SPORTS in scripts/build_players.py.
+  const SPORT_LISTS = [["football", "nfl-tier-1-huskers", "NFL", "#/nfl-huskers", "NFL Huskers Player Pages", "football"],
+    ["baseball", "baseball-mlb", "MLB", "#/checklist/mlb", "MLB Huskers Autograph List", "baseball"],
+    ["basketball", "basketball-nba", "NBA", "#/checklist/nba", "NBA Huskers Autograph List", "basketball"],
+    ["football", "nfl-tier-2-huskers", "NFL Tier 2", "#/checklist/tier-2", "NFL Tier 2 Huskers Autograph List", "tier-2"],
+    ["football", "pro-football-huskers", "Pro Football", "#/checklist/tier-3", "NFL Tier 3 Huskers Autograph List", "tier-3"]];
   let ALL = null;
   function allPlayers() {
     if (ALL) return ALL;
     const used = new Set(); ALL = [];
-    SPORT_LISTS.forEach(([sport, listSlug, league, back, backLabel]) => {
+    SPORT_LISTS.forEach(([sport, listSlug, league, back, backLabel, suffix]) => {
       const l = CHECK.lists.find((x) => x.slug === listSlug); if (!l) return;
       const c = Object.fromEntries(l.columns.map((k, i) => [k, i]));
       l.groups.flatMap((g) => g.rows).forEach((r) => {
         const name = r[0].trim(); let slug = pslug(name);
-        if (used.has(slug)) slug += "-" + sport;
+        if (used.has(slug)) slug += "-" + suffix;
         used.add(slug);
         ALL.push({ sport, league, listSlug, back, backLabel, name, slug, year: r[c["Last Year"]], have: r[c["Autograph"]] === "Yes",
           games: c["NFL Games Played"] >= 0 ? r[c["NFL Games Played"]] : "", notes: c["Career Notes"] >= 0 ? r[c["Career Notes"]] : "",
@@ -630,7 +634,7 @@
       const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null;
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
-      if (!football) setNav("checklist/" + (info.sport === "baseball" ? "mlb" : "nba"));
+      if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
       const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "NFL Huskers Player Pages";
       const sport = info.sport || "football";
       const scans = scansFor(info.name, sport).filter((c) => !/\(back\)/i.test(c.name));

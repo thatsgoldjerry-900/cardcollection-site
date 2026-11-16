@@ -51,7 +51,13 @@ SPORTS = [
     {"sport": "baseball", "list": "baseball-mlb", "word": "baseball",
      "suffixes": ["(baseball)", "(pitcher)", "(outfielder)", "(infielder)", "(catcher)"]},
     {"sport": "basketball", "list": "basketball-nba", "word": "basketball", "suffixes": ["(basketball)"]},
+    # Tier 2 and Tier 3 come last so the earlier lists keep their page addresses.
+    {"sport": "football", "list": "nfl-tier-2-huskers", "word": "football", "key": "tier-2",
+     "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
+    {"sport": "football", "list": "pro-football-huskers", "word": "football", "key": "tier-3",
+     "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
 ]
+# Order and slug suffixes must match SPORT_LISTS in assets/app.js.
 
 
 def is_husker_article(title, word="football", trust=False):
@@ -250,16 +256,17 @@ def main():
             for r in g["rows"]:
                 name = r[0].strip()
                 slug = slugify(name)
-                if slug in used: slug = f"{slug}-{sport['sport']}"   # same name on two lists
+                key = sport.get("key", sport["sport"])
+                if slug in used: slug = f"{slug}-{key}"   # same name on two lists
                 used.add(slug)
                 last = get(r, "Last Year")
-                p = {"slug": slug, "sport": sport["sport"], "name": name, "finalYear": int(last) if last.isdigit() else None,
+                p = {"slug": slug, "sport": sport["sport"], "list": sport["list"], "name": name, "finalYear": int(last) if last.isdigit() else None,
                      "have": get(r, "Autograph") == "Yes"}
                 if sport["sport"] == "football":
                     p.update({"nflGames": get(r, "NFL Games Played"), "notes": get(r, "Career Notes"), "signed": get(r, "Signed")})
-                override = ov.get(f"{sport['sport']}:{name}") or (ov.get(name) if sport["sport"] == "football" else None)
+                override = ov.get(f"{key}:{name}") or (ov.get(name) if sport["list"] == "nfl-tier-1-huskers" else None)
                 prev = old.get(slug)
-                skip = (only and only != sport["sport"]) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
+                skip = (only and only not in (sport["sport"], key)) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
                 if skip and prev:
                     p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
                     players.append(p); continue
