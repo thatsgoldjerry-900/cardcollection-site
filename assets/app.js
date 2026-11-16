@@ -385,8 +385,11 @@
       const hero = info.have ? bestScan(info.name) : null;
       const sec = (w && w.sections) || {};
       const pick = (label) => Object.values(sec).flat().find((r) => r.length === 2 && r[0] === label);
+      // The College line can list several schools, e.g. "LSU (2019–2021)Nebraska (2022)".
+      const schools = [...((pick("College") || [])[1] || "").matchAll(/([^()\n]+?)\s*\(([^)]*)\)/g)].map((m) => [m[1].trim(), m[2].trim()]);
       const facts = [["Position", info.position || (pick("Position") || [])[1]], ["Final season at Nebraska", info.year || info.finalYear],
-        ["Nebraska years", ((pick("College") || [])[1] || "").replace(/^Nebraska\s*/, "").replace(/[()]/g, "")],
+        ["Nebraska years", (schools.find(([n]) => /nebraska/i.test(n)) || [])[1]],
+        ["Also played at", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NFL games", info.games || info.nflGames], ["Born", (pick("Born") || [])[1]],
         ["High school", (pick("High school") || [])[1]], ["Height / weight", [(pick("Listed height") || [])[1], (pick("Listed weight") || [])[1]].filter(Boolean).join(" · ")]]
         .filter(([, v]) => v && String(v).trim());
