@@ -289,3 +289,5 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hero p a.inl{color:var(--acc);text-decoration:underline;text-underline-offset:3px}
 .story{display:flex;flex-direction:column;gap:12px;max-width:70ch;padding:4px 0 6px 18px;border-left:3px solid var(--husker)}
 .story p{color:#dfe4ec;margin:0;font-size:16px;line-height:1.6}
+.ck td.nm a.pl-link{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.ck td.nm a.pl-link:hover{color:var(--acc);text-decoration-color:currentColor}
