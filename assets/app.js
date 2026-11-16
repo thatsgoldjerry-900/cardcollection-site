@@ -388,7 +388,7 @@
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
   // same name in different sports (e.g. Eric Johnson, football and basketball) never share cards.
   const scanIndex = {};
-  const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball" };
+  const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "nfl-tier-2-huskers": "football", "pro-football-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball" };
   function scansFor(name, sport = "football") {
     if (!scanIndex[sport]) {
       const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport);
@@ -400,6 +400,8 @@
   // One page per published list. #/checklist (no suffix) stays the NFL page so old links keep working.
   const CK_PAGES = [
     { path: "", slug: "nfl-tier-1-huskers", label: "NFL Huskers Autograph List", blurb: "One autograph of every Husker who played in at least one NFL game." },
+    { path: "/tier-2", slug: "nfl-tier-2-huskers", label: "NFL Tier 2 Huskers Autograph List", blurb: "One autograph of every Husker who made an NFL active roster, preseason roster, injured reserve or practice squad without playing in a game." },
+    { path: "/tier-3", slug: "pro-football-huskers", label: "NFL Tier 3 Huskers Autograph List", blurb: "One autograph of every Husker who was drafted by, went to camp with or tried out for an NFL team, or played in another pro league." },
     { path: "/mlb", slug: "baseball-mlb", label: "MLB Huskers Autograph List", blurb: "One autograph of every Husker who played in the major leagues." },
     { path: "/nba", slug: "basketball-nba", label: "NBA Huskers Autograph List", blurb: "One autograph of every Husker who played in the NBA." },
   ];
@@ -483,6 +485,7 @@
   }
   function table() {
     const l = CHECK.lists[CK.list], cols = l.columns, ai = cols.indexOf("Autograph");
+    const hasPages = SPORT_LISTS.some((x) => x[1] === l.slug);   // only these lists have player pages to link to
     const shown = cols.map((c, i) => i).filter((i) => i !== ai);
     const opt = (c) => /notes|games|role/i.test(c) ? " opt" : "";
     const label = (c) => (c === "Signed" ? "Signed on" : c);
@@ -493,7 +496,7 @@
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
         return `<tr class="${have ? "have" : "need"}"><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
-          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : esc(r[i])}</td>`).join("")}
+          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) : esc(r[i])}</td>`).join("")}
           <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
     }).join("");
