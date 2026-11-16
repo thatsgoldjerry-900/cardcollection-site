@@ -265,36 +265,60 @@
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
     openViewer(list.findIndex((c) => c.i === i), list);
   });
+  // Desktop shows a card's front and back side by side; phones flip between them with a tap.
+  const wide = window.matchMedia("(min-width: 900px)");
   function openViewer(k, list) {
-    V.list = list; V.k = k; V.back = false;
+    V.list = list; V.k = k; V.back = false; V.zoom = false;
     $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard(); $("#v-close").focus();
   }
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
-    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom");
+    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair");
     if (!silent && location.hash.startsWith("#/card/")) history.back();
   }
+  function loadInto(el, c, id, rk, alt) {
+    el.src = img(id, rk, 400); el.alt = alt;
+    const big = new Image(); big.onload = () => { if (V.list[V.k] === c && el.dataset.id === id) el.src = big.src; };
+    el.dataset.id = id; big.src = img(id, rk, 1600);
+  }
+  const isPair = (c) => wide.matches && !!c.backId && !V.zoom;
   function showCard() {
     const c = V.list[V.k]; if (!c) return;
-    const id = V.back ? c.backId : c.id, rk = V.back ? c.backRk : c.rk;
-    const im = $("#v-img");
-    im.src = img(id, rk, 400);
-    const big = new Image(); big.onload = () => { if (V.list[V.k] === c) im.src = big.src; }; big.src = img(id, rk, 1600);
-    im.alt = c.name + (V.back ? " (back)" : "");
+    const pair = isPair(c), stage = $("#v-stage"), im = $("#v-img"), im2 = $("#v-img2");
+    const back = !pair && V.back;
+    const id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
+    loadInto(im, c, id, rk, c.name + (back ? " (back)" : ""));
+    im2.hidden = !pair;
+    if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)");
+    stage.classList.toggle("pair", pair);
+    stage.classList.toggle("zoom", V.zoom);
     $("#v-title").innerHTML = `${esc(c.title)}<small>${esc(c.sub || "")}${c.par ? " · " + esc(c.par) : ""}</small>`;
-    $("#v-flip").hidden = !c.backId; $("#v-flip").textContent = V.back ? "Show front" : "Show back";
+    $("#v-flip").hidden = !c.backId || pair; $("#v-flip").textContent = V.back ? "Show front" : "Show back";
     $("#v-drive").href = driveUrl(id, rk);
+    $("#v-drive").textContent = pair ? "Front full-res ↗" : "Full-res in Drive ↗";
+    $("#v-drive2").hidden = !pair;
+    if (pair) $("#v-drive2").href = driveUrl(c.backId, c.backRk);
     const sec = SECTIONS[c.si];
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
-    $("#v-stage").classList.remove("zoom");
   }
-  const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; showCard(); } };
+  const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
   $("#v-close").onclick = () => closeViewer();
-  $("#v-flip").onclick = () => { V.back = !V.back; showCard(); };
-  $("#v-img").onclick = () => $("#v-stage").classList.toggle("zoom");
+  $("#v-flip").onclick = () => { V.back = !V.back; V.zoom = false; showCard(); };
+  // Click an image: on desktop, zoom into that side (click again to go back);
+  // on a phone, a card with a back flips, and one without zooms.
+  function imageClick(side) {
+    const c = V.list[V.k];
+    if (!wide.matches && c.backId) { V.back = !V.back; V.zoom = false; }
+    else if (V.zoom) V.zoom = false;
+    else { V.zoom = true; if (c.backId) V.back = side === "back"; }
+    showCard();
+  }
+  $("#v-img").onclick = () => imageClick(isPair(V.list[V.k]) ? "front" : V.back ? "back" : "front");
+  $("#v-img2").onclick = () => imageClick("back");
+  wide.addEventListener("change", () => { if (!$("#viewer").hidden) { V.zoom = false; showCard(); } });
   $("#v-copy").onclick = async () => {
     const c = V.list[V.k], url = location.href.split("#")[0] + "#/card/" + c.id;
     try { await navigator.clipboard.writeText(url); $("#v-copy").textContent = "Link copied"; }
