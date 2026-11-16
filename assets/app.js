@@ -184,7 +184,12 @@
         <h3>${esc(sec.title)}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
         <div class="tm"><span>${fmt(list.length)} cards</span><span>${sec.progress ? sec.progress + "% complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
-    }).join("");
+    }).join("") + (() => {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
+      const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
+      const step = Math.max(1, Math.floor(list.length / 4)), four = [0, 1, 2, 3].map((k) => list[k * step]).filter(Boolean);
+      return `<a class="tile c-gold" href="#/customs"><div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
+        <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} cards</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
+    })();
     $("#app").innerHTML = `<div class="wrap">
       <section class="hero">
         <div>
