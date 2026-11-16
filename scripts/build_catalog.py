@@ -58,10 +58,11 @@ def base_name(name):
 
 def main():
     cfg = json.load(open(CONFIG))
-    prev = {}
+    prev, old = {}, None
     if os.path.exists(OUT):
         try:
-            for c in json.load(open(OUT))["cards"]: prev[c[0]] = c[5]
+            old = json.load(open(OUT))
+            for c in old["cards"]: prev[c[0]] = c[5]
         except Exception: pass
     today = date.today().isoformat()
     cards, sections = [], []
@@ -93,6 +94,9 @@ def main():
     site = {k: v for k, v in cfg.items() if k != "sections"}
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections,
            "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk"], "cards": cards}
+    if old and {k: v for k, v in old.items() if k != "generated"} == {k: v for k, v in out.items() if k != "generated"}:
+        print("No changes in Drive; card list left as is.", file=sys.stderr)
+        return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as fh: json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
     print(f"Wrote {len(cards)} cards to {OUT}", file=sys.stderr)
