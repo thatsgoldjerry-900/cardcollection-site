@@ -7,6 +7,12 @@
  *
  * Your master is never shared. This script runs in your own Google account.
  * Keep edit access to this public sheet to yourself.
+ *
+ * Permissions are limited by tools/appsscript.json (paste it into the project's manifest):
+ *   - read-only access to Drive (to read the master; it cannot change or delete anything)
+ *   - create/delete only files this script makes (the temporary copy)
+ *   - edit only this spreadsheet
+ *   - run on a timer
  */
 
 // ─────────────────────────── Settings: edit these ───────────────────────────
@@ -43,20 +49,23 @@ function syncFromMaster() {
   const here = SpreadsheetApp.getActiveSpreadsheet();
   const tempId = convertMasterToTempSheet_();
   try {
-    const master = SpreadsheetApp.openById(tempId);
     IMPORTS.forEach((job) => {
-      const src = master.getSheetByName(job.from);
-      if (!src) throw new Error(`The master has no tab named "${job.from}".`);
-      const values = src.getDataRange().getDisplayValues();
+      let values;
+      try {
+        values = Sheets.Spreadsheets.Values.get(tempId, `'${job.from.replace(/'/g, "''")}'`, { valueRenderOption: 'FORMATTED_VALUE' }).values || [];
+      } catch (e) {
+        throw new Error(`The master has no tab named "${job.from}".`);
+      }
       const headers = (values[job.headerRow - 1] || []).map((h) => String(h).trim());
       const picks = job.columns.map((name) => {
         const i = headers.indexOf(name);
         if (i < 0) throw new Error(`Tab "${job.from}" has no column titled "${name}". Its titles are: ${headers.filter(Boolean).join(', ')}`);
         return i;
       });
+      const cell = (r, i) => (r[i] === undefined ? '' : r[i]);
       const rows = values.slice(job.headerRow)
-        .filter((r) => picks.some((i) => String(r[i]).trim() !== ''))  // skip blank rows
-        .map((r) => picks.map((i) => r[i]));
+        .filter((r) => picks.some((i) => String(cell(r, i)).trim() !== ''))  // skip blank rows
+        .map((r) => picks.map((i) => cell(r, i)));
       const out = here.getSheetByName(job.to) || here.insertSheet(job.to);
       out.clearContents();
       out.getRange(1, 1, rows.length + 1, picks.length).setValues([job.columns, ...rows]);
