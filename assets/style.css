@@ -136,7 +136,7 @@ mark{background:rgba(127,178,255,.25);color:inherit;border-radius:2px}
 .foot .email{font-family:var(--f-m);color:var(--fg);user-select:all}
 
 /* Viewer */
-.viewer{position:fixed;inset:0;z-index:50;background:rgba(5,7,10,.985);display:grid;grid-template-columns:64px 1fr 64px;grid-template-rows:auto 1fr auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.viewer{position:fixed;inset:0;z-index:50;background:#05070a;display:grid;grid-template-columns:64px 1fr 64px;grid-template-rows:auto 1fr auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .v-bar{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
 .v-title{font-size:15px;font-weight:600;min-width:0;flex:1 1 300px}
 .v-title small{display:block;font-weight:400;color:var(--mu);font-size:13px}
@@ -292,3 +292,23 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ck td.nm a.pl-link{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 .ck td.nm a.pl-link:hover{color:var(--acc);text-decoration-color:currentColor}
 .pc-link{margin:28px 0 0;font-size:16px}.pc-link a{color:var(--acc);font-weight:600;text-decoration:none}.pc-link a:hover{text-decoration:underline}
+
+/* Phones: the Nebraska Cornhuskers menu comes first in the scrolling menu, with a fade hinting there is more */
+@media (max-width:900px){
+  .nav .dd-btn{order:-1;color:var(--fg);background:var(--panel)}
+  .nav{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:24px}
+}
+/* Landscape cards get a landscape frame */
+.pl-ph.land,.feat .ph.land{aspect-ratio:7/5}
+.feat .ph.land{transform:rotate(1.5deg)}
+@media (max-width:760px){.pl-card{max-width:100%}.pl-ph{max-height:62vh}.pl-ph:not(.land){max-width:300px}}
+/* The NFL list story shows its first paragraph on phones until "Read the full story" */
+.story-more{display:none;align-self:flex-start;background:none;border:0;padding:0;color:var(--acc);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+@media (max-width:760px){.story.short p:not(:first-child){display:none}.story.short .story-more{display:block}}
+/* Home stats: a link stat, and no empty half-row on phones */
+.stat.link{text-decoration:none;color:inherit;transition:background .15s}
+.stat.link:hover{background:var(--panel-2)}
+.stat.link b{color:var(--husker)}
+.stat.link span{color:var(--acc)}
+.stats .stat:last-child:nth-child(odd){grid-column:1/-1}
+@media (min-width:801px){.stats .stat:last-child:nth-child(odd){grid-column:auto}}

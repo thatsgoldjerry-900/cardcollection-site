@@ -49,6 +49,9 @@
     return out;
   }
 
+  // A landscape card (e.g. a horizontal patch auto) gets a landscape frame instead of a tall, mostly empty one.
+  window.fitFrame = (im) => { im.classList.add("ok"); if (im.naturalWidth > im.naturalHeight * 1.1) im.parentNode.classList.add("land"); };
+
   /* ---------- Data ---------- */
   function load(json) {
     DATA = json; SECTIONS = json.sections;
@@ -145,6 +148,8 @@
     const s = DATA.site;
     $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? Email <span class="email">${esc(s.email)}</span></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
   }
+  // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
+  function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
   let NAV_NOW = null;
   function setNav(slug) {
     NAV_NOW = slug;
@@ -153,7 +158,7 @@
   }
 
   function home() {
-    setNav(null);
+    setNav(null); setTitle("");
     const s = DATA.site;
     const feat = CARDS.find((c) => s.featured && c.name.includes(s.featured.match)) || CARDS.find((c) => c.one);
     const newest = sortList(CARDS, "new").slice(0, 40);
@@ -178,13 +183,14 @@
           <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
           <div class="pills">${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
-        ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="this.classList.add('ok')"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
+        ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
         <div class="stat"><b>${fmt(autos)}</b><span>autographs</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<div class="stat"><b>${x.progress}%</b><span>${esc(x.title)}</span></div>`).join("")}
+        <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Huskers signed →</span></a>
       </section>
       <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
       <section class="mq" aria-label="Newest additions">
@@ -196,6 +202,12 @@
     // The copy only exists so the loop looks seamless; keep it out of keyboard tab order.
     document.querySelectorAll(".mq-dup .cd").forEach((b) => (b.tabIndex = -1));
     state.list = newest;
+    // Live from the checklist: share of NFL Huskers whose autograph is in the collection.
+    loadHubQuiet().then(() => {
+      const t = allPlayers().filter((p) => p.sport === "football"), el = $("#stat-nfl");
+      if (!el || !t.length) return;
+      el.querySelector("b").textContent = Math.round((t.filter((p) => p.have).length / t.length) * 100) + "%"; el.hidden = false;
+    }).catch(() => {});
   }
 
   function collection(slug, gslug) {
@@ -222,6 +234,7 @@
     } else {
       base = CARDS; title = state.q ? `Results for “${esc(state.q)}”` : "Every card"; kick = "Whole collection";
     }
+    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
         <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
         ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
@@ -305,7 +318,7 @@
   ];
   function checklist(which) {
     const page = CK_PAGES.find((x) => x.path === (which ? "/" + which : "")) || CK_PAGES[0];
-    setNav("checklist" + page.path);
+    setNav("checklist" + page.path); setTitle(page.label);
     if (!CHECK) {
       $("#app").innerHTML = `<p class="loading">Loading the checklist…</p>`;
       fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); })
@@ -326,7 +339,7 @@
       <div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
         <h1>${esc(page.label)}</h1>
-        ${page.path === "" && DATA.site.nflListStory ? `<div class="story">${DATA.site.nflListStory.map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : ""}
+        ${page.path === "" && DATA.site.nflListStory ? `<div class="story short">${DATA.site.nflListStory.map((t) => `<p>${esc(t)}</p>`).join("")}<button type="button" class="story-more" onclick="this.parentNode.classList.remove('short')">Read the full story</button></div>` : ""}
         <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${Math.round(pct)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
       </div>
@@ -371,7 +384,7 @@
 
   /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
   let PLAYERS = null;
-  const HUB = { q: "", show: "all", shown: 0, rows: [] };
+  const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
@@ -434,7 +447,7 @@
     return k ? SITES[k] : h;
   }
   function hub() {
-    setNav("nfl-huskers");
+    setNav("nfl-huskers"); setTitle("NFL Huskers Player Pages");
     loadHub(() => {
       const all = tier1(), have = all.filter((p) => p.have).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
@@ -443,17 +456,24 @@
           <div class="prog"><b>${Math.round((have / all.length) * 100)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
         <div class="tools">
           <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a bio"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
-          <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}"><span class="count" id="hub-count"></span></div>
+          <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}">
+            <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
+            <span class="count" id="hub-count"></span></div>
         </div>
         <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
       const apply = () => {
         const q = HUB.q.toLowerCase();
         HUB.rows = all.filter((p) => (HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page)) && (!q || p.name.toLowerCase().includes(q)));
+        // The checklist is newest first; "with autographs first" keeps that order within each group.
+        const scanned = (p) => (p.have && bestScan(p.name) ? 0 : 1), yr = (p) => parseInt(p.year) || 0;
+        const by = { scans: (a, b) => scanned(a) - scanned(b), new: () => 0, old: (a, b) => yr(a) - yr(b), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
+        HUB.rows = HUB.rows.map((p, i) => [p, i]).sort((a, b) => by(a[0], b[0]) || a[1] - b[1]).map(([p]) => p);
         HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? "" : `<li class="empty">Nobody matches.</li>`;
         $("#hub-count").textContent = `${fmt(HUB.rows.length)} players`; hubMore();
       };
       $(".hub .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; HUB.show = b.dataset.show; document.querySelectorAll(".hub .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); apply(); });
       $("#hub-q").addEventListener("input", (e) => { HUB.q = e.target.value.trim(); apply(); });
+      $("#hub-sort").addEventListener("change", (e) => { HUB.sort = e.target.value; apply(); });
       apply(); hubIO.observe($("#hub-more"));
     });
   }
@@ -480,6 +500,7 @@
       if (!p && !row) return notFound();
       const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null;
       const football = (info.sport || "football") === "football";
+      setTitle(info.name);
       if (!football) setNav("checklist/" + (info.sport === "baseball" ? "mlb" : "nba"));
       const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "NFL Huskers Player Pages";
       const sport = info.sport || "football";
@@ -540,7 +561,7 @@
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
-          <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="this.classList.add('ok')"></button><small>${esc(hero.name)}</small>`
+          <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
@@ -566,7 +587,7 @@
     });
   }
 
-  function notFound() { $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
+  function notFound() { setTitle("Page not found"); $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
 
   /* ---------- Router ---------- */
   function route() {
