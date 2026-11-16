@@ -495,7 +495,7 @@
       count += rows.length; if (!rows.length) return "";
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
-        return `<tr class="${have ? "have" : "need"}"><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
+        return `<tr class="${have ? "have" : "need"}"${scans.length ? ` data-peek="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}"` : ""}><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
           ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) : esc(r[i])}</td>`).join("")}
           <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
@@ -503,7 +503,30 @@
     $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
     $("#ck-table").innerHTML = count ? `<table><thead><tr><th>Status</th>${shown.map((i) => `<th class="${opt(cols[i]).trim()}">${esc(label(cols[i]))}</th>`).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
   }
+  // Pause the mouse on a player's name or Scan button in an autograph list to see a small preview of the card.
+  const peek = document.createElement("div"); peek.className = "peek"; peek.hidden = true; document.body.appendChild(peek);
+  let peekTimer = null, peekRow = null;
+  const hidePeek = () => { clearTimeout(peekTimer); peekTimer = null; peekRow = null; peek.hidden = true; };
+  if (matchMedia("(hover: hover)").matches) {
+    document.addEventListener("mouseover", (e) => {
+      const t = e.target.closest("#ck-table .pl-link, #ck-table [data-scan]"), row = t && t.closest("tr[data-peek]");
+      if (!row) { if (peekRow && !e.target.closest(".peek")) hidePeek(); return; }
+      if (row === peekRow) return;
+      hidePeek(); peekRow = row;
+      peekTimer = setTimeout(() => {
+        const c = bestScan(row.dataset.peek, row.dataset.sport); if (!c || peekRow !== row) return;
+        peek.innerHTML = `<img alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><small>${esc(c.title || c.name)}</small>`;
+        const r = t.getBoundingClientRect(), w = 190, h = 300;
+        peek.style.left = Math.max(8, Math.min(r.right + 14, innerWidth - w - 8)) + "px";
+        peek.style.top = Math.max(8, Math.min(r.top + r.height / 2 - h / 2, innerHeight - h - 8)) + "px";
+        peek.hidden = false;
+      }, 350);
+    });
+    addEventListener("scroll", hidePeek, { passive: true });
+    addEventListener("hashchange", hidePeek);
+  }
   document.addEventListener("click", (e) => {
+    if (!peek.hidden) hidePeek();
     const b = e.target.closest("[data-scan]"); if (!b) return;
     const list = scansFor(b.dataset.scan, b.dataset.sport || "football"); if (list.length) openViewer(0, list);
   });
