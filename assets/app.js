@@ -189,7 +189,7 @@
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
         <div class="stat"><b>${fmt(autos)}</b><span>autographs</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
-        ${SECTIONS.filter((x) => x.progress).map((x) => `<div class="stat"><b>${x.progress}%</b><span>${esc(x.title)} Chase</span></div>`).join("")}
+        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${x.progress}%</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
       <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
