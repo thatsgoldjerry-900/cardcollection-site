@@ -58,11 +58,13 @@ def base_name(name):
 
 def main():
     cfg = json.load(open(CONFIG))
-    prev, old = {}, None
+    prev, prev_name, old = {}, {}, None
     if os.path.exists(OUT):
         try:
             old = json.load(open(OUT))
-            for c in old["cards"]: prev[c[0]] = c[5]
+            for c in old["cards"]:
+                prev[c[0]] = c[5]
+                prev_name[c[2].lower()] = c[5]   # card name without extension
         except Exception: pass
     today = date.today().isoformat()
     cards, sections = [], []
@@ -84,8 +86,11 @@ def main():
                 b, is_back = base_name(f["name"])
                 if is_back and b.lower() in fronts: continue        # shown with its front
                 back = backs.get(b.lower()) if not is_back else None
-                added = prev.get(f["id"]) or (f["mod"] if not prev else today)
-                cards.append([f["id"], f["rk"], b if not is_back else f["name"].rsplit(".", 1)[0], si, gi, added,
+                card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date
+                # (and isn't marked NEW). The extension may change, e.g. .png to .jpg.
+                added = prev.get(f["id"]) or prev_name.get(card_name.lower()) or (f["mod"] if not prev else today)
+                cards.append([f["id"], f["rk"], card_name, si, gi, added,
                               back["id"] if back else "", back["rk"] if back else ""])
                 n += 1
             groups.append({"slug": grp["slug"], "label": grp["label"], "count": n})
