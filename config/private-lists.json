@@ -1,12 +1,8 @@
 {
-  "_help": "Lists copied from private Excel masters in Google Drive. Only the columns named here are published. Each master must be shared (Viewer) with the site's service account.",
+  "_help": "Lists copied from private Excel masters in Google Drive. Only the columns named here are published. Each master must be shared (Viewer) with the site's service account. A list with no columns only checks that the robot can open the file.",
   "lists": [
-    {
-      "name": "husker-nfl",
-      "fileId": "PASTE_MASTER_FILE_ID",
-      "tab": "Main",
-      "headerRow": 1,
-      "columns": ["Player", "Status"]
-    }
+    { "name": "master-1", "fileId": "0B9zOOzkfqijNWU9qOEVOaXcyZlk", "tab": "", "headerRow": 1, "columns": [] },
+    { "name": "master-2", "fileId": "1qWGeseluNOJab5QU5tZaa2Zn0R-pVMqT", "tab": "", "headerRow": 1, "columns": [] },
+    { "name": "master-3", "fileId": "1_n5uK9ybaw6IQW7seP4185TqrSlhrCNS", "tab": "", "headerRow": 1, "columns": [] }
   ]
 }

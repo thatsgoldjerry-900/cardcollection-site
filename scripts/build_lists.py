@@ -22,8 +22,8 @@ def download(file_id, creds):
     r = requests.get(f"https://www.googleapis.com/drive/v3/files/{file_id}",
                      params={"alt": "media", "supportsAllDrives": "true"},
                      headers={"Authorization": f"Bearer {creds.token}"}, timeout=120)
-    if r.status_code == 404:
-        raise SystemExit(f"File {file_id} not found. Is it shared (Viewer) with the service account?")
+    if r.status_code in (403, 404):
+        raise SystemExit(f"File {file_id}: no access (HTTP {r.status_code}). Is it shared (Viewer) with the service account?")
     r.raise_for_status()
     return r.content
 
@@ -77,6 +77,11 @@ def main():
         else:
             if spec["fileId"] not in cache: cache[spec["fileId"]] = download(spec["fileId"], creds)
             data = cache[spec["fileId"]]
+        if not spec.get("columns"):
+            # Access check only: confirm the file opens. Report counts, never names or values.
+            wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+            print(f'Access check "{spec["name"]}": opened OK, {len(wb.sheetnames)} tab(s). No columns chosen yet, nothing published.')
+            continue
         result = extract(data, spec)
         path = os.path.join(OUT_DIR, spec["name"] + ".json")
         old = open(path).read() if os.path.exists(path) else None
