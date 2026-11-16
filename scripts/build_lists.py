@@ -110,9 +110,35 @@ def extract_side_by_side(xlsx_bytes, spec):
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}
 
 
+def fmt_cell(c):
+    """A cell's value the way Excel shows it, for the common cases: percentages and whole numbers."""
+    v = c.value
+    if v is None: return ""
+    if isinstance(v, (int, float)) and "%" in (c.number_format or ""):
+        places = len(c.number_format.split(".")[1].split("%")[0]) if "." in c.number_format else 0
+        return f"{v * 100:.{places}f}%"
+    if isinstance(v, (int, float)) and "," in (c.number_format or "") and float(v).is_integer(): return f"{int(v):,}"
+    return cell_text(v)
+
+
+def extract_ranges(xlsx_bytes, spec):
+    """Small blocks of cells from one tab, e.g. a summary table at K2:L8. Only those cells are published."""
+    wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=True)
+    ws = wb[spec["tab"]]
+    out = {}
+    for key, ref in spec["ranges"].items():
+        rows = [[fmt_cell(c) for c in r] for r in ws[ref]]
+        out[key] = [r for r in rows if any(r)]
+    return {"tables": out}
+
+
+def has_tab(xlsx_bytes, tab):
+    return tab in openpyxl.load_workbook(io.BytesIO(xlsx_bytes), read_only=True).sheetnames
+
+
 def main():
     cfg = json.load(open(CONFIG))
-    lists = [l for l in cfg["lists"] if not l["fileId"].startswith("PASTE_") and l.get("enabled", True)]
+    lists = [l for l in cfg["lists"] if not (l.get("fileId") or "").startswith("PASTE_") and l.get("enabled", True)]
     local = sys.argv[2] if len(sys.argv) > 2 and sys.argv[1] == "--local" else None
     if not lists:
         print("No private lists configured yet; skipping."); return
@@ -129,21 +155,33 @@ def main():
     for spec in lists:
         if local:
             data = open(local, "rb").read()
+        elif spec.get("fileIds"):
+            # Several candidate files: use the first that has the tab. Only its position is logged.
+            data = None
+            for k, fid in enumerate(spec["fileIds"]):
+                if fid not in cache: cache[fid] = download(fid, creds)
+                if has_tab(cache[fid], spec["tab"]):
+                    data = cache[fid]; print(f'List "{spec["name"]}": using candidate file {k + 1} of {len(spec["fileIds"])}.'); break
+            if data is None:
+                raise SystemExit(f'List "{spec["name"]}": none of its files has a tab named "{spec["tab"]}".')
         else:
             if spec["fileId"] not in cache: cache[spec["fileId"]] = download(spec["fileId"], creds)
             data = cache[spec["fileId"]]
-        if not spec.get("columns") and spec.get("layout") != "side-by-side":
+        if not spec.get("columns") and spec.get("layout") not in ("side-by-side", "ranges"):
             # Access check only: confirm the file opens. Report counts, never names or values.
             wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
             print(f'Access check "{spec["name"]}": opened OK, {len(wb.sheetnames)} tab(s). No columns chosen yet, nothing published.')
             continue
-        result = extract_side_by_side(data, spec) if spec.get("layout") == "side-by-side" else extract(data, spec)
+        result = (extract_side_by_side(data, spec) if spec.get("layout") == "side-by-side"
+                  else extract_ranges(data, spec) if spec.get("layout") == "ranges" else extract(data, spec))
         path = os.path.join(OUT_DIR, spec["name"] + ".json")
         old = open(path).read() if os.path.exists(path) else None
         new = json.dumps(result, ensure_ascii=False, indent=0)
         if new != old:
             open(path, "w").write(new)
-        if "lists" in result:
+        if "tables" in result:
+            print(f'List "{spec["name"]}": {len(result["tables"])} tables, {sum(len(t) for t in result["tables"].values())} rows.')
+        elif "lists" in result:
             n = sum(len(g["rows"]) for l in result["lists"] for g in l["groups"])
             print(f'List "{spec["name"]}": {len(result["lists"])} lists, {n} rows.')
         else:

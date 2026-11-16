@@ -10,7 +10,7 @@
   const driveUrl = (id, rk) => `https://drive.google.com/file/d/${id}/view${rk ? `?resourcekey=${rk}` : ""}`;
 
   let DATA, CARDS, SECTIONS, NEW_CUTOFF;
-  let PHOTOS = [];
+  let PHOTOS = [], INV = {};
 
   /* ---------- File-name parsing ---------- */
   const RX = {
@@ -71,6 +71,12 @@
       // "Jerald Foster with his custom card" → "Jerald Foster" on the strip; the full caption shows when opened.
       return { photo: true, id, rk, name, added, caption, short: short.replace(/\s+with (?:his|her|their)\b.*$/i, "") || short };
     });
+    // A collection's progress comes from its live "Have %" when the robot has published one.
+    SECTIONS.forEach((sec) => {
+      const have = (INV[sec.slug] || []).find((r) => /^have\s*%$/i.test(r[0]));
+      const n = have && parseFloat(String(have[1]).replace(/[^\d.]/g, ""));
+      if (n >= 0 && n <= 100) { sec.progress = n; sec.progressText = String(have[1]).trim(); }
+    });
     const dates = [...new Set(CARDS.map((c) => c.added))].sort().reverse();
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
     const d30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
@@ -112,6 +118,18 @@
     return `<button class="cd" type="button" data-i="${c.i}" aria-label="${esc(c.name)}">
       <div class="ph"><img loading="lazy" decoding="async" alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><div class="badges">${badges(c)}</div></div>
       <div class="cap"><b>${hl(c.title, q)}</b>${hl(c.sub, q)}${c.par ? `<br><span class="par">${hl(c.par, q)}</span>` : ""}</div></button>`;
+  }
+  const pctText = (sec) => sec.progressText || sec.progress + "%";
+  // The live summary table for a collection, laid out like the Inventory Stats master:
+  // a header row, then what's collected, then what's left (from "Left to Collect" on).
+  function invBox(slug) {
+    const rows = INV[slug]; if (!rows || rows.length < 2) return "";
+    const [head, ...body] = rows, cut = body.findIndex((r) => /^left to collect/i.test(r[0]));
+    const part = (list, cls) => list.length ? `<tbody class="${cls}">${list.map((r) => `<tr class="${/%$/.test(r[1]) || /^left to collect/i.test(r[0]) ? "key" : ""}"><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</tbody>` : "";
+    return `<aside class="inv" aria-label="Collection stats"><table>
+      <thead><tr><th>${esc(head[0])}</th><th>${esc(head[1] || "")}</th></tr></thead>
+      ${part(cut < 0 ? body : body.slice(0, cut), "got")}${cut < 0 ? "" : part(body.slice(cut), "left")}</table>
+      <small>Live from my inventory spreadsheet</small></aside>`;
   }
   function sectionCards(si) { return CARDS.filter((c) => c.si === si); }
   // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
@@ -195,7 +213,7 @@
         <div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <h3>${esc(sec.title)}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
-        <div class="tm"><span>${fmt(list.length)} cards</span><span>${sec.progress ? sec.progress + "% complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
+        <div class="tm"><span>${fmt(list.length)} cards</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
     }).join("");
     function customsTile() {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
       const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
@@ -216,7 +234,7 @@
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
-        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${x.progress}%</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
+        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
       <div class="band">
@@ -252,7 +270,7 @@
       groups = sec.groups;
       gi = groups.findIndex((g) => g.slug === gslug);
       if (gi >= 0) base = base.filter((c) => c.gi === gi);
-      if (sec.progress) prog = `<div class="prog"><b>${sec.progress}%</b><div class="bar"><i style="width:${sec.progress}%"></i></div><small>${esc(sec.progressLabel || "complete")}</small></div>`;
+      if (sec.progress) prog = `<div class="prog"><b>${pctText(sec)}</b><div class="bar"><i style="width:${sec.progress}%"></i></div><small>${esc(sec.progressLabel || "complete")}</small></div>`;
       // Links to pages on this site open in place (→); outside links open a new tab (↗).
       blurb = esc(blurb) + (sec.extraLinks || []).map((l) => l.url.startsWith("#")
         ? ` <a href="${esc(l.url)}" style="color:var(--acc)">${esc(l.label)} →</a>`
@@ -274,7 +292,7 @@
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
       <aside class="side">${side}${others}</aside>
       <div style="min-width:0">
-        <div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>
+        <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}</div>
         ${mg}
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
@@ -764,6 +782,9 @@
   $("#viewer").addEventListener("click", (e) => { if (e.target.id === "v-stage" || e.target.id === "viewer") closeViewer(); });
 
   /* ---------- Boot ---------- */
-  if (window.CATALOG) load(window.CATALOG);
-  else fetch("data/catalog.json").then((r) => r.json()).then(load).catch(() => ($("#app").innerHTML = `<p class="empty">The card list didn't load. Refresh the page to try again.</p>`));
+  // The live Gordon and Dye numbers from the Inventory Stats master (published by the robot) load alongside the cards.
+  const statsReady = fetch("data/lists/inventory-stats.json").then((r) => (r.ok ? r.json() : null)).catch(() => null).then((d) => (INV = (d && d.tables) || {}));
+  if (window.CATALOG) statsReady.then(() => load(window.CATALOG));
+  else Promise.all([fetch("data/catalog.json").then((r) => r.json()), statsReady]).then(([cat]) => load(cat))
+    .catch(() => ($("#app").innerHTML = `<p class="empty">The card list didn't load. Refresh the page to try again.</p>`));
 })();

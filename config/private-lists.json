@@ -18,6 +18,20 @@
       ]
     },
     {
+      "name": "inventory-stats",
+      "fileIds": [
+        "1qWGeseluNOJab5QU5tZaa2Zn0R-pVMqT",
+        "1_n5uK9ybaw6IQW7seP4185TqrSlhrCNS"
+      ],
+      "tab": "Live View",
+      "layout": "ranges",
+      "ranges": {
+        "alex-gordon": "K2:L8",
+        "jermaine-dye": "K10:L16"
+      },
+      "_note": "Only these two summary tables from Inventory Stats are published."
+    },
+    {
       "name": "master-2",
       "fileId": "1qWGeseluNOJab5QU5tZaa2Zn0R-pVMqT",
       "tab": "",
