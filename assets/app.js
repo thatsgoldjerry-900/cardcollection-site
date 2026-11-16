@@ -399,7 +399,7 @@
   }
   // One page per published list. #/checklist (no suffix) stays the NFL page so old links keep working.
   const CK_PAGES = [
-    { path: "", slug: "nfl-tier-1-huskers", label: "NFL Huskers Autograph List", blurb: "One autograph of every Husker who played in at least one NFL game." },
+    { path: "", slug: "nfl-tier-1-huskers", label: "NFL Tier 1 Huskers Autograph List", blurb: "One autograph of every Husker who played in at least one NFL game." },
     { path: "/tier-2", slug: "nfl-tier-2-huskers", label: "NFL Tier 2 Huskers Autograph List", blurb: "One autograph of every Husker who made an NFL active roster, preseason roster, injured reserve or practice squad without playing in a game." },
     { path: "/tier-3", slug: "pro-football-huskers", label: "NFL Tier 3 Huskers Autograph List", blurb: "One autograph of every Husker who was drafted by, went to camp with or tried out for an NFL team, or played in another pro league." },
     { path: "/mlb", slug: "baseball-mlb", label: "MLB Huskers Autograph List", blurb: "One autograph of every Husker who played in the major leagues." },
