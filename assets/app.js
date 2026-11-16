@@ -411,14 +411,22 @@
     const pct = n ? (y / n) * 100 : 0;
     const typeRows = Object.entries(types).sort((a, b) => b[1] - a[1]);
     const tmax = typeRows.length ? typeRows[0][1] : 1;
+    // MLB and NBA pages: three autographed cards from players on the list, picked at random each visit.
+    const sport = SPORT_OF_LIST[l.slug], showcase = [];
+    if (page.path) {
+      const pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
+        .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !/\(back\)/i.test(c.name))).filter((x) => x.length);
+      while (showcase.length < 3 && pool.length) { const k = Math.floor(Math.random() * pool.length), list = pool.splice(k, 1)[0]; showcase.push(list[Math.floor(Math.random() * list.length)]); }
+    }
     $("#app").innerHTML = `<div class="wrap ck c-husker">
-      <div class="c-head">
+      <div class="${showcase.length ? "ck-top" : ""}"><div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
         <h1>${esc(page.label)}</h1>
         ${page.path === "" && DATA.site.nflListStory ? `<div class="story short">${DATA.site.nflListStory.map((t) => `<p>${esc(t)}</p>`).join("")}<button type="button" class="story-more" onclick="this.parentNode.classList.remove('short')">Read the full story</button></div>` : ""}
         <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${Math.round(pct)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
-      </div>
+      </div>${showcase.length ? `<div class="ck-fan" aria-label="Autographs from this list">${showcase.map((c) => `<button type="button" class="cd" data-i="${c.i}" aria-label="${esc(c.name)}">
+        <img alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"></button>`).join("")}</div>` : ""}</div>
       <nav class="ck-others" aria-label="Other autograph lists">${CK_PAGES.filter((x) => x !== page && CHECK.lists.some((m) => m.slug === x.slug)).map((x) => `<a href="#/checklist${x.path}">${esc(x.label)} →</a>`).join("")}</nav>
       <div class="ck-body${typeRows.length ? "" : " solo"}">
         <div style="min-width:0">
@@ -432,6 +440,7 @@
       </div></div>`;
     $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
     $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
+    state.list = showcase;
     table();
   }
   function table() {

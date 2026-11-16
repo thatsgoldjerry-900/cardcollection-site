@@ -360,3 +360,15 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (max-width:980px){.c-top.with-inv{grid-template-columns:1fr}.inv{max-width:420px}}
 .prog{flex-wrap:wrap}.prog .bar{min-width:120px}
 @media (max-width:640px){.prog small{flex-basis:100%}}
+/* MLB/NBA autograph lists: three autographs fanned out beside the heading */
+.ck-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;align-items:center;margin-bottom:20px}
+.ck-top .c-head{margin-bottom:0}
+.ck-fan{display:flex;align-items:center;padding:10px 26px 10px 10px}
+.ck-fan .cd{width:150px;flex:none;margin-left:-34px;border-radius:7px;overflow:hidden;background:var(--panel);box-shadow:0 0 0 1px var(--line),0 18px 30px -14px rgba(0,0,0,.95);transition:transform .25s}
+.ck-fan .cd:first-child{margin-left:0;transform:rotate(-6deg) translateY(6px)}
+.ck-fan .cd:nth-child(2){transform:translateY(-8px);z-index:1}
+.ck-fan .cd:nth-child(3){transform:rotate(6deg) translateY(6px)}
+.ck-fan .cd:hover{transform:translateY(-14px) rotate(0);z-index:2}
+.ck-fan img{width:100%;aspect-ratio:5/7;object-fit:contain;opacity:0;transition:opacity .3s}
+.ck-fan img.ok{opacity:1}
+@media (max-width:900px){.ck-top{grid-template-columns:1fr}.ck-fan{justify-content:center;padding:0 0 0 34px}.ck-fan .cd{width:min(27vw,112px)}}
