@@ -63,6 +63,11 @@
       const [id, rk, name, si, gi, added, backId, backRk] = c;
       const p = parse(name);
       if (backId) p.tags.add("back");
+      // Hand corrections from config/site.json "tagFixes", e.g. {"auto": {"add": [card names], "remove": [card names]}}.
+      for (const [tag, fix] of Object.entries(json.site.tagFixes || {})) {
+        if ((fix.add || []).includes(name)) p.tags.add(tag);
+        if ((fix.remove || []).includes(name)) p.tags.delete(tag);
+      }
       return { i, id, rk, name, si, gi, added, backId, backRk, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
     });
     // Photos of athletes with my custom cards. The file name is the caption; the part before the first

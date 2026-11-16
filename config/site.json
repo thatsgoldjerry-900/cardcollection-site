@@ -394,5 +394,14 @@
         "start": 85
       }
     ]
+  },
+  "tagFixes": {
+    "_help": "Correct a tag the file name gets wrong. List card names exactly as shown in the viewer's grey file-name line, without the file extension.",
+    "auto": {
+      "add": [
+        "1994 Signature Rookies #41 Michael Tucker #'d to 8650"
+      ],
+      "remove": []
+    }
   }
 }
