@@ -18,7 +18,7 @@
     serial: /#'?d\s*(?:to\s*)?(\d+)\s*(?:of\s*(\d+))?|print run of\s*(\d+)|\b(\d+)\s+of\s+(\d+)\b/i,
     grade: /\b(PSA|BGS|SGC|CGC|BVG|HGA)\b(?:\s+(?:DNA|GEM MT|GEM MINT|MINT|NM-MT|AUTH(?:ENTIC)?))*(?:\s+(\d+(?:\.\d)?))?/i,
     auto: /\b(auto(?:graph)?s?|autographed|signed|signatures?|sigs?|ink)\b/i,
-    relic: /\b(relics?|patch(?:es)?|jerseys?|bat|materials?|buttons?|nameplates?|dirt|swatch|game[- ]used|threads|glove|logo(?:man)?|laundry|tag|letter|memorabilia|rpm|jumbo)\b/i,
+    relic: /\b(fabrics?|ball hoggs|souvenirs|tools of the trade|leather and laces|relics?|patch(?:es)?|jerseys?|bat|materials?|buttons?|nameplates?|dirt|swatch|game[- ]used|threads|glove|logo(?:man)?|laundry|tag|letter|memorabilia|rpm|jumbo)\b/i,
     custom: /\bcustom\b/i,
     rc: /\b(RC|rookie)\b/i,
   };
@@ -37,7 +37,12 @@
     let autoName = name.replace(/^(\d{4}(?:-\d{2})?\s+)Signature Rookies\b/i, "$1").replace(/\bauto\s*phonex\b/i, "");
     if (/\bchoice\b/i.test(autoName)) autoName = autoName.replace(/\b(?:gold|silver)\s+signatures?\b/gi, "");
     if (RX.auto.test(autoName)) out.tags.add("auto");
-    if (RX.relic.test(name)) out.tags.add("relic");
+    // Brand names that sound like relics but aren't (Absolute Memorabilia, Certified Materials, Throwback Threads,
+    // Alternate Threads, SP Game Used): their real relics also say Materials, Fabric, Jersey, Patch and so on.
+    // On photo variations (VAR), "Blue Jersey" or "Logo" describes the picture, not a swatch.
+    let relicName = name.replace(/\b(?:(?:playoff\s+)?absolute\s+memorabilia|(?:leaf\s+)?certified\s+materials|throwback\s+threads|alternate\s+threads|sp\s+game\s+used(?:\s+(?:patch|edition))?)\b/gi, "");
+    if (/\bVAR\b/.test(relicName)) relicName = relicName.replace(/\b(?:jerseys?|logo)\b/gi, "");
+    if (RX.relic.test(relicName)) out.tags.add("relic");
     if (RX.custom.test(name)) out.tags.add("custom");
     if (RX.rc.test(name)) out.tags.add("rc");
     if (out.serial) out.tags.add("numbered");
