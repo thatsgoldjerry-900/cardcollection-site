@@ -111,17 +111,42 @@
   /* ---------- Views ---------- */
   function renderNav() {
     $("#nav").innerHTML = SECTIONS.filter(shown).map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
-    // Show the checklist link only once its data has been published.
+    // The Husker autograph pages sit under one dropdown, shown once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}">${x.label}</a>`).join("")}<a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
+      if (!r.ok || $("#dd-btn")) return;
+      $("#nav").insertAdjacentHTML("beforeend", `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Husker Autographs <span aria-hidden="true">▾</span></button>`);
+      document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>
+        ${CK_PAGES.map((x) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}">${x.label}</a>`).join("")}
+        <a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers player pages</a></div>`);
+      $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
+      setNav(NAV_NOW);
     }).catch(() => {});
   }
+  function openDD() {
+    const b = $("#dd-btn").getBoundingClientRect(), m = $("#dd-menu");
+    m.hidden = false;
+    const w = m.offsetWidth;
+    m.style.top = b.bottom + 6 + "px";
+    m.style.left = Math.max(12, Math.min(b.left, innerWidth - w - 12)) + "px";
+    $("#dd-btn").setAttribute("aria-expanded", "true");
+  }
+  function closeDD() {
+    const m = $("#dd-menu"); if (!m || m.hidden) return;
+    m.hidden = true; $("#dd-btn").setAttribute("aria-expanded", "false");
+  }
+  document.addEventListener("click", (e) => { if (!e.target.closest("#dd-menu")) closeDD(); else if (e.target.closest("a")) closeDD(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#dd-menu") && !$("#dd-menu").hidden) { closeDD(); $("#dd-btn").focus(); } });
+  addEventListener("scroll", closeDD, { passive: true }); addEventListener("resize", closeDD);
+  $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
     $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? Email <span class="email">${esc(s.email)}</span></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
   }
+  let NAV_NOW = null;
   function setNav(slug) {
-    document.querySelectorAll("#nav a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+    NAV_NOW = slug;
+    document.querySelectorAll("#nav a, #dd-menu a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+    const dd = $("#dd-btn"); if (dd) dd.classList.toggle("on", !!$("#dd-menu a[aria-current]"));
   }
 
   function home() {
