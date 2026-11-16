@@ -601,7 +601,7 @@
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
-        <div class="hub-info">${nm}<div class="hub-meta">Final Nebraska season ${esc(p.year)}${p.games ? ` · ${esc(p.games)} NFL games` : ""}${p.notes ? ` · ${esc(p.notes)}` : ""}</div>
+        <div class="hub-info">${nm}<div class="hub-meta">Final Nebraska season ${esc(p.year)}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.notes ? ` · ${esc(p.notes)}` : ""}</div>
           <div class="hub-meta2"><span class="st ${p.have ? "have" : "need"}">${p.have ? "Have" : "Need"}</span>${p.have && p.signed ? `<span>Signed ${esc(p.signed.toLowerCase())}</span>` : ""}</div></div></li>`;
     }).join(""));
   }
