@@ -380,7 +380,12 @@
   ],
   "customsPhotos": {
     "_help": "Photos of athletes with custom cards I made for them, shown in a rotating strip on the Customs page. Put them in a Drive folder named 'Customs - With the Players' (inside the parent folder once it is switched on, or list its [id, resourcekey] under folders until then). The file name is the caption; the text before the first period is the short label on the strip. To replace an awkward file name, add it to captions: {\"file name without extension\": \"Caption to show\"}.",
-    "folders": [],
+    "folders": [
+      [
+        "1eSIXCWr-eKz9eYCXMKZlPv2K-pv_RYb-",
+        ""
+      ]
+    ],
     "captions": {},
     "videos": [
       {

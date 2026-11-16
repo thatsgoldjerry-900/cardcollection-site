@@ -68,7 +68,8 @@
     PHOTOS = (json.photos || []).map(([id, rk, name, added]) => {
       const caption = (caps[name] || name).trim();
       const short = caption.split(/\s+[-–—]\s+|(?<!\b(?:Jr|Sr|St|Dr|Mr|Mrs|No|vs|Jan|Feb|Aug|Sept|Oct|Nov|Dec))[.!?]\s+/)[0].replace(/[.!?]$/, "");
-      return { photo: true, id, rk, name, added, caption, short: short.length > 60 ? short.slice(0, 57) + "…" : short };
+      // "Jerald Foster with his custom card" → "Jerald Foster" on the strip; the full caption shows when opened.
+      return { photo: true, id, rk, name, added, caption, short: short.replace(/\s+with (?:his|her|their)\b.*$/i, "") || short };
     });
     const dates = [...new Set(CARDS.map((c) => c.added))].sort().reverse();
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
@@ -299,7 +300,7 @@
   function withPlayers() {
     const cfg = DATA.site.customsPhotos || {}, vids = (cfg.videos || []).filter((v) => v.id);
     const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
-      <img loading="lazy" decoding="async" alt="" src="${img(p.id, p.rk, 700)}" onload="this.classList.add('ok')"><span>${esc(p.short)}</span></button>`;
+      <img loading="lazy" decoding="async" alt="" src="${img(p.id, p.rk, 700)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
     const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2>
       <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(40, PHOTOS.length * 9)}s">
         ${PHOTOS.map(tile).join("")}<div class="mq-dup" aria-hidden="true">${PHOTOS.map(tile).join("")}</div></div></section>` : "";
