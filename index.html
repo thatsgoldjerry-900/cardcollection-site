@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IanBadeer.com</title>
+<meta name="description" content="Thousands of high-resolution scans from Ian Badeer's Alex Gordon, Jermaine Dye, Royals and Nebraska Cornhuskers card collections.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://lh3.googleusercontent.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#/">Ian<span>Badeer</span></a>
+    <nav class="nav" id="nav" aria-label="Collections"></nav>
+    <form class="search" id="search-form" role="search">
+      <label for="q" class="sr">Search every card</label>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search 9,000+ cards… try “Triple Threads”" autocomplete="off">
+      <kbd>/</kbd>
+    </form>
+  </div>
+</header>
+<main id="app" tabindex="-1"><p class="loading">Loading the collection…</p></main>
+<footer class="foot" id="foot"></footer>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Card viewer">
+  <div class="v-bar">
+    <div class="v-title" id="v-title"></div>
+    <div class="v-actions">
+      <button type="button" id="v-flip" class="btn" hidden>Show back</button>
+      <button type="button" id="v-copy" class="btn">Copy link</button>
+      <a id="v-drive" class="btn" target="_blank" rel="noopener">Full-res in Drive ↗</a>
+      <button type="button" id="v-close" class="btn icon" aria-label="Close">✕</button>
+    </div>
+  </div>
+  <button type="button" class="v-nav prev" id="v-prev" aria-label="Previous card">‹</button>
+  <div class="v-stage" id="v-stage"><img id="v-img" alt=""></div>
+  <button type="button" class="v-nav next" id="v-next" aria-label="Next card">›</button>
+  <div class="v-meta" id="v-meta"></div>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
