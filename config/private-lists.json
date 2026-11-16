@@ -1,8 +1,28 @@
 {
-  "_help": "Lists copied from private Excel masters in Google Drive. Only the columns named here are published. Each master must be shared (Viewer) with the site's service account. A list with no columns only checks that the robot can open the file.",
+  "_help": "Lists copied from private Excel masters in Google Drive. Only what's described here is published. Each master must be shared (Viewer) with the site's service account. A list with no columns and no layout only checks that the robot can open the file. Set \"enabled\": false to keep a list from being fetched or published.",
   "lists": [
-    { "name": "master-1", "fileId": "0B9zOOzkfqijNWU9qOEVOaXcyZlk", "tab": "", "headerRow": 1, "columns": [] },
-    { "name": "master-2", "fileId": "1qWGeseluNOJab5QU5tZaa2Zn0R-pVMqT", "tab": "", "headerRow": 1, "columns": [] },
-    { "name": "master-3", "fileId": "1_n5uK9ybaw6IQW7seP4185TqrSlhrCNS", "tab": "", "headerRow": 1, "columns": [] }
+    {
+      "name": "husker-pros",
+      "fileId": "0B9zOOzkfqijNWU9qOEVOaXcyZlk",
+      "tab": "Main",
+      "layout": "side-by-side",
+      "titleRow": 12,
+      "headerRow": 13,
+      "enabled": false
+    },
+    {
+      "name": "master-2",
+      "fileId": "1qWGeseluNOJab5QU5tZaa2Zn0R-pVMqT",
+      "tab": "",
+      "headerRow": 1,
+      "columns": []
+    },
+    {
+      "name": "master-3",
+      "fileId": "1_n5uK9ybaw6IQW7seP4185TqrSlhrCNS",
+      "tab": "",
+      "headerRow": 1,
+      "columns": []
+    }
   ]
 }

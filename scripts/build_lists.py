@@ -55,9 +55,48 @@ def extract(xlsx_bytes, spec):
     return {"columns": spec["columns"], "rows": out}
 
 
+def extract_side_by_side(xlsx_bytes, spec):
+    """Several lists laid out side by side: list titles on titleRow, column titles on headerRow.
+    Each list ends at its first blank row; a row with only a name is a subheading."""
+    import re
+    from datetime import date
+    wb = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), read_only=True, data_only=True)
+    if spec["tab"] not in wb.sheetnames:
+        raise SystemExit(f'List "{spec["name"]}": the master has no tab named "{spec["tab"]}".')
+    rows = [[cell_text(v) for v in r] for r in wb[spec["tab"]].iter_rows(values_only=True)]
+    titles, headers = rows[spec["titleRow"] - 1], rows[spec["headerRow"] - 1]
+    width = max(len(titles), len(headers))
+    titles += [""] * (width - len(titles)); headers += [""] * (width - len(headers))
+    starts = [i for i, t in enumerate(titles) if t]
+    skip = set(spec.get("skipColumns", []))
+    lists = []
+    for k, s0 in enumerate(starts):
+        end = starts[k + 1] if k + 1 < len(starts) else width
+        cols = [i for i in range(s0, end) if headers[i] and headers[i] not in skip]
+        if not cols: continue
+        full = titles[s0]
+        m = re.match(r"^(.*?)\s*\((.*)\)\s*$", full)
+        title, sub = (m.group(1), m.group(2)) if m else (full, "")
+        groups, cur = [], {"title": "", "rows": []}
+        for r in rows[spec["headerRow"]:]:
+            vals = [r[i] if i < len(r) else "" for i in cols]
+            if not vals[0]:
+                if cur["rows"] or groups: break      # first blank row ends the list
+                continue
+            if not any(vals[1:]):                    # only a name: a subheading
+                groups.append(cur); cur = {"title": vals[0], "rows": []}; continue
+            cur["rows"].append(vals)
+        groups.append(cur)
+        groups = [g for g in groups if g["rows"]]
+        slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+        lists.append({"slug": slug, "title": title, "subtitle": sub,
+                      "columns": [headers[i] for i in cols], "groups": groups})
+    return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}
+
+
 def main():
     cfg = json.load(open(CONFIG))
-    lists = [l for l in cfg["lists"] if not l["fileId"].startswith("PASTE_")]
+    lists = [l for l in cfg["lists"] if not l["fileId"].startswith("PASTE_") and l.get("enabled", True)]
     local = sys.argv[2] if len(sys.argv) > 2 and sys.argv[1] == "--local" else None
     if not lists:
         print("No private lists configured yet; skipping."); return
@@ -82,13 +121,17 @@ def main():
             wb = openpyxl.load_workbook(io.BytesIO(data), read_only=True, data_only=True)
             print(f'Access check "{spec["name"]}": opened OK, {len(wb.sheetnames)} tab(s). No columns chosen yet, nothing published.')
             continue
-        result = extract(data, spec)
+        result = extract_side_by_side(data, spec) if spec.get("layout") == "side-by-side" else extract(data, spec)
         path = os.path.join(OUT_DIR, spec["name"] + ".json")
         old = open(path).read() if os.path.exists(path) else None
         new = json.dumps(result, ensure_ascii=False, indent=0)
         if new != old:
             open(path, "w").write(new)
-        print(f'List "{spec["name"]}": {len(result["rows"])} rows, {len(result["columns"])} columns.')
+        if "lists" in result:
+            n = sum(len(g["rows"]) for l in result["lists"] for g in l["groups"])
+            print(f'List "{spec["name"]}": {len(result["lists"])} lists, {n} rows.')
+        else:
+            print(f'List "{spec["name"]}": {len(result["rows"])} rows, {len(result["columns"])} columns.')
 
 
 if __name__ == "__main__":

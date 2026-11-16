@@ -109,6 +109,10 @@
   /* ---------- Views ---------- */
   function renderNav() {
     $("#nav").innerHTML = SECTIONS.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
+    // Show the checklist link only once its data has been published.
+    fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
+      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">Husker Checklist</a>`);
+    }).catch(() => {});
   }
   function renderFoot() {
     const s = DATA.site;
@@ -222,6 +226,90 @@
   }
   const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && state.shown < state.list.length && more()), { rootMargin: "1200px" });
 
+  /* ---------- Husker checklist (from the private master, published columns only) ---------- */
+  let CHECK = null;
+  const CK = { list: 0, q: "", show: "all" };
+  const norm = (t) => String(t).toLowerCase().replace(/"[^"]*"/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+  let scanIndex = null;
+  function scansFor(name) {
+    if (!scanIndex) {
+      const want = new Set(SECTIONS.map((s, i) => (/husker/i.test(s.slug) ? i : -1)).filter((i) => i >= 0));
+      scanIndex = CARDS.filter((c) => want.has(c.si)).map((c) => [" " + norm(c.name) + " ", c]);
+    }
+    const n = norm(name); if (n.split(" ").length < 2) return [];
+    return scanIndex.filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
+  }
+  function checklist() {
+    setNav("checklist");
+    if (!CHECK) {
+      $("#app").innerHTML = `<p class="loading">Loading the checklist…</p>`;
+      fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); })
+        .then((d) => { CHECK = d; checklist(); })
+        .catch(() => ($("#app").innerHTML = `<p class="empty">The checklist isn't available yet.</p>`));
+      return;
+    }
+    const L = CHECK.lists;
+    const stat = (l) => {
+      const ai = l.columns.indexOf("Autograph"); let n = 0, y = 0;
+      l.groups.forEach((g) => g.rows.forEach((r) => { n++; if (r[ai] === "Yes") y++; }));
+      return { n, y, pct: n ? Math.round((y / n) * 100) : 0 };
+    };
+    const stats = L.map(stat);
+    const tot = stats.reduce((a, s) => ({ n: a.n + s.n, y: a.y + s.y }), { n: 0, y: 0 });
+    const types = {};
+    L.forEach((l) => { const si = l.columns.indexOf("Signed"); if (si < 0) return; l.groups.forEach((g) => g.rows.forEach((r) => { if (r[si]) types[r[si]] = (types[r[si]] || 0) + 1; })); });
+    const typeRows = Object.entries(types).sort((a, b) => b[1] - a[1]);
+    const tmax = typeRows.length ? typeRows[0][1] : 1;
+    $("#app").innerHTML = `<div class="wrap ck c-husker">
+      <div class="c-head">
+        <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
+        <h1>${esc(CHECK.title)}</h1>
+        <p>One autograph of every Husker who went pro, and then some. Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
+        <div class="prog"><b>${Math.round((tot.y / tot.n) * 100)}%</b><div class="bar"><i style="width:${(tot.y / tot.n) * 100}%"></i></div><small>${fmt(tot.y)} of ${fmt(tot.n)} signed</small></div>
+      </div>
+      <div class="ck-cats" role="tablist">${L.map((l, k) => `<button type="button" class="ck-cat" role="tab" aria-selected="${k === CK.list}" data-k="${k}">
+        <b>${esc(l.title.replace(/ Huskers$/, ""))}</b><span class="sub">${esc(l.subtitle || "")}</span>
+        <div class="bar"><i style="width:${stats[k].pct}%"></i></div>
+        <span class="num">${fmt(stats[k].y)} / ${fmt(stats[k].n)} · ${stats[k].pct}%</span></button>`).join("")}</div>
+      <div class="ck-body">
+        <div style="min-width:0">
+          <div class="tools">
+            <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${CK.show === k}">${t}</button>`).join("")}</div>
+            <div class="tools-r"><label class="sr" for="ck-q">Search this list</label><input id="ck-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(CK.q)}"><span class="count" id="ck-count"></span></div>
+          </div>
+          <div class="ck-table" id="ck-table"></div>
+        </div>
+        <aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>
+      </div></div>`;
+    $(".ck-cats").addEventListener("click", (e) => { const b = e.target.closest(".ck-cat"); if (!b) return; CK.list = +b.dataset.k; document.querySelectorAll(".ck-cat").forEach((x) => x.setAttribute("aria-selected", x === b)); table(); });
+    $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
+    $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
+    table();
+  }
+  function table() {
+    const l = CHECK.lists[CK.list], cols = l.columns, ai = cols.indexOf("Autograph");
+    const shown = cols.map((c, i) => i).filter((i) => i !== ai);
+    const opt = (c) => /notes|games|role/i.test(c) ? " opt" : "";
+    const label = (c) => (c === "Signed" ? "Signed on" : c);
+    const q = CK.q.toLowerCase(); let count = 0;
+    const body = l.groups.map((g) => {
+      const rows = g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q)));
+      count += rows.length; if (!rows.length) return "";
+      return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
+        const have = r[ai] === "Yes", scans = have ? scansFor(r[0]) : [];
+        return `<tr class="${have ? "have" : "need"}"><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
+          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? hl(r[i], CK.q) : esc(r[i])}</td>`).join("")}
+          <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
+      }).join("");
+    }).join("");
+    $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
+    $("#ck-table").innerHTML = count ? `<table><thead><tr><th>Status</th>${shown.map((i) => `<th class="${opt(cols[i]).trim()}">${esc(label(cols[i]))}</th>`).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-scan]"); if (!b) return;
+    const list = scansFor(b.dataset.scan); if (list.length) openViewer(0, list);
+  });
+
   function notFound() { $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
 
   /* ---------- Router ---------- */
@@ -236,6 +324,7 @@
     else if (a === "c") collection(b, c);
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
+    else if (a === "checklist") checklist();
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") { home(); const k = CARDS.findIndex((x) => x.id === b); if (k >= 0) openViewer(k, [CARDS[k]]); }
     else notFound();
