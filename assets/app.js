@@ -32,8 +32,10 @@
     }
     const g = name.match(RX.grade); if (g) out.grade = (g[1].toUpperCase() + (g[2] ? " " + g[2] : "")).trim();
     // Names that look like autographs but aren't: the "Signature Rookies" brand (its real autos also say
-    // "Autographs" or "Signatures") and "Auto Phonex" phone cards.
-    const autoName = name.replace(/^(\d{4}(?:-\d{2})?\s+)Signature Rookies\b/i, "$1").replace(/\bauto\s*phonex\b/i, "");
+    // "Autographs" or "Signatures"), "Auto Phonex" phone cards, and Choice Gold/Silver Signature parallels.
+    // Collector's Choice (and other "Choice") Gold/Silver Signature parallels carry a printed facsimile, not an autograph.
+    let autoName = name.replace(/^(\d{4}(?:-\d{2})?\s+)Signature Rookies\b/i, "$1").replace(/\bauto\s*phonex\b/i, "");
+    if (/\bchoice\b/i.test(autoName)) autoName = autoName.replace(/\b(?:gold|silver)\s+signatures?\b/gi, "");
     if (RX.auto.test(autoName)) out.tags.add("auto");
     if (RX.relic.test(name)) out.tags.add("relic");
     if (RX.custom.test(name)) out.tags.add("custom");
