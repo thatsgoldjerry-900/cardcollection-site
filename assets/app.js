@@ -31,7 +31,10 @@
       out.serial = b || a; out.one = (b ? b === 1 : a === 1) || /\b1\s*of\s*1\b|1\/1/i.test(name);
     }
     const g = name.match(RX.grade); if (g) out.grade = (g[1].toUpperCase() + (g[2] ? " " + g[2] : "")).trim();
-    if (RX.auto.test(name)) out.tags.add("auto");
+    // Names that look like autographs but aren't: the "Signature Rookies" brand (its real autos also say
+    // "Autographs" or "Signatures") and "Auto Phonex" phone cards.
+    const autoName = name.replace(/^(\d{4}(?:-\d{2})?\s+)Signature Rookies\b/i, "$1").replace(/\bauto\s*phonex\b/i, "");
+    if (RX.auto.test(autoName)) out.tags.add("auto");
     if (RX.relic.test(name)) out.tags.add("relic");
     if (RX.custom.test(name)) out.tags.add("custom");
     if (RX.rc.test(name)) out.tags.add("rc");
