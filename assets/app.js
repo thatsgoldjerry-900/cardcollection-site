@@ -111,7 +111,7 @@
     $("#nav").innerHTML = SECTIONS.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("") + `<a href="#/customs" data-s="customs">Customs</a>`;
     // Show the checklist link only once its data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">Husker Checklist</a>`);
+      if (r.ok && !$('#nav a[data-s="checklist"]')) $("#nav").insertAdjacentHTML("beforeend", `<a href="#/checklist" data-s="checklist">Husker Checklist</a><a href="#/nfl-huskers" data-s="nfl-huskers">NFL Huskers</a>`);
     }).catch(() => {});
   }
   function renderFoot() {
@@ -310,6 +310,119 @@
     const list = scansFor(b.dataset.scan); if (list.length) openViewer(0, list);
   });
 
+  /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
+  let PLAYERS = null;
+  const HUB = { q: "", show: "all", shown: 0, rows: [] };
+  function loadHub(then) {
+    const need = [];
+    if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
+    if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)));
+    if (!need.length) return then();
+    $("#app").innerHTML = `<p class="loading">Loading…</p>`;
+    Promise.all(need).then(then).catch(() => ($("#app").innerHTML = `<p class="empty">This page isn't available yet.</p>`));
+  }
+  const pslug = (n) => norm(n).replace(/ /g, "-");
+  function bestScan(name) {
+    const all = scansFor(name).filter((c) => !/\(back\)/i.test(c.name));
+    return all.find((c) => c.tags.has("auto")) || all[0] || null;
+  }
+  function tier1() {
+    const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers");
+    const c = Object.fromEntries(l.columns.map((k, i) => [k, i]));
+    const pages = new Set((PLAYERS.players || []).map((p) => p.slug));
+    return l.groups.flatMap((g) => g.rows).map((r) => ({
+      name: r[c["Player"]].trim(), games: r[c["NFL Games Played"]], notes: r[c["Career Notes"]], year: r[c["Last Year"]],
+      signed: r[c["Signed"]], have: r[c["Autograph"]] === "Yes", slug: pslug(r[c["Player"]]), page: pages.has(pslug(r[c["Player"]])),
+    }));
+  }
+  function hub() {
+    setNav("nfl-huskers");
+    loadHub(() => {
+      const all = tier1(), have = all.filter((p) => p.have).length;
+      $("#app").innerHTML = `<div class="wrap hub c-husker">
+        <div class="c-head"><div class="kick">Autograph collection</div><h1>NFL Tier 1 Huskers</h1>
+          <p>Every Nebraska Cornhusker who played in at least one NFL game, with the autograph I have of each. Click a highlighted name for that player's page.</p>
+          <div class="prog"><b>${Math.round((have / all.length) * 100)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
+        <div class="tools">
+          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a page"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
+          <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}"><span class="count" id="hub-count"></span></div>
+        </div>
+        <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
+      const apply = () => {
+        const q = HUB.q.toLowerCase();
+        HUB.rows = all.filter((p) => (HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page)) && (!q || p.name.toLowerCase().includes(q)));
+        HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? "" : `<li class="empty">Nobody matches.</li>`;
+        $("#hub-count").textContent = `${fmt(HUB.rows.length)} players`; hubMore();
+      };
+      $(".hub .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; HUB.show = b.dataset.show; document.querySelectorAll(".hub .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); apply(); });
+      $("#hub-q").addEventListener("input", (e) => { HUB.q = e.target.value.trim(); apply(); });
+      apply(); hubIO.observe($("#hub-more"));
+    });
+  }
+  function hubMore() {
+    const list = $("#hub-list"); if (!list) return;
+    const next = HUB.rows.slice(HUB.shown, HUB.shown + 60); HUB.shown += next.length;
+    list.insertAdjacentHTML("beforeend", next.map((p) => {
+      const sc = p.have ? bestScan(p.name) : null;
+      const nm = p.page ? `<a class="hub-name" href="#/player/${p.slug}">${hl(p.name, HUB.q)}</a>` : `<span class="hub-name plain">${hl(p.name, HUB.q)}</span>`;
+      return `<li class="hub-row ${p.have ? "have" : "need"}">
+        ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
+             : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
+        <div class="hub-info">${nm}<div class="hub-meta">Final Nebraska season ${esc(p.year)}${p.games ? ` · ${esc(p.games)} NFL games` : ""}${p.notes ? ` · ${esc(p.notes)}` : ""}</div>
+          <div class="hub-meta2"><span class="st ${p.have ? "have" : "need"}">${p.have ? "Have" : "Need"}</span>${p.have && p.signed ? `<span>Signed ${esc(p.signed.toLowerCase())}</span>` : ""}</div></div></li>`;
+    }).join(""));
+  }
+  const hubIO = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && HUB.shown < HUB.rows.length && hubMore()), { rootMargin: "1000px" });
+
+  function player(slug) {
+    setNav("nfl-huskers");
+    loadHub(() => {
+      const p = (PLAYERS.players || []).find((x) => x.slug === slug);
+      const row = tier1().find((x) => x.slug === slug);
+      if (!p && !row) return notFound();
+      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null;
+      const scans = scansFor(info.name).filter((c) => !/\(back\)/i.test(c.name));
+      const hero = info.have ? bestScan(info.name) : null;
+      const sec = (w && w.sections) || {};
+      const pick = (label) => Object.values(sec).flat().find((r) => r.length === 2 && r[0] === label);
+      const facts = [["Position", info.position || (pick("Position") || [])[1]], ["Final season at Nebraska", info.year || info.finalYear],
+        ["Nebraska years", ((pick("College") || [])[1] || "").replace(/^Nebraska\s*/, "").replace(/[()]/g, "")],
+        ["NFL draft", (pick("NFL draft") || [])[1]], ["NFL games", info.games || info.nflGames], ["Born", (pick("Born") || [])[1]],
+        ["High school", (pick("High school") || [])[1]], ["Height / weight", [(pick("Listed height") || [])[1], (pick("Listed weight") || [])[1]].filter(Boolean).join(" · ")]]
+        .filter(([, v]) => v && String(v).trim());
+      const statKey = Object.keys(sec).find((k) => /^Career .*statistics/i.test(k));
+      const list = (k) => (sec[k] || []).filter((r) => r.length === 1).map((r) => `<li>${esc(r[0])}</li>`).join("");
+      const college = p && p.college;
+      const DEF = /defensive|linebacker|cornerback|safety|end\b|tackle/i;
+      const collegeHTML = college ? Object.entries(college).map(([y, cats]) => `<tr><th>${y}</th><td>${Object.entries(cats).map(([cat, st]) => `<b>${esc(cat)}</b> ${Object.entries(st).map(([k, v]) => `${esc(k)} ${esc(v)}`).join(" · ")}`).join("<br>")}</td></tr>`).join("")
+        : "";
+      $("#app").innerHTML = `<div class="wrap pl c-husker">
+        <a class="back" href="#/nfl-huskers">← NFL Tier 1 Huskers</a>
+        <div class="pl-top">
+          <div class="pl-card">${hero ? `<button type="button" class="pl-ph" data-scan="${esc(info.name)}"><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="this.classList.add('ok')"></button><small>${esc(hero.name)}</small>`
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `Signed ${esc((info.signed || "").toLowerCase())}. Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>
+          <div class="pl-main">
+            <div class="kick">${esc(info.position || "Nebraska Cornhusker")}</div>
+            <h1>${esc(info.name)}</h1>
+            <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+            ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">No biography available yet.</p>`}
+          </div>
+        </div>
+        <div class="pl-grid">
+          ${statKey ? `<section><h2>${esc(statKey.replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
+          <section><h2>College stats</h2>${collegeHTML ? `<table class="kv">${collegeHTML}</table><p class="note">From CollegeFootballData.com.</p>`
+            : `<p class="muted">${DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>
+          ${list("Career history") ? `<section><h2>Pro teams</h2><ul class="plain">${list("Career history")}</ul></section>` : ""}
+          ${list("Awards and highlights") ? `<section><h2>Awards and highlights</h2><ul class="plain">${list("Awards and highlights")}</ul></section>` : ""}
+        </div>
+        ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
+        <p class="credit">${w ? `Biography and facts from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
+      </div>`;
+      state.list = scans;
+    });
+  }
+
   function notFound() { $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
 
   /* ---------- Router ---------- */
@@ -325,6 +438,8 @@
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
     else if (a === "checklist") checklist();
+    else if (a === "nfl-huskers") hub();
+    else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") { home(); const k = CARDS.findIndex((x) => x.id === b); if (k >= 0) openViewer(k, [CARDS[k]]); }
     else notFound();
