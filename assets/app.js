@@ -826,7 +826,7 @@
       const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
         return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-          <span class="pm-t"><b>${esc(e.x.name)}</b><small>${e.yrs ? esc(e.yrs) + " · " : ""}Nebraska through ${esc(e.x.year || "?")}</small></span><span class="pm-go">→</span></a>`; };
+          <span class="pm-t"><b>${esc(e.x.name)}</b>${e.yrs ? `<small>${esc(e.yrs)}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
       $("#app").innerHTML = `<div class="wrap tm"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
         <div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
