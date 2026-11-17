@@ -61,3 +61,16 @@ them from the live site:
 ```bash
 mkdir -p data/lists && for f in husker-pros inventory-stats; do curl -sf -o data/lists/$f.json https://thatsgoldjerry-900.github.io/cardcollection-site/data/lists/$f.json; done
 ```
+
+## College stats for Husker football players
+
+`data/players.json` gets college stats from three places, in this order:
+
+1. Wikipedia college stats tables (`scripts/build_players.py`).
+2. CollegeFootballData.com: season totals, plus game box scores added up into seasons where the season totals
+   are missing players (`scripts/college_from_games.py`, 2004 on).
+3. The Nebraska Football Record Book on huskers.com (History & Records): the seasons a player led Nebraska
+   in rushing, passing, receiving, interceptions, kickoff returns, scoring, tackles or pass breakups
+   (`scripts/college_from_recordbook.py recordbook.pdf`, needs `pdftotext`).
+
+Add `--lists=all` to either script to include NFL Tier 1 as well as Tier 2 and Tier 3.
