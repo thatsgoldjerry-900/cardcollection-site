@@ -22,7 +22,8 @@ TABLES = {
     "punt return yards": ("puntReturns", ["NO", "YDS", "AVG", "TD"]),
     "punting": ("punting", ["NO", "YDS", "YPP"]),
     "points scored": ("scoring", ["TD", "XP1", "XP2", "FG", "TP"]),
-    "tackles": ("defensive", ["TOT"]),
+    "pass breakups": ("defensive", ["PD"]),
+    "total tackles": ("defensive", ["TOT"]),
 }
 NUM = re.compile(r"^-?[\d,]+(?:\.\d+)?$|^\d+-\d+$")
 ENTRY = re.compile(r"([A-Z][A-Za-z.’'\-]+(?: [A-Z][A-Za-z.’'\-]+){1,3}), ([A-Z]{1,3}(?:/[A-Z]{1,3})?)\*?(?: \(\d+\))?")
@@ -73,6 +74,12 @@ def parse(pdf):
         t = next((t for t in TITLES if l.startswith(t)), None)
         if t: key, year = t.lower(), None; continue
         if key not in TABLES: continue
+        if key == "pass breakups":            # "1967  6  Dana Stephenson, RCB" (number first)
+            m = re.match(r"^(?:\*?\s*(19[4-9]\d|20[0-2]\d)\*?\s+)?(\d{1,2})\s+" + ENTRY.pattern, l)
+            if m:
+                if m.group(1): year = int(m.group(1))
+                if year: rows.append({"name": m.group(3), "pos": m.group(4), "year": year, "table": key, "stats": {"PD": m.group(2)}})
+            continue
         m = re.match(r"^(?:(19[4-9]\d|20[0-2]\d)\s+)?" + ENTRY.pattern, l)
         if not m and key == "passing yards":   # the passing table lists names without a position
             m = re.match(r"^(?:(19[4-9]\d|20[0-2]\d)\s+)?([A-Z][A-Za-z.’'\-]+(?: [A-Z][A-Za-z.’'\-]+){1,3})()(?: \(\d+\))?(?=\s+\d)", l)
@@ -89,13 +96,36 @@ def parse(pdf):
     return rows
 
 
+def tackles(pdf):
+    """ "Total Tackles (By Position)": each season's tackle leader among linemen, linebackers/ends and backs."""
+    import subprocess
+    rows = []
+    for p in range(1, 200):
+        try:
+            t = subprocess.run(["pdftotext", "-f", str(p), "-l", str(p), "-layout", pdf, "-"], capture_output=True, text=True, check=True).stdout
+        except subprocess.CalledProcessError:
+            break
+        if "Total Tackles (By Position)" not in t: continue
+        year = None
+        for l in t.split("\n"):
+            m = re.match(r"^\s*(19[4-9]\d|20[0-2]\d)\b(.*)$", l)
+            rest = m.group(2) if m else l
+            if m: year = int(m.group(1))
+            if not year: continue
+            for n, name, pos in re.findall(r"(\d{1,3})\s+([A-Z][A-Za-z.’'\-]+(?: [A-Za-z][A-Za-z.’'\-]+){1,3}), ([A-Z]{1,4}(?:/[A-Z]{1,4})?)", rest):
+                rows.append({"name": name, "pos": pos, "year": year, "table": "total tackles", "stats": {"TOT": n}})
+        break
+    return rows
+
+
 def main():
-    rows = parse(sys.argv[1])
+    rows = parse(sys.argv[1]) + tackles(sys.argv[1])
     data = json.load(open(OUT))
     lists = ("nfl-tier-2-huskers", "pro-football-huskers")
     added = []
     for p in data["players"]:
-        if p.get("list") not in lists or p.get("college") or p.get("collegeTables"): continue
+        if p.get("list") not in lists or p.get("collegeTables"): continue
+        if p.get("college") and p.get("collegeSource") != "recordbook": continue
         fy = p.get("finalYear")
         if not fy: continue
         me = norm(re.sub(r'"[^"]*"', " ", p["name"]))
@@ -104,7 +134,7 @@ def main():
         col = {}
         for r in sorted(mine, key=lambda r: r["year"]):
             cat = TABLES[r["table"]][0]
-            col.setdefault(str(r["year"]), {})[cat] = {k: v.replace(",", "") for k, v in r["stats"].items()}
+            col.setdefault(str(r["year"]), {}).setdefault(cat, {}).update({k: v.replace(",", "") for k, v in r["stats"].items()})
         added.append((p["name"], col))
         if "--dry-run" not in sys.argv:
             p["college"] = col; p["collegeSource"] = "recordbook"
