@@ -11,12 +11,14 @@
 <link rel="preconnect" href="https://lh3.googleusercontent.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="data/catalog.json" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/lists/inventory-stats.json" as="fetch" crossorigin="anonymous">
 </head>
 <body>
 <header class="top">
   <div class="top-in">
     <a class="logo" href="#/">Ian<span>Badeer</span></a>
-    <nav class="nav" id="nav" aria-label="Collections"></nav>
+    <nav class="nav" id="nav" aria-label="Collections"><!-- the menu as it is today, so the header doesn't jump while the site loads; app.js rebuilds it --><a href="#/c/alex-gordon" data-s="alex-gordon">Alex Gordon</a><a href="#/c/jermaine-dye" data-s="jermaine-dye">Jermaine Dye</a><button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button><a href="#/customs" data-s="customs">Customs</a><a href="#/c/royals" data-s="royals">Kansas City Royals</a><a href="#/c/want-list" data-s="want-list">Want List</a><a href="#/c/lions" data-s="lions">Detroit Lions</a><a href="#/media" data-s="media">Media</a></nav>
     <form class="search" id="search-form" role="search">
       <label for="q" class="sr">Search every card</label>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -25,7 +27,25 @@
     </form>
   </div>
 </header>
-<main id="app" tabindex="-1"><p class="loading">Loading the collection…</p></main>
+<main id="app" tabindex="-1">
+<div class="wrap sk" id="sk" aria-busy="true" aria-label="Loading the collection">
+  <section class="hero">
+    <div>
+      <div class="kick">The collection of Ian Badeer</div>
+      <h1>Alex Gordon &amp; Jermaine Dye <em>super collector</em></h1>
+      <p><!--intro-->My name is Ian and my passion is collecting! Within this site you&#x27;ll find thousands of high resolution scans of my cards (with a few game-used items as well). Every image is labeled with its database name. If you have a rare card of either player, have a Husker autograph I need, or see a card here you want to trade for, let me know!<!--/intro--></p>
+      <div class="pills"><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span></div>
+    </div>
+    <div class="sk-featw"><span class="sk-b sk-feat"></span><span class="sk-b sk-cap"></span><span class="sk-b sk-cap short"></span></div>
+  </section>
+  <section class="stats"><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div></section>
+  <div class="band"><div class="sec-h"><h2>Newest additions</h2></div><div class="sk-row"><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span></div></div>
+</div>
+<script>
+  // Not the home page: show a plain page outline instead of the home layout.
+  if (!/^#?\/?$/.test(location.hash)) document.getElementById("sk").innerHTML = '<span class="sk-b sk-title"></span><span class="sk-b sk-line"></span><span class="sk-b sk-line short"></span><div class="sk-grid"><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span></div>';
+</script>
+</main>
 <footer class="foot" id="foot"></footer>
 
 <div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Card viewer">

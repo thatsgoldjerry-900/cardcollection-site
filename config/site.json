@@ -15,6 +15,10 @@
     }
   },
   "_contactHelp": "\"contact.code\" is my email address, reversed and base64-encoded so scrapers cannot read it; the site decodes it only when someone clicks. \"contact.googleForm\" connects the form on the page to my Google Form: \"id\" is the long code after /forms/d/e/ in the form's link, and each field is the form's \"entry.123…\" name for that question (from its pre-filled link). Leave \"id\" empty to use email buttons only.",
+  "analytics": {
+    "goatcounter": ""
+  },
+  "_analyticsHelp": "\"analytics.goatcounter\" is the site code from goatcounter.com (the part before .goatcounter.com). Empty means no analytics.",
   "featured": {
     "match": "All-Star Jumbo Sleeve Team Patch",
     "caption": "Alex Gordon's 2013 All-Star Game jersey sleeve patch, 1 of 1"

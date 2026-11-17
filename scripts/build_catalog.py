@@ -157,6 +157,7 @@ def sections_from_config(cfg):
 
 def main():
     cfg = json.load(open(CONFIG))
+    sync_first_screen(cfg)
     prev, prev_name, prev_photo, old = {}, {}, {}, None
     if os.path.exists(OUT):
         try:
@@ -213,6 +214,15 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as fh: json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
     print(f"Wrote {len(cards)} cards to {OUT}", file=sys.stderr)
+
+def sync_first_screen(cfg):
+    """index.html shows the home intro before the card list loads; keep that copy matching config/site.json."""
+    import html as _h
+    path = os.path.join(ROOT, "index.html")
+    page = open(path, encoding="utf-8").read()
+    new = re.sub(r"<!--intro-->.*?<!--/intro-->", lambda m: "<!--intro-->" + _h.escape(cfg.get("intro", "")) + "<!--/intro-->", page, flags=re.S)
+    if new != page: open(path, "w", encoding="utf-8").write(new)
+
 
 if __name__ == "__main__":
     main()

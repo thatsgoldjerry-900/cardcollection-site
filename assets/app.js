@@ -995,6 +995,21 @@
     }
     else notFound();
     window.scrollTo(0, 0);
+    track();
+  }
+  /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
+  // Each #/ page counts as its own page, e.g. /cardcollection-site/#/player/ricky-simmons.
+  function track() {
+    const code = (DATA && DATA.site.analytics || {}).goatcounter; if (!code) return;
+    const path = location.pathname + (location.hash.split("?")[0] || "#/");
+    if (window.goatcounter && window.goatcounter.count) return void setTimeout(() => window.goatcounter.count({ path, title: document.title }), 300);
+    if (document.getElementById("gc-js")) return;
+    window.goatcounter = { no_onload: true };
+    const sc = document.createElement("script");
+    sc.id = "gc-js"; sc.async = true; sc.src = "https://gc.zgo.at/count.js";
+    sc.dataset.goatcounter = `https://${encodeURIComponent(code)}.goatcounter.com/count`;
+    sc.onload = () => track();
+    document.head.appendChild(sc);
   }
   function syncURL() {
     const p = [];
