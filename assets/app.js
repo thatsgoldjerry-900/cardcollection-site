@@ -1598,7 +1598,12 @@
   // glow. Refractors, Prizms, chrome and foil: a rainbow halo circling the card's edge. The rarest one wins.
   const HOLO = /\b(refractors?|prizms?|chrome|foil|holo(?:foil|graphic)?|x-?fractors?|superfractors?|diffractors?|shimmer|mojo|cracked ice|mirror|atomic|spectrum|sapphire|optic|finest|wave|rainbow|galactic|lava|hyper|disco|scope)\b/i;
   // Dirt relics (the Dirt Relics group, or "Dirt"/"(Dirty" in the name): a dusty brown haze with kicked-up specks.
-  const isDirt = (c) => SECTIONS[c.si]?.groups[c.gi]?.slug === "dirt" || /\bdirt\b|\(dirty\b/i.test(c.name);
+  // Same card filed in another collection too (e.g. Alex Gordon) gets it as well.
+  let DIRT;
+  const isDirt = (c) => {
+    DIRT ||= new Set(CARDS.filter((x) => SECTIONS[x.si]?.groups[x.gi]?.slug === "dirt").map((x) => x.name));
+    return DIRT.has(c.name) || /\bdirt\b|\(dirty\b/i.test(c.name);
+  };
   const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : isDirt(c) ? "dirt" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
   function placeAura() {
     const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
