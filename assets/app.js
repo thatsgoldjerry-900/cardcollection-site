@@ -1050,6 +1050,8 @@
   // Same year, set, card number and player = one rainbow, whatever the color. A color or parallel word at the end of
   // the set name ("Signature Materials Black") is ignored; "Set - Parallel" names already keep the parallel apart.
   const PARALLEL_WORDS = /(?:\s+(?:gold(?:en)?|silver|black|red|blue|green|orange|purple|pink|platinum|bronze|copper|emerald|sapphire|ruby|white|yellow|aqua|teal|magenta|holo(?:foil)?|refractors?|prizms?|parallel|foil|rainbow|mojo|wave|shimmer|atomic|x-?fractors?|superfractors?|printing plates?|press proofs?|proofs?|framed|vintage stock|independence day|camo|tie-?dye|cracked ice|mirror|spectrum|chrome|prime|limited))+$/i;
+  // A second or third copy of a card ("... 2nd (Sold to ...)") is the same card for rainbows and sets.
+  const copyKey = (x) => x.name.toLowerCase().replace(/\s+(?:2nd|3rd|\d+th)\b(?:\s*\([^)]*\))?\s*$/, "").trim();
   let RAINBOWS = null;
   function rainbowKey(c) {
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m || !c.title) return null;
@@ -1062,14 +1064,51 @@
       RAINBOWS = new Map();
       const seen = new Set();   // a card uploaded twice counts once
       CARDS.forEach((x) => {
-        if (/\((back|inside)\)/i.test(x.name) || seen.has(x.name.toLowerCase())) return; seen.add(x.name.toLowerCase());
+        if (/\((back|inside)\)/i.test(x.name) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
         const k = rainbowKey(x); if (k) RAINBOWS.set(k, [...(RAINBOWS.get(k) || []), x]);
       });
     }
     const k = rainbowKey(c); let all = (k && RAINBOWS.get(k)) || [];
-    if (!all.includes(c)) all = all.map((x) => (x.name.toLowerCase() === c.name.toLowerCase() ? c : x));   // opened the duplicate copy
+    if (!all.includes(c)) all = all.map((x) => (copyKey(x) === copyKey(c) ? c : x));   // opened the duplicate copy
     // 1/1 first, then lowest print run to highest, then unnumbered versions.
     return all.slice().sort((a, b) => (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
+  }
+  /* Set rainbows: one set or insert across players (e.g. 2008 TK Legacy Signature Series). Cards with a letter prefix
+     in their number (#C1, #QB4) group by year, brand and prefix, so differently written set names still match;
+     plain numbers (#97) group by year and set name. Shown when the set has two or more players. */
+  const SET_NOISE = new Set(["nebraska", "cornhuskers", "huskers", "autographs", "autograph", "signature", "signatures", "series", "insert", "inserts"]);
+  let SETS = null;
+  function setKey(c) {
+    const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m) return null;
+    const pre = (m[3].match(/^[A-Za-z]+/) || [""])[0].toLowerCase();
+    const words = norm(`${m[2]} ${(c.par || "").replace(PARALLEL_WORDS, "")}`).split(" ").filter((w) => w && !SET_NOISE.has(w));
+    if (!words.length) return null;
+    return pre ? `${m[1]}|${words[0]}|${pre}` : `${m[1]}|${words.join(" ")}`;
+  }
+  function setOf(c) {
+    if (!SETS) {
+      SETS = new Map(); const seen = new Set();
+      CARDS.forEach((x) => {
+        if (/\((back|inside)\)/i.test(x.name) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
+        const k = setKey(x); if (k) SETS.set(k, [...(SETS.get(k) || []), x]);
+      });
+    }
+    const all = SETS.get(setKey(c)) || [];
+    if (new Set(all.map((x) => norm(x.title))).size < 2) return [];
+    const num = (x) => { const n = (x.sub.match(/#(\S+)$/) || ["", ""])[1]; return [n.replace(/[^A-Za-z]/g, "").toLowerCase(), parseFloat(n.replace(/^[^0-9]*/, "")) || 0]; };
+    return all.slice().sort((a, b) => { const [p, n] = num(a), [q, m] = num(b); return p.localeCompare(q) || n - m || (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name); });
+  }
+  function setPage(id) {
+    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const all = setOf(c); if (!all.length) return notFound();
+    const sec = SECTIONS[c.si], players = new Set(all.map((x) => norm(x.title))).size;
+    const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par.replace(PARALLEL_WORDS, "")}` : "");
+    setNav(sec.slug); setTitle(title);
+    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+      <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
+      <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} cards in my collection, in card-number order.</p></div>
+      <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
+    state.list = all;
   }
   function rainbow(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
@@ -1114,6 +1153,7 @@
     else if (a === "nfl-huskers") hub();
     else if (a === "media") media();
     else if (a === "rainbow") rainbow(b);
+    else if (a === "set") setPage(b);
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
@@ -1286,6 +1326,8 @@
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(c.title)} (${fmt(byPlayer.length)})</button>` : "");
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     const rb = rainbowOf(c);
+    const st = setOf(c);
+    if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(c.id)}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
     if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(c.id)}">🌈 View rainbow (${rb.length})</a>`);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
