@@ -5,6 +5,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 "Ian's to-dos" when a session starts or he asks what's left.
 
 ## Ian's to-dos
+- [ ] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Make a folder "Customs - Non-Sport" in the main
+  shared Drive folder and put the scans in it, then tell Claude, who connects it to the Customs page's Non-Sport filter.
 - [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
   "Viewers and commenters can see the option to download, print, and copy", then open one card file to check
   the download option is gone there too. The site keeps working; this removes Drive's "Download all" zip.
