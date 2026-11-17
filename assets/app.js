@@ -1054,8 +1054,8 @@
     if (!silent && history.state && history.state.v) history.back();
   }
   window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
-  /* Watermark: the large viewer image (and anything saved from it) carries "IANBADEER.COM" along the bottom,
-     centered, like COMC. Thumbnails and the quick first preview stay plain. */
+  /* Watermark: the large viewer image (and anything saved from it) carries "IANBADEER.COM" in the lower part
+     of the card, centered, like COMC. Thumbnails and the quick first preview stay plain. */
   const MARKED = new Map();   // file id -> object URL of the marked image (kept for this visit)
   function marked(id, rk) {
     if (MARKED.has(id)) return MARKED.get(id);
@@ -1065,13 +1065,18 @@
         try {
           const cv = document.createElement("canvas"); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
           const g = cv.getContext("2d"); g.drawImage(im, 0, 0);
-          const size = Math.max(14, Math.round(Math.min(cv.width, cv.height * 1.4) * 0.045));
-          g.font = `700 ${size}px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
-          g.textAlign = "center"; g.textBaseline = "alphabetic";
-          const x = cv.width / 2, y = cv.height - Math.round(size * 0.7);
-          g.lineJoin = "round"; g.lineWidth = Math.max(2, size * 0.12);
-          g.strokeStyle = "rgba(0,0,0,.35)"; g.strokeText("IANBADEER.COM", x, y);
-          g.fillStyle = "rgba(255,255,255,.62)"; g.fillText("IANBADEER.COM", x, y);
+          // Like COMC: centered, about 80% of the way down the card, spanning ~60% of its width;
+          // see-through gray letters with a light edge so it reads on light and dark cards.
+          const word = "IANBADEER.COM";
+          g.textAlign = "center"; g.textBaseline = "middle";
+          g.font = `800 100px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
+          const per = g.measureText(word).width / 100;
+          const size = Math.max(14, Math.min((cv.width * 0.6) / per, cv.height * 0.085));
+          g.font = `800 ${size}px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
+          const x = cv.width / 2, y = cv.height * 0.8;
+          g.lineJoin = "round"; g.lineWidth = Math.max(1.5, size * 0.05);
+          g.strokeStyle = "rgba(255,255,255,.42)"; g.strokeText(word, x, y);
+          g.fillStyle = "rgba(60,60,60,.40)"; g.fillText(word, x, y);
           cv.toBlob((b) => (b ? ok(URL.createObjectURL(b)) : no(new Error("no image"))), "image/jpeg", 0.9);
         } catch (e) { no(e); }
       };
