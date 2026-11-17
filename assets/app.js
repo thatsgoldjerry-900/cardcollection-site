@@ -1426,7 +1426,8 @@
         try {
           const cv = document.createElement("canvas"); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
           const g = cv.getContext("2d"); g.drawImage(im, 0, 0);
-          const plain = cv.toDataURL("image/jpeg", 0.92);
+          // Small blob URLs (not huge data: URLs): phones redraw them without a blink.
+          const plainP = new Promise((r) => cv.toBlob((b) => r(b && URL.createObjectURL(b)), "image/jpeg", 0.92));
           // Like COMC: centered, about 80% of the way down the card, spanning ~60% of its width;
           // see-through gray letters with a light edge so it reads on light and dark cards.
           const word = "IANBADEER.COM";
@@ -1439,7 +1440,7 @@
           g.lineJoin = "round"; g.lineWidth = Math.max(1.5, size * 0.05);
           g.strokeStyle = "rgba(255,255,255,.42)"; g.strokeText(word, x, y);
           g.fillStyle = "rgba(60,60,60,.40)"; g.fillText(word, x, y);
-          cv.toBlob((b) => (b ? ok({ plain, marked: URL.createObjectURL(b) }) : no(new Error("no image"))), "image/jpeg", 0.9);
+          plainP.then((plain) => cv.toBlob((b) => (b && plain ? ok({ plain, marked: URL.createObjectURL(b) }) : no(new Error("no image"))), "image/jpeg", 0.9));
         } catch (e) { no(e); }
       };
       im.onerror = () => no(new Error("image failed"));
@@ -1453,7 +1454,7 @@
     el.classList.remove("wm"); el.style.removeProperty("--plain");
     el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
     // Swap to the large image only once both versions are decoded, so it doesn't blink (or flash the mark) on first view.
-    const ready = (u) => Promise.all([u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i.decode().catch(() => {}); })).then(() => u);
+    const ready = (u) => u.keep ? Promise.resolve(u) : Promise.all((u.keep = [u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i; })).map((i) => i.decode().catch(() => {}))).then(() => u);
     marked(id, rk).then(ready).then((u) => {
       if (V.list[V.k] !== c || el.dataset.id !== id) return;
       el.style.setProperty("--plain", `url("${u.plain}")`);
