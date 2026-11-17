@@ -1410,7 +1410,7 @@
   }
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
-    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair"); $("#viewer").classList.remove("focus");
+    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair"); $("#viewer").classList.remove("focus"); ["#v-img", "#v-img2"].forEach((q) => { const e = $(q); e.removeAttribute("src"); e.classList.remove("wm"); e.dataset.id = ""; }); $("#v-aura").className = "v-aura";
     if (!silent && history.state && history.state.v) history.back();
   }
   window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
@@ -1450,18 +1450,28 @@
     MARKED.set(id, p);
     return p;
   }
-  function loadInto(el, c, id, rk, alt) {
-    el.classList.remove("wm"); el.style.removeProperty("--plain");
-    el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
-    // Swap to the large image only once both versions are decoded, so it doesn't blink (or flash the mark) on first view.
-    const ready = (u) => u.keep ? Promise.resolve(u) : Promise.all((u.keep = [u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i; })).map((i) => i.decode().catch(() => {}))).then(() => u);
-    marked(id, rk).then(ready).then((u) => {
-      if (V.list[V.k] !== c || el.dataset.id !== id) return;
-      el.style.setProperty("--plain", `url("${u.plain}")`);
-      requestAnimationFrame(() => { if (el.dataset.id !== id) return; el.classList.add("wm"); el.src = u.marked; });
-    })
-      .catch(() => { if (V.list[V.k] === c && el.dataset.id === id) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
+  // Both versions decoded and kept in memory, so swapping them in never blinks.
+  const READY = new Map();
+  const ready = (id, rk) => marked(id, rk).then((u) => u.keep ? u : Promise.all((u.keep = [u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i; })).map((i) => i.decode().catch(() => {}))).then(() => (READY.set(id, u), u)));
+  // Show a card in one step: the old card (and its aura, via `done`) stays until the new picture is decoded,
+  // then picture and effects change together. The large clean/marked pair replaces the preview when it's ready.
+  function loadInto(el, c, id, rk, alt, done) {
+    el.dataset.id = id; el.alt = alt;
+    let big = false;
+    const live = () => el.dataset.id === id && V.list[V.k] === c;
+    const showBig = (u) => { big = true; el.style.setProperty("--plain", `url("${u.plain}")`); el.classList.add("wm"); el.src = u.marked; };
+    if (READY.has(id)) { showBig(READY.get(id)); if (done) done(); return; }
+    const t = new Image(); t.src = img(id, rk, 400);
+    t.decode().catch(() => {}).then(() => {
+      if (!live() || big) return;
+      el.classList.remove("wm"); el.style.removeProperty("--plain"); el.src = t.src;
+      if (done) done();
+    });
+    ready(id, rk).then((u) => { if (live()) requestAnimationFrame(() => { if (live()) showBig(u); }); })
+      .catch(() => { if (live()) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
   }
+  // Get the next card ready while this one is looked at.
+  const prefetch = () => { const n = V.list[V.k + 1]; if (n && n.id && !n.photo && !READY.has(n.id)) setTimeout(() => ready(n.id, n.rk).catch(() => {}), 600); };
   // "Save image": the marked image, named after the card.
   async function saveCard() {
     const c = V.list[V.k]; if (!c) return;
@@ -1481,7 +1491,7 @@
     $("#v-copy").hidden = !!c.photo;
     if (c.photo) {   // a photo with a player: caption instead of card details
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom && wide.matches);
-      loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
+      loadInto($("#v-img"), c, c.id, c.rk, c.caption, () => aura(c)); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
       $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
       $("#v-flip").hidden = true;
@@ -1492,7 +1502,7 @@
     const pair = isPair(c), stage = $("#v-stage"), im = $("#v-img"), im2 = $("#v-img2");
     const back = !pair && V.back;
     const id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
-    loadInto(im, c, id, rk, c.name + (back ? " (back)" : ""));
+    loadInto(im, c, id, rk, c.name + (back ? " (back)" : ""), () => aura(c));
     im2.hidden = !pair;
     if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)");
     stage.classList.toggle("pair", pair);
@@ -1506,7 +1516,7 @@
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
-    aura(c);
+    prefetch();
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
