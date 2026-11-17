@@ -21,6 +21,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Read straight from the main Drive folder** (`driveRoot` in `config/site.json`, parent folder `18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV`).
   - [ ] Make the Drive folder names match the site section titles, or map them. Today "Lions", "Royals" and "Nebraska Baseball & Softball" differ.
   - [ ] Check the new card names: count, auto and relic tags, and that every section still fills.
+  - [ ] **Don't double uploads.** A scan copied into two folders counts as two cards (today ~147 names appear twice,
+    mostly Gordon cards also in the Royals Button Relics / Nameplates / Dirt Relics groups).
+  - [ ] **Consider tagging by ID instead of copies** for groups like Dirt Relics, Button Relics and Nameplates: either
+    Drive shortcuts (the site reads the shortcut's target, so one file shows in both places) or a list of card IDs in
+    the site settings. TCDb names stay as they are; test shortcuts with a couple of cards first.
 - [ ] **A plain, crawlable page for every player** (like `/nfl-huskers/`), so searches for a player's name can land on Ian's page about him.
 - [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
   - [ ] Keep old `#/` links working.
