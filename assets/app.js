@@ -460,7 +460,7 @@
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${(slug === "customs" ? CUSTOM_FILTERS.filter(([k]) => base.some((c) => c.tags.has(k))) : FILTERS).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${(slug === "customs" ? CUSTOM_FILTERS : FILTERS).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r"><span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
@@ -469,7 +469,7 @@
       let list = search(base, q);
       state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
       state.list = sortList(list, state.sort); state.shown = 0;
-      $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
+      $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${slug === "customs" && state.filters.has("nonsport") ? "Non-sport customs, like my Sonic the Hedgehog cards, are coming soon." : state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
       $("#count").textContent = `${fmt(state.list.length)} card${state.list.length === 1 ? "" : "s"}`;
       more();
     };
