@@ -71,7 +71,7 @@
   /* ---------- Data ---------- */
   function load(json) {
     DATA = json; SECTIONS = json.sections;
-    // Not on the site: sold cards and second/third copies (customs kept). scripts/build_catalog.py leaves them out too.
+    // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
     json.cards = json.cards.filter((c) => !/\bsold\b/i.test(c[2]) && !(/\s(?:2nd|3rd|\d+th)\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
     CARDS = json.cards.map((c, i) => {
       const [id, rk, name, si, gi, added, backId, backRk] = c;

@@ -218,7 +218,7 @@ def main():
 
 # Cards that aren't on the site: anything sold (the name says "Sold ..."), and a second or third copy of a card
 # ("... 2nd", "... 3rd" at the end of the name; "10th Anniversary" sets don't count). Customs are kept:
-# "Custom 2nd" can be a different piece, not a copy.
+# numbered customs ("Custom 2nd") are separate commissioned pieces, not copies.
 SOLD = re.compile(r"\bsold\b", re.I)
 COPY = re.compile(r"\s(?:2nd|3rd|\d+th)\s*(?:\([^)]*\))?\s*$", re.I)
 
