@@ -194,7 +194,7 @@ def main():
             groups.append({"slug": gslug, "label": glabel, "count": n})
         s = dict(sec); s["groups"] = groups
         sections.append(s)
-    site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot")}
+    site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot") and not k.startswith("_")}
     if "customsPhotos" in site: site["customsPhotos"] = {k: v for k, v in site["customsPhotos"].items() if k != "folders"}
     # Photo name without extension is its caption; newest first.
     photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]

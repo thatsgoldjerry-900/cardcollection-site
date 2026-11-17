@@ -403,5 +403,36 @@
       ],
       "remove": []
     }
-  }
+  },
+  "media": {
+    "intro": "Articles, interviews and shows that have featured my collection.",
+    "items": [
+      {
+        "type": "video",
+        "title": "Talking Husker autographs with Ricky Simmons",
+        "outlet": "YouTube",
+        "youtube": "CY41TEOdRSY",
+        "start": 1002,
+        "url": "https://www.youtube.com/watch?v=CY41TEOdRSY&t=1002s",
+        "note": "Former Husker Ricky Simmons interviews me about how we met through my Husker autograph project. Starts at 16:42."
+      },
+      {
+        "type": "video",
+        "title": "The Card Life",
+        "outlet": "The Card Life",
+        "youtube": "VwmpAhPuIOM",
+        "start": 746,
+        "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM&t=746s",
+        "note": "My collection featured on the show. My segment starts at 12:26."
+      },
+      {
+        "type": "article",
+        "title": "My story in The Kansas City Star",
+        "outlet": "The Kansas City Star",
+        "url": "https://drive.google.com/file/d/1SNgH16UXtK_ecSy4QUOrvqJYWVJq2G9E/view?usp=sharing",
+        "note": "A feature on my Alex Gordon and Jermaine Dye collections."
+      }
+    ]
+  },
+  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds. Videos and podcasts show first, then articles, in the order listed."
 }

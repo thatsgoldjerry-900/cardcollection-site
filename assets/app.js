@@ -175,6 +175,7 @@
     // Menu order: Alex Gordon, Jermaine Dye, Nebraska Cornhuskers ▾, Customs, the other collections, Detroit Lions last.
     const links = siteOrder().filter((s) => s === "customs" || !isNeb(s))
       .map((s) => s === "customs" ? `<a href="#/customs" data-s="customs">Customs</a>` : `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
+    if ((DATA.site.media?.items || []).length) links.push(`<a href="#/media" data-s="media">Media</a>`);
     links.splice(2, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
     $("#nav").innerHTML = links.join("");
     document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
@@ -247,7 +248,7 @@
           <div class="kick">The collection of Ian Badeer</div>
           <h1>Alex Gordon & Jermaine Dye <em>super collector</em></h1>
           <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
-          <div class="pills">${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
+          <div class="pills">${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}${(s.media?.items || []).length ? `<a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""}</div>
         </div>
         ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
@@ -743,6 +744,28 @@
     });
   }
 
+
+  /* ---------- Media: articles, videos and podcasts (config/site.json "media") ---------- */
+  function media() {
+    setNav("media"); setTitle("Media");
+    const m = DATA.site.media || {}, items = m.items || [];
+    const when = (it) => it.date ? `<span>${esc(it.date)}</span>` : "";
+    const meta = (it) => `<div class="md-meta"><b>${esc(it.outlet || "")}</b>${when(it)}</div>`;
+    const watch = items.filter((it) => it.type !== "article"), read = items.filter((it) => it.type === "article");
+    const vid = (it) => `<figure class="vid md-card">
+        ${it.youtube ? `<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(it.youtube)}${it.start ? `?start=${+it.start}` : ""}" title="${esc(it.title)}" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>` : ""}
+        <figcaption>${meta(it)}<h3>${it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)} ↗</a>` : esc(it.title)}</h3>${it.note ? `<p>${esc(it.note)}</p>` : ""}</figcaption></figure>`;
+    const art = (it) => `<a class="md-art md-card" href="${esc(it.url)}" target="_blank" rel="noopener">${meta(it)}<h3>${esc(it.title)} ↗</h3>${it.note ? `<p>${esc(it.note)}</p>` : ""}</a>`;
+    $("#app").innerHTML = `<div class="wrap ck md"><div class="c-head">
+      <div class="kick">In the media</div><h1>Media</h1></div>
+      ${m.intro ? `<p class="md-intro">${esc(m.intro)}</p>` : ""}
+      ${watch.length ? `<h2 class="sub-h">Video &amp; podcasts</h2><div class="vids">${watch.map(vid).join("")}</div>` : ""}
+      ${read.length ? `<h2 class="sub-h">Articles</h2><div class="md-arts">${read.map(art).join("")}</div>` : ""}
+      ${items.length ? "" : `<p class="empty">Nothing here yet.</p>`}
+    </div>`;
+  }
+
   function notFound() { setTitle("Page not found"); $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
 
   /* ---------- Router ---------- */
@@ -759,6 +782,7 @@
     else if (a === "all") collection("all");
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
+    else if (a === "media") media();
     else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") { home(); const k = CARDS.findIndex((x) => x.id === b); if (k >= 0) openViewer(k, [CARDS[k]]); }
