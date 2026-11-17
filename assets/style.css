@@ -502,7 +502,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (prefers-reduced-motion:reduce){.dice.roll svg,.btn.roll,.v-stage.shuffle img{animation:none}}
 .hero{align-items:start}.hero > .feat,.hero > .sk-featw{align-self:center}
 /* Viewer: show the clean card (background) while the <img> itself is the watermarked copy, moved out of view */
-#v-img.wm,#v-img2.wm{object-position:-100000px 0;background-size:100% 100%;background-repeat:no-repeat}
+#v-img.wm,#v-img2.wm{object-position:-100000px 0;background-image:var(--plain);background-size:100% 100%;background-repeat:no-repeat}
 .ck-plain{margin:-4px 0 14px;font-size:13.5px}.ck-plain a{color:var(--mu)}.ck-plain a:hover{color:var(--acc)}
 .pl-about{margin:12px 0 6px;max-width:62ch;color:#d5dbe5;line-height:1.6}
 /* Home: Start here + featured story */
@@ -551,3 +551,17 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .lt-blank{aspect-ratio:5/7;border:2px dashed var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--mu);background:var(--panel)}
 .lt-blank b{font:800 64px/1 var(--f-d);opacity:.35}.lt-blank small{font-size:12px}
 @media (max-width:640px){.lt-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.lt-blank b{font-size:44px}}
+/* Huskers by NFL Team */
+.tm{padding-block:24px 60px}.tm .back{display:inline-block;margin-bottom:12px;color:var(--acc);text-decoration:none;font-size:14px}
+.tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
+.tm-tile{display:flex;flex-direction:column;gap:3px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--fg)}
+.tm-tile:hover{border-color:var(--acc)}.tm-tile b{font-size:15px}.tm-tile span{font-size:12.5px;color:var(--mu)}
+.tm .more-h{margin-top:26px}
+/* Holo shine: a soft rainbow band over the clean card, following the mouse or the phone's tilt (drifts on its own otherwise) */
+#v-img.wm.holo{background-image:linear-gradient(115deg,transparent 30%,rgba(255,60,160,.55) 38%,rgba(255,220,60,.55) 44%,rgba(60,255,190,.55) 50%,rgba(70,160,255,.6) 56%,rgba(200,90,255,.55) 62%,transparent 70%),
+  linear-gradient(115deg,transparent 46%,rgba(255,255,255,.35) 50%,transparent 54%),var(--plain);
+  background-size:200% 200%,200% 200%,100% 100%;background-position:var(--hx,50%) var(--hy,50%),var(--hx,50%) var(--hy,50%),0 0;
+  background-blend-mode:overlay,screen,normal;animation:holo-drift 7s ease-in-out infinite alternate}
+#v-img.wm.holo.tilt{animation:none;transition:background-position .08s linear}
+@keyframes holo-drift{0%{background-position:10% 15%,10% 15%,0 0}100%{background-position:90% 85%,90% 85%,0 0}}
+@media (prefers-reduced-motion:reduce){#v-img.wm.holo{animation:none;background-image:var(--plain);background-size:100% 100%;background-position:0 0}}

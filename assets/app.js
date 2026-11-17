@@ -230,7 +230,8 @@
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
       if (!r.ok || $('#dd-menu a[href="#/checklist"]')) return;
       $("#dd-menu").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x, k) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}"${k === 0 ? ' class="sep"' : ""}>${x.label}</a>`).join("")}
-        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers Player Pages</a>`);
+        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers Player Pages</a>
+        <a href="#/nfl-teams" data-s="nfl-teams">Huskers by NFL Team</a>`);
       setNav(NAV_NOW);
     }).catch(() => {});
   }
@@ -779,6 +780,62 @@
     const k = Object.keys(SITES).find((d) => h === d || h.endsWith("." + d));
     return k ? SITES[k] : h;
   }
+  /* ---------- Huskers by NFL Team ---------- */
+  // Each NFL Husker's teams come from his Wikipedia career history ("St. Louis Rams (2003)" counts toward today's
+  // Rams; "*" marks an offseason or practice-squad stint) and from the teams named in my research notes.
+  let NFLTEAMS = null, TEAMIDX = null;
+  const nflTeamData = () => NFLTEAMS || (NFLTEAMS = fetch("data/nfl-teams.json").then((r) => (r.ok ? r.json() : { teams: [] })).then((d) => d.teams || []).catch(() => []));
+  function teamIndex(teams) {
+    if (TEAMIDX) return TEAMIDX;
+    const byName = teams.flatMap((t) => t.names.map((n) => [n.toLowerCase(), t])).sort((a, b) => b[0].length - a[0].length);
+    const nick = new RegExp(`\\b(${teams.flatMap((t) => t.nick).map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\b`, "g");
+    const byNick = Object.fromEntries(teams.flatMap((t) => t.nick.map((n) => [n, t])));
+    TEAMIDX = Object.fromEntries(teams.map((t) => [t.slug, []]));
+    const NFL = { "nfl-tier-1-huskers": 1, "nfl-tier-2-huskers": 2, "pro-football-huskers": 3 };
+    allPlayers().filter((x) => NFL[x.listSlug]).forEach((x) => {
+      const p = (PLAYERS.players || []).find((q) => q.slug === x.slug) || {};
+      const stints = {};
+      for (const [e] of (((p.wiki || {}).sections || {})["Career history"] || []).filter((r) => r.length === 1)) {
+        const hit = byName.find(([n]) => e.toLowerCase().startsWith(n)); if (!hit) continue;
+        const yrs = (e.match(/\(([^)]*)\)/) || [])[1] || "", star = /\*\s*$/.test(e);
+        (stints[hit[1].slug] = stints[hit[1].slug] || []).push(yrs + (star ? " (offseason / practice squad)" : ""));
+      }
+      const l = CHECK.lists.find((q) => q.slug === x.listSlug), note = l && (l.notes || {})[x.name];
+      for (const m of (note || "").matchAll(nick)) {
+        if (/\b(BC|B\.C\.)\s$/.test(note.slice(Math.max(0, m.index - 5), m.index))) continue;   // the CFL's BC Lions
+        const t = byNick[m[1]]; if (t && !stints[t.slug]) stints[t.slug] = ["from my research notes"];
+      }
+      Object.entries(stints).forEach(([slug, yrs]) => TEAMIDX[slug].push({ x, tier: NFL[x.listSlug], yrs: yrs.filter(Boolean).join(", ") }));
+    });
+    return TEAMIDX;
+  }
+  function nflTeams(slug) {
+    setNav("nfl-teams");
+    loadHub(() => nflTeamData().then((teams) => {
+      const idx = teamIndex(teams);
+      if (!slug) {
+        setTitle("Huskers by NFL Team");
+        const rows = teams.map((t) => ({ t, n: idx[t.slug].length, t1: idx[t.slug].filter((e) => e.tier === 1).length })).sort((a, b) => b.n - a.n || a.t.name.localeCompare(b.t.name));
+        $("#app").innerHTML = `<div class="wrap tm"><div class="c-head"><div class="kick">NFL Huskers</div><h1>Huskers by NFL Team</h1>
+          <p>Every Nebraska Cornhusker on my NFL lists, by the franchise he was with. Past team names count toward today's franchise (St. Louis Rams → Los Angeles Rams).</p></div>
+          <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" href="#/nfl-teams/${t.slug}"><b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div></div>`;
+        return;
+      }
+      const t = teams.find((q) => q.slug === slug); if (!t) return notFound();
+      setTitle(`Huskers on the ${t.name}`);
+      const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
+      const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
+        return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+          <span class="pm-t"><b>${esc(e.x.name)}</b><small>${e.yrs ? esc(e.yrs) + " · " : ""}Nebraska through ${esc(e.x.year || "?")}</small></span><span class="pm-go">→</span></a>`; };
+      const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
+      $("#app").innerHTML = `<div class="wrap tm"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
+        <div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
+        <p>${fmt(list.length)} Nebraska Cornhuskers from my NFL lists spent time with the ${esc(t.name)}.${t.names.length > 1 ? ` Past team names count too: ${esc(t.names.slice(1).join(", "))}.` : ""}</p></div>
+        ${[1, 2, 3].map((n) => { const g = list.filter((e) => e.tier === n); return g.length ? `<h2 class="more-h">${TIER[n]} · ${g.length}</h2><div class="pm-list">${g.map(card).join("")}</div>` : ""; }).join("")}
+        ${list.length ? "" : `<p class="empty">No Huskers from my lists yet.</p>`}</div>`;
+    }));
+  }
+
   function hub() {
     setNav("nfl-huskers"); setTitle("NFL Huskers Player Pages");
     loadHub(() => {
@@ -1218,6 +1275,7 @@
     else if (a === "all") collection("all");
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
+    else if (a === "nfl-teams") nflTeams(b);
     else if (a === "media") media();
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
@@ -1334,11 +1392,11 @@
     return p;
   }
   function loadInto(el, c, id, rk, alt) {
-    el.classList.remove("wm"); el.style.backgroundImage = "";
+    el.classList.remove("wm"); el.style.removeProperty("--plain");
     el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
     marked(id, rk).then((u) => {
       if (V.list[V.k] !== c || el.dataset.id !== id) return;
-      el.style.backgroundImage = `url("${u.plain}")`; el.src = u.marked; el.classList.add("wm");
+      el.style.setProperty("--plain", `url("${u.plain}")`); el.src = u.marked; el.classList.add("wm");
     })
       .catch(() => { if (V.list[V.k] === c && el.dataset.id === id) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
   }
@@ -1387,6 +1445,9 @@
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
+    // Holo shine on the front of refractors, Prizms, chrome and foil cards (never on backs or saved images).
+    $("#v-img").classList.toggle("holo", HOLO.test(c.name) && !(V.back && !isPair(c)) && !calm.matches);
+    $("#v-img2").classList.remove("holo");
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
@@ -1475,6 +1536,21 @@
   $("#v-stage").addEventListener("touchstart", (e) => (tx = e.touches[0].clientX), { passive: true });
   $("#v-stage").addEventListener("touchend", (e) => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx = null; });
   $("#viewer").addEventListener("click", (e) => { if (e.target.id === "v-stage" || e.target.id === "viewer") closeViewer(); });
+
+  /* ---------- Holo shine in the card viewer ---------- */
+  const HOLO = /\b(refractors?|prizms?|chrome|foil|holo(?:foil|graphic)?|x-?fractors?|superfractors?|diffractors?|shimmer|mojo|cracked ice|mirror|atomic|spectrum|sapphire|optic|finest|wave|rainbow|galactic|lava|hyper|disco|scope)\b/i;
+  function shine(x, y) { const im = $("#v-img"); im.style.setProperty("--hx", x + "%"); im.style.setProperty("--hy", y + "%"); im.classList.add("tilt"); }
+  $("#v-stage").addEventListener("pointermove", (e) => {
+    const im = $("#v-img"); if (!im.classList.contains("holo")) return;
+    const r = im.getBoundingClientRect(); if (!r.width) return;
+    shine(Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)), Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100)));
+  });
+  $("#v-stage").addEventListener("pointerleave", () => $("#v-img").classList.remove("tilt"));
+  // Phones that share their tilt without asking (most Android browsers) move the shine as you tilt.
+  window.addEventListener("deviceorientation", (e) => {
+    if ($("#viewer").hidden || !$("#v-img").classList.contains("holo") || e.gamma == null) return;
+    shine(Math.max(0, Math.min(100, 50 + e.gamma * 1.6)), Math.max(0, Math.min(100, 50 + (e.beta - 40) * 1.6)));
+  });
 
   /* ---------- Random card: the dice in the header ---------- */
   // On a collection page it picks from that page's cards (with any filters on); anywhere else, from every card.
