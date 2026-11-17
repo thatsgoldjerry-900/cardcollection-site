@@ -1301,7 +1301,7 @@
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest up.</p></div>
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div>
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     state.list = all;
   }
