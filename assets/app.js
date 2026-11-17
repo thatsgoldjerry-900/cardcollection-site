@@ -1043,8 +1043,8 @@
   });
   // Desktop shows a card's front and back side by side; phones flip between them with a tap.
   const wide = window.matchMedia("(min-width: 900px)");
-  function openViewer(k, list) {
-    V.list = list; V.k = k; V.back = false; V.zoom = false;
+  function openViewer(k, list, random) {
+    V.list = list; V.k = k; V.back = false; V.zoom = false; V.random = !!random;
     $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard(); $("#v-close").focus();
     // An extra history step, so the phone's Back button closes the card instead of leaving the page.
     if (!(history.state && history.state.v)) history.pushState({ v: 1 }, "", location.href);
@@ -1068,7 +1068,7 @@
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
-      $("#v-have").hidden = true;
+      $("#v-have").hidden = true; $("#v-dice").hidden = true;
       $("#v-flip").hidden = true; $("#v-drive").href = driveUrl(c.id, c.rk); $("#v-drive").textContent = "Full-res in Drive ↗"; $("#v-drive2").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
@@ -1094,7 +1094,8 @@
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
-    $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
+    $("#v-dice").hidden = !V.random;
+    $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
   }
@@ -1129,6 +1130,35 @@
   $("#v-stage").addEventListener("touchstart", (e) => (tx = e.touches[0].clientX), { passive: true });
   $("#v-stage").addEventListener("touchend", (e) => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx = null; });
   $("#viewer").addEventListener("click", (e) => { if (e.target.id === "v-stage" || e.target.id === "viewer") closeViewer(); });
+
+  /* ---------- Random card: the dice in the header ---------- */
+  // On a collection page it picks from that page's cards (with any filters on); anywhere else, from every card.
+  let lastRandom = -1;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  function randomCard() {
+    const here = /^(c\/|customs$|all$|search$)/.test(state.where || "") && state.list.length ? state.list : CARDS;
+    const pool = here.filter((c) => !/\((back|inside)\)/i.test(c.name));
+    if (!pool.length) return null;
+    let c;
+    for (let n = 0; n < 6; n++) { c = pool[Math.floor(Math.random() * pool.length)]; if (c.i !== lastRandom || pool.length === 1) break; }
+    lastRandom = c.i; return c;
+  }
+  function roll(el) { if (!el || calm.matches) return; el.classList.remove("roll"); void el.offsetWidth; el.classList.add("roll"); }
+  $("#dice").addEventListener("click", () => {
+    if (!CARDS || !CARDS.length) return;
+    const c = randomCard(); if (!c) return;
+    roll($("#dice"));
+    setTimeout(() => openViewer(0, [c], true), calm.matches ? 0 : 260);
+  });
+  $("#v-dice").addEventListener("click", () => {
+    const c = randomCard(); if (!c) return;
+    roll($("#v-dice"));
+    const show = () => { V.list = [c]; V.k = 0; V.back = false; V.zoom = false; showCard(); };
+    if (calm.matches) return show();
+    const st = $("#v-stage"); st.classList.remove("shuffle"); void st.offsetWidth; st.classList.add("shuffle");
+    setTimeout(show, 190);
+    setTimeout(() => st.classList.remove("shuffle"), 420);
+  });
 
   /* ---------- Boot ---------- */
   // The live Gordon and Dye numbers from the Inventory Stats master (published by the robot) load alongside the cards.

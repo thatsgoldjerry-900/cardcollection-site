@@ -23,6 +23,9 @@
       <input id="q" type="search" placeholder="Search 9,000+ cards… try “Triple Threads”" autocomplete="off">
       <kbd>/</kbd>
     </form>
+    <button type="button" class="dice" id="dice" aria-label="Show me a random card" title="Random card">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg>
+    </button>
   </div>
 </header>
 <main id="app" tabindex="-1">
@@ -51,6 +54,7 @@
     <div class="v-title" id="v-title"></div>
     <div id="v-have" class="v-have" hidden></div>
     <div class="v-actions">
+      <button type="button" id="v-dice" class="btn" hidden>🎲 Another</button>
       <button type="button" id="v-flip" class="btn" hidden>Show back</button>
       <button type="button" id="v-copy" class="btn">Copy link</button>
       <a id="v-drive" class="btn" target="_blank" rel="noopener">Full-res in Drive ↗</a>
