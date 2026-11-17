@@ -807,6 +807,21 @@
   // Rams; "*" marks an offseason or practice-squad stint) and from the teams named in my research notes.
   let NFLTEAMS = null, TEAMIDX = null;
   const nflTeamData = () => NFLTEAMS || (NFLTEAMS = fetch("data/nfl-teams.json").then((r) => (r.ok ? r.json() : { teams: [] })).then((d) => d.teams || []).catch(() => []));
+  // The year a research note gives for a team: the nearest date after the team's name in that sentence
+  // ("Released by the Broncos on 8/24/94", "the Raiders in '92"), else the nearest one before it
+  // ("Released 8/17/88 after the Bears"), stopping at another team's name. Two-digit years are 19xx or 20xx.
+  const YEAR_RE = /\b\d{1,2}[/.-]\d{1,2}[/.-](\d{4}|\d{2})\b|['’](\d{2})\b|\b((?:19|20)\d{2})\b/g;
+  function noteYear(note, i, e, nick) {
+    const cut = (str) => { const k = str.search(/[.!?](\s|$)|\n/); return k < 0 ? str.length : k; };
+    const startS = Math.max(note.lastIndexOf("\n", i) + 1, ...[...note.slice(0, i).matchAll(/[.!?]\s/g)].map((x) => x.index + 2));
+    const endS = e + cut(note.slice(e));
+    const others = [...note.slice(startS, endS).matchAll(new RegExp(nick.source, "g"))].map((x) => [startS + x.index, startS + x.index + x[0].length]).filter(([a]) => a !== i);
+    const fwdEnd = Math.min(endS, ...others.filter(([a]) => a > i).map(([a]) => a)), backStart = Math.max(startS, ...others.filter(([a]) => a < i).map(([, z]) => z));
+    const yearsIn = (str) => [...str.matchAll(YEAR_RE)].map((x) => { const y = x[1] || x[2] || x[3]; if (y.length === 4) return +y;
+      const n = +y, cy = new Date().getFullYear() % 100; return n <= cy ? 2000 + n : 1900 + n; });
+    const f = yearsIn(note.slice(e, fwdEnd)), bk = yearsIn(note.slice(backStart, i));
+    return String(f.length ? f[0] : bk.length ? bk[bk.length - 1] : "");
+  }
   function teamIndex(teams) {
     if (TEAMIDX) return TEAMIDX;
     const byName = teams.flatMap((t) => t.names.map((n) => [n.toLowerCase(), t])).sort((a, b) => b[0].length - a[0].length);
@@ -827,13 +842,13 @@
         const yrs = (e.match(/\(([^)]*)\)/) || [])[1] || "", star = /\*\s*$/.test(e);
         (stints[hit[1].slug] = stints[hit[1].slug] || []).push(yrs + (star ? " (offseason / practice squad)" : ""));
       }
+      const fromWiki = new Set(Object.keys(stints));
       const l = CHECK.lists.find((q) => q.slug === x.listSlug), note = l && (l.notes || {})[x.name];
       for (const m of (note || "").matchAll(nick)) {
         if (/\b(BC|B\.C\.)\s$/.test(note.slice(Math.max(0, m.index - 5), m.index))) continue;   // the CFL's BC Lions
-        // The year(s) from the same sentence of the note ("…with the Bills in 2017"), if given; otherwise none.
-        const from = note.lastIndexOf("\n", m.index) + 1, sent = note.slice(Math.max(from, note.slice(0, m.index).search(/[.!?]\s+[^.!?]*$/) + 1), (note.slice(m.index).search(/[.!?](\s|$)|\n/) + 1 || note.length - m.index + 1) + m.index);
-        const yrs = (sent.match(/\b(?:19|20)\d{2}(?:\s*[-–]\s*(?:19|20)?\d{2})?\b/g) || []).map((y) => y.replace(/\s*-\s*/, "–"));
-        const t = byNick[m[1]]; if (t && !stints[t.slug]) stints[t.slug] = [yrs.join(", ")];
+        const t = byNick[m[1]]; if (!t || fromWiki.has(t.slug)) continue;
+        const y = noteYear(note, m.index, m.index + m[0].length, nick);
+        (stints[t.slug] = stints[t.slug] || []).push(y);
       }
       Object.entries(stints).forEach(([slug, yrs]) => TEAMIDX[slug].push({ x, tier: NFL[x.listSlug], yrs: [...new Set(yrs.filter(Boolean))].join(", ") }));
     });
