@@ -416,3 +416,27 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   .ck td.sc{padding-right:0}
   .ck td.sc .btn.sm{padding-inline:10px}
 }
+/* Jermaine Dye career story */
+.ds{padding-block:24px 64px;max-width:1100px}
+.ds .back{display:inline-block;margin-bottom:14px;color:var(--acc);text-decoration:none;font-size:14px}
+.ds .kick{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.ds h1{margin:6px 0 14px}
+.ds-intro{max-width:70ch}
+.ds-intro p,.ds-row p{font-size:16.5px;line-height:1.7;color:#d5dbe5;margin:0 0 14px}
+.ds-hi{margin:30px 0 10px}
+.ds-hi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.ds-hi figure{margin:0}
+.ds-hi figcaption{font-size:13.5px;color:#c3cad6;margin-top:8px;line-height:1.45}
+.ds-ch{margin-top:48px;padding-top:30px;border-top:1px solid var(--line)}
+.ds-ch-h{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.ds-num{font:700 44px/1 var(--f-d);color:var(--acc);opacity:.55}
+.ds-ch-h h2{margin:0;font-size:32px}
+.ds-yrs{font:13px var(--f-m);color:var(--mu);letter-spacing:.06em}
+.ds-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,380px);gap:34px;align-items:center;margin-bottom:26px}
+.ds-row.flip{grid-template-columns:minmax(260px,380px) minmax(0,1fr)}
+.ds-row.flip p{order:2}
+.ds-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ds-all{display:inline-block;margin-top:4px;color:var(--acc);text-decoration:none;font-size:14px}
+.ds-all:hover,.ds-end a:hover{text-decoration:underline}
+.ds-end{margin-top:44px;font-size:15px}.ds-end a{color:var(--acc);text-decoration:none}
+@media (max-width:760px){.ds-row,.ds-row.flip{grid-template-columns:1fr;gap:14px}.ds-row.flip p{order:0}.ds-num{font-size:34px}.ds-ch-h h2{font-size:26px}}

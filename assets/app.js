@@ -824,6 +824,55 @@
     </div>`;
   }
 
+
+  /* ---------- Jermaine Dye career story: my write-up with my best cards from each team ---------- */
+  function dyeCareer() {
+    const st = DATA.site.dyeStory, si = SECTIONS.findIndex((x) => x.slug === "jermaine-dye");
+    if (!st || si < 0) return notFound();
+    setNav("jermaine-dye"); setTitle(st.title);
+    const sec = SECTIONS[si], mine = sectionCards(si).filter((c) => !/\(back\)|\(inside\)/i.test(c.name));
+    const find = (part) => mine.find((c) => c.name.toLowerCase().includes(part.toLowerCase()));
+    const score = (c) => (c.one ? (c.tags.has("auto") || c.tags.has("relic") ? 60 : 15) : 0) + (c.tags.has("auto") ? 30 : 0) + (c.tags.has("relic") ? 25 : 0)
+      + (/patch|knob|logoman|nameplate|button|laundry tag/i.test(c.name) ? 15 : 0)
+      + (c.serial ? Math.max(0, 30 - Math.log10(c.serial) * 10) : 0) + (c.grade ? 3 : 0);
+    const used = new Set(), shownCards = [];
+    const pick = (ch, n) => {
+      const gi = sec.groups.findIndex((g) => g.label === ch.group);
+      const pinned = (ch.cards || []).map(find).filter(Boolean);
+      // Cards issued while he played there come first; later retro cards still compete if they're special.
+      const [y0, y1] = (ch.years.match(/\d{4}/g) || []).map(Number), era = (c) => (y0 && c.year >= y0 && c.year <= (y1 || y0) + 1 ? 40 : 0);
+      const setKey = (c) => c.name.toLowerCase().replace(/\b(donruss|topps|upper deck|fleer|panini|leaf|playoff)\b/g, " ").split(/[^a-z0-9]+/).filter(Boolean).slice(0, 3).join(" ");
+      const sets = new Set();
+      const auto = mine.filter((c) => c.gi === gi && !c.tags.has("custom") && !used.has(c.i)).sort((a, b) => score(b) + era(b) - score(a) - era(a) || a.i - b.i)
+        .filter((c) => { const k = setKey(c); if (sets.has(k)) return false; sets.add(k); return true; });
+      const out = [...pinned, ...auto.filter((c) => !pinned.includes(c))].slice(0, n);
+      out.forEach((c) => used.add(c.i));
+      return out;
+    };
+    const card = (c) => { shownCards.push(c); return cardHTML(c); };
+    const hi = (st.highlights || []).map((h) => ({ c: find(h.card), cap: h.caption })).filter((h) => h.c);
+    hi.forEach((h) => used.add(h.c.i));
+    const chapters = st.chapters.map((ch, n) => {
+      const cards = pick(ch, ch.paragraphs.length * 2), gi = sec.groups.findIndex((g) => g.label === ch.group);
+      return `<section class="ds-ch">
+        <div class="ds-ch-h"><span class="ds-num">${String(n + 1).padStart(2, "0")}</span><div><h2>${esc(ch.team)}</h2><span class="ds-yrs">${esc(ch.years)}</span></div></div>
+        ${ch.paragraphs.map((p, k) => { const two = cards.slice(k * 2, k * 2 + 2);
+          return `<div class="ds-row${k % 2 ? " flip" : ""}"><p>${esc(p)}</p>${two.length ? `<div class="ds-cards">${two.map(card).join("")}</div>` : ""}</div>`; }).join("")}
+        ${gi >= 0 ? `<a class="ds-all" href="#/c/${sec.slug}/${sec.groups[gi].slug}">See all ${fmt(sec.groups[gi].count)} of my ${esc(ch.group)} cards →</a>` : ""}
+      </section>`;
+    }).join("");
+    $("#app").innerHTML = `<div class="wrap ds c-royal">
+      <a class="back" href="#/c/${sec.slug}">← Jermaine Dye collection</a>
+      <div class="kick">Player collection · Career story</div>
+      <h1>${esc(st.title)}</h1>
+      <div class="ds-intro">${(st.intro || []).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+      ${hi.length ? `<section class="ds-hi"><h2 class="sub-h">Favorite pieces</h2><div class="ds-hi-grid">${hi.map((h) => `<figure>${card(h.c)}<figcaption>${esc(h.cap)}</figcaption></figure>`).join("")}</div></section>` : ""}
+      ${chapters}
+      <p class="ds-end"><a href="#/c/${sec.slug}">Browse all ${fmt(mine.length)} of my Jermaine Dye cards →</a></p>
+    </div>`;
+    state.list = shownCards;   // the card viewer steps through the cards on this page
+  }
+
   function notFound() { setTitle("Page not found"); $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
 
   /* ---------- Router ---------- */
@@ -847,6 +896,7 @@
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "media") media();
+    else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") {   // a shared card link opens the card over its own collection
