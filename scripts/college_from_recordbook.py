@@ -5,6 +5,7 @@ college stats; each season shown is one where he was the team leader.
 
   python3 scripts/college_from_recordbook.py recordbook.pdf            # NFL Tier 2 and Tier 3 players
   python3 scripts/college_from_recordbook.py recordbook.pdf --dry-run  # show matches only
+  python3 scripts/college_from_recordbook.py recordbook.pdf --lists=all  # NFL Tier 1 as well
 (needs pdftotext; the record book is the "Nebraska Football Record Book" PDF on huskers.com's History & Records page)
 """
 import json, os, re, sys
@@ -122,6 +123,7 @@ def main():
     rows = parse(sys.argv[1]) + tackles(sys.argv[1])
     data = json.load(open(OUT))
     lists = ("nfl-tier-2-huskers", "pro-football-huskers")
+    if "--lists=all" in sys.argv: lists = ("nfl-tier-1-huskers", "nfl-tier-2-huskers", "pro-football-huskers")
     added = []
     for p in data["players"]:
         if p.get("list") not in lists or p.get("collegeTables"): continue
