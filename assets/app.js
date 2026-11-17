@@ -843,7 +843,7 @@
       const [y0, y1] = (ch.years.match(/\d{4}/g) || []).map(Number), era = (c) => (y0 && c.year >= y0 && c.year <= (y1 || y0) + 1 ? 40 : 0);
       const setKey = (c) => c.name.toLowerCase().replace(/\b(donruss|topps|upper deck|fleer|panini|leaf|playoff)\b/g, " ").split(/[^a-z0-9]+/).filter(Boolean).slice(0, 3).join(" ");
       const sets = new Set();
-      const auto = mine.filter((c) => c.gi === gi && !c.tags.has("custom") && !used.has(c.i)).sort((a, b) => score(b) + era(b) - score(a) - era(a) || a.i - b.i)
+      const auto = mine.filter((c) => c.gi === gi && !c.tags.has("custom") && !/printing plate/i.test(c.name) && !used.has(c.i)).sort((a, b) => score(b) + era(b) - score(a) - era(a) || a.i - b.i)
         .filter((c) => { const k = setKey(c); if (sets.has(k)) return false; sets.add(k); return true; });
       const out = [...pinned, ...auto.filter((c) => !pinned.includes(c))].slice(0, n);
       out.forEach((c) => used.add(c.i));
