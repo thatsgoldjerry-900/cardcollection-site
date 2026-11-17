@@ -547,14 +547,25 @@
       count += rows.length; if (!rows.length) return "";
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
-        return `<tr class="${have ? "have" : "need"}"${scans.length ? ` data-peek="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}"` : ""}><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span></td>
-          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) : esc(r[i])}</td>`).join("")}
+        return `<tr class="${have ? "have" : "need"}"${scans.length ? ` data-peek="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}"` : ""}><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span>${(l.notes || {})[r[0]] ? `<button type="button" class="nt-btn nt-m" data-note="${esc(r[0])}" aria-expanded="false" aria-label="Why ${esc(r[0])} is on this list">i</button>` : ""}</td>
+          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) + ((l.notes || {})[r[i]] ? ` <button type="button" class="nt-btn nt-d" data-note="${esc(r[i])}" aria-expanded="false" aria-label="Why ${esc(r[i])} is on this list" title="Why he's on this list">i</button>` : "") : esc(r[i])}</td>`).join("")}
           <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
     }).join("");
     $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
     $("#ck-table").innerHTML = count ? `<table><thead><tr><th>Status</th>${shown.map((i) => `<th class="${opt(cols[i]).trim()}">${esc(label(cols[i]))}</th>`).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
   }
+  // My research note on why a player is on the Tier 2 or Tier 3 list opens in a row under his name.
+  const noteHTML = (t) => t.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("");
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("#ck-table .nt-btn"); if (!b) return;
+    const tr = b.closest("tr"), open = tr.nextElementSibling && tr.nextElementSibling.classList.contains("nt-row");
+    const both = tr.querySelectorAll(".nt-btn");
+    if (open) { tr.nextElementSibling.remove(); both.forEach((x) => x.setAttribute("aria-expanded", "false")); return; }
+    const l = CHECK.lists[CK.list], t = (l.notes || {})[b.dataset.note]; if (!t) return;
+    tr.insertAdjacentHTML("afterend", `<tr class="nt-row"><td colspan="${tr.children.length}"><div class="nt">${noteHTML(t)}</div></td></tr>`);
+    both.forEach((x) => x.setAttribute("aria-expanded", "true"));
+  });
   // Pause the mouse on a player's name or Scan button in an autograph list to see a small preview of the card.
   const peek = document.createElement("div"); peek.className = "peek"; peek.hidden = true; document.body.appendChild(peek);
   let peekTimer = null, peekRow = null;
@@ -781,6 +792,8 @@
             <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
+            ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
+              return t ? `<section class="why"><h2>Why he's on the ${esc((row.backLabel || "").replace(/ Huskers Autograph List$/, ""))} list</h2>${noteHTML(t)}</section>` : ""; })()}
             <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>

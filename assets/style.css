@@ -406,7 +406,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .fixnote b{color:var(--fg)}
 /* Autograph lists on touch screens: bigger targets for the player page link and Scan button (Have/Need is just a label) */
 @media (pointer:coarse){
-  .ck td.nm a.pl-link{display:block;padding:11px 0;margin:-8px 0}
+  .ck td.nm a.pl-link{display:inline-block;padding:11px 0;margin:-8px 0}
   .ck td.sc .btn.sm{min-height:40px;padding-inline:14px;display:inline-flex;align-items:center}
 }
 /* Phones: tighter autograph table so the Scan button fits on screen without sideways scrolling */
@@ -440,3 +440,14 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ds-all:hover,.ds-end a:hover{text-decoration:underline}
 .ds-end{margin-top:44px;font-size:15px}.ds-end a{color:var(--acc);text-decoration:none}
 @media (max-width:760px){.ds-row,.ds-row.flip{grid-template-columns:1fr;gap:14px}.ds-row.flip p{order:0}.ds-num{font-size:34px}.ds-ch-h h2{font-size:26px}}
+/* Tier 2/3 research notes */
+.nt-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;vertical-align:1px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--mu);font:italic 700 11px/1 Georgia,serif;cursor:pointer;padding:0}
+.nt-btn:hover,.nt-btn[aria-expanded="true"]{border-color:var(--acc);color:var(--acc)}
+.ck tr.nt-row td{padding-top:0;border-bottom:1px solid var(--line)}
+.nt{background:var(--panel);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:10px 14px;max-width:72ch;font-size:13.5px;line-height:1.55;color:#c3cad6;font-weight:400}
+.nt p{margin:0 0 8px}.nt p:last-child{margin:0}
+.why{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:10px;padding:14px 18px;margin:14px 0 4px;max-width:72ch}
+.why h2{font-size:15px;margin:0 0 8px;letter-spacing:.02em}
+.why p{margin:0 0 8px;font-size:14.5px;line-height:1.6;color:#d5dbe5}.why p:last-child{margin:0}
+.nt-m{display:none}
+@media (max-width:640px){.nt-d{display:none}.nt-m{display:flex;margin:6px 0 0;width:28px;height:28px;font-size:13px}}
