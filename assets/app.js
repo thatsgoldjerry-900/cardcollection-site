@@ -1482,8 +1482,7 @@
       $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
       $("#v-flip").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
-      $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
-      $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
+      navState();
       return;
     }
     const pair = isPair(c), stage = $("#v-stage"), im = $("#v-img"), im2 = $("#v-img2");
@@ -1517,8 +1516,7 @@
     if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(c.id)}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
     if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(c.id)}">🌈 View rainbow (${rb.length})</a>`);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
-    $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
-    $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
+    navState();
   }
   /* Card back text: transcriptions of custom card backs (data/card-text.json, keyed by Drive file ID),
      readable under "Read the back" and linked to the image for screen readers. Loaded the first time it's needed. */
@@ -1556,7 +1554,15 @@
   $("#v-text").addEventListener("click", (e) => { if (e.target.closest(".vt-close")) { $("#v-text").hidden = true; $("#v-read").setAttribute("aria-expanded", "false"); } });
   const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
-  $("#v-close").onclick = () => closeViewer();
+  $("#v-close").onclick = $("#v-back").onclick = () => closeViewer();
+  $("#v-up").onclick = () => step(-1); $("#v-down").onclick = () => step(1);
+  // Top bar (always shown; the main way around on phones): back, "3 of 24", and previous/next.
+  function navState() {
+    const first = V.k <= 0, last = V.k >= V.list.length - 1;
+    $("#v-prev").style.visibility = first ? "hidden" : "visible"; $("#v-next").style.visibility = last ? "hidden" : "visible";
+    $("#v-up").disabled = first || V.random; $("#v-down").disabled = last || V.random;
+    $("#v-pos").textContent = V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`;
+  }
   // Keep exploring inside the viewer: swap in the cards from the same set, or of the same player.
   $("#v-more").addEventListener("click", (e) => {
     const b = e.target.closest("[data-more]"); if (!b || !V.more) return;

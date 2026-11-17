@@ -51,6 +51,11 @@
 <footer class="foot" id="foot"></footer>
 
 <div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Card viewer">
+  <div class="v-top">
+    <button type="button" id="v-back" class="v-back" aria-label="Back to the cards">‹ Back</button>
+    <span id="v-pos" class="v-pos"></span>
+    <span class="v-step"><button type="button" id="v-up" aria-label="Previous card">‹</button><button type="button" id="v-down" aria-label="Next card">›</button></span>
+  </div>
   <div class="v-bar">
     <div class="v-title" id="v-title"></div>
     <div id="v-have" class="v-have" hidden></div>
