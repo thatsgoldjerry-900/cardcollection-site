@@ -1445,9 +1445,7 @@
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
-    // Holo shine on the front of refractors, Prizms, chrome and foil cards (never on backs or saved images).
-    $("#v-img").classList.toggle("holo", HOLO.test(c.name) && !(V.back && !isPair(c)) && !calm.matches);
-    $("#v-img2").classList.remove("holo");
+    aura(c);
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
@@ -1537,20 +1535,26 @@
   $("#v-stage").addEventListener("touchend", (e) => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx = null; });
   $("#viewer").addEventListener("click", (e) => { if (e.target.id === "v-stage" || e.target.id === "viewer") closeViewer(); });
 
-  /* ---------- Holo shine in the card viewer ---------- */
+  /* ---------- Card auras: effects around special cards in the viewer, never on the scan itself ---------- */
+  // 1/1: gold glow, light rays and sparkles. Numbered /25 or lower: a soft pulsing glow. Autographs: a faint ink-blue
+  // glow. Refractors, Prizms, chrome and foil: a rainbow halo circling the card's edge. The rarest one wins.
   const HOLO = /\b(refractors?|prizms?|chrome|foil|holo(?:foil|graphic)?|x-?fractors?|superfractors?|diffractors?|shimmer|mojo|cracked ice|mirror|atomic|spectrum|sapphire|optic|finest|wave|rainbow|galactic|lava|hyper|disco|scope)\b/i;
-  function shine(x, y) { const im = $("#v-img"); im.style.setProperty("--hx", x + "%"); im.style.setProperty("--hy", y + "%"); im.classList.add("tilt"); }
-  $("#v-stage").addEventListener("pointermove", (e) => {
-    const im = $("#v-img"); if (!im.classList.contains("holo")) return;
-    const r = im.getBoundingClientRect(); if (!r.width) return;
-    shine(Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)), Math.max(0, Math.min(100, ((e.clientY - r.top) / r.height) * 100)));
-  });
-  $("#v-stage").addEventListener("pointerleave", () => $("#v-img").classList.remove("tilt"));
-  // Phones that share their tilt without asking (most Android browsers) move the shine as you tilt.
-  window.addEventListener("deviceorientation", (e) => {
-    if ($("#viewer").hidden || !$("#v-img").classList.contains("holo") || e.gamma == null) return;
-    shine(Math.max(0, Math.min(100, 50 + e.gamma * 1.6)), Math.max(0, Math.min(100, 50 + (e.beta - 40) * 1.6)));
-  });
+  const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
+  function placeAura() {
+    const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
+    if (!a.className.match(/\bt-/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
+    a.hidden = false;
+    Object.assign(a.style, { left: im.offsetLeft + "px", top: im.offsetTop + "px", width: im.offsetWidth + "px", height: im.offsetHeight + "px" });
+  }
+  function aura(c) {
+    const a = $("#v-aura"), front = !(V.back && !isPair(c));
+    a.className = "v-aura" + (front && auraTier(c) ? " t-" + auraTier(c) : "");
+    requestAnimationFrame(placeAura);
+  }
+  // Keep the aura on the front card: it moves when either image loads or changes size (e.g. the back arriving).
+  ["#v-img", "#v-img2"].forEach((q) => $(q).addEventListener("load", () => requestAnimationFrame(placeAura)));
+  if (window.ResizeObserver) { const ro = new ResizeObserver(() => { if (!$("#viewer").hidden) placeAura(); }); ro.observe($("#v-img")); ro.observe($("#v-img2")); ro.observe($("#v-stage")); }
+  window.addEventListener("resize", () => { if (!$("#viewer").hidden) placeAura(); });
 
   /* ---------- Random card: the dice in the header ---------- */
   // On a collection page it picks from that page's cards (with any filters on); anywhere else, from every card.
