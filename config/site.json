@@ -2,7 +2,12 @@
   "title": "IanBadeer.com",
   "tagline": "Alex Gordon & Jermaine Dye super collector · Kansas City Royals & Nebraska Cornhuskers team collector",
   "intro": "My name is Ian and my passion is collecting! Within this site you'll find thousands of high resolution scans of my cards (with a few game-used items as well). Every image is labeled with its database name. If you have a rare card of either player, have a Husker autograph I need, or see a card here you want to trade for, let me know!",
-  "email": "ian.badeer@gmail.com",
+  "contact": {
+    "code": "bW9jLmxpYW1nQHJlZWRhYi5uYWk=",
+    "form": "",
+    "formCardField": ""
+  },
+  "_contactHelp": "\"contact.code\" is my email address, reversed and base64-encoded so scrapers cannot read it; the site decodes it only when someone clicks. To show the Google Form option, set \"form\" to the form's link and \"formCardField\" to the pre-filled link's entry for the card/player field (e.g. \"entry.123456\").",
   "featured": {
     "match": "All-Star Jumbo Sleeve Team Patch",
     "caption": "Alex Gordon's 2013 All-Star Game jersey sleeve patch, 1 of 1"

@@ -452,3 +452,9 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .nt-m{display:none}
 @media (max-width:640px){.nt-d{display:none}.nt-m{display:flex;margin:6px 0 0;width:28px;height:28px;font-size:13px}}
 .md-meta{flex-wrap:wrap;column-gap:10px;row-gap:2px}.md-meta span{white-space:nowrap}
+/* Contact buttons (address assembled on click) */
+.linkish{background:none;border:0;padding:0;font:inherit;color:var(--acc);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.cta{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.cta-alt{font-size:12.5px;color:var(--mu)}
+.v-have{margin:2px 0 10px}
+.pl-ph.none .cta{margin-top:14px;align-items:center}

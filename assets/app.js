@@ -242,7 +242,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? Email <span class="email">${esc(s.email)}</span></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? <button type="button" class="linkish" data-mail="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -252,6 +252,24 @@
     document.querySelectorAll("#nav a, #dd-menu a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     const dd = $("#dd-btn"); if (dd) dd.classList.toggle("on", !!$("#dd-menu a[aria-current]"));
   }
+
+  /* ---------- Contact: my address is only put together when someone clicks, so scrapers can't read it ---------- */
+  const myEmail = () => { const c = DATA.site.contact || {}; try { return c.code ? atob(c.code).split("").reverse().join("") : ""; } catch (e) { return ""; } };
+  // An email button (opens the visitor's mail app with the subject and message filled in), plus a fallback
+  // for people without a mail app: copy my address, or the Google Form when one is set up.
+  function contactHTML(label, subject, body, item) {
+    const c = DATA.site.contact || {};
+    const form = c.form ? c.form + (c.formCardField && item ? `${c.form.includes("?") ? "&" : "?"}usp=pp_url&${c.formCardField}=${encodeURIComponent(item)}` : "") : "";
+    return `<div class="cta"><button type="button" class="btn have-btn" data-mail="${esc(subject)}" data-body="${esc(body)}">✉ ${esc(label)}</button>
+      <small class="cta-alt">No email app? <button type="button" class="linkish" data-copymail>Copy my address</button>${form ? ` · or <a href="${esc(form)}" target="_blank" rel="noopener">use the form</a>` : ""}</small></div>`;
+  }
+  document.addEventListener("click", async (e) => {
+    const m = e.target.closest("[data-mail]");
+    if (m) { location.href = `mailto:${myEmail()}?subject=${encodeURIComponent(m.dataset.mail)}&body=${encodeURIComponent(m.dataset.body || "")}`; return; }
+    const cp = e.target.closest("[data-copymail]"); if (!cp) return;
+    const a = myEmail();
+    try { await navigator.clipboard.writeText(a); cp.textContent = `Copied ${a}`; } catch (err) { cp.textContent = a; }
+  });
 
   function home() {
     setNav(null); setTitle("");
@@ -785,7 +803,7 @@
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
           <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
-            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p></div>`}</div>
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <h1>${esc(info.name)}</h1>
@@ -1003,10 +1021,11 @@
     $("#v-drive").textContent = pair ? "Front full-res ↗" : "Full-res in Drive ↗";
     $("#v-drive2").hidden = !pair;
     if (pair) $("#v-drive2").href = driveUrl(c.backId, c.backRk);
-    const sec = SECTIONS[c.si], email = DATA.site.email;
+    const sec = SECTIONS[c.si];
     // Want List cards get a button that starts an email to me with the card already named.
-    $("#v-have").hidden = !(sec.kind === "want" && email);
-    if (!$("#v-have").hidden) $("#v-have").href = `mailto:${email}?subject=${encodeURIComponent("I have a card from your Want List: " + c.name)}&body=${encodeURIComponent(`Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`)}`;
+    $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
+    if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
+      `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
