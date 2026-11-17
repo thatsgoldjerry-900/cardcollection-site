@@ -22,6 +22,39 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   2. Pick a site code, e.g. "ianbadeer" (the dashboard becomes ianbadeer.goatcounter.com).
   3. Send Claude the code. Claude puts it in `analytics.goatcounter` in `config/site.json`; every page then
      counts on its own (e.g. `#/player/ricky-simmons`), and visits show up in the GoatCounter dashboard.
+- [ ] **Add years for Huskers by NFL Team** (110 players with no year yet). In the player's research note on your NFL list,
+  put a date or year in the same sentence as the team, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92".
+  The team page picks it up after the next data update. Cross a player off once his year shows.
+  - [ ] Arizona Cardinals: Aaron Golliday, Chris Spachman, Jeff Lake, Jon Zatechka
+  - [ ] Atlanta Falcons: Corey Dixon, Pat Ricketts
+  - [ ] Baltimore Ravens: Terrence Moore
+  - [ ] Carolina Panthers: Adi Kunalic, Brian Schuster
+  - [ ] Chicago Bears: Bert Gissler, Dana Stephenson, George Abel, Kenny Wilhite, Lynn Senkbeil
+  - [ ] Cincinnati Bengals: Jack Gangwish, Kenny Brown, Paul Rogers
+  - [ ] Cleveland Browns: Dedrick Young, Randy Poeschl
+  - [ ] Dallas Cowboys: Bob Taucher, Dave Volk, Glenn Patterson, Larry Mushinskie, Ola Dagunduro, P.J. Mangieri
+  - [ ] Denver Broncos: John Havekost
+  - [ ] Detroit Lions: Loran Kaiser, Patrick Kabongo, Phil Bates, Preston Love, Ray Novak
+  - [ ] Green Bay Packers: Al Grubaugh, Bert Gissler, Charles Bryant, Curenski Gilleylen, Fred Preston, Terrell Farley, Terry Connealy, Tony Jeter, Wilson Thomas
+  - [ ] Houston Texans: Damion Daniels, Pheldarious Payne
+  - [ ] Indianapolis Colts: Ron Kirkland, Van Brownson
+  - [ ] Jacksonville Jaguars: Benard Thomas, Kevin Maurice, Kyler Reed, Oliver Martin, Todd Peterson
+  - [ ] Kansas City Chiefs: Aaron Golliday, Brandon Kinnie, Guy Ingles, Jake Andersen, Ray Novak
+  - [ ] Las Vegas Raiders: Phalen Sanford
+  - [ ] Los Angeles Chargers: Barry Cryer, Ben Cotton, Mike Green
+  - [ ] Los Angeles Rams: Bobby Reynolds, Clarence Cook, Cortney Grixby, Dave Theisen, Pat Tyrance, Walter "Butch" Luther
+  - [ ] Minnesota Vikings: Ira Cooper, Mike Caputo, Terrell Newby, Tyler Hoppes
+  - [ ] New England Patriots: Chris Spachman, Dan Hadenfeldt, Eric Alford, Jerry Murtaugh, Sam Cotton
+  - [ ] New Orleans Saints: Bob Taucher, Jermarcus Hardrick
+  - [ ] New York Giants: Bert Gissler, Bob Mills, Greg Jorgensen, Matt O'Hanlon
+  - [ ] New York Jets: Dave Butterfield, George Mills, Jamie Burrow, Josh Davis, Mike Anderson, Scott Raridon
+  - [ ] Philadelphia Eagles: Ted Connor, Ty Steinkuhler
+  - [ ] Pittsburgh Steelers: Byron McCane, Tamon Lynum, Tony Jeter
+  - [ ] San Francisco 49ers: Anthony West
+  - [ ] Seattle Seahawks: Austin Cassidy, Deontai Williams, Kevin Dixon, Rickey Thenarse
+  - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner, Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom
+  - [ ] Tennessee Titans: Jon Clanton, Mike Erickson
+  - [ ] Washington Commanders: Ardell Johnson, Elmer Dohrmann, Jason Schwab, Jerald Foster, Jerry Minnick
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
