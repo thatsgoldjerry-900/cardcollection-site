@@ -538,3 +538,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .cb-card img{width:100%;border-radius:6px;display:block;margin-bottom:4px}
 .cb-sec .facts{margin-bottom:10px}.cb-sec::after{content:"";display:block;clear:both}
 @media (max-width:640px){.cb-card{float:none;margin:0 0 12px;width:160px}}
+.star{color:var(--gold);font-size:.9em}
+.bio.ian{border-left:3px solid var(--gold);padding-left:14px;margin-bottom:14px}
+.bio.ian .note{margin-top:4px}

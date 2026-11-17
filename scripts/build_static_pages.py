@@ -169,24 +169,27 @@ def college_html(p):
 
 
 def card_backs_for(slug):
-    """Ian's custom card backs about this player (data/card-text.json entries with "player": slug)."""
+    """What Ian's custom card backs add to this player's page (data/card-text.json entries with "player": slug):
+    (facts for the facts table, stats sections, his write-up), all marked with a star."""
     try: cards = json.load(open(os.path.join(ROOT, "data", "card-text.json"))).get("cards") or {}
-    except (OSError, ValueError): return ""
-    out = []
+    except (OSError, ValueError): return [], "", ""
+    facts, stats, story = [], "", ""
     for e in cards.values():
         if not isinstance(e, dict) or e.get("player") != slug: continue
-        facts = [r for r in (e.get("facts") or []) if len(r) == 2]
-        st = e.get("stats") if e.get("stats") and len(e["stats"].get("rows") or []) > 1 else None
-        story = e.get("story") or e.get("text") or ""
-        html_ = "<h2>From Ian's custom card</h2>"
-        if facts: html_ += '<table class="kv">' + "".join(f"<tr><th>{esc(k)}</th><td>{esc(v)}</td></tr>" for k, v in facts) + "</table>"
-        if st:
-            rows = st["rows"]
-            html_ += f'<h3>{esc(st.get("title") or "Stats")}</h3><div class="scroll"><table><thead><tr>' + "".join(f"<th>{esc(h)}</th>" for h in rows[0]) + "</tr></thead><tbody>" + \
-                "".join("<tr>" + "".join(f"<td>{esc(v)}</td>" for v in r) + "</tr>" for r in rows[1:]) + "</tbody></table></div>"
-        if story: html_ += paras(re.sub(r"(?m)^## ", "", story))
-        out.append(html_ + '<p class="mu" style="font-size:13px">From the back of a custom card written by Ian Badeer.</p>')
-    return "".join(out)
+        facts += [(r[0] + " ★", r[1]) for r in (e.get("facts") or []) if len(r) == 2]
+        st = e.get("stats")
+        if st and len(st.get("rows") or []) > 1:
+            h, *rows = st["rows"]
+            if len(rows) == 1:
+                body = '<table class="kv">' + "".join(f"<tr><th>{esc(k)}</th><td>{esc(rows[0][n] if n < len(rows[0]) else '')}</td></tr>" for n, k in enumerate(h) if not (n == 0 and len(h) > 2)) + "</table>"
+            else:
+                body = '<div class="scroll"><table><thead><tr>' + "".join(f"<th>{esc(k)}</th>" for k in h) + "</tr></thead><tbody>" + \
+                    "".join("<tr>" + "".join(f"<td>{esc(v)}</td>" for v in r) + "</tr>" for r in rows) + "</tbody></table></div>"
+            stats += f'<h2>{esc(st.get("title") or "Stats")} ★</h2>{body}<p class="mu" style="font-size:13px">From Ian&#39;s custom card.</p>'
+        t = e.get("story") or e.get("text") or ""
+        if t: story += paras(re.sub(r"(?m)^## ", "", t))
+    if story: story += '<p class="mu" style="font-size:13px">★ From Ian Badeer&#39;s custom card, in his own words.</p>'
+    return facts, stats, story
 
 
 def media_for(slug):
@@ -235,6 +238,8 @@ def player_page(p, row, info, l, idx, updated):
     for head in ("Career history", "Awards and highlights"):
         items = [r[0] for r in sec.get(head, []) if len(r) == 1]
         if items: lists_html += f"<h2>{esc(head)}</h2><ul>" + "".join(f"<li>{esc(x)}</li>" for x in items) + "</ul>"
+    cb_facts, cb_stats, cb_story = card_backs_for(p["slug"])
+    facts += cb_facts
     card = best_scan(idx, name, sport)
     stats = college_html(p) if sport == "football" else ""
     bio = paras(w.get("intro")) if w.get("intro") else ""
@@ -257,10 +262,11 @@ def player_page(p, row, info, l, idx, updated):
 {f'<figure class="card"><img src="{esc(img_url(card))}" alt="{esc(card[2])}" loading="lazy" width="600"><figcaption>{esc(card[2])} · from Ian&#39;s collection</figcaption></figure>' if card else ""}
 </div>
 {"".join(f'<h2>Watch</h2><ul>' + "".join(f'<li><a href="{esc(u)}">{esc(t)}</a>{f" <span class=mu>· {esc(o)}{(chr(32) + chr(183) + chr(32) + esc(d)) if d else chr(32)}</span>" if o else ""}</li>' for t, u, o, d in media_for(p["slug"])) + "</ul>" for _ in [0] if media_for(p["slug"]))}
-{card_backs_for(p["slug"])}
+{cb_stats}
 {f"<h2>College stats</h2>{stats}" if stats else ""}
 {lists_html}
-{f'<h2>Biography</h2>{bio}<p class="mu" style="font-size:13px">Adapted from <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
+{f'<h2>Biography</h2>{cb_story}' if cb_story and not bio else ""}
+{f'<h2>Biography</h2>{cb_story}{bio}<p class="mu" style="font-size:13px">Adapted from <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
 <div class="credit"><p><strong>{esc(CREDIT)}.</strong> Part of Ian Badeer&#39;s {esc(label)} list.</p><p class="mu">{esc(QUOTE)}</p></div>"""
     desc = lead + (" " + re.sub(r"\s+", " ", note).strip()[:180] if note else "")
     ld = {"@context": "https://schema.org", "@type": "ProfilePage", "name": f"{name} · {label}", "dateModified": updated, "author": ian(),

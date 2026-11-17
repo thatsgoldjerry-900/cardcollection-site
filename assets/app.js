@@ -841,7 +841,7 @@
 
   function player(slug) {
     setNav("nfl-huskers");
-    loadHub(() => {
+    loadHub(() => backText().then((CB) => {
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
@@ -879,6 +879,12 @@
         ...Object.entries(sec).filter(([k]) => /^Last .*appearance$/i.test(k)).map(([k, v]) => [k, (v[0] || [])[0]]),
         ["High school", (pick("High school") || [])[1]], ["Height / weight", [(pick("Listed height") || [])[1], (pick("Listed weight") || [])[1]].filter(Boolean).join(" · ")]]
         .filter(([, v]) => v && String(v).trim());
+      // What Ian's custom card backs add (data/card-text.json, "player": this page): facts join the facts grid,
+      // stats get a box next to the other stats, and his write-up leads the bio. Marked ★ so sources stay clear.
+      const mine = Object.values(CB || {}).filter((e) => e && e.player === slug);
+      mine.forEach((e) => (e.facts || []).filter((r) => r.length === 2).forEach(([k, v]) => facts.push([k, v, true])));
+      const cardStats = mine.map((e) => e.stats).filter((st) => st && (st.rows || []).length > 1);
+      const ianBio = mine.map((e) => e.story || e.text).filter(Boolean).join("\n\n");
       const statKey = Object.keys(sec).find((k) => /statistics/i.test(k));
       // A list section, in whichever name this sport's infobox uses; "2022–2024 | Team" rows read as "Team (2022–2024)".
       const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc(r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0])}</li>`).join("") : ""; };
@@ -919,13 +925,20 @@
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
               return t ? `<section class="why"><h2>Why he's on the ${esc((row.backLabel || "").replace(/ Huskers Autograph List$/, ""))} list</h2>${noteHTML(t)}</section>` : ""; })()}
-            <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+            <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+            ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
-        <div id="pl-cardback"></div>
         <div class="pl-grid">
+
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
+          ${cardStats.map((st) => { const [h, ...rows] = st.rows;
+            // One row (career totals): a simple list; first column is just the row's label. Several rows (seasons): a table.
+            const body = rows.length === 1
+              ? `<table class="kv"><tbody>${h.map((k, n) => (n === 0 && h.length > 2 ? "" : `<tr><th>${esc(k)}</th><td>${esc(rows[0][n] ?? "")}</td></tr>`)).join("")}</tbody></table>`
+              : `<div class="vt-tbl"><table><thead><tr>${h.map((k) => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+            return `<section><h2>${esc(st.title || "Stats")} <span class="star" title="From my custom card">★</span></h2>${body}<p class="note">From my custom card.</p></section>`; }).join("")}
           ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
               ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
               : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
@@ -940,29 +953,9 @@
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
       </div>`;
       state.list = scans;
-      cardBackSection(slug, info.name);
-    });
+    }));
   }
-  // "From my custom card": what Ian's custom card backs add to a player page (new facts, stats and his write-up),
-  // from data/card-text.json entries whose "player" is this page.
-  function cardBackSection(slug, name) {
-    backText().then((all) => {
-      const box = $("#pl-cardback"); if (!box) return;
-      const mine = Object.entries(all).filter(([, e]) => e && e.player === slug);
-      if (!mine.length) return;
-      box.innerHTML = mine.map(([backId, e]) => {
-        const card = CARDS.find((c) => c.backId === backId);
-        const facts = (e.facts || []).filter((r) => r.length === 2);
-        const st = e.stats && (e.stats.rows || []).length > 1 ? e.stats : null;
-        return `<section class="cb-sec"><h2>From my custom card</h2>
-          ${card ? `<button type="button" class="cb-card" data-i="${card.i}"><img alt="${esc(card.name)}" loading="lazy" src="${img(card.id, card.rk, 300)}"><span>${esc(card.name)}</span></button>` : ""}
-          ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-          ${st ? `<h3>${esc(st.title || "Stats")}</h3><div class="vt-tbl"><table><thead><tr>${st.rows[0].map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${st.rows.slice(1).map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
-          ${e.story || e.text ? `<div class="bio">${textHTML(e.story || e.text)}</div>` : ""}
-          <p class="note">From the back of my custom card${card ? "" : ""}, written by me.</p></section>`;
-      }).join("");
-    });
-  }
+
 
 
   /* ---------- Media: articles, videos and podcasts (config/site.json "media") ---------- */
