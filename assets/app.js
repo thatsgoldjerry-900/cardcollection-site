@@ -1054,9 +1054,10 @@
     if (!silent && history.state && history.state.v) history.back();
   }
   window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
-  /* Watermark: the large viewer image (and anything saved from it) carries "IANBADEER.COM" in the lower part
-     of the card, centered, like COMC. Thumbnails and the quick first preview stay plain. */
-  const MARKED = new Map();   // file id -> object URL of the marked image (kept for this visit)
+  /* Watermark: anything saved from the card viewer carries "IANBADEER.COM" in the lower part of the card,
+     centered, like COMC, while visitors see the clean card. The viewer's <img> holds the marked copy (so
+     right-click / long-press "Save image" gets it) but hides it, and shows the clean copy as its background. */
+  const MARKED = new Map();   // file id -> {plain, marked} object URLs (kept for this visit)
   function marked(id, rk) {
     if (MARKED.has(id)) return MARKED.get(id);
     const p = new Promise((ok, no) => {
@@ -1065,6 +1066,7 @@
         try {
           const cv = document.createElement("canvas"); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
           const g = cv.getContext("2d"); g.drawImage(im, 0, 0);
+          const plain = cv.toDataURL("image/jpeg", 0.92);
           // Like COMC: centered, about 80% of the way down the card, spanning ~60% of its width;
           // see-through gray letters with a light edge so it reads on light and dark cards.
           const word = "IANBADEER.COM";
@@ -1077,7 +1079,7 @@
           g.lineJoin = "round"; g.lineWidth = Math.max(1.5, size * 0.05);
           g.strokeStyle = "rgba(255,255,255,.42)"; g.strokeText(word, x, y);
           g.fillStyle = "rgba(60,60,60,.40)"; g.fillText(word, x, y);
-          cv.toBlob((b) => (b ? ok(URL.createObjectURL(b)) : no(new Error("no image"))), "image/jpeg", 0.9);
+          cv.toBlob((b) => (b ? ok({ plain, marked: URL.createObjectURL(b) }) : no(new Error("no image"))), "image/jpeg", 0.9);
         } catch (e) { no(e); }
       };
       im.onerror = () => no(new Error("image failed"));
@@ -1088,8 +1090,12 @@
     return p;
   }
   function loadInto(el, c, id, rk, alt) {
+    el.classList.remove("wm"); el.style.backgroundImage = "";
     el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
-    marked(id, rk).then((u) => { if (V.list[V.k] === c && el.dataset.id === id) el.src = u; })
+    marked(id, rk).then((u) => {
+      if (V.list[V.k] !== c || el.dataset.id !== id) return;
+      el.style.backgroundImage = `url("${u.plain}")`; el.src = u.marked; el.classList.add("wm");
+    })
       .catch(() => { if (V.list[V.k] === c && el.dataset.id === id) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
   }
   // "Save image": the marked image, named after the card.
@@ -1098,7 +1104,7 @@
     const back = !isPair(c) && V.back && c.backId, id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
     const b = $("#v-save"); b.textContent = "Saving…";
     try {
-      const u = await marked(id, rk), a = document.createElement("a");
+      const u = (await marked(id, rk)).marked, a = document.createElement("a");
       a.href = u; a.download = (String(c.name || c.caption || "card").replace(/[\\/:*?"<>|#]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120) + (back ? " (back)" : "")) + ".jpg";
       document.body.appendChild(a); a.click(); a.remove();
       b.textContent = "Saved";

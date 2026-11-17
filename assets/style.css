@@ -501,3 +501,5 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (max-width:900px){.search{flex:1 1 calc(100% - 60px);min-width:0}.dice{order:2}}
 @media (prefers-reduced-motion:reduce){.dice.roll svg,.btn.roll,.v-stage.shuffle img{animation:none}}
 .hero{align-items:start}.hero > .feat,.hero > .sk-featw{align-self:center}
+/* Viewer: show the clean card (background) while the <img> itself is the watermarked copy, moved out of view */
+#v-img.wm,#v-img2.wm{object-position:-100000px 0;background-size:100% 100%;background-repeat:no-repeat}
