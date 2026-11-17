@@ -186,6 +186,7 @@ def main():
                 if is_back and b.lower() in fronts: continue        # shown with its front
                 back = backs.get(b.lower()) if not is_back else None
                 card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                if not_shown(card_name): continue                   # sold, or a second copy
                 # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date
                 # (and isn't marked NEW). The extension may change, e.g. .png to .jpg.
                 added = prev.get(f["id"]) or prev_name.get(card_name.lower()) or (f["mod"] if not prev else today)
@@ -214,6 +215,17 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as fh: json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
     print(f"Wrote {len(cards)} cards to {OUT}", file=sys.stderr)
+
+# Cards that aren't on the site: anything sold (the name says "Sold ..."), and a second or third copy of a card
+# ("... 2nd", "... 3rd" at the end of the name; "10th Anniversary" sets don't count). Customs are kept:
+# "Custom 2nd" can be a different piece, not a copy.
+SOLD = re.compile(r"\bsold\b", re.I)
+COPY = re.compile(r"\s(?:2nd|3rd|\d+th)\s*(?:\([^)]*\))?\s*$", re.I)
+
+
+def not_shown(name):
+    return bool(SOLD.search(name) or (COPY.search(name) and not re.search(r"\bcustom\b", name, re.I)))
+
 
 def sync_first_screen(cfg):
     """index.html shows the home intro before the card list loads; keep that copy matching config/site.json."""
