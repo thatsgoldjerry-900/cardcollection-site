@@ -1051,6 +1051,8 @@
   /* ---------- Rainbows: every version (parallel) I have of one card ---------- */
   // Same year, set, card number and player = one rainbow, whatever the color. A color or parallel word at the end of
   // the set name ("Signature Materials Black") is ignored; "Set - Parallel" names already keep the parallel apart.
+  // A card's player without a letterman code ("Brandon Jackson 2A" → "Brandon Jackson").
+  const plainTitle = (x) => (x.title || "").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
   const PARALLEL_WORDS = /(?:\s+(?:gold(?:en)?|silver|black|red|blue|green|orange|purple|pink|platinum|bronze|copper|emerald|sapphire|ruby|white|yellow|aqua|teal|magenta|holo(?:foil)?|refractors?|prizms?|parallel|foil|rainbow|mojo|wave|shimmer|atomic|x-?fractors?|superfractors?|printing plates?|press proofs?|proofs?|framed|vintage stock|independence day|camo|tie-?dye|cracked ice|mirror|spectrum|chrome|prime|limited))+$/i;
   // A second or third copy of a card ("... 2nd (Sold to ...)") is the same card for rainbows and sets.
   const copyKey = (x) => x.name.toLowerCase().replace(/\s+(?:2nd|3rd|\d+th)\b(?:\s*\([^)]*\))?\s*$/, "").trim();
@@ -1153,7 +1155,7 @@
     // as long as at most two don't fit. A word set in config always wins.
     const fit = (w) => have.filter((h) => w[h.pos - 1] === h.letter).length;
     const best = custom || tries.slice().sort((p, q) => fit(q) - fit(p) || tries.indexOf(p) - tries.indexOf(q))[0] || "";
-    const word = custom || (best && fit(best) >= 2 && have.length - fit(best) <= 2 && Math.max(...have.map((h) => h.pos)) <= best.length ? best : "");
+    const word = custom || (best && fit(best) >= Math.min(2, have.length) && have.length - fit(best) <= 2 && Math.max(...have.map((h) => h.pos)) <= best.length ? best : "");
     const shown = word ? (shows[tries.indexOf(word)] || word) : "";
     const len = word.length || Math.max(...have.map((h) => h.pos));
     const slots = Array.from({ length: len }, (_, i) => ({ pos: i + 1, letter: word ? word[i] : (have.find((h) => h.pos === i + 1) || {}).letter || "", cards: have.filter((h) => h.pos === i + 1).map((h) => h.x) }));
@@ -1387,9 +1389,9 @@
     $("#v-dice").hidden = !V.random;
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
-    const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => x.title === c.title) : [];
+    const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)})</button>` : "")
-      + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(c.title)} (${fmt(byPlayer.length)})</button>` : "");
+      + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)})</button>` : "");
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     const rb = rainbowOf(c);
     const lt = lettersOf(c);
