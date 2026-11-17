@@ -795,7 +795,12 @@
     allPlayers().filter((x) => NFL[x.listSlug]).forEach((x) => {
       const p = (PLAYERS.players || []).find((q) => q.slug === x.slug) || {};
       const stints = {};
-      for (const [e] of (((p.wiki || {}).sections || {})["Career history"] || []).filter((r) => r.length === 1)) {
+      // Playing years only: "Career history" (or its "Playing" part when Wikipedia splits playing and coaching),
+      // and older pages' "Playing career" table ("1931–1936 | Portsmouth Spartans/Detroit Lions").
+      const secs = (p.wiki || {}).sections || {};
+      const entries = [...secs["Career history"] || [], ...secs["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
+        .concat((secs["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0])).flatMap(([y, t]) => t.split("/").map((n) => `${n.trim()} (${y})`)));
+      for (const e of entries) {
         const hit = byName.find(([n]) => e.toLowerCase().startsWith(n)); if (!hit) continue;
         const yrs = (e.match(/\(([^)]*)\)/) || [])[1] || "", star = /\*\s*$/.test(e);
         (stints[hit[1].slug] = stints[hit[1].slug] || []).push(yrs + (star ? " (offseason / practice squad)" : ""));
@@ -805,7 +810,7 @@
         if (/\b(BC|B\.C\.)\s$/.test(note.slice(Math.max(0, m.index - 5), m.index))) continue;   // the CFL's BC Lions
         const t = byNick[m[1]]; if (t && !stints[t.slug]) stints[t.slug] = ["from my research notes"];
       }
-      Object.entries(stints).forEach(([slug, yrs]) => TEAMIDX[slug].push({ x, tier: NFL[x.listSlug], yrs: yrs.filter(Boolean).join(", ") }));
+      Object.entries(stints).forEach(([slug, yrs]) => TEAMIDX[slug].push({ x, tier: NFL[x.listSlug], yrs: [...new Set(yrs.filter(Boolean))].join(", ") }));
     });
     return TEAMIDX;
   }
