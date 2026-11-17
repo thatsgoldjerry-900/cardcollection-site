@@ -248,7 +248,8 @@
           <div class="kick">The collection of Ian Badeer</div>
           <h1>Alex Gordon & Jermaine Dye <em>super collector</em></h1>
           <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
-          <div class="pills">${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}${(s.media?.items || []).length ? `<a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""}</div>
+          <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
+            return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
         ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
@@ -649,6 +650,12 @@
   }
   const hubIO = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && HUB.shown < HUB.rows.length && hubMore()), { rootMargin: "1000px" });
 
+  // Videos that feature a player: Media items and Customs videos with "players": [player page slugs].
+  function playerMedia(slug) {
+    const s = DATA.site, yt = (v) => v.url || `https://www.youtube.com/watch?v=${encodeURIComponent(v.youtube || v.id)}${v.start ? `&t=${+v.start}s` : ""}`;
+    return [...(s.media?.items || []), ...(s.customsPhotos?.videos || [])]
+      .filter((v) => (v.players || []).includes(slug)).map((v) => ({ title: v.title || v.caption, url: yt(v) }));
+  }
   function player(slug) {
     setNav("nfl-huskers");
     loadHub(() => {
@@ -725,6 +732,7 @@
             <h1>${esc(info.name)}</h1>
             <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
+            ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             <dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>

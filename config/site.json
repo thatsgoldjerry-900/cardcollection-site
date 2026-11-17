@@ -9,14 +9,6 @@
   },
   "links": [
     {
-      "label": "Kansas City Star feature",
-      "url": "https://drive.google.com/file/d/1SNgH16UXtK_ecSy4QUOrvqJYWVJq2G9E/view?usp=sharing"
-    },
-    {
-      "label": "The Card Life episode",
-      "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM&t=746s"
-    },
-    {
       "label": "Trade on TCDb",
       "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan"
     },
@@ -391,7 +383,11 @@
       {
         "id": "scDrT6hoARA",
         "caption": "Adrian Martinez showed off my custom creation at Husker Fan Day. Jump to 1:25 to see it!",
-        "start": 85
+        "start": 85,
+        "players": [
+          "adrian-martinez"
+        ],
+        "title": "Adrian Martinez shows off my custom card at Husker Fan Day"
       }
     ]
   },
@@ -425,7 +421,10 @@
         "start": 1002,
         "url": "https://www.youtube.com/watch?v=CY41TEOdRSY&t=1002s",
         "note": "Former Husker Ricky Simmons interviews me about how we met through my Husker autograph project. Starts at 16:42.",
-        "date": "June 2024"
+        "date": "June 2024",
+        "players": [
+          "ricky-simmons"
+        ]
       },
       {
         "type": "video",
@@ -466,5 +465,5 @@
       }
     ]
   },
-  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds; for a Spotify podcast, its embed link as \"spotify\". Videos and podcasts show first, then articles, in the order listed."
+  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds; for a Spotify podcast, its embed link as \"spotify\". Videos and podcasts show first, then articles, in the order listed. Add \"players\": [\"player-page-slug\"] to show a Watch link on those player pages (also works on Customs videos). The home page features the first item, or the one marked \"featured\": true."
 }

@@ -395,3 +395,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .md-art:hover{border-color:var(--acc)}
 .pill-in{border-color:var(--acc)}
 .md-pod{display:block;width:100%;height:102px;border:0;border-radius:10px;background:var(--panel)}
+.statlink.watch{background:var(--panel);border:1px solid var(--line);color:var(--fg);margin:8px 8px 0 0}
+.statlink.watch:hover{border-color:var(--acc);filter:none}
+.pill-feat{border-color:var(--gold)}
+.pill-feat b{color:var(--gold);font-weight:600}
