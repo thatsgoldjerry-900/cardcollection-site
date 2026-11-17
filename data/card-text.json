@@ -1,4 +1,4 @@
 {
-  "_help": "Transcriptions of card backs (Ian's custom cards: bios and stats in his own words), shown in the card viewer under \"Read the back\" and read aloud by screen readers. Key: the card's Drive file ID (stays the same when a file is renamed). \"name\" is just a reminder of which card it is. \"text\": paragraphs separated by a blank line; a line starting with \"## \" is a small heading; lines with \" | \" between values form a small table (first such line is the header row).",
+  "_help": "Transcriptions of card backs (Ian's custom cards: bios and stats in his own words), shown in the card viewer under \"Read the back\" and read aloud by screen readers. Key: the Drive file ID of the card's BACK scan (stays the same when a file is renamed); text keyed to a front image is ignored, and the button only shows while the back is on screen. \"name\" is just a reminder of which card it is. \"text\": paragraphs separated by a blank line; a line starting with \"## \" is a small heading; lines with \" | \" between values form a small table (first such line is the header row).",
   "cards": {}
 }

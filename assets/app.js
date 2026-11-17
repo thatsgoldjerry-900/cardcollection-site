@@ -1235,14 +1235,18 @@
     return out.join("");
   }
   function showBackText(c) {
-    const btn = $("#v-read"), box = $("#v-text"), im = $("#v-img");
-    btn.hidden = true; box.hidden = true; box.innerHTML = ""; btn.setAttribute("aria-expanded", "false"); im.removeAttribute("aria-describedby");
-    if (!c || c.photo) return;
+    // Only for card backs: the text is keyed to the back scan, and the button shows only while the back is on screen
+    // (flipped to the back on a phone, or front and back side by side on a wide screen).
+    const btn = $("#v-read"), box = $("#v-text");
+    btn.hidden = true; box.hidden = true; box.innerHTML = ""; btn.setAttribute("aria-expanded", "false");
+    ["#v-img", "#v-img2"].forEach((q) => $(q).removeAttribute("aria-describedby"));
+    if (!c || c.photo || !c.backId) return;
+    const pair = isPair(c); if (!pair && !V.back) return;
     backText().then((all) => {
-      if (V.list[V.k] !== c) return;
-      const e = all[c.id] || (c.backId && all[c.backId]); if (!e || !e.text) return;
+      if (V.list[V.k] !== c || (!isPair(c) && !V.back)) return;
+      const e = all[c.backId]; if (!e || !e.text) return;
       box.innerHTML = `<div class="vt-in"><h2>Card back</h2>${textHTML(e.text)}<button type="button" class="btn vt-close">Close</button></div>`;
-      btn.hidden = false; im.setAttribute("aria-describedby", "v-text");
+      btn.hidden = false; $(pair ? "#v-img2" : "#v-img").setAttribute("aria-describedby", "v-text");
     });
   }
   $("#v-read").addEventListener("click", () => { const box = $("#v-text"), open = box.hidden; box.hidden = !open; $("#v-read").setAttribute("aria-expanded", String(open)); if (open) box.scrollTop = 0; });
