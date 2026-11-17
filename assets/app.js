@@ -1224,14 +1224,21 @@
     const sec = SECTIONS[c.si], title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
     setNav(sec.slug); setTitle(`${c.title} letters`);
     const shown = [];
+    // One column per letter; a second copy of a letter (another parallel) stacks under the first.
     const slot = (s) => s.cards.length
-      ? s.cards.map((x) => { shown.push(x); return `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${cardHTML(x)}</div>`; }).join("")
-      : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Still need it</small></div></div>`;
+      ? `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${s.cards.map((x) => { shown.push(x); return cardHTML(x); }).join("")}</div>`
+      : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Need</small></div></div>`;
+    // Each word on its own line ("GORDON" / "KANSAS" / "CITY" / "ROYALS"), its letters side by side.
+    const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z]/g, "").length).filter(Boolean) : [L.slots.length];
+    // Every word uses the longest word's column size, so all the cards are the same size.
+    let at = 0; const cols = Math.max(...lens);
+    const rows = lens.map((n) => { const part = L.slots.slice(at, at + n); at += n;
+      return `<div class="lt-word" style="--n:${cols}">${part.map(slot).join("")}</div>`; }).join("");
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
       <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters in my collection${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
-      <div class="lt-row">${L.slots.map(slot).join("")}</div></div></div>`;
+      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
     state.list = shown;
   }
   function rainbow(id) {
