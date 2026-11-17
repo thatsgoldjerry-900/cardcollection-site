@@ -1419,7 +1419,15 @@
       $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard();
     }
     if (FROM_CARD !== location.hash) { FROM_CARD = null; return; }
-    requestAnimationFrame(() => { const b = $("#app a.back"); if (b) b.textContent = "← Back to card"; });
+    // Reached from a card: a bar like the viewer's (round back button, page name), and the page slides in,
+    // so it reads as a step forward, not as leaving.
+    requestAnimationFrame(() => {
+      const b = $("#app a.back"); if (!b) return;
+      const kind = ($("#app .kick") || {}).textContent || "", name = ($("#app h1") || {}).textContent || "";
+      b.outerHTML = `<div class="fc-bar"><a class="back v-ic" href="${esc(FROM_CARD)}" aria-label="Back to card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+        <div class="v-mid"><b>${esc(kind)}${kind && name ? " · " : ""}${esc(name)}</b><span>Back to card</span></div><span></span></div>`;
+      $("#app").classList.remove("slide-in"); void $("#app").offsetWidth; $("#app").classList.add("slide-in");
+    });
   });
   $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href^='#/']"); if (a) FROM_CARD = a.getAttribute("href"); });
   document.addEventListener("click", (e) => {
