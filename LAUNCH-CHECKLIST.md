@@ -5,6 +5,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 "Ian's to-dos" when a session starts or he asks what's left.
 
 ## Ian's to-dos
+- [ ] **Fix three letter codes in letterman card names** (the number is the letter's spot in the word):
+  - [ ] 2009 Bowman Draft College Letter Patch Autographs #ML Marlon Lucky **3U** → likely **2U** (LUCKY: L1 U2 C3 K4 Y5)
+  - [ ] 2013 Upper Deck - Rookie Lettermen Autographs #RL-RB Rex Burkhead **9R** → likely **10R** (CORNHUSKERS: E is 9, R is 10)
+  - [ ] 2013 Upper Deck Rookie Lettermen Autographs #RLRB7 Rex Burkhead **6S** → **7S** if it's an S card, or **6U** if it's a U
 - [ ] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Make a folder "Customs - Non-Sport" in the main
   shared Drive folder and put the scans in it, then tell Claude, who connects it to the Customs page's Non-Sport filter.
 - [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
@@ -20,8 +24,6 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
     "2nd (Sold to … for $15 on 4-22)": file names show on the site as captions and in search.
-  - [ ] Letter slips spotted in letterman card names: Marlon Lucky "3U" (likely 2U), Rex Burkhead "9R" (likely 10R)
-    and "6S" (position 6 is U, 7 is S). The letterman pages still work, but fixing these places the cards correctly.
 - [ ] **Read straight from the main Drive folder** (`driveRoot` in `config/site.json`, parent folder `18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV`).
   - [ ] Make the Drive folder names match the site section titles, or map them. Today "Lions", "Royals" and "Nebraska Baseball & Softball" differ.
   - [ ] Check the new card names: count, auto and relic tags, and that every section still fills.
