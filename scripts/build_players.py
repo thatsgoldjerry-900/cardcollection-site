@@ -269,13 +269,15 @@ def main():
                 skip = (only and only not in (sport["sport"], key)) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
                 if skip and prev:
                     p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
+                    if override == "none":                # wrong person matched before: drop the article
+                        for k in ("wiki", "collegeTables"): p.pop(k, None)
                     players.append(p); continue
                 if skip or (max_new is not None and fetched >= max_new):
                     players.append(p); continue      # page still exists, info comes in a later batch
                 fetched += 1
                 p["checked"] = time.strftime("%Y-%m-%d")
                 try:
-                    art = find_article(name, override, sport)
+                    art = None if override == "none" else find_article(name, override, sport)
                     if art:
                         title, html = art
                         p["wiki"] = {"title": title, "url": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
