@@ -24,4 +24,5 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
 - **Wording:** "Super Collection" is two words everywhere. Ian likes consistency and uniformity.
 - Card-back transcriptions (data/card-text.json) are for custom cards only, and Ian checks them before
   they go live.
+- **Deploy:** Ian wants finished work merged into `main` (the live site) without asking.
 - **Mobile:** Ian is often on his phone. Check layouts at phone width.
