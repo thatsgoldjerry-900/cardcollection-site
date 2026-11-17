@@ -331,7 +331,7 @@
     const pick = (part) => CARDS.find((c) => dye && c.si === SECTIONS.indexOf(dye) && c.name.toLowerCase().includes(part.toLowerCase()));
     const story = st && dye ? (st.highlights || []).map((h) => pick(h.card)).filter(Boolean).slice(0, 3) : [];
     return `<section class="start" aria-label="Start here">
-      <div class="go-card"><h3>Royals fans</h3><p>My Alex Gordon and Jermaine Dye super collections, with thousands of scans.</p>
+      <div class="go-card"><h3>Royals fans</h3><p>Check out the Gordon and Dye Supercollections, or the Kansas City Royals Team Collection.</p>
         <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
       <div class="go-card"><h3>Husker fans</h3><p>Every Husker who made it to the NFL, the autographs I've found, and a page for each player.</p>
         <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football cards")}</div></div>
