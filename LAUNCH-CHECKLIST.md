@@ -24,7 +24,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] **Don't double uploads.** A scan copied into two folders counts as two cards (today ~147 names appear twice,
     mostly Gordon cards also in the Royals Button Relics / Nameplates / Dirt Relics groups).
   - [ ] **Consider tagging instead of copies** for groups like Dirt Relics, Button Relics and Nameplates: add a tag in
-    parentheses at the end of the file name, e.g. "… Alex Gordon (Dirty)", leaving the TCDb name itself as is. The site
+    parentheses at the end of the file name, leaving the TCDb name itself as is: "(Dirty)" for Dirt Relics,
+    "(Button)" for Button Relics, "(Nameplate)" for Nameplates, e.g. "… Alex Gordon (Dirty)". The site
     reads the tag to place the card in that group, so one file shows in its home collection and the group; the tag can
     be hidden from the displayed name. (Alternatives: Drive shortcuts, or a list of card IDs in the site settings.)
 - [ ] **A plain, crawlable page for every player** (like `/nfl-huskers/`), so searches for a player's name can land on Ian's page about him.
