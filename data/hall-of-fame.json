@@ -1738,5 +1738,14 @@
    "years": "1937-41",
    "role": "Coach"
   }
- ]
+ ],
+ "_helpPro": "Huskers in the Pro Football Hall of Fame (Canton), by player page slug, with the induction year, from each player's Wikipedia article.",
+ "pro": {
+  "link-lyman": 1964,
+  "guy-chamberlin": 1965,
+  "bob-brown": 2004,
+  "mick-tingelhoff": 2015,
+  "will-shields": 2015,
+  "roger-craig": 2026
+ }
 }

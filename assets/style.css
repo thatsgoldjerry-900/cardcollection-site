@@ -652,3 +652,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hof span{display:block;font-size:13px;color:var(--mu)}
 .hof a{display:inline-block;margin-top:4px;font-size:12.5px;color:#f0c35a}
 @media (prefers-reduced-motion:reduce){.hof::after{animation:none}}
+/* Pro Football Hall of Fame: bronze, like the busts in Canton */
+.hof-badge.pro{color:#fff;background:linear-gradient(135deg,#b87333,#6e3f1c 55%,#d99a5b);box-shadow:0 0 0 1px rgba(217,154,91,.6),0 2px 10px rgba(184,115,51,.45)}
+.hof.pro{background:linear-gradient(135deg,rgba(184,115,51,.3),rgba(110,63,28,.08) 60%),var(--panel);border-color:rgba(217,154,91,.6)}
+.hof.pro .hof-ic{color:#fff;background:radial-gradient(circle at 35% 30%,#f0c08a,#b87333 60%,#6e3f1c)}
+.hof.pro .hof-k,.hof.pro a{color:#e3a86b}

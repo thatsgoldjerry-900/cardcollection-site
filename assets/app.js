@@ -703,7 +703,7 @@
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
   // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
-  let HOF = null;
+  let HOF = null, PROHOF = {};
   const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
     .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
   function hofFor(info) {
@@ -722,7 +722,7 @@
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
-    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => (HOF = d.members || [])));
+    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (PROHOF = d.pro || {}))));
     if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)));
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
@@ -972,7 +972,7 @@
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
-      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null, hof = hofFor(info);
+      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null, hof = hofFor(info), pro = PROHOF[slug];
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
@@ -1046,12 +1046,15 @@
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <h1>${esc(info.name)}</h1>
-            <div class="pl-badges">${hof ? `<span class="hof-badge">${HOF_ICON} Hall of Fame</span>` : ""}<span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            <div class="pl-badges">${pro ? `<span class="hof-badge pro">${HOF_ICON} Pro Football Hall of Fame</span>` : ""}${hof ? `<span class="hof-badge">${HOF_ICON} Nebraska Hall of Fame</span>` : ""}<span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${((DATA.site.playerExtras || {})[slug] || {}).about ? `<p class="pl-about">${esc(DATA.site.playerExtras[slug].about)}</p>` : ""}
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
               return t ? `<section class="why"><h2>Why he's on the ${esc((row.backLabel || "").replace(/ Huskers Autograph List$/, ""))} list</h2>${noteHTML(t)}</section>` : ""; })()}
+            ${pro ? `<section class="hof pro"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
+              <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
+              <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
               <b>Class of ${esc(String(hof.class))}</b><span>${hof.role ? esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role) + " · " : ""}${hof.years ? "Nebraska " + esc(String(hof.years).replace(/-/g, "–")) : "Nebraska"}</span>
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
