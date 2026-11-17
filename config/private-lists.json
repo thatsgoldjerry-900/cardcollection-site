@@ -17,7 +17,12 @@
       ],
       "skipGroups": [
         "Baseball - Minors/College"
-      ]
+      ],
+      "notesLists": [
+        "nfl-tier-2-huskers",
+        "pro-football-huskers"
+      ],
+      "_notes": "\"notesLists\": lists whose player-name cell notes are published (Tier 2 and Tier 3 only)."
     },
     {
       "name": "inventory-stats",

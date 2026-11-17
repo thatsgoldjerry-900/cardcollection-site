@@ -66,6 +66,18 @@ def extract_side_by_side(xlsx_bytes, spec):
         raise SystemExit(f'List "{spec["name"]}": the master has no tab named "{spec["tab"]}".')
     cells = list(wb[spec["tab"]].iter_rows())
     rows = [[cell_text(c.value) for c in r] for r in cells]
+    def note_at(ri, ci):
+        """The note (Excel comment) on a cell, without the author line or Excel's threaded-comment boilerplate."""
+        if ci >= len(cells[ri]) or not cells[ri][ci].comment: return ""
+        c = cells[ri][ci].comment
+        t = (c.text or "").replace("\r", "")
+        if "[Threaded comment]" in t:                 # newer Excel: the text follows "Comment:"
+            t = t.split("Comment:", 1)[-1]
+            t = re.sub(r"\n\s*Reply:.*", "", t, flags=re.S)
+        author = (c.author or "").strip()
+        if author and t.startswith(author + ":"): t = t[len(author) + 1:]
+        t = re.sub(r"^[^\n:]{1,40}:\n", "", t)        # a leading "Name:" line Excel adds to notes
+        return re.sub(r"[ \t]+", " ", re.sub(r"\n{3,}", "\n\n", t)).strip()
     def link_at(ri, ci):
         """The web link on a cell (e.g. a player's name links to their stats page), if any."""
         if ci >= len(cells[ri]): return ""
@@ -85,7 +97,7 @@ def extract_side_by_side(xlsx_bytes, spec):
         full = titles[s0]
         m = re.match(r"^(.*?)\s*\((.*)\)\s*$", full)
         title, sub = (m.group(1), m.group(2)) if m else (full, "")
-        groups, cur, links = [], {"title": "", "rows": []}, {}
+        groups, cur, links, notes = [], {"title": "", "rows": []}, {}, {}
         for ri in range(spec["headerRow"], len(rows)):
             r = rows[ri]
             vals = [r[i] if i < len(r) else "" for i in cols]
@@ -96,6 +108,7 @@ def extract_side_by_side(xlsx_bytes, spec):
                 groups.append(cur); cur = {"title": vals[0], "rows": []}; continue
             cur["rows"].append(vals)
             if link_at(ri, cols[0]): links[vals[0]] = link_at(ri, cols[0])
+            if note_at(ri, cols[0]): notes[vals[0]] = note_at(ri, cols[0])
         groups.append(cur)
         groups = [g for g in groups if g["rows"]]
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
@@ -106,7 +119,9 @@ def extract_side_by_side(xlsx_bytes, spec):
         kept = {r[0] for g in groups for r in g["rows"]}
         lists.append({"slug": slug, "title": title, "subtitle": sub,
                       "columns": [headers[i] for i in cols], "groups": groups,
-                      "links": {n: u for n, u in links.items() if n in kept}})
+                      "links": {n: u for n, u in links.items() if n in kept},
+                      # Notes on the player-name cells, only for lists approved in "notesLists".
+                      **({"notes": {n: t for n, t in notes.items() if n in kept}} if slug in spec.get("notesLists", []) else {})})
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}
 
 
