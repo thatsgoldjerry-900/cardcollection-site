@@ -418,13 +418,14 @@
         "date": "June 2024"
       },
       {
-        "type": "podcast",
+        "type": "video",
         "title": "Royals Super Collector Ian Badeer",
         "outlet": "WaxPackHero Podcast",
         "date": "2022",
-        "spotify": "https://creators.spotify.com/pod/profile/waxpackhero/embed/episodes/Royals-Super-Collector-Ian-Badeer---WaxPackHero-Podcast-Episode-174-e1kr3bp/a-a8788r4",
-        "url": "https://creators.spotify.com/pod/profile/waxpackhero/episodes/Royals-Super-Collector-Ian-Badeer---WaxPackHero-Podcast-Episode-174-e1kr3bp",
-        "note": "Episode 174: my interview about being a super collector."
+        "url": "https://www.youtube.com/watch?v=qkk47iwoiOA&t=192s",
+        "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
+        "youtube": "qkk47iwoiOA",
+        "start": 192
       },
       {
         "type": "video",
