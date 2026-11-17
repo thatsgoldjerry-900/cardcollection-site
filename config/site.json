@@ -434,6 +434,15 @@
       },
       {
         "type": "video",
+        "title": "Power Searching on COMC",
+        "outlet": "Jenn Holt",
+        "date": "2023",
+        "youtube": "QCFc2mD6Y9I",
+        "url": "https://www.youtube.com/watch?v=QCFc2mD6Y9I",
+        "note": "My 2023 presentation on power searching COMC to find the cards you're after."
+      },
+      {
+        "type": "video",
         "title": "Custom Cards and a collab with Brewer Hicklen",
         "outlet": "The Card Life · Season 2, Episode 7",
         "date": "January 2023",
@@ -461,6 +470,23 @@
         "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
         "youtube": "qkk47iwoiOA",
         "start": 192
+      },
+      {
+        "type": "video",
+        "title": "How to trade cards on TCDb",
+        "outlet": "My YouTube channel",
+        "youtube": "PTu7pQPu9bE",
+        "url": "https://www.youtube.com/watch?v=PTu7pQPu9bE",
+        "note": "A walkthrough of trading cards with other collectors on Trading Card Database."
+      },
+      {
+        "type": "video",
+        "title": "Upgrade your card collecting with Trading Card Database",
+        "outlet": "My YouTube channel",
+        "youtube": "h2K2fRKXmCk",
+        "start": 73,
+        "url": "https://www.youtube.com/watch?v=h2K2fRKXmCk&t=73s",
+        "note": "How I use Trading Card Database to track my collection. Starts at 1:13."
       },
       {
         "type": "article",
