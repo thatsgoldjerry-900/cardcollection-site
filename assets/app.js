@@ -914,6 +914,27 @@
       <nav class="pl-nav" aria-label="Previous and next player">${prev ? `<a href="#/player/${prev.slug}">← ${esc(prev.name)}</a>` : "<span></span>"}${next ? `<a href="#/player/${next.slug}">${esc(next.name)} →</a>` : ""}</nav></section>`;
   }
 
+  // Every card I have of a player, from every collection on the site (not the Want List, not back scans).
+  function playerCards(name) {
+    const n = norm(name); if (n.split(" ").length < 2) return [];
+    return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && !/\((back|inside)\)/i.test(c.name) && (" " + norm(c.name) + " ").includes(" " + n + " "))
+      .sort((p, q) => (p.year || 0) - (q.year || 0) || p.name.localeCompare(q.name));
+  }
+  function playerCardsPage(slug) {
+    loadHub(() => {
+      const p = (PLAYERS.players || []).find((x) => x.slug === slug), row = allPlayers().find((x) => x.slug === slug);
+      if (!p && !row) return notFound();
+      const info = { ...(row || {}), ...(p || {}) }, all = playerCards(info.name); if (!all.length) return notFound();
+      setNav(info.back && info.back.startsWith("#/checklist/") ? info.back.slice(2) : "nfl-huskers"); setTitle(`${info.name} cards`);
+      const where = [...new Set(all.map((c) => SECTIONS[c.si].title))];
+      $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
+        <a class="back" href="#/player/${esc(slug)}">← ${esc(info.name)}</a>
+        <div class="c-head"><div class="kick">Every card I have</div><h1>${esc(info.name)}</h1>
+        <p>${fmt(all.length)} card${all.length === 1 ? "" : "s"} in my collection, oldest first${where.length > 1 ? `, from ${where.map(esc).join(", ")}` : ""}.</p></div>
+        <div class="grid" id="grid">${all.map((c) => cardHTML(c)).join("")}</div></div></div>`;
+      state.list = all;
+    });
+  }
   function player(slug) {
     setNav("nfl-huskers");
     loadHub(() => backText().then((CB) => {
@@ -1024,6 +1045,7 @@
         ${moreHuskers(slug, info, p)}
         ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} cards in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
+        ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See all ${n === 1 ? "" : fmt(n) + " "}card${n === 1 ? "" : "s"} I have of ${esc(info.name)} →</a></p>` : ""; })()}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
       </div>`;
@@ -1318,6 +1340,7 @@
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
+    else if (a === "player-cards") playerCardsPage(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") {   // a shared card link opens the card over its own collection
       const k = CARDS.findIndex((x) => x.id === b); if (k < 0) return notFound();
