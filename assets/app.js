@@ -505,7 +505,7 @@
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
         return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-          <span class="pm-t"><b>${hl(p.name, q)}</b><small>${p.league} Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+          <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.league} Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
@@ -703,22 +703,25 @@
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
   // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
-  let HOF = null, PROHOF = {};
+  let HOF = null, HOFN = null, PROHOF = {};
   const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
     .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
   function hofFor(info) {
     const me = hofName(info.name); if (!me.length || !HOF) return null;
     const last = +(info.finalYear || info.year) || 0;
-    return HOF.find((h) => {
-      const n = hofName(h.name);
+    HOFN = HOFN || HOF.map((h) => [hofName(h.name), h]);
+    return (HOFN.find(([n, h]) => {
       const same = n.join(" ") === me.join(" ") || (n[0] === me[0] && n[n.length - 1] === me[me.length - 1]);
       if (!same) return false;
       const ys = (String(h.years || "").match(/\d{2,4}/g) || []).map(Number), a = ys[0], b = ys.length > 1 ? ys[ys.length - 1] : a;
       if (h.role || !last || !a) return n.join(" ") === me.join(" ") || !h.role;
       const end = b < 100 ? Math.floor(a / 100) * 100 + b + (b < a % 100 ? 100 : 0) : b;
       return last >= a - 1 && last <= end + 1;
-    }) || null;
+    }) || [])[1] || null;
   }
+  // Small Hall of Fame marks after a name in player lists: bronze for Canton, gold for Nebraska.
+  const hofMarks = (x) => (PROHOF[x.slug] ? `<i class="hof-mk pro" title="Pro Football Hall of Fame">${HOF_ICON}</i>` : "")
+    + (HOF && hofFor(x) ? `<i class="hof-mk" title="Nebraska Football Hall of Fame">${HOF_ICON}</i>` : "");
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
@@ -855,7 +858,7 @@
       const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
         return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-          <span class="pm-t"><b>${esc(e.x.name)}</b>${e.yrs ? `<small>${esc(e.yrs)}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
+          <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
       $("#app").innerHTML = `<div class="wrap tm tm-team" style="${teamVars(t)}"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
         <div class="tm-banner">${teamLogo(t, "tm-blogo")}<div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
@@ -905,7 +908,7 @@
     const next = HUB.rows.slice(HUB.shown, HUB.shown + 60); HUB.shown += next.length;
     list.insertAdjacentHTML("beforeend", next.map((p) => {
       const sc = p.have ? bestScan(p.name) : null;
-      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.q)}</a>`;
+      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.q)}${hofMarks(p)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
@@ -938,7 +941,7 @@
       .sort((a, b) => (b.sameGroup - a.sameGroup) || (a.gap - b.gap)).slice(0, 6).map((o) => o.x);
     const card = (x) => { const sc = x.have ? bestScan(x.name, x.sport) : null;
       return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
-        <span class="pm-t"><b>${esc(x.name)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
+        <span class="pm-t"><b>${esc(x.name)}${hofMarks(x)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
     const prev = list[at - 1], next = list[at + 1];
     return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>
       <nav class="pl-nav" aria-label="Previous and next player">${prev ? `<a href="#/player/${prev.slug}">← ${esc(prev.name)}</a>` : "<span></span>"}${next ? `<a href="#/player/${next.slug}">${esc(next.name)} →</a>` : ""}</nav></section>`;

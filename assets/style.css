@@ -657,3 +657,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hof.pro{background:linear-gradient(135deg,rgba(184,115,51,.3),rgba(110,63,28,.08) 60%),var(--panel);border-color:rgba(217,154,91,.6)}
 .hof.pro .hof-ic{color:#fff;background:radial-gradient(circle at 35% 30%,#f0c08a,#b87333 60%,#6e3f1c)}
 .hof.pro .hof-k,.hof.pro a{color:#e3a86b}
+.hof-mk{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:6px;vertical-align:-3px;border-radius:50%;color:#1a1405;background:radial-gradient(circle at 35% 30%,#fff1c2,#e2a93b 70%)}
+.hof-mk.pro{color:#fff;background:radial-gradient(circle at 35% 30%,#f0c08a,#b87333 60%,#6e3f1c)}
+.hof-mk svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
