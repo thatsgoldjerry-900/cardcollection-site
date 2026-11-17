@@ -751,16 +751,18 @@
     const m = DATA.site.media || {}, items = m.items || [];
     const when = (it) => it.date ? `<span>${esc(it.date)}</span>` : "";
     const meta = (it) => `<div class="md-meta"><b>${esc(it.outlet || "")}</b>${when(it)}</div>`;
-    const watch = items.filter((it) => it.type !== "article"), read = items.filter((it) => it.type === "article");
+    const watch = items.filter((it) => it.type === "video"), listen = items.filter((it) => it.type === "podcast"), read = items.filter((it) => it.type === "article");
     const vid = (it) => `<figure class="vid md-card">
         ${it.youtube ? `<div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(it.youtube)}${it.start ? `?start=${+it.start}` : ""}" title="${esc(it.title)}" loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>` : ""}
+        ${/^https:\/\/(creators|open)\.spotify\.com\//.test(it.spotify || "") ? `<iframe class="md-pod" src="${esc(it.spotify)}" title="${esc(it.title)}" loading="lazy" allow="encrypted-media"></iframe>` : ""}
         <figcaption>${meta(it)}<h3>${it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)} ↗</a>` : esc(it.title)}</h3>${it.note ? `<p>${esc(it.note)}</p>` : ""}</figcaption></figure>`;
     const art = (it) => `<a class="md-art md-card" href="${esc(it.url)}" target="_blank" rel="noopener">${meta(it)}<h3>${esc(it.title)} ↗</h3>${it.note ? `<p>${esc(it.note)}</p>` : ""}</a>`;
     $("#app").innerHTML = `<div class="wrap ck md"><div class="c-head">
       <div class="kick">In the media</div><h1>Media</h1></div>
       ${m.intro ? `<p class="md-intro">${esc(m.intro)}</p>` : ""}
-      ${watch.length ? `<h2 class="sub-h">Video &amp; podcasts</h2><div class="vids">${watch.map(vid).join("")}</div>` : ""}
+      ${watch.length ? `<h2 class="sub-h">Video</h2><div class="vids">${watch.map(vid).join("")}</div>` : ""}
+      ${listen.length ? `<h2 class="sub-h">Podcasts</h2><div class="vids">${listen.map(vid).join("")}</div>` : ""}
       ${read.length ? `<h2 class="sub-h">Articles</h2><div class="md-arts">${read.map(art).join("")}</div>` : ""}
       ${items.length ? "" : `<p class="empty">Nothing here yet.</p>`}
     </div>`;

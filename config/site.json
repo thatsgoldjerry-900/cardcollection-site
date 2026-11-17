@@ -417,6 +417,15 @@
         "note": "Former Husker Ricky Simmons interviews me about how we met through my Husker autograph project. Starts at 16:42."
       },
       {
+        "type": "podcast",
+        "title": "Royals Super Collector Ian Badeer",
+        "outlet": "WaxPackHero Podcast",
+        "date": "2022",
+        "spotify": "https://creators.spotify.com/pod/profile/waxpackhero/embed/episodes/Royals-Super-Collector-Ian-Badeer---WaxPackHero-Podcast-Episode-174-e1kr3bp/a-a8788r4",
+        "url": "https://creators.spotify.com/pod/profile/waxpackhero/episodes/Royals-Super-Collector-Ian-Badeer---WaxPackHero-Podcast-Episode-174-e1kr3bp",
+        "note": "Episode 174: my interview about being a super collector."
+      },
+      {
         "type": "video",
         "title": "The Card Life",
         "outlet": "The Card Life",
@@ -434,5 +443,5 @@
       }
     ]
   },
-  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds. Videos and podcasts show first, then articles, in the order listed."
+  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds; for a Spotify podcast, its embed link as \"spotify\". Videos and podcasts show first, then articles, in the order listed."
 }
