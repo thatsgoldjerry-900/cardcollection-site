@@ -7,7 +7,6 @@
 
   // Image URLs straight from Google Drive. A page can override this (used by the offline preview).
   const img = window.IMG_SRC || ((id, rk, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}${rk ? `?resourcekey=${rk}` : ""}`);
-  const driveUrl = (id, rk) => `https://drive.google.com/file/d/${id}/view${rk ? `?resourcekey=${rk}` : ""}`;
 
   let DATA, CARDS, SECTIONS, NEW_CUTOFF;
   let PHOTOS = [], INV = {};
@@ -242,7 +241,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · All scans © Ian Badeer. Please ask before reusing them.</span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -1055,10 +1054,51 @@
     if (!silent && history.state && history.state.v) history.back();
   }
   window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
+  /* Watermark: the large viewer image (and anything saved from it) carries "IANBADEER.COM" along the bottom,
+     centered, like COMC. Thumbnails and the quick first preview stay plain. */
+  const MARKED = new Map();   // file id -> object URL of the marked image (kept for this visit)
+  function marked(id, rk) {
+    if (MARKED.has(id)) return MARKED.get(id);
+    const p = new Promise((ok, no) => {
+      const im = new Image(); im.crossOrigin = "anonymous";
+      im.onload = () => {
+        try {
+          const cv = document.createElement("canvas"); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+          const g = cv.getContext("2d"); g.drawImage(im, 0, 0);
+          const size = Math.max(14, Math.round(Math.min(cv.width, cv.height * 1.4) * 0.045));
+          g.font = `700 ${size}px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
+          g.textAlign = "center"; g.textBaseline = "alphabetic";
+          const x = cv.width / 2, y = cv.height - Math.round(size * 0.7);
+          g.lineJoin = "round"; g.lineWidth = Math.max(2, size * 0.12);
+          g.strokeStyle = "rgba(0,0,0,.35)"; g.strokeText("IANBADEER.COM", x, y);
+          g.fillStyle = "rgba(255,255,255,.62)"; g.fillText("IANBADEER.COM", x, y);
+          cv.toBlob((b) => (b ? ok(URL.createObjectURL(b)) : no(new Error("no image"))), "image/jpeg", 0.9);
+        } catch (e) { no(e); }
+      };
+      im.onerror = () => no(new Error("image failed"));
+      im.src = img(id, rk, 1600);
+    });
+    p.catch(() => MARKED.delete(id));
+    MARKED.set(id, p);
+    return p;
+  }
   function loadInto(el, c, id, rk, alt) {
-    el.src = img(id, rk, 400); el.alt = alt;
-    const big = new Image(); big.onload = () => { if (V.list[V.k] === c && el.dataset.id === id) el.src = big.src; };
-    el.dataset.id = id; big.src = img(id, rk, 1600);
+    el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
+    marked(id, rk).then((u) => { if (V.list[V.k] === c && el.dataset.id === id) el.src = u; })
+      .catch(() => { if (V.list[V.k] === c && el.dataset.id === id) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
+  }
+  // "Save image": the marked image, named after the card.
+  async function saveCard() {
+    const c = V.list[V.k]; if (!c) return;
+    const back = !isPair(c) && V.back && c.backId, id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
+    const b = $("#v-save"); b.textContent = "Saving…";
+    try {
+      const u = await marked(id, rk), a = document.createElement("a");
+      a.href = u; a.download = (String(c.name || c.caption || "card").replace(/[\\/:*?"<>|#]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120) + (back ? " (back)" : "")) + ".jpg";
+      document.body.appendChild(a); a.click(); a.remove();
+      b.textContent = "Saved";
+    } catch (e) { b.textContent = "Couldn't save"; }
+    setTimeout(() => (b.textContent = "⬇ Save image"), 1600);
   }
   const isPair = (c) => wide.matches && !!c.backId && !V.zoom;
   function showCard() {
@@ -1069,7 +1109,7 @@
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
       $("#v-have").hidden = true; $("#v-dice").hidden = true;
-      $("#v-flip").hidden = true; $("#v-drive").href = driveUrl(c.id, c.rk); $("#v-drive").textContent = "Full-res in Drive ↗"; $("#v-drive2").hidden = true;
+      $("#v-flip").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
       $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
@@ -1085,10 +1125,7 @@
     stage.classList.toggle("zoom", V.zoom);
     $("#v-title").innerHTML = `${esc(c.title)}<small>${esc(c.sub || "")}${c.par ? " · " + esc(c.par) : ""}</small>`;
     $("#v-flip").hidden = !c.backId || pair; $("#v-flip").textContent = V.back ? "Show front" : "Show back";
-    $("#v-drive").href = driveUrl(id, rk);
-    $("#v-drive").textContent = pair ? "Front full-res ↗" : "Full-res in Drive ↗";
-    $("#v-drive2").hidden = !pair;
-    if (pair) $("#v-drive2").href = driveUrl(c.backId, c.backRk);
+    $("#v-save").textContent = "⬇ Save image";
     const sec = SECTIONS[c.si];
     // Want List cards get a button that starts an email to me with the card already named.
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
@@ -1102,6 +1139,7 @@
   const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
   $("#v-close").onclick = () => closeViewer();
+  $("#v-save").onclick = saveCard;
   $("#v-flip").onclick = () => { V.back = !V.back; V.zoom = false; showCard(); };
   // Click an image: on desktop, zoom into that side (click again to go back);
   // on a phone, a card with a back flips, and one without zooms.

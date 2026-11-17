@@ -5,6 +5,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 "Ian's to-dos" when a session starts or he asks what's left.
 
 ## Ian's to-dos
+- [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
+  "Viewers and commenters can see the option to download, print, and copy", then open one card file to check
+  the download option is gone there too. The site keeps working; this removes Drive's "Download all" zip.
 - [ ] **Set up GoatCounter analytics** (free, no cookies, no cookie banner needed).
   1. Sign up at goatcounter.com.
   2. Pick a site code, e.g. "ianbadeer" (the dashboard becomes ianbadeer.goatcounter.com).
@@ -26,6 +29,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] Send old Google Sites page addresses to their new pages:
   - home, alex-gordon-pc and its year pages, jermaine-dye-pc, nebraska-cornhuskers, custom-cards, kc-royals, detroit-lions, want-list, friends-of-interest.
 - [ ] Update any links that still use `thatsgoldjerry-900.github.io` (README, Instagram bios, TCDb profile).
+- [ ] Check `robots.txt` is served at ianbadeer.com/robots.txt (it only counts at a domain's root, so the AI-crawler opt-out starts with the switch).
 
 ## After the switch
 - [ ] Add the site to Google Search Console and submit a sitemap.
