@@ -429,16 +429,6 @@
       },
       {
         "type": "video",
-        "title": "Royals Super Collector Ian Badeer",
-        "outlet": "WaxPackHero Podcast",
-        "date": "2022",
-        "url": "https://www.youtube.com/watch?v=qkk47iwoiOA&t=192s",
-        "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
-        "youtube": "qkk47iwoiOA",
-        "start": 192
-      },
-      {
-        "type": "video",
         "title": "The Card Life",
         "outlet": "The Card Life",
         "youtube": "VwmpAhPuIOM",
@@ -446,6 +436,16 @@
         "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM&t=746s",
         "note": "My collection featured on the show. My segment starts at 12:26.",
         "date": "October 2022"
+      },
+      {
+        "type": "video",
+        "title": "Royals Super Collector Ian Badeer",
+        "outlet": "WaxPackHero Podcast",
+        "date": "September 2022",
+        "url": "https://www.youtube.com/watch?v=qkk47iwoiOA&t=192s",
+        "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
+        "youtube": "qkk47iwoiOA",
+        "start": 192
       },
       {
         "type": "article",
