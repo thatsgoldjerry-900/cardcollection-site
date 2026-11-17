@@ -1410,7 +1410,7 @@
   }
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
-    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair");
+    $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair"); $("#viewer").classList.remove("focus");
     if (!silent && history.state && history.state.v) history.back();
   }
   window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
@@ -1462,21 +1462,21 @@
   async function saveCard() {
     const c = V.list[V.k]; if (!c) return;
     const back = !isPair(c) && V.back && c.backId, id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
-    const b = $("#v-save"); b.textContent = "Saving…";
+    const b = $("#v-save"); b.dataset.tip = "Saving…";
     try {
       const u = (await marked(id, rk)).marked, a = document.createElement("a");
       a.href = u; a.download = (String(c.name || c.caption || "card").replace(/[\\/:*?"<>|#]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120) + (back ? " (back)" : "")) + ".jpg";
       document.body.appendChild(a); a.click(); a.remove();
-      b.textContent = "Saved";
-    } catch (e) { b.textContent = "Couldn't save"; }
-    setTimeout(() => (b.textContent = "⬇ Save image"), 1600);
+      b.dataset.tip = "Saved";
+    } catch (e) { b.dataset.tip = "Couldn't save"; }
+    setTimeout(() => delete b.dataset.tip, 1600);
   }
   const isPair = (c) => wide.matches && !!c.backId && !V.zoom;
   function showCard() {
     const c = V.list[V.k]; if (!c) return;
     $("#v-copy").hidden = !!c.photo;
     if (c.photo) {   // a photo with a player: caption instead of card details
-      const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
+      const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom && wide.matches);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
       $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
@@ -1492,10 +1492,10 @@
     im2.hidden = !pair;
     if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)");
     stage.classList.toggle("pair", pair);
-    stage.classList.toggle("zoom", V.zoom);
+    stage.classList.toggle("zoom", V.zoom && wide.matches);
     $("#v-title").innerHTML = `${esc(c.title)}<small>${esc(c.sub || "")}${c.par ? " · " + esc(c.par) : ""}</small>`;
     $("#v-flip").hidden = !c.backId || pair; $("#v-flip").textContent = V.back ? "Show front" : "Show back";
-    $("#v-save").textContent = "⬇ Save image";
+    delete $("#v-save").dataset.tip;
     const sec = SECTIONS[c.si];
     // Want List cards get a button that starts an email to me with the card already named.
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
@@ -1555,12 +1555,12 @@
   const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
   $("#v-close").onclick = $("#v-back").onclick = () => closeViewer();
-  $("#v-up").onclick = () => step(-1); $("#v-down").onclick = () => step(1);
   // Top bar (always shown; the main way around on phones): back, "3 of 24", and previous/next.
   function navState() {
     const first = V.k <= 0, last = V.k >= V.list.length - 1;
     $("#v-prev").style.visibility = first ? "hidden" : "visible"; $("#v-next").style.visibility = last ? "hidden" : "visible";
-    $("#v-up").disabled = first || V.random; $("#v-down").disabled = last || V.random;
+    $("#v-name").textContent = (V.list[V.k] || {}).title || (V.list[V.k] || {}).short || "";
+    $("#viewer").classList.toggle("focus", V.zoom && !wide.matches);
     $("#v-pos").textContent = V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`;
   }
   // Keep exploring inside the viewer: swap in the cards from the same set, or of the same player.
@@ -1572,11 +1572,10 @@
   $("#v-save").onclick = saveCard;
   $("#v-flip").onclick = () => { V.back = !V.back; V.zoom = false; showCard(); };
   // Click an image: on desktop, zoom into that side (click again to go back);
-  // on a phone, a card with a back flips, and one without zooms.
+  // on a phone, the page around the card hides so the whole card fills the screen (tap again to bring it back).
   function imageClick(side) {
     const c = V.list[V.k];
-    if (!wide.matches && c.backId) { V.back = !V.back; V.zoom = false; }
-    else if (V.zoom) V.zoom = false;
+    if (V.zoom) V.zoom = false;
     else { V.zoom = true; if (c.backId) V.back = side === "back"; }
     showCard();
   }
@@ -1585,9 +1584,9 @@
   wide.addEventListener("change", () => { if (!$("#viewer").hidden) { V.zoom = false; showCard(); } });
   $("#v-copy").onclick = async () => {
     const c = V.list[V.k], url = location.href.split("#")[0] + "#/card/" + c.id;
-    try { await navigator.clipboard.writeText(url); $("#v-copy").textContent = "Link copied"; }
-    catch { $("#v-copy").textContent = "Copy failed"; }
-    setTimeout(() => ($("#v-copy").textContent = "Copy link"), 1600);
+    try { await navigator.clipboard.writeText(url); $("#v-copy").dataset.tip = "Link copied"; }
+    catch { $("#v-copy").dataset.tip = "Copy failed"; }
+    setTimeout(() => delete $("#v-copy").dataset.tip, 1600);
   };
   document.addEventListener("keydown", (e) => {
     if ($("#viewer").hidden) return;

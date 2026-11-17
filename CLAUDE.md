@@ -25,4 +25,5 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
 - Card-back transcriptions (data/card-text.json) are for custom cards only, and Ian checks them before
   they go live.
 - **Deploy:** Ian wants finished work merged into `main` (the live site) without asking.
+  When assets/app.js or assets/style.css change, bump the `?v=` on their links in index.html so phones load fresh copies.
 - **Mobile:** Ian is often on his phone. Check layouts at phone width.
