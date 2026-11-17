@@ -1,4 +1,36 @@
 {
   "_help": "Transcriptions of Ian's CUSTOM card backs (bios and stats in his own words). Shown in the card viewer under \"Read the back\" (custom cards only, only while the back is on screen) and read aloud by screen readers. Key: the Drive file ID of the card's back scan (stays the same when a file is renamed). Fields: \"name\" (reminder), \"text\" (the whole back: paragraphs separated by a blank line; \"## \" starts a heading; lines with \" | \" form a table), and, to feed the player page's \"From my custom card\" section: \"player\" (the player page slug), \"facts\" ([[\"Born\", \"July 10, 1906\"], ...]) and \"stats\" ({\"title\": \"...\", \"rows\": [[header...], [row...]]}). Only add facts and stats the player page does not already show. Optional \"story\" replaces \"text\" on the player page.",
-  "cards": {}
+  "cards": {
+    "1_JYfF6gkcuh3YOffuBRyjMXJKMRj1w0N": {
+      "name": "2021 Ad Liska Autograph Custom (back)",
+      "player": "ad-liska",
+      "text": "## Ad Liska\nBorn: July 10, 1906 · Died: Nov 30, 1998 · Class of 1925\nPCL Baseball Hall of Fame · Oregon Sports Hall of Fame\n\nLiska was the first Nebraska baseball player to make it to the big leagues. He started as a teacher and semi-pro player, even making an appearance at the age of 19 for the Lincoln Links in 1926. His big league debut came for the Washington Senators in 1929. After five years of major league service, he bounced around and found another stop in Nebraska with the Omaha Packers in 1935.\n\nThe signing that would define his career came with the Portland Beavers AA team in 1936. He dominated the PCL circuit for the rest of his career, pitching for the Beavers from age 29 to 42, amassing 242 minor league wins with a 3.05 ERA.\n\nFormer player Dario Lodigiani, who faced Liska while Ad was in his 40s, said \"I was so bad against Liska (in the PCL) that I think even if he had walked the ball up to the plate, I couldn't have hit him.\"\n\nThe enclosed cut signature came from the pictured PSA/DNA certified index card, bearing certification number L14850.\n\n2021 Ianspiration Customs · IanBadeer.com",
+      "story": "Liska was the first Nebraska baseball player to make it to the big leagues. He started as a teacher and semi-pro player, even making an appearance at the age of 19 for the Lincoln Links in 1926. His big league debut came for the Washington Senators in 1929. After five years of major league service, he bounced around and found another stop in Nebraska with the Omaha Packers in 1935.\n\nThe signing that would define his career came with the Portland Beavers AA team in 1936. He dominated the PCL circuit for the rest of his career, pitching for the Beavers from age 29 to 42, amassing 242 minor league wins with a 3.05 ERA.\n\nFormer player Dario Lodigiani, who faced Liska while Ad was in his 40s, said \"I was so bad against Liska (in the PCL) that I think even if he had walked the ball up to the plate, I couldn't have hit him.\"",
+      "facts": [
+        [
+          "Halls of Fame",
+          "Pacific Coast League Baseball Hall of Fame; Oregon Sports Hall of Fame"
+        ],
+        [
+          "Teams outside the majors",
+          "Lincoln Links (1926); Omaha Packers (1935); Portland Beavers (from 1936, ages 29 to 42)"
+        ]
+      ],
+      "stats": {
+        "title": "Minor league career",
+        "rows": [
+          [
+            "League",
+            "Wins",
+            "ERA"
+          ],
+          [
+            "Minor leagues",
+            "242",
+            "3.05"
+          ]
+        ]
+      }
+    }
+  }
 }
