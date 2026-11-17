@@ -55,6 +55,20 @@ def extract(xlsx_bytes, spec):
     return {"columns": spec["columns"], "rows": out}
 
 
+# Private research in a player note never goes on the site: outreach (messaging someone, asking for an
+# address), to-dos ("need to confirm") and "Source: …" credits. Removed sentence by sentence; the rest stays.
+PRIVATE_NOTE = r"\b(messag(?:e|ed|ing)|reached out|reach out|mailing address|dm'?d|e-?mailed|wrote (?:to )?him|asked (?:him|his|her)|to see if (?:he|she|they) (?:knows?|has|have)|need(?:s)? to confirm|to be confirmed|for checking|follow up|todo)\b"
+def private_out(t):
+    import re
+    paras = []
+    for p in re.split(r"\n\s*\n", t):
+        p = re.sub(r"\s*(?:[-–—]\s*)?\bSource:[^\n]*", "", p)                       # "Source: …" to the end of the line
+        sents = re.split(r"(?<=[.!?])\s+|(?<=[.!?][\"”’)])\s+", p.strip())
+        p = " ".join(x for x in sents if x and not re.search(PRIVATE_NOTE, x, re.I)).strip()
+        if p: paras.append(p)
+    return "\n\n".join(paras)
+
+
 def extract_side_by_side(xlsx_bytes, spec):
     """Several lists laid out side by side: list titles on titleRow, column titles on headerRow.
     Each list ends at its first blank row; a row with only a name is a subheading."""
@@ -89,7 +103,7 @@ def extract_side_by_side(xlsx_bytes, spec):
             if len(l.split()) <= 3 and not re.search(r"[.!?]$", l): continue   # only a label was left
             out.append(l)
         t = "\n".join(out)
-        return re.sub(r"[ \t]+", " ", re.sub(r"\n{3,}", "\n\n", t)).strip()
+        return private_out(re.sub(r"[ \t]+", " ", re.sub(r"\n{3,}", "\n\n", t)).strip())
     def link_at(ri, ci):
         """The web link on a cell (e.g. a player's name links to their stats page), if any."""
         if ci >= len(cells[ri]): return ""
