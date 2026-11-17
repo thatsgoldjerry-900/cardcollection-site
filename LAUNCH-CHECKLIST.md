@@ -32,7 +32,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] Check `robots.txt` is served at ianbadeer.com/robots.txt (it only counts at a domain's root, so the AI-crawler opt-out starts with the switch).
 
 ## After the switch
-- [ ] Add the site to Google Search Console and submit a sitemap.
+- [ ] Add the site to Google Search Console and submit a sitemap. Include the plain NFL Husker pages (`/nfl-huskers/`, tier-1/2/3.html).
 - [ ] Test shared links in a text message, Facebook and Instagram.
 - [ ] Unpublish or archive the old Google Site once the new one is confirmed working.
 
