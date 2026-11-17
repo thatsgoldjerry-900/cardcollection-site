@@ -619,3 +619,19 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 #app.slide-in{animation:slide-in .28s ease-out}
 @keyframes slide-in{from{transform:translateX(28px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){#app.slide-in{animation:none}}
+
+/* Huskers by NFL Team: each team's logo and colors */
+.tm-tile{border-top:4px solid var(--tc1);position:relative}
+.tm-logo{width:40px;height:40px;object-fit:contain;float:right;margin:0 0 4px 8px;background:#fff;border-radius:8px;padding:4px}
+.tm-team .tm-banner{display:flex;align-items:center;gap:18px;padding:18px;margin-bottom:18px;border-radius:14px;border-bottom:4px solid var(--tc2);
+  background:linear-gradient(135deg,var(--tc1),color-mix(in srgb,var(--tc1) 55%,#05070a))}
+.tm-team .tm-banner .c-head{margin:0}
+.tm-team .tm-banner .kick,.tm-team .tm-banner p{color:rgba(255,255,255,.85)}
+.tm-team .tm-banner h1{color:#fff}
+.tm-blogo{width:96px;height:96px;flex:none;object-fit:contain;background:#fff;border-radius:16px;padding:10px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.tm-team .more-h{color:var(--tca);border-bottom:2px solid var(--tca);padding-bottom:4px}
+.tm-team .pm{border-left-color:var(--tca)}.tm-team .pm-go{color:var(--tca)}
+.tm-team .pm:hover{border-color:var(--tca)}
+.tm-team .back{color:var(--tca)}
+.tm-credit{font-size:12px;color:var(--mu);margin-top:24px}
+@media (max-width:700px){.tm-team .tm-banner{flex-direction:column;align-items:flex-start;padding:14px;gap:12px}.tm-blogo{width:72px;height:72px}}

@@ -809,6 +809,11 @@
     });
     return TEAMIDX;
   }
+  // A team's colors for its page: --tc1/--tc2 for the banner, --tca a readable accent on the dark site.
+  const lum = (h) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => (v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const teamVars = (t) => { const [a, b] = t.colors || ["#3b6fd8", "#9aa4b2"]; const acc = [a, b].filter((x) => lum(x) > 0.08 && lum(x) < 0.9).sort((x, y) => lum(y) - lum(x))[0] || "#c9d1db";
+    return `--tc1:${a};--tc2:${b};--tca:${acc}`; };
+  const teamLogo = (t, cls) => t.logo ? `<img class="${cls}" alt="${esc(t.name)} logo" loading="lazy" src="${esc(t.logo)}" onerror="this.remove()">` : "";
   function nflTeams(slug) {
     setNav("nfl-teams");
     loadHub(() => nflTeamData().then((teams) => {
@@ -818,7 +823,7 @@
         const rows = teams.map((t) => ({ t, n: idx[t.slug].length, t1: idx[t.slug].filter((e) => e.tier === 1).length })).sort((a, b) => b.n - a.n || a.t.name.localeCompare(b.t.name));
         $("#app").innerHTML = `<div class="wrap tm"><div class="c-head"><div class="kick">NFL Huskers</div><h1>Huskers by NFL Team</h1>
           <p>Every Nebraska Cornhusker on my NFL lists, by the franchise he was with. Past team names count toward today's franchise (St. Louis Rams → Los Angeles Rams).</p></div>
-          <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" href="#/nfl-teams/${t.slug}"><b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div></div>`;
+          <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" style="${teamVars(t)}" href="#/nfl-teams/${t.slug}">${teamLogo(t, "tm-logo")}<b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div></div>`;
         return;
       }
       const t = teams.find((q) => q.slug === slug); if (!t) return notFound();
@@ -828,11 +833,12 @@
         return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
           <span class="pm-t"><b>${esc(e.x.name)}</b>${e.yrs ? `<small>${esc(e.yrs)}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
-      $("#app").innerHTML = `<div class="wrap tm"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
-        <div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
-        <p>${fmt(list.length)} Nebraska Cornhuskers from my NFL lists spent time with the ${esc(t.name)}.${t.names.length > 1 ? ` Past team names count too: ${esc(t.names.slice(1).join(", "))}.` : ""}</p></div>
+      $("#app").innerHTML = `<div class="wrap tm tm-team" style="${teamVars(t)}"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
+        <div class="tm-banner">${teamLogo(t, "tm-blogo")}<div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
+        <p>${fmt(list.length)} Nebraska Cornhuskers from my NFL lists spent time with the ${esc(t.name)}.${t.names.length > 1 ? ` Past team names count too: ${esc(t.names.slice(1).join(", "))}.` : ""}</p></div></div>
         ${[1, 2, 3].map((n) => { const g = list.filter((e) => e.tier === n); return g.length ? `<h2 class="more-h">${TIER[n]} · ${g.length}</h2><div class="pm-list">${g.map(card).join("")}</div>` : ""; }).join("")}
-        ${list.length ? "" : `<p class="empty">No Huskers from my lists yet.</p>`}</div>`;
+        ${list.length ? "" : `<p class="empty">No Huskers from my lists yet.</p>`}
+        ${t.logoPage ? `<p class="tm-credit">Logo: <a href="${esc(t.logoPage)}" target="_blank" rel="noopener">Wikipedia</a>. Team names and logos are trademarks of their teams.</p>` : ""}</div>`;
     }));
   }
 

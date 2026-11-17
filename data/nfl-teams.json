@@ -1,37 +1,544 @@
 {
-  "_help": "The 32 NFL franchises with their past names, for Huskers by NFL Team. \"names\": full team names as Wikipedia writes them (career history); \"nick\": the nickname as it appears in Ian's notes (\"Released by the Broncos\"). A past name counts toward today's franchise (St. Louis Rams -> Los Angeles Rams).",
-  "teams": [
-    {"slug": "arizona-cardinals", "name": "Arizona Cardinals", "names": ["Arizona Cardinals", "Phoenix Cardinals", "St. Louis Cardinals", "Chicago Cardinals", "Card-Pitt"], "nick": ["Cardinals"]},
-    {"slug": "atlanta-falcons", "name": "Atlanta Falcons", "names": ["Atlanta Falcons"], "nick": ["Falcons"]},
-    {"slug": "baltimore-ravens", "name": "Baltimore Ravens", "names": ["Baltimore Ravens"], "nick": ["Ravens"]},
-    {"slug": "buffalo-bills", "name": "Buffalo Bills", "names": ["Buffalo Bills"], "nick": ["Bills"]},
-    {"slug": "carolina-panthers", "name": "Carolina Panthers", "names": ["Carolina Panthers"], "nick": ["Panthers"]},
-    {"slug": "chicago-bears", "name": "Chicago Bears", "names": ["Chicago Bears"], "nick": ["Bears"]},
-    {"slug": "cincinnati-bengals", "name": "Cincinnati Bengals", "names": ["Cincinnati Bengals"], "nick": ["Bengals"]},
-    {"slug": "cleveland-browns", "name": "Cleveland Browns", "names": ["Cleveland Browns"], "nick": ["Browns"]},
-    {"slug": "dallas-cowboys", "name": "Dallas Cowboys", "names": ["Dallas Cowboys"], "nick": ["Cowboys"]},
-    {"slug": "denver-broncos", "name": "Denver Broncos", "names": ["Denver Broncos"], "nick": ["Broncos"]},
-    {"slug": "detroit-lions", "name": "Detroit Lions", "names": ["Detroit Lions", "Portsmouth Spartans"], "nick": ["Lions"]},
-    {"slug": "green-bay-packers", "name": "Green Bay Packers", "names": ["Green Bay Packers"], "nick": ["Packers"]},
-    {"slug": "houston-texans", "name": "Houston Texans", "names": ["Houston Texans"], "nick": ["Texans"]},
-    {"slug": "indianapolis-colts", "name": "Indianapolis Colts", "names": ["Indianapolis Colts", "Baltimore Colts"], "nick": ["Colts"]},
-    {"slug": "jacksonville-jaguars", "name": "Jacksonville Jaguars", "names": ["Jacksonville Jaguars"], "nick": ["Jaguars"]},
-    {"slug": "kansas-city-chiefs", "name": "Kansas City Chiefs", "names": ["Kansas City Chiefs", "Dallas Texans"], "nick": ["Chiefs"]},
-    {"slug": "las-vegas-raiders", "name": "Las Vegas Raiders", "names": ["Las Vegas Raiders", "Oakland Raiders", "Los Angeles Raiders"], "nick": ["Raiders"]},
-    {"slug": "los-angeles-chargers", "name": "Los Angeles Chargers", "names": ["Los Angeles Chargers", "San Diego Chargers"], "nick": ["Chargers"]},
-    {"slug": "los-angeles-rams", "name": "Los Angeles Rams", "names": ["Los Angeles Rams", "St. Louis Rams", "Cleveland Rams"], "nick": ["Rams"]},
-    {"slug": "miami-dolphins", "name": "Miami Dolphins", "names": ["Miami Dolphins"], "nick": ["Dolphins"]},
-    {"slug": "minnesota-vikings", "name": "Minnesota Vikings", "names": ["Minnesota Vikings"], "nick": ["Vikings"]},
-    {"slug": "new-england-patriots", "name": "New England Patriots", "names": ["New England Patriots", "Boston Patriots"], "nick": ["Patriots"]},
-    {"slug": "new-orleans-saints", "name": "New Orleans Saints", "names": ["New Orleans Saints"], "nick": ["Saints"]},
-    {"slug": "new-york-giants", "name": "New York Giants", "names": ["New York Giants"], "nick": ["Giants"]},
-    {"slug": "new-york-jets", "name": "New York Jets", "names": ["New York Jets", "New York Titans"], "nick": ["Jets"]},
-    {"slug": "philadelphia-eagles", "name": "Philadelphia Eagles", "names": ["Philadelphia Eagles", "Phil-Pitt"], "nick": ["Eagles"]},
-    {"slug": "pittsburgh-steelers", "name": "Pittsburgh Steelers", "names": ["Pittsburgh Steelers", "Pittsburgh Pirates (NFL)"], "nick": ["Steelers"]},
-    {"slug": "san-francisco-49ers", "name": "San Francisco 49ers", "names": ["San Francisco 49ers"], "nick": ["49ers", "Niners"]},
-    {"slug": "seattle-seahawks", "name": "Seattle Seahawks", "names": ["Seattle Seahawks"], "nick": ["Seahawks"]},
-    {"slug": "tampa-bay-buccaneers", "name": "Tampa Bay Buccaneers", "names": ["Tampa Bay Buccaneers"], "nick": ["Buccaneers", "Bucs"]},
-    {"slug": "tennessee-titans", "name": "Tennessee Titans", "names": ["Tennessee Titans", "Tennessee Oilers", "Houston Oilers"], "nick": ["Titans", "Oilers"]},
-    {"slug": "washington-commanders", "name": "Washington Commanders", "names": ["Washington Commanders", "Washington Football Team", "Washington Redskins", "Boston Redskins", "Boston Braves (NFL)"], "nick": ["Commanders", "Redskins", "Football Team"]}
-  ]
+ "_help": "The 32 NFL franchises with their past names, for Huskers by NFL Team. \"names\": full team names as Wikipedia writes them (career history); \"nick\": the nickname as it appears in Ian's notes (\"Released by the Broncos\"). A past name counts toward today's franchise (St. Louis Rams -> Los Angeles Rams).",
+ "teams": [
+  {
+   "slug": "arizona-cardinals",
+   "name": "Arizona Cardinals",
+   "names": [
+    "Arizona Cardinals",
+    "Phoenix Cardinals",
+    "St. Louis Cardinals",
+    "Chicago Cardinals",
+    "Card-Pitt"
+   ],
+   "nick": [
+    "Cardinals"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/72/Arizona_Cardinals_logo.svg/250px-Arizona_Cardinals_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Arizona_Cardinals_logo.svg",
+   "colors": [
+    "#97233F",
+    "#FFB612"
+   ]
+  },
+  {
+   "slug": "atlanta-falcons",
+   "name": "Atlanta Falcons",
+   "names": [
+    "Atlanta Falcons"
+   ],
+   "nick": [
+    "Falcons"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Atlanta_Falcons_logo.svg/250px-Atlanta_Falcons_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Atlanta_Falcons_logo.svg",
+   "colors": [
+    "#A71930",
+    "#000000"
+   ]
+  },
+  {
+   "slug": "baltimore-ravens",
+   "name": "Baltimore Ravens",
+   "names": [
+    "Baltimore Ravens"
+   ],
+   "nick": [
+    "Ravens"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/16/Baltimore_Ravens_logo.svg/250px-Baltimore_Ravens_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Baltimore_Ravens_logo.svg",
+   "colors": [
+    "#241773",
+    "#9E7C0C"
+   ]
+  },
+  {
+   "slug": "buffalo-bills",
+   "name": "Buffalo Bills",
+   "names": [
+    "Buffalo Bills"
+   ],
+   "nick": [
+    "Bills"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Buffalo_Bills_logo_1974-present.svg/250px-Buffalo_Bills_logo_1974-present.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Buffalo_Bills_logo_1974-present.svg",
+   "colors": [
+    "#00338D",
+    "#C60C30"
+   ]
+  },
+  {
+   "slug": "carolina-panthers",
+   "name": "Carolina Panthers",
+   "names": [
+    "Carolina Panthers"
+   ],
+   "nick": [
+    "Panthers"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Carolina_Panthers_logo.svg/250px-Carolina_Panthers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Carolina_Panthers_logo.svg",
+   "colors": [
+    "#0085CA",
+    "#101820"
+   ]
+  },
+  {
+   "slug": "chicago-bears",
+   "name": "Chicago Bears",
+   "names": [
+    "Chicago Bears"
+   ],
+   "nick": [
+    "Bears"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/15/Chicago_Bears_logo_primary.svg/250px-Chicago_Bears_logo_primary.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Chicago_Bears_logo_primary.svg",
+   "colors": [
+    "#0B162A",
+    "#C83803"
+   ]
+  },
+  {
+   "slug": "cincinnati-bengals",
+   "name": "Cincinnati Bengals",
+   "names": [
+    "Cincinnati Bengals"
+   ],
+   "nick": [
+    "Bengals"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Cincinnati_Bengals_logo.svg/250px-Cincinnati_Bengals_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Cincinnati_Bengals_logo.svg",
+   "colors": [
+    "#FB4F14",
+    "#000000"
+   ]
+  },
+  {
+   "slug": "cleveland-browns",
+   "name": "Cleveland Browns",
+   "names": [
+    "Cleveland Browns"
+   ],
+   "nick": [
+    "Browns"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d9/Cleveland_Browns_logo.svg/250px-Cleveland_Browns_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Cleveland_Browns_logo.svg",
+   "colors": [
+    "#311D00",
+    "#FF3C00"
+   ]
+  },
+  {
+   "slug": "dallas-cowboys",
+   "name": "Dallas Cowboys",
+   "names": [
+    "Dallas Cowboys"
+   ],
+   "nick": [
+    "Cowboys"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Dallas_Cowboys.svg/250px-Dallas_Cowboys.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Dallas_Cowboys.svg",
+   "colors": [
+    "#003594",
+    "#869397"
+   ]
+  },
+  {
+   "slug": "denver-broncos",
+   "name": "Denver Broncos",
+   "names": [
+    "Denver Broncos"
+   ],
+   "nick": [
+    "Broncos"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Denver_Broncos_logo.svg/250px-Denver_Broncos_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Denver_Broncos_logo.svg",
+   "colors": [
+    "#FB4F14",
+    "#002244"
+   ]
+  },
+  {
+   "slug": "detroit-lions",
+   "name": "Detroit Lions",
+   "names": [
+    "Detroit Lions",
+    "Portsmouth Spartans"
+   ],
+   "nick": [
+    "Lions"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/71/Detroit_Lions_logo.svg/250px-Detroit_Lions_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Detroit_Lions_logo.svg",
+   "colors": [
+    "#0076B6",
+    "#B0B7BC"
+   ]
+  },
+  {
+   "slug": "green-bay-packers",
+   "name": "Green Bay Packers",
+   "names": [
+    "Green Bay Packers"
+   ],
+   "nick": [
+    "Packers"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Green_Bay_Packers_logo.svg/250px-Green_Bay_Packers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Green_Bay_Packers_logo.svg",
+   "colors": [
+    "#203731",
+    "#FFB612"
+   ]
+  },
+  {
+   "slug": "houston-texans",
+   "name": "Houston Texans",
+   "names": [
+    "Houston Texans"
+   ],
+   "nick": [
+    "Texans"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/28/Houston_Texans_logo.svg/250px-Houston_Texans_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Houston_Texans_logo.svg",
+   "colors": [
+    "#03202F",
+    "#A71930"
+   ]
+  },
+  {
+   "slug": "indianapolis-colts",
+   "name": "Indianapolis Colts",
+   "names": [
+    "Indianapolis Colts",
+    "Baltimore Colts"
+   ],
+   "nick": [
+    "Colts"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Indianapolis_Colts_logo.svg/250px-Indianapolis_Colts_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Indianapolis_Colts_logo.svg",
+   "colors": [
+    "#002C5F",
+    "#A2AAAD"
+   ]
+  },
+  {
+   "slug": "jacksonville-jaguars",
+   "name": "Jacksonville Jaguars",
+   "names": [
+    "Jacksonville Jaguars"
+   ],
+   "nick": [
+    "Jaguars"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/74/Jacksonville_Jaguars_logo.svg/250px-Jacksonville_Jaguars_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Jacksonville_Jaguars_logo.svg",
+   "colors": [
+    "#006778",
+    "#D7A22A"
+   ]
+  },
+  {
+   "slug": "kansas-city-chiefs",
+   "name": "Kansas City Chiefs",
+   "names": [
+    "Kansas City Chiefs",
+    "Dallas Texans"
+   ],
+   "nick": [
+    "Chiefs"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Kansas_City_Chiefs_logo.svg/250px-Kansas_City_Chiefs_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Kansas_City_Chiefs_logo.svg",
+   "colors": [
+    "#E31837",
+    "#FFB81C"
+   ]
+  },
+  {
+   "slug": "las-vegas-raiders",
+   "name": "Las Vegas Raiders",
+   "names": [
+    "Las Vegas Raiders",
+    "Oakland Raiders",
+    "Los Angeles Raiders"
+   ],
+   "nick": [
+    "Raiders"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/4/48/Las_Vegas_Raiders_logo.svg/250px-Las_Vegas_Raiders_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Las_Vegas_Raiders_logo.svg",
+   "colors": [
+    "#000000",
+    "#A5ACAF"
+   ]
+  },
+  {
+   "slug": "los-angeles-chargers",
+   "name": "Los Angeles Chargers",
+   "names": [
+    "Los Angeles Chargers",
+    "San Diego Chargers"
+   ],
+   "nick": [
+    "Chargers"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Los_Angeles_Chargers_logo.svg/250px-Los_Angeles_Chargers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Los_Angeles_Chargers_logo.svg",
+   "colors": [
+    "#0080C6",
+    "#FFC20E"
+   ]
+  },
+  {
+   "slug": "los-angeles-rams",
+   "name": "Los Angeles Rams",
+   "names": [
+    "Los Angeles Rams",
+    "St. Louis Rams",
+    "Cleveland Rams"
+   ],
+   "nick": [
+    "Rams"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/14/LA_Rams_logo.svg/250px-LA_Rams_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:LA_Rams_logo.svg",
+   "colors": [
+    "#003594",
+    "#FFA300"
+   ]
+  },
+  {
+   "slug": "miami-dolphins",
+   "name": "Miami Dolphins",
+   "names": [
+    "Miami Dolphins"
+   ],
+   "nick": [
+    "Dolphins"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Miami_Dolphins_logo.svg/250px-Miami_Dolphins_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Miami_Dolphins_logo.svg",
+   "colors": [
+    "#008E97",
+    "#FC4C02"
+   ]
+  },
+  {
+   "slug": "minnesota-vikings",
+   "name": "Minnesota Vikings",
+   "names": [
+    "Minnesota Vikings"
+   ],
+   "nick": [
+    "Vikings"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/4/48/Minnesota_Vikings_logo.svg/250px-Minnesota_Vikings_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Minnesota_Vikings_logo.svg",
+   "colors": [
+    "#4F2683",
+    "#FFC62F"
+   ]
+  },
+  {
+   "slug": "new-england-patriots",
+   "name": "New England Patriots",
+   "names": [
+    "New England Patriots",
+    "Boston Patriots"
+   ],
+   "nick": [
+    "Patriots"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/New_England_Patriots_logo.svg/250px-New_England_Patriots_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:New_England_Patriots_logo.svg",
+   "colors": [
+    "#002244",
+    "#C60C30"
+   ]
+  },
+  {
+   "slug": "new-orleans-saints",
+   "name": "New Orleans Saints",
+   "names": [
+    "New Orleans Saints"
+   ],
+   "nick": [
+    "Saints"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/New_Orleans_Saints_logo.svg/250px-New_Orleans_Saints_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:New_Orleans_Saints_logo.svg",
+   "colors": [
+    "#D3BC8D",
+    "#101820"
+   ]
+  },
+  {
+   "slug": "new-york-giants",
+   "name": "New York Giants",
+   "names": [
+    "New York Giants"
+   ],
+   "nick": [
+    "Giants"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/New_York_Giants_logo.svg/250px-New_York_Giants_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:New_York_Giants_logo.svg",
+   "colors": [
+    "#0B2265",
+    "#A71930"
+   ]
+  },
+  {
+   "slug": "new-york-jets",
+   "name": "New York Jets",
+   "names": [
+    "New York Jets",
+    "New York Titans"
+   ],
+   "nick": [
+    "Jets"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/New_York_Jets_2024.svg/250px-New_York_Jets_2024.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:New_York_Jets_2024.svg",
+   "colors": [
+    "#125740",
+    "#FFFFFF"
+   ]
+  },
+  {
+   "slug": "philadelphia-eagles",
+   "name": "Philadelphia Eagles",
+   "names": [
+    "Philadelphia Eagles",
+    "Phil-Pitt"
+   ],
+   "nick": [
+    "Eagles"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Philadelphia_Eagles_logo.svg/250px-Philadelphia_Eagles_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Philadelphia_Eagles_logo.svg",
+   "colors": [
+    "#004C54",
+    "#A5ACAF"
+   ]
+  },
+  {
+   "slug": "pittsburgh-steelers",
+   "name": "Pittsburgh Steelers",
+   "names": [
+    "Pittsburgh Steelers",
+    "Pittsburgh Pirates (NFL)"
+   ],
+   "nick": [
+    "Steelers"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Pittsburgh_Steelers_logo.svg/250px-Pittsburgh_Steelers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Pittsburgh_Steelers_logo.svg",
+   "colors": [
+    "#FFB612",
+    "#101820"
+   ]
+  },
+  {
+   "slug": "san-francisco-49ers",
+   "name": "San Francisco 49ers",
+   "names": [
+    "San Francisco 49ers"
+   ],
+   "nick": [
+    "49ers",
+    "Niners"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/San_Francisco_49ers_logo.svg/250px-San_Francisco_49ers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:San_Francisco_49ers_logo.svg",
+   "colors": [
+    "#AA0000",
+    "#B3995D"
+   ]
+  },
+  {
+   "slug": "seattle-seahawks",
+   "name": "Seattle Seahawks",
+   "names": [
+    "Seattle Seahawks"
+   ],
+   "nick": [
+    "Seahawks"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Seattle_Seahawks_logo.svg/250px-Seattle_Seahawks_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Seattle_Seahawks_logo.svg",
+   "colors": [
+    "#002244",
+    "#69BE28"
+   ]
+  },
+  {
+   "slug": "tampa-bay-buccaneers",
+   "name": "Tampa Bay Buccaneers",
+   "names": [
+    "Tampa Bay Buccaneers"
+   ],
+   "nick": [
+    "Buccaneers",
+    "Bucs"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Tampa_Bay_Buccaneers_logo.svg/250px-Tampa_Bay_Buccaneers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Tampa_Bay_Buccaneers_logo.svg",
+   "colors": [
+    "#D50A0A",
+    "#34302B"
+   ]
+  },
+  {
+   "slug": "tennessee-titans",
+   "name": "Tennessee Titans",
+   "names": [
+    "Tennessee Titans",
+    "Tennessee Oilers",
+    "Houston Oilers"
+   ],
+   "nick": [
+    "Titans",
+    "Oilers"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Tennessee_Titans_Logo_2026.svg/250px-Tennessee_Titans_Logo_2026.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Tennessee_Titans_Logo_2026.svg",
+   "colors": [
+    "#0C2340",
+    "#4B92DB"
+   ]
+  },
+  {
+   "slug": "washington-commanders",
+   "name": "Washington Commanders",
+   "names": [
+    "Washington Commanders",
+    "Washington Football Team",
+    "Washington Redskins",
+    "Boston Redskins",
+    "Boston Braves (NFL)"
+   ],
+   "nick": [
+    "Commanders",
+    "Redskins",
+    "Football Team"
+   ],
+   "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Washington_Commanders_logo.svg/250px-Washington_Commanders_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Washington_Commanders_logo.svg",
+   "colors": [
+    "#5A1414",
+    "#FFB612"
+   ]
+  }
+ ]
 }
