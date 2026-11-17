@@ -1046,6 +1046,46 @@
     state.list = shownCards;   // the card viewer steps through the cards on this page
   }
 
+  /* ---------- Rainbows: every version (parallel) I have of one card ---------- */
+  // Same year, set, card number and player = one rainbow, whatever the color. A color or parallel word at the end of
+  // the set name ("Signature Materials Black") is ignored; "Set - Parallel" names already keep the parallel apart.
+  const PARALLEL_WORDS = /(?:\s+(?:gold(?:en)?|silver|black|red|blue|green|orange|purple|pink|platinum|bronze|copper|emerald|sapphire|ruby|white|yellow|aqua|teal|magenta|holo(?:foil)?|refractors?|prizms?|parallel|foil|rainbow|mojo|wave|shimmer|atomic|x-?fractors?|superfractors?|printing plates?|press proofs?|proofs?|framed|vintage stock|independence day|camo|tie-?dye|cracked ice|mirror|spectrum|chrome|prime|limited))+$/i;
+  let RAINBOWS = null;
+  function rainbowKey(c) {
+    const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m || !c.title) return null;
+    // Autographed and relic versions are their own rainbows (same card number, different card).
+    const kind = (c.tags.has("auto") ? "a" : "") + (c.tags.has("relic") ? "r" : "");
+    return [m[1], m[2].replace(PARALLEL_WORDS, "").toLowerCase(), m[3].toLowerCase(), norm(c.title), kind].join("|");
+  }
+  function rainbowOf(c) {
+    if (!RAINBOWS) {
+      RAINBOWS = new Map();
+      const seen = new Set();   // a card uploaded twice counts once
+      CARDS.forEach((x) => {
+        if (/\((back|inside)\)/i.test(x.name) || seen.has(x.name.toLowerCase())) return; seen.add(x.name.toLowerCase());
+        const k = rainbowKey(x); if (k) RAINBOWS.set(k, [...(RAINBOWS.get(k) || []), x]);
+      });
+    }
+    const k = rainbowKey(c); let all = (k && RAINBOWS.get(k)) || [];
+    if (!all.includes(c)) all = all.map((x) => (x.name.toLowerCase() === c.name.toLowerCase() ? c : x));   // opened the duplicate copy
+    // 1/1 first, then lowest print run to highest, then unnumbered versions.
+    return all.slice().sort((a, b) => (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
+  }
+  function rainbow(id) {
+    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const all = rainbowOf(c); if (all.length < 2) return notFound();
+    // The rainbow's name: the set, plus its insert name with the colors taken off ("Five Star - Golden Graphs").
+    // Only when every version shares it (no plain base card among them).
+    const pars = all.map((x) => (x.par || "").replace(PARALLEL_WORDS, "").trim());
+    const common = pars.every(Boolean) ? pars.slice().sort((p, q) => p.length - q.length).find((p) => pars.every((q) => q.toLowerCase().startsWith(p.toLowerCase()))) : "";
+    const sec = SECTIONS[c.si], base = c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "") + (common ? ` - ${common}` : "");
+    setNav(sec.slug); setTitle(`${c.title} rainbow`);
+    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+      <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest up.</p></div>
+      <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
+    state.list = all;
+  }
   function notFound() {
     setTitle("Page not found");
     $("#app").innerHTML = `<div class="wrap nf"><h1>That page isn't here</h1><p>It may have moved when the site was rebuilt. Try searching above, or:</p>
@@ -1073,6 +1113,7 @@
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "media") media();
+    else if (a === "rainbow") rainbow(b);
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
@@ -1244,6 +1285,8 @@
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)})</button>` : "")
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(c.title)} (${fmt(byPlayer.length)})</button>` : "");
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
+    const rb = rainbowOf(c);
+    if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(c.id)}">🌈 View rainbow (${rb.length})</a>`);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
