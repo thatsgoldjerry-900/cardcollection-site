@@ -1452,9 +1452,12 @@
   function loadInto(el, c, id, rk, alt) {
     el.classList.remove("wm"); el.style.removeProperty("--plain");
     el.src = img(id, rk, 400); el.alt = alt; el.dataset.id = id;
-    marked(id, rk).then((u) => {
+    // Swap to the large image only once both versions are decoded, so it doesn't blink (or flash the mark) on first view.
+    const ready = (u) => Promise.all([u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i.decode().catch(() => {}); })).then(() => u);
+    marked(id, rk).then(ready).then((u) => {
       if (V.list[V.k] !== c || el.dataset.id !== id) return;
-      el.style.setProperty("--plain", `url("${u.plain}")`); el.src = u.marked; el.classList.add("wm");
+      el.style.setProperty("--plain", `url("${u.plain}")`);
+      requestAnimationFrame(() => { if (el.dataset.id !== id) return; el.classList.add("wm"); el.src = u.marked; });
     })
       .catch(() => { if (V.list[V.k] === c && el.dataset.id === id) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
   }
