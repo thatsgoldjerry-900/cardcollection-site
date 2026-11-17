@@ -1,5 +1,8 @@
 # IanBadeer.com
 
+> **Before going live at ianbadeer.com, work through [LAUNCH-CHECKLIST.md](LAUNCH-CHECKLIST.md).**
+
+
 A fast, searchable gallery of Ian Badeer's card scans. The scans stay in Google Drive.
 This site reads the Drive folders and shows whatever is in them.
 
