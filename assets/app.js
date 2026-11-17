@@ -72,7 +72,7 @@
   function load(json) {
     DATA = json; SECTIONS = json.sections;
     // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
-    json.cards = json.cards.filter((c) => !/\bsold\b/i.test(c[2]) && !(/\s(?:2nd|3rd|\d+th)\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
+    json.cards = json.cards.filter((c) => !/\bsold\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
     CARDS = json.cards.map((c, i) => {
       const [id, rk, name, si, gi, added, backId, backRk] = c;
       const p = parse(name);
@@ -1112,6 +1112,69 @@
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     state.list = all;
   }
+  /* Letterman sets: each card is one letter (e.g. "4N", "Letter 03 R", "#AP 1P"). The page spells the word in order,
+     with a blank spot for each letter I'm missing. The word is the one that fits every letter I have: the player's
+     last or full name, CORNHUSKERS, HUSKERS or NEBRASKA, or one set in config/site.json "letterWords". */
+  const letterOf = (c) => {
+    const n = c.name.replace(/#'d.*$|\b1 of 1\b.*$/i, " ");
+    const m = n.match(/\bLetter\s+0?(\d{1,2})\s+([A-Z])\b/) || n.match(/(?:^|\s)0?(\d{1,2})\s?([A-Z])(?=\s|$|\))/);
+    return m && +m[1] > 0 ? { pos: +m[1], letter: m[2] } : null;
+  };
+  const isLetterSet = (c) => /\blett(?:er|erman|ermen)\b|by the letter/i.test(c.name) && !/(?:signed|autographed)\s+letter\b/i.test(c.name);
+  const letterGroupKey = (c) => {
+    const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m) return null;
+    const pre = m[3].replace(/[^A-Za-z]/g, "").toLowerCase();
+    // The player, without the letter code that sits in the name ("Niles Paul 4N", "1P Aaron Pribanic", "Letter 03 R").
+    const who = c.title.replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
+    return [m[1], norm(who), pre || norm(m[2])].join("|");
+  };
+  let LETTERS = null;
+  function lettersOf(c) {
+    if (!isLetterSet(c) || !letterOf(c)) return null;
+    if (!LETTERS) {
+      LETTERS = new Map(); const seen = new Set();
+      CARDS.forEach((x) => {
+        if (!isLetterSet(x) || !letterOf(x) || /\((back|inside)\)/i.test(x.name)) return;
+        const k = letterGroupKey(x), l = letterOf(x); if (!k) return;
+        const id = k + "|" + l.pos + l.letter + "|" + (x.par || "") + "|" + (x.serial || ""); if (seen.has(id)) return; seen.add(id);
+        LETTERS.set(k, [...(LETTERS.get(k) || []), x]);
+      });
+    }
+    const k = letterGroupKey(c), cards = (k && LETTERS.get(k)) || [];
+    const have = cards.map((x) => ({ x, ...letterOf(x) }));
+    const custom = ((DATA.site.letterWords || {})[k] || "").toUpperCase().replace(/[^A-Z]/g, "");
+    const name = c.title.replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ")
+      .replace(/\b(jr|sr|ii|iii|iv)\.?\s*$/i, "").replace(/\s+/g, " ").trim().toUpperCase();
+    const last = name.split(/\s+/).pop().replace(/[^A-Z]/g, "");
+    // Words as shown (with spaces); matching ignores the spaces.
+    const shows = [custom, last, name.replace(/[^A-Z ]/g, ""), "CORNHUSKERS", "HUSKERS", "NEBRASKA", "ROOKIE " + last, last + " KANSAS CITY ROYALS", last + " ROYALS"].filter(Boolean);
+    const tries = shows.map((w) => w.replace(/[^A-Z]/g, ""));
+    // The word that fits the most letters I have (a mistyped letter in a file name shouldn't hide the whole word),
+    // as long as at most two don't fit. A word set in config always wins.
+    const fit = (w) => have.filter((h) => w[h.pos - 1] === h.letter).length;
+    const best = custom || tries.slice().sort((p, q) => fit(q) - fit(p) || tries.indexOf(p) - tries.indexOf(q))[0] || "";
+    const word = custom || (best && fit(best) >= 2 && have.length - fit(best) <= 2 && Math.max(...have.map((h) => h.pos)) <= best.length ? best : "");
+    const shown = word ? (shows[tries.indexOf(word)] || word) : "";
+    const len = word.length || Math.max(...have.map((h) => h.pos));
+    const slots = Array.from({ length: len }, (_, i) => ({ pos: i + 1, letter: word ? word[i] : (have.find((h) => h.pos === i + 1) || {}).letter || "", cards: have.filter((h) => h.pos === i + 1).map((h) => h.x) }));
+    return { key: k, word, shown, who: name.replace(/\b\w+/g, (w) => w[0] + w.slice(1).toLowerCase()), slots, count: slots.filter((s) => s.cards.length).length };
+  }
+  function lettersPage(id) {
+    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const L = lettersOf(c); if (!L) return notFound();
+    const sec = SECTIONS[c.si], title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
+    setNav(sec.slug); setTitle(`${c.title} letters`);
+    const shown = [];
+    const slot = (s) => s.cards.length
+      ? s.cards.map((x) => { shown.push(x); return `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${cardHTML(x)}</div>`; }).join("")
+      : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Still need it</small></div></div>`;
+    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+      <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
+      <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
+      <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters in my collection${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
+      <div class="lt-row">${L.slots.map(slot).join("")}</div></div></div>`;
+    state.list = shown;
+  }
   function rainbow(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
     const all = rainbowOf(c); if (all.length < 2) return notFound();
@@ -1156,6 +1219,7 @@
     else if (a === "media") media();
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
+    else if (a === "letters") lettersPage(b);
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
@@ -1328,6 +1392,8 @@
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(c.title)} (${fmt(byPlayer.length)})</button>` : "");
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     const rb = rainbowOf(c);
+    const lt = lettersOf(c);
+    if (lt && lt.count >= 1 && (lt.word || lt.count > 1)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/letters/${encodeURIComponent(c.id)}">🔤 View letters (${lt.count} of ${lt.slots.length})</a>`);
     const st = setOf(c);
     if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(c.id)}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
     if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(c.id)}">🌈 View rainbow (${rb.length})</a>`);

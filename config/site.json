@@ -592,5 +592,7 @@
       "about": "Ricky is also an author. His memoir, Explosion of Redemption: Trying to Win the Game of Personal Forgiveness in Life (2017), shares his story of forgiveness and second chances, and he speaks to schools and groups about it."
     }
   },
-  "_playerExtrasHelp": "\"playerExtras\": {\"player-page-slug\": {\"about\": \"a sentence or two\"}} adds an About line to that player's page and plain page."
+  "_playerExtrasHelp": "\"playerExtras\": {\"player-page-slug\": {\"about\": \"a sentence or two\"}} adds an About line to that player's page and plain page.",
+  "letterWords": {},
+  "_letterWordsHelp": "\"letterWords\": {\"<year>|<player>|<card number letters>\": \"WORD\"} sets the word a letterman set spells when the site can't work it out (it tries the player's last or full name, CORNHUSKERS, HUSKERS, NEBRASKA, ROOKIE + last name, and last name + KANSAS CITY ROYALS / ROYALS)."
 }

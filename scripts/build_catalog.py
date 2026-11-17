@@ -220,7 +220,7 @@ def main():
 # ("... 2nd", "... 3rd" at the end of the name; "10th Anniversary" sets don't count). Customs are kept:
 # numbered customs ("Custom 2nd") are separate commissioned pieces, not copies.
 SOLD = re.compile(r"\bsold\b", re.I)
-COPY = re.compile(r"\s(?:2nd|3rd|\d+th)\s*(?:\([^)]*\))?\s*$", re.I)
+COPY = re.compile(r"\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$", re.I)
 
 
 def not_shown(name):

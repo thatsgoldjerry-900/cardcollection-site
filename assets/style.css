@@ -543,3 +543,11 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .bio.ian .note{margin-top:4px}
 .rb-btn{background:linear-gradient(90deg,rgba(255,84,104,.18),rgba(255,196,70,.18),rgba(80,200,120,.18),rgba(90,150,255,.18),rgba(170,110,255,.18));border-color:var(--line);text-decoration:none;color:var(--fg)}
 .rb-btn:hover{border-color:var(--acc)}
+/* Letterman sets */
+.lt-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:10px 0 50px}
+.lt-slot{display:flex;flex-direction:column;gap:6px;min-width:0}
+.lt-l{font:800 26px/1 var(--f-d);color:var(--acc);text-align:center}
+.lt-miss .lt-l{color:var(--mu)}
+.lt-blank{aspect-ratio:5/7;border:2px dashed var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--mu);background:var(--panel)}
+.lt-blank b{font:800 64px/1 var(--f-d);opacity:.35}.lt-blank small{font-size:12px}
+@media (max-width:640px){.lt-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.lt-blank b{font-size:44px}}
