@@ -531,3 +531,10 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .vt-tbl{overflow-x:auto;margin:0 0 12px}.vt-tbl table{border-collapse:collapse;font-size:14px}.vt-tbl th,.vt-tbl td{padding:5px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 .vt-tbl th{color:var(--mu);font-weight:600}
 .vt-close{margin-top:4px}
+/* Player page: From my custom card */
+.cb-sec{margin:26px 0 8px;padding:18px 20px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px}
+.cb-sec h2{margin:0 0 12px;font-size:22px}.cb-sec h3{font-size:16px;margin:14px 0 6px}
+.cb-card{float:right;margin:0 0 12px 18px;width:min(180px,40%);background:none;border:0;padding:0;cursor:zoom-in;text-align:left;color:var(--mu);font-size:12px}
+.cb-card img{width:100%;border-radius:6px;display:block;margin-bottom:4px}
+.cb-sec .facts{margin-bottom:10px}.cb-sec::after{content:"";display:block;clear:both}
+@media (max-width:640px){.cb-card{float:none;margin:0 0 12px;width:160px}}

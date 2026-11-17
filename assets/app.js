@@ -923,6 +923,7 @@
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
+        <div id="pl-cardback"></div>
         <div class="pl-grid">
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
           ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
@@ -939,6 +940,27 @@
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
       </div>`;
       state.list = scans;
+      cardBackSection(slug, info.name);
+    });
+  }
+  // "From my custom card": what Ian's custom card backs add to a player page (new facts, stats and his write-up),
+  // from data/card-text.json entries whose "player" is this page.
+  function cardBackSection(slug, name) {
+    backText().then((all) => {
+      const box = $("#pl-cardback"); if (!box) return;
+      const mine = Object.entries(all).filter(([, e]) => e && e.player === slug);
+      if (!mine.length) return;
+      box.innerHTML = mine.map(([backId, e]) => {
+        const card = CARDS.find((c) => c.backId === backId);
+        const facts = (e.facts || []).filter((r) => r.length === 2);
+        const st = e.stats && (e.stats.rows || []).length > 1 ? e.stats : null;
+        return `<section class="cb-sec"><h2>From my custom card</h2>
+          ${card ? `<button type="button" class="cb-card" data-i="${card.i}"><img alt="${esc(card.name)}" loading="lazy" src="${img(card.id, card.rk, 300)}"><span>${esc(card.name)}</span></button>` : ""}
+          ${facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+          ${st ? `<h3>${esc(st.title || "Stats")}</h3><div class="vt-tbl"><table><thead><tr>${st.rows[0].map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${st.rows.slice(1).map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
+          ${e.story || e.text ? `<div class="bio">${textHTML(e.story || e.text)}</div>` : ""}
+          <p class="note">From the back of my custom card${card ? "" : ""}, written by me.</p></section>`;
+      }).join("");
     });
   }
 
@@ -1240,7 +1262,7 @@
     const btn = $("#v-read"), box = $("#v-text");
     btn.hidden = true; box.hidden = true; box.innerHTML = ""; btn.setAttribute("aria-expanded", "false");
     ["#v-img", "#v-img2"].forEach((q) => $(q).removeAttribute("aria-describedby"));
-    if (!c || c.photo || !c.backId) return;
+    if (!c || c.photo || !c.backId || !c.tags.has("custom")) return;   // customs only: Ian's own writing
     const pair = isPair(c); if (!pair && !V.back) return;
     backText().then((all) => {
       if (V.list[V.k] !== c || (!isPair(c) && !V.back)) return;

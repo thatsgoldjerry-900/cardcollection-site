@@ -54,3 +54,6 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [x] Kansas City Star article: dated June 2020 on the Media page, linked to the PDF in Drive (done). A summary page or asking the Star for permission is on hold.
 - [ ] Short huskers.com-sourced summaries for Tier 2 and Tier 3 players with no Wikipedia article (305 players).
 - [x] Delete the unused Apps Script files in `tools/` (done).
+- [ ] Transcribe the custom card backs (89 customs have a back scan) into `data/card-text.json`: the full text for
+  "Read the back", plus the player, new facts and new stats for the player page's "From my custom card" section.
+  Only facts/stats the player page doesn't already show. Ian checks them before they go live.

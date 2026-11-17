@@ -168,6 +168,27 @@ def college_html(p):
     return ""
 
 
+def card_backs_for(slug):
+    """Ian's custom card backs about this player (data/card-text.json entries with "player": slug)."""
+    try: cards = json.load(open(os.path.join(ROOT, "data", "card-text.json"))).get("cards") or {}
+    except (OSError, ValueError): return ""
+    out = []
+    for e in cards.values():
+        if not isinstance(e, dict) or e.get("player") != slug: continue
+        facts = [r for r in (e.get("facts") or []) if len(r) == 2]
+        st = e.get("stats") if e.get("stats") and len(e["stats"].get("rows") or []) > 1 else None
+        story = e.get("story") or e.get("text") or ""
+        html_ = "<h2>From Ian's custom card</h2>"
+        if facts: html_ += '<table class="kv">' + "".join(f"<tr><th>{esc(k)}</th><td>{esc(v)}</td></tr>" for k, v in facts) + "</table>"
+        if st:
+            rows = st["rows"]
+            html_ += f'<h3>{esc(st.get("title") or "Stats")}</h3><div class="scroll"><table><thead><tr>' + "".join(f"<th>{esc(h)}</th>" for h in rows[0]) + "</tr></thead><tbody>" + \
+                "".join("<tr>" + "".join(f"<td>{esc(v)}</td>" for v in r) + "</tr>" for r in rows[1:]) + "</tbody></table></div>"
+        if story: html_ += paras(re.sub(r"(?m)^## ", "", story))
+        out.append(html_ + '<p class="mu" style="font-size:13px">From the back of a custom card written by Ian Badeer.</p>')
+    return "".join(out)
+
+
 def media_for(slug):
     """Videos that feature this player (config: media items and Customs videos with "players": [slug])."""
     try: site = json.load(open(CONFIG))
@@ -236,6 +257,7 @@ def player_page(p, row, info, l, idx, updated):
 {f'<figure class="card"><img src="{esc(img_url(card))}" alt="{esc(card[2])}" loading="lazy" width="600"><figcaption>{esc(card[2])} · from Ian&#39;s collection</figcaption></figure>' if card else ""}
 </div>
 {"".join(f'<h2>Watch</h2><ul>' + "".join(f'<li><a href="{esc(u)}">{esc(t)}</a>{f" <span class=mu>· {esc(o)}{(chr(32) + chr(183) + chr(32) + esc(d)) if d else chr(32)}</span>" if o else ""}</li>' for t, u, o, d in media_for(p["slug"])) + "</ul>" for _ in [0] if media_for(p["slug"]))}
+{card_backs_for(p["slug"])}
 {f"<h2>College stats</h2>{stats}" if stats else ""}
 {lists_html}
 {f'<h2>Biography</h2>{bio}<p class="mu" style="font-size:13px">Adapted from <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
