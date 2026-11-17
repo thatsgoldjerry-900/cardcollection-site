@@ -30,6 +30,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] Send old Google Sites page addresses to their new pages:
   - home, alex-gordon-pc and its year pages, jermaine-dye-pc, nebraska-cornhuskers, custom-cards, kc-royals, detroit-lions, want-list, friends-of-interest.
 - [ ] Update any links that still use `thatsgoldjerry-900.github.io` (README, Instagram bios, TCDb profile).
+- [ ] Change `siteUrl` in `config/site.json` to `https://ianbadeer.com/` so the sitemap lists the new addresses.
 - [ ] Check `robots.txt` is served at ianbadeer.com/robots.txt (it only counts at a domain's root, so the AI-crawler opt-out starts with the switch).
 
 ## After the switch

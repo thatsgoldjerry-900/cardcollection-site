@@ -32,8 +32,8 @@ jobs:
           # The lists are rebuilt every run and published, never saved in the repo (data/lists is in .gitignore).
           # If they didn't build, stop here so the site keeps its last good version.
           test -s data/lists/husker-pros.json && test -s data/lists/inventory-stats.json
-      - name: Plain NFL Husker list pages (crawlable, built from the lists above)
-        run: python3 scripts/build_static_lists.py
+      - name: Plain list and player pages + sitemap (crawlable, built from the lists above)
+        run: python3 scripts/build_static_pages.py
       - name: Save the updated card list
         run: |
           if ! git diff --quiet data/; then

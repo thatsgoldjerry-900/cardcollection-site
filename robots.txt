@@ -26,3 +26,5 @@ User-agent: *
 Disallow: /data/
 Disallow: /scripts/
 Disallow: /config/
+
+Sitemap: https://ianbadeer.com/sitemap.xml
