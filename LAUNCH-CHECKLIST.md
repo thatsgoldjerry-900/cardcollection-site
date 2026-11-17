@@ -19,6 +19,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Read straight from the main Drive folder** (`driveRoot` in `config/site.json`, parent folder `18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV`).
   - [ ] Make the Drive folder names match the site section titles, or map them. Today "Lions", "Royals" and "Nebraska Baseball & Softball" differ.
   - [ ] Check the new card names: count, auto and relic tags, and that every section still fills.
+- [ ] **A plain, crawlable page for every player** (like `/nfl-huskers/`), so searches for a player's name can land on Ian's page about him.
 - [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
   - [ ] Keep old `#/` links working.
 - [ ] **Link previews.** Site-wide preview image, title and description; per-page previews for player pages, collections, lists and Media.
@@ -33,6 +34,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 
 ## After the switch
 - [ ] Add the site to Google Search Console and submit a sitemap. Include the plain NFL Husker pages (`/nfl-huskers/`, tier-1/2/3.html).
+- [ ] Add the site to **Bing Webmaster Tools** too (it feeds ChatGPT search, Copilot and DuckDuckGo) and submit the same sitemap.
+- [ ] Have the robot ping **IndexNow** (Bing and others) when pages change, so updates get picked up quickly.
+- [ ] Get linked: ask podcast and video hosts to add the site to episode descriptions; add it to Instagram bios and the TCDb profile; share the NFL Husker lists in Husker communities; reach out to nflhuskers.com about linking each other.
 - [ ] Test shared links in a text message, Facebook and Instagram.
 - [ ] Unpublish or archive the old Google Site once the new one is confirmed working.
 
