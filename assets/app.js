@@ -1184,7 +1184,7 @@
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m) return null;
     const pre = m[3].replace(/[^A-Za-z]/g, "").toLowerCase();
     // The player, without the letter code that sits in the name ("Niles Paul 4N", "1P Aaron Pribanic", "Letter 03 R").
-    const who = c.title.replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
+    const who = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
     return [m[1], norm(who), pre || norm(m[2])].join("|");
   };
   let LETTERS = null;
@@ -1202,7 +1202,7 @@
     const k = letterGroupKey(c), cards = (k && LETTERS.get(k)) || [];
     const have = cards.map((x) => ({ x, ...letterOf(x) }));
     const custom = ((DATA.site.letterWords || {})[k] || "").toUpperCase().replace(/[^A-Z]/g, "");
-    const name = c.title.replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ")
+    const name = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ")
       .replace(/\b(jr|sr|ii|iii|iv)\.?\s*$/i, "").replace(/\s+/g, " ").trim().toUpperCase();
     const last = name.split(/\s+/).pop().replace(/[^A-Z]/g, "");
     // Words as shown (with spaces); matching ignores the spaces.
@@ -1218,16 +1218,43 @@
     const slots = Array.from({ length: len }, (_, i) => ({ pos: i + 1, letter: word ? word[i] : (have.find((h) => h.pos === i + 1) || {}).letter || "", cards: have.filter((h) => h.pos === i + 1).map((h) => h.x) }));
     return { key: k, word, shown, who: name.replace(/\b\w+/g, (w) => w[0] + w.slice(1).toLowerCase()), slots, count: slots.filter((s) => s.cards.length).length };
   }
+  // One column per letter; a second copy of a letter (another parallel) stacks under the first.
+  const letterSlot = (s, shown) => s.cards.length
+    ? `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${s.cards.map((x) => { shown.push(x); return cardHTML(x); }).join("")}</div>`
+    : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Need</small></div></div>`;
+  // Every letterman set that spells one word (e.g. all the CORNHUSKERS sets), oldest first.
+  function letterSets(word) {
+    const first = CARDS.find((x) => isLetterSet(x) && letterOf(x)); if (!first) return [];
+    lettersOf(first);   // builds LETTERS
+    const out = [];
+    (LETTERS ? [...LETTERS.values()] : []).forEach((cards) => { const L = lettersOf(cards[0]); if (L && L.word === word) out.push({ L, c: cards[0] }); });
+    return out.sort((p, q) => (p.c.year || 0) - (q.c.year || 0) || p.L.who.localeCompare(q.L.who));
+  }
+  function wordPage(word) {
+    word = (word || "").toUpperCase().replace(/[^A-Z]/g, "");
+    const sets = letterSets(word); if (!sets.length) return notFound();
+    const sec = SECTIONS[sets[0].c.si]; setNav(sec.slug); setTitle(`${word} letterman sets`);
+    const shown = [], have = sets.reduce((n, x) => n + x.L.count, 0), done = sets.filter((x) => x.L.count === x.L.slots.length).length;
+    const rows = sets.map(({ L, c }) => {
+      const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
+      return `<section class="lt-set"><h2><a href="#/letters/${encodeURIComponent(c.id)}">${esc(L.who)}</a></h2>
+        <p>${esc(title)} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.count === L.slots.length ? " · complete ✓" : ""}</p>
+        <div class="lt-word" style="--n:${word.length}">${L.slots.map((x) => letterSlot(x, shown)).join("")}</div></section>`;
+    }).join("");
+    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+      <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
+      <div class="c-head"><div class="kick">Letterman sets</div><h1>All my ${esc(word)} sets</h1>
+      <p>${fmt(sets.length)} sets, ${fmt(have)} of ${fmt(sets.length * word.length)} letters in my collection${done ? `, ${fmt(done)} complete` : ""}. Tap a name for that set's page.</p></div>
+      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
+    state.list = shown;
+  }
   function lettersPage(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
     const L = lettersOf(c); if (!L) return notFound();
     const sec = SECTIONS[c.si], title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
     setNav(sec.slug); setTitle(`${c.title} letters`);
     const shown = [];
-    // One column per letter; a second copy of a letter (another parallel) stacks under the first.
-    const slot = (s) => s.cards.length
-      ? `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${s.cards.map((x) => { shown.push(x); return cardHTML(x); }).join("")}</div>`
-      : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Need</small></div></div>`;
+    const slot = (x) => letterSlot(x, shown);
     // Each word on its own line ("GORDON" / "KANSAS" / "CITY" / "ROYALS"), its letters side by side.
     const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z]/g, "").length).filter(Boolean) : [L.slots.length];
     // Every word uses the longest word's column size, so all the cards are the same size.
@@ -1238,7 +1265,7 @@
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
       <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters in my collection${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
-      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
+      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.${L.word && letterSets(L.word).length > 1 ? ` <a href="#/word/${L.word.toLowerCase()}">See all my ${esc(L.word)} sets →</a>` : ""}</p></div></div>`;
     state.list = shown;
   }
   function rainbow(id) {
@@ -1287,6 +1314,7 @@
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
     else if (a === "letters") lettersPage(b);
+    else if (a === "word") wordPage(b);
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);

@@ -552,6 +552,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .lt-word .cd .cap{display:none}
 .lt-blank{aspect-ratio:5/7;border:2px dashed var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--mu);background:var(--panel);min-width:0;overflow:hidden}
 .lt-blank b{font:800 clamp(18px,7vw,64px)/1 var(--f-d);opacity:.35}.lt-blank small{font-size:12px}
+.lt-set h2{font-size:20px;margin:0}.lt-set h2 a{color:var(--fg);text-decoration:none}.lt-set h2 a:hover{color:var(--acc)}.lt-set p{margin:2px 0 10px;color:var(--mu);font-size:13px}
 .lt-tip{color:var(--mu);font-size:13px;margin:0 0 50px}
 @media (max-width:640px){.lt-words{gap:16px}.lt-word{gap:4px}.lt-l{font-size:clamp(13px,4.5vw,22px)}.lt-word .cd .badges{display:none}.lt-blank small{display:none}.lt-blank{border-width:1px;border-radius:5px}.lt-word .cd .ph{border-radius:4px}}
 /* Huskers by NFL Team */

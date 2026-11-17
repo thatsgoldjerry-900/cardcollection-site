@@ -9,6 +9,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] 2009 Bowman Draft College Letter Patch Autographs #ML Marlon Lucky **3U** → likely **2U** (LUCKY: L1 U2 C3 K4 Y5)
   - [ ] 2013 Upper Deck - Rookie Lettermen Autographs #RL-RB Rex Burkhead **9R** → likely **10R** (CORNHUSKERS: E is 9, R is 10)
   - [ ] 2013 Upper Deck Rookie Lettermen Autographs #RLRB7 Rex Burkhead **6S** → **7S** if it's an S card, or **6U** if it's a U
+  - [ ] 2012 Upper Deck Rookie Lettermen Signatures #RLAD Alfonzo Dennard **8S** → likely **7S** (8 is the K)
+  - [ ] Check for a double upload: Jared Crick **2O** appears twice ("#'d 8 of 25" and "#'d to 25"), and
+    Rex Burkhead **11S** appears twice ("#'d 24 of 50" and "#'d to 50"). If each is one card, keep one file.
 - [ ] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Make a folder "Customs - Non-Sport" in the main
   shared Drive folder and put the scans in it, then tell Claude, who connects it to the Customs page's Non-Sport filter.
 - [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
