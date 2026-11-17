@@ -429,6 +429,15 @@
       },
       {
         "type": "video",
+        "title": "Talking super collecting",
+        "outlet": "The Brewer and The Baker Podcast",
+        "youtube": "7SnThuBwNYM",
+        "start": 960,
+        "url": "https://www.youtube.com/watch?v=7SnThuBwNYM&t=960s",
+        "note": "They interviewed me about super collecting. Starts at 16:00."
+      },
+      {
+        "type": "video",
         "title": "The Card Life",
         "outlet": "The Card Life",
         "youtube": "VwmpAhPuIOM",
