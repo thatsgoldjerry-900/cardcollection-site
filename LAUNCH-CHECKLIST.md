@@ -27,4 +27,4 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 ## Open odds and ends (no rush)
 - [ ] Kansas City Star article: add its date on the Media page; decide later on a summary page or asking the Star for permission.
 - [ ] Short huskers.com-sourced summaries for Tier 2 and Tier 3 players with no Wikipedia article (305 players).
-- [ ] Delete the unused Apps Script files in `tools/`.
+- [x] Delete the unused Apps Script files in `tools/` (done).
