@@ -1610,10 +1610,57 @@
     if (!a.className.match(/\bt-/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
     a.hidden = false;
     Object.assign(a.style, { left: im.offsetLeft + "px", top: im.offsetTop + "px", width: im.offsetWidth + "px", height: im.offsetHeight + "px" });
+    if (a.classList.contains("t-dirt")) dirt(a, im.offsetWidth, im.offsetHeight);
+  }
+  // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
+  // Seeded by the card, so the same card always gets the same pile.
+  function dirt(a, w, h) {
+    let cv = a.querySelector("canvas");
+    const key = a.dataset.seed + "|" + w + "x" + h;
+    if (cv && cv.dataset.key === key) return;
+    if (!cv) { cv = document.createElement("canvas"); cv.className = "v-dirt"; a.append(cv); }
+    cv.dataset.key = key;
+    const m = Math.round(Math.min(w, h) * 0.22), W = w + 2 * m, H = h + 2 * m, dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr; Object.assign(cv.style, { left: -m + "px", top: -m + "px", width: W + "px", height: H + "px" });
+    const g = cv.getContext("2d"); g.scale(dpr, dpr);
+    let sd = [...String(a.dataset.seed)].reduce((x, ch) => (x * 31 + ch.charCodeAt(0)) >>> 0, 7) || 1;
+    const R = () => ((sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296);
+    // A point outside the card, mostly close to its edge, with more at the bottom (a little pile).
+    const spot = (spread) => {
+      for (;;) {
+        const side = R(), d = Math.pow(R(), 1.8) * m * spread, t = R();
+        let x, y;
+        if (side < 0.4) { x = m + t * w; y = m + h - 4 + d; }
+        else if (side < 0.6) { x = m + t * w; y = m + 4 - d; }
+        else if (side < 0.8) { x = m + 4 - d; y = m + t * h; }
+        else { x = m + w - 4 + d; y = m + t * h; }
+        if (x > 0 && y > 0 && x < W && y < H) return [x, y];
+      }
+    };
+    const browns = [[78, 48, 26], [98, 62, 34], [120, 80, 44], [64, 38, 20], [138, 94, 54]];
+    // Fine powder first, then crumbs, then clumps on top.
+    for (let i = 0; i < 6000; i++) {
+      const [x, y] = spot(1), c = browns[(R() * browns.length) | 0];
+      g.fillStyle = `rgba(${c},${0.25 + R() * 0.5})`; g.beginPath(); g.arc(x, y, 0.4 + R() * 1.3, 0, 7); g.fill();
+    }
+    const chunk = (x, y, r) => {
+      const n = 6 + ((R() * 6) | 0), pts = [];
+      for (let k = 0; k < n; k++) { const an = (k / n) * 6.283 + R() * 0.5, rr = r * (0.6 + R() * 0.55); pts.push([x + Math.cos(an) * rr, y + Math.sin(an) * rr * (0.75 + R() * 0.3)]); }
+      const c = browns[(R() * browns.length) | 0];
+      const gr = g.createLinearGradient(x - r, y - r, x + r, y + r);
+      gr.addColorStop(0, `rgb(${c.map((v) => Math.min(255, v + 38))})`); gr.addColorStop(0.55, `rgb(${c})`); gr.addColorStop(1, `rgb(${c.map((v) => v * 0.55)})`);
+      g.fillStyle = gr; g.beginPath(); pts.forEach(([px, py], k) => (k ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath(); g.fill();
+      if (r > 3) { g.strokeStyle = "rgba(160,115,70,.35)"; g.lineWidth = 0.8; g.stroke(); }
+    };
+    const sc = Math.min(w, h) / 400;
+    for (let i = 0; i < 900; i++) { const [x, y] = spot(0.9); chunk(x, y, (1 + R() * 2.5) * Math.max(0.7, sc)); }
+    for (let i = 0; i < 160; i++) { const [x, y] = spot(0.6); chunk(x, y, (3 + R() * 7) * Math.max(0.7, sc)); }
+    for (let i = 0; i < 26; i++) { const [x, y] = spot(0.4); chunk(x, y, (8 + R() * 9) * Math.max(0.7, sc)); }
   }
   function aura(c) {
     const a = $("#v-aura"), front = !(V.back && !isPair(c));
     a.className = "v-aura" + (front && auraTier(c) ? " t-" + auraTier(c) : "");
+    a.dataset.seed = c ? c.id : "";
     requestAnimationFrame(placeAura);
   }
   // Keep the aura on the front card: it moves when either image loads or changes size (e.g. the back arriving).
