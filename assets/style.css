@@ -399,3 +399,20 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .statlink.watch:hover{border-color:var(--acc);filter:none}
 .pill-feat{border-color:var(--gold)}
 .pill-feat b{color:var(--gold);font-weight:600}
+/* Want List email button, fuzzy-search note */
+.btn.have-btn{background:var(--husker);border-color:var(--husker);color:#fff;font-weight:600}
+.btn.have-btn:hover{filter:brightness(1.12)}
+.fixnote{margin:-4px 0 16px;font-size:14px;color:#c3cad6}
+.fixnote b{color:var(--fg)}
+/* Autograph lists on touch screens: bigger targets for the player page link and Scan button (Have/Need is just a label) */
+@media (pointer:coarse){
+  .ck td.nm a.pl-link{display:block;padding:11px 0;margin:-8px 0}
+  .ck td.sc .btn.sm{min-height:40px;padding-inline:14px;display:inline-flex;align-items:center}
+}
+/* Phones: tighter autograph table so the Scan button fits on screen without sideways scrolling */
+@media (max-width:640px){
+  .ck th,.ck td{padding-inline:5px}
+  .ck td:first-child,.ck th:first-child{padding-left:0}
+  .ck td.sc{padding-right:0}
+  .ck td.sc .btn.sm{padding-inline:10px}
+}

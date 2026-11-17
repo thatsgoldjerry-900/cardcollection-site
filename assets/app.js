@@ -154,6 +154,42 @@
   function sectionCards(si) { return CARDS.filter((c) => c.si === si); }
   // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
   function shown(s) { const si = SECTIONS.indexOf(s); return CARDS.some((c) => c.si === si); }
+  /* Fuzzy search: when a word matches nothing, swap in the closest known word (one typo, or two in long words). */
+  let VOCAB = null;
+  function cardVocab() {
+    if (VOCAB) return VOCAB;
+    VOCAB = new Map();
+    CARDS.forEach((c) => c.hay.split(/[^a-z0-9']+/).forEach((w) => w.length > 2 && !/^\d+$/.test(w) && VOCAB.set(w, (VOCAB.get(w) || 0) + 1)));
+    return VOCAB;
+  }
+  // Edit distance with swapped letters counting as one typo; gives up early once it's over `max`.
+  function typoDist(a, b, max) {
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    let p2 = null, p = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const r = [i]; let lo = i;
+      for (let j = 1; j <= b.length; j++) {
+        let v = Math.min(p[j] + 1, r[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (p2 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, p2[j - 2] + 1);
+        r.push(v); if (v < lo) lo = v;
+      }
+      if (lo > max) return max + 1;
+      p2 = p; p = r;
+    }
+    return p[b.length];
+  }
+  function fixQuery(q, vocab, known) {
+    let changed = false;
+    const out = q.toLowerCase().split(/\s+/).filter(Boolean).map((w) => {
+      if (w.length < 4 || /\d/.test(w) || known(w)) return w;
+      const max = w.length >= 8 ? 2 : 1;
+      let best = null, bd = max + 1, bn = 0;
+      vocab.forEach((n, t) => { const d = typoDist(w, t, max); if (d <= max && (d < bd || (d === bd && n > bn))) { best = t; bd = d; bn = n; } });
+      if (best) { changed = true; return best; }
+      return w;
+    });
+    return changed ? out.join(" ") : null;
+  }
   function search(list, q) {
     const words = q.toLowerCase().split(/\s+/).filter(Boolean);
     return words.length ? list.filter((c) => words.every((w) => c.hay.includes(w))) : list;
@@ -251,7 +287,7 @@
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
-        ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 800)}" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
+        ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 600)}" srcset="${img(feat.id, feat.rk, 400)} 400w, ${img(feat.id, feat.rk, 600)} 600w, ${img(feat.id, feat.rk, 800)} 800w" sizes="(max-width: 800px) 200px, 320px" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
@@ -272,7 +308,7 @@
     document.querySelectorAll(".mq-dup .cd").forEach((b) => (b.tabIndex = -1));
     state.list = newest;
     // Live from the checklist: share of NFL Huskers whose autograph is in the collection.
-    loadHubQuiet().then(() => {
+    loadCheckQuiet().then(() => {
       const t = allPlayers().filter((p) => p.listSlug === "nfl-tier-1-huskers"), el = $("#stat-nfl");
       if (!el || !t.length) return;
       el.querySelector("b").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.hidden = false;
@@ -311,11 +347,17 @@
         ? `<li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li>`
         : `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}</ul></div>`;
     const mg = groups.length > 1 ? `<nav class="mgroups" aria-label="Groups"><a href="#/c/${slug}" aria-current="${gi < 0}">All</a>${groups.map((g, k) => `<a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}</a>`).join("")}</nav>` : "";
+    // A search that finds nothing tries fixing misspelled words ("gordan" → "gordon").
+    let q = state.q, fixed = null;
+    if (slug === "search" && q && !search(base, q).length) { const f = fixQuery(q, cardVocab(), (w) => CARDS.some((c) => c.hay.includes(w))); if (f && search(base, f).length) q = fixed = f; }
+    state.hq = q;
+    if (fixed) title = `Results for “${esc(fixed)}”`;
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
       <aside class="side">${side}${others}</aside>
       <div style="min-width:0">
         <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}</div>
         ${mg}
+        ${fixed ? `<p class="fixnote">Nothing matched “${esc(state.q)}”, so these are results for <b>${esc(fixed)}</b>.</p>` : ""}
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
@@ -325,30 +367,38 @@
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
       </div></div>`;
     const apply = () => {
-      let list = search(base, state.q);
+      let list = search(base, q);
       state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
       state.list = sortList(list, state.sort); state.shown = 0;
-      $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">No cards match. Try removing a filter or a search word.</p>`;
+      $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
       $("#count").textContent = `${fmt(state.list.length)} card${state.list.length === 1 ? "" : "s"}`;
       more();
     };
     $(".chips").addEventListener("click", (e) => {
       const b = e.target.closest(".chip"); if (!b) return;
       state.filters.has(b.dataset.f) ? state.filters.delete(b.dataset.f) : state.filters.add(b.dataset.f);
-      b.setAttribute("aria-pressed", state.filters.has(b.dataset.f)); apply();
+      b.setAttribute("aria-pressed", state.filters.has(b.dataset.f)); apply(); syncURL();
     });
-    $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); });
+    $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); syncURL(); });
     apply();
+    if (state.filters.size || state.sort !== "new") syncURL();
     io.observe($("#sentinel"));
-    if (slug === "search") playerMatches(state.q);
+    if (slug === "search") playerMatches(q, state.q);
   }
   // Searching a name also offers that player's NFL Huskers page.
-  function playerMatches(q) {
-    const words = norm(q).split(" ").filter(Boolean);
-    if (!words.length || norm(q).length < 3) return;
-    loadHubQuiet().then(() => {
-      const box = $("#pmatch"); if (!box || state.q !== q) return;
-      const hits = allPlayers().filter((p) => { const h = " " + norm(p.name) + " " + p.name.toLowerCase() + " "; return words.every((w) => h.includes(w)); }).slice(0, 8);
+  function playerMatches(q, asked = q) {
+    if (norm(q).length < 3) return;
+    loadCheckQuiet().then(() => {
+      const box = $("#pmatch"); if (!box || state.q !== asked) return;
+      const find = (t) => { const words = norm(t).split(" ").filter(Boolean);
+        return allPlayers().filter((p) => { const h = " " + norm(p.name) + " " + p.name.toLowerCase() + " "; return words.every((w) => h.includes(w)); }).slice(0, 8); };
+      let hits = find(q);
+      if (!hits.length) {   // a misspelled name ("ricky simons") still finds the player page
+        const names = allPlayers().map((p) => norm(p.name)), V = new Map();
+        names.forEach((n) => n.split(" ").forEach((w) => w.length > 2 && V.set(w, (V.get(w) || 0) + 1)));
+        const f = fixQuery(norm(q), V, (w) => names.some((n) => n.includes(w)));
+        if (f) hits = find(f);
+      }
       if (!hits.length) return;
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
@@ -378,7 +428,7 @@
   function more() {
     const grid = $("#grid"); if (!grid) return;
     const next = state.list.slice(state.shown, state.shown + 72);
-    grid.insertAdjacentHTML("beforeend", next.map((c) => cardHTML(c, state.q)).join(""));
+    grid.insertAdjacentHTML("beforeend", next.map((c) => cardHTML(c, state.hq ?? state.q)).join(""));
     state.shown += next.length;
   }
   const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && state.shown < state.list.length && more()), { rootMargin: "1200px" });
@@ -544,11 +594,9 @@
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
     Promise.all(need).then(then).catch(() => ($("#app").innerHTML = `<p class="empty">This page isn't available yet.</p>`));
   }
-  function loadHubQuiet() {
-    return Promise.all([
-      CHECK || fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)),
-      PLAYERS || fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)),
-    ]);
+  // The home page stat and search's player matches only need the autograph lists, not the (larger) player info.
+  function loadCheckQuiet() {
+    return Promise.resolve(CHECK || fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
   }
   const pslug = (n) => norm(n).replace(/ /g, "-");
   function bestScan(name, sport = "football") {
@@ -781,10 +829,16 @@
   /* ---------- Router ---------- */
   function route() {
     closeViewer(true);
-    const h = decodeURIComponent(location.hash.replace(/^#\/?/, "")).split("/");
+    const [path, qs = ""] = location.hash.replace(/^#\/?/, "").split("?");
+    const h = decodeURIComponent(path).split("/");
     const [a, b, c] = h;
     const key = a === "c" ? "c/" + b : a;
-    if (key !== state.where) { state.filters.clear(); state.where = key; }
+    // Filters and sort come from the address (?f=auto,relic&sort=old), so a filtered view can be shared or reloaded.
+    // Moving between groups of the same collection keeps them.
+    const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => FILTERS.some(([x]) => x === k));
+    const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
+    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || "new"; }
+    state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     if (!a) home();
     else if (a === "c") collection(b, c);
@@ -795,9 +849,22 @@
     else if (a === "media") media();
     else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
-    else if (a === "card") { home(); const k = CARDS.findIndex((x) => x.id === b); if (k >= 0) openViewer(k, [CARDS[k]]); }
+    else if (a === "card") {   // a shared card link opens the card over its own collection
+      const k = CARDS.findIndex((x) => x.id === b); if (k < 0) return notFound();
+      const card = CARDS[k], slug = SECTIONS[card.si].slug;
+      history.replaceState(null, "", "#/c/" + slug); state.where = "c/" + slug; state.filters.clear(); state.sort = "new";
+      collection(slug); window.scrollTo(0, 0);
+      const j = state.list.findIndex((x) => x.i === card.i);
+      return openViewer(j >= 0 ? j : 0, j >= 0 ? state.list : [card]);
+    }
     else notFound();
-    if (a !== "card") window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+  }
+  function syncURL() {
+    const p = [];
+    if (state.filters.size) p.push("f=" + [...state.filters].join(","));
+    if (state.sort !== "new") p.push("sort=" + state.sort);
+    history.replaceState(history.state, "", location.hash.split("?")[0] + (p.length ? "?" + p.join("&") : ""));
   }
   window.addEventListener("hashchange", route);
 
@@ -828,12 +895,15 @@
   function openViewer(k, list) {
     V.list = list; V.k = k; V.back = false; V.zoom = false;
     $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard(); $("#v-close").focus();
+    // An extra history step, so the phone's Back button closes the card instead of leaving the page.
+    if (!(history.state && history.state.v)) history.pushState({ v: 1 }, "", location.href);
   }
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
     $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair");
-    if (!silent && location.hash.startsWith("#/card/")) history.back();
+    if (!silent && history.state && history.state.v) history.back();
   }
+  window.addEventListener("popstate", () => { if (!$("#viewer").hidden && !(history.state && history.state.v)) closeViewer(true); });
   function loadInto(el, c, id, rk, alt) {
     el.src = img(id, rk, 400); el.alt = alt;
     const big = new Image(); big.onload = () => { if (V.list[V.k] === c && el.dataset.id === id) el.src = big.src; };
@@ -847,6 +917,7 @@
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
+      $("#v-have").hidden = true;
       $("#v-flip").hidden = true; $("#v-drive").href = driveUrl(c.id, c.rk); $("#v-drive").textContent = "Full-res in Drive ↗"; $("#v-drive2").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
@@ -867,7 +938,10 @@
     $("#v-drive").textContent = pair ? "Front full-res ↗" : "Full-res in Drive ↗";
     $("#v-drive2").hidden = !pair;
     if (pair) $("#v-drive2").href = driveUrl(c.backId, c.backRk);
-    const sec = SECTIONS[c.si];
+    const sec = SECTIONS[c.si], email = DATA.site.email;
+    // Want List cards get a button that starts an email to me with the card already named.
+    $("#v-have").hidden = !(sec.kind === "want" && email);
+    if (!$("#v-have").hidden) $("#v-have").href = `mailto:${email}?subject=${encodeURIComponent("I have a card from your Want List: " + c.name)}&body=${encodeURIComponent(`Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`)}`;
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
