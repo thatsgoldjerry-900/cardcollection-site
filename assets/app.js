@@ -1406,8 +1406,26 @@
     V.list = list; V.k = k; V.back = false; V.zoom = false; V.random = !!random;
     $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard(); $("#v-close").focus();
     // An extra history step, so the phone's Back button closes the card instead of leaving the page.
-    if (!(history.state && history.state.v)) history.pushState({ v: 1 }, "", location.href);
+    // The step remembers which list and card were open, so coming Back to it reopens the same card.
+    if (!(history.state && history.state.v)) { const t = ++VSEQ; VIEWS.set(t, { list: V.list, k: V.k, random: V.random }); history.pushState({ v: 1, t }, "", location.href); }
   }
+  const VIEWS = new Map(); let VSEQ = 0, FROM_CARD = null;
+  // Back onto a step where a card was open (e.g. from a rainbow or set page opened in the viewer): reopen that card.
+  // And the page's own "← back" link goes back to the card too.
+  addEventListener("hashchange", () => {
+    const st = history.state, saved = st && st.v && VIEWS.get(st.t);
+    if (saved && $("#viewer").hidden) {
+      V.list = saved.list; V.k = saved.k; V.back = false; V.zoom = false; V.random = saved.random;
+      $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard();
+    }
+    if (FROM_CARD !== location.hash) { FROM_CARD = null; return; }
+    requestAnimationFrame(() => { const b = $("#app a.back"); if (b) b.textContent = "← Back to card"; });
+  });
+  $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href^='#/']"); if (a) FROM_CARD = a.getAttribute("href"); });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("#app a.back");
+    if (a && FROM_CARD && FROM_CARD === location.hash) { e.preventDefault(); history.back(); }
+  });
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
     $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair"); $("#viewer").classList.remove("focus"); ["#v-img", "#v-img2"].forEach((q) => { const e = $(q); e.removeAttribute("src"); e.classList.remove("wm"); e.dataset.id = ""; }); $("#v-aura").className = "v-aura";
@@ -1571,6 +1589,7 @@
   $("#v-close").onclick = $("#v-back").onclick = () => closeViewer();
   // Top bar (always shown; the main way around on phones): back, "3 of 24", and previous/next.
   function navState() {
+    const st = history.state; if (st && st.v && VIEWS.has(st.t)) VIEWS.set(st.t, { list: V.list, k: V.k, random: V.random });
     const first = V.k <= 0, last = V.k >= V.list.length - 1;
     $("#v-prev").style.visibility = first ? "hidden" : "visible"; $("#v-next").style.visibility = last ? "hidden" : "visible";
     $("#v-name").textContent = (V.list[V.k] || {}).title || (V.list[V.k] || {}).short || "";
