@@ -409,6 +409,16 @@
     "items": [
       {
         "type": "video",
+        "title": "Talking super collecting",
+        "outlet": "The Brewer and The Baker Podcast",
+        "youtube": "7SnThuBwNYM",
+        "start": 960,
+        "url": "https://www.youtube.com/watch?v=7SnThuBwNYM&t=960s",
+        "note": "They interviewed me about super collecting. Starts at 16:00.",
+        "date": "September 2026"
+      },
+      {
+        "type": "video",
         "title": "How I met Husker Ricky Simmons through cards",
         "outlet": "The Get Your Happy On Hour with Ricky Simmons",
         "youtube": "CY41TEOdRSY",
@@ -426,15 +436,6 @@
         "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
         "youtube": "qkk47iwoiOA",
         "start": 192
-      },
-      {
-        "type": "video",
-        "title": "Talking super collecting",
-        "outlet": "The Brewer and The Baker Podcast",
-        "youtube": "7SnThuBwNYM",
-        "start": 960,
-        "url": "https://www.youtube.com/watch?v=7SnThuBwNYM&t=960s",
-        "note": "They interviewed me about super collecting. Starts at 16:00."
       },
       {
         "type": "video",
