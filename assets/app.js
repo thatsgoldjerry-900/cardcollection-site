@@ -242,7 +242,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? <button type="button" class="linkish" data-mail="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))}</span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -257,15 +257,66 @@
   const myEmail = () => { const c = DATA.site.contact || {}; try { return c.code ? atob(c.code).split("").reverse().join("") : ""; } catch (e) { return ""; } };
   // An email button (opens the visitor's mail app with the subject and message filled in), plus a fallback
   // for people without a mail app: copy my address, or the Google Form when one is set up.
+  // A Google Form, filled in from a form on this page, delivers messages to me (config: contact.googleForm =
+  // {"id": "<form id from its link>", "fields": {"name": "entry…", "email": "entry…", "item": "entry…", "message": "entry…"}}).
+  const gform = () => { const g = (DATA.site.contact || {}).googleForm || {}; return g.id && g.fields && g.fields.email && g.fields.message ? g : null; };
+  // A contact button: opens the form on this page when it's set up, otherwise the visitor's email app.
+  // Underneath, the other ways to reach me.
   function contactHTML(label, subject, body, item) {
-    const c = DATA.site.contact || {};
-    const form = c.form ? c.form + (c.formCardField && item ? `${c.form.includes("?") ? "&" : "?"}usp=pp_url&${c.formCardField}=${encodeURIComponent(item)}` : "") : "";
-    return `<div class="cta"><button type="button" class="btn have-btn" data-mail="${esc(subject)}" data-body="${esc(body)}">✉ ${esc(label)}</button>
-      <small class="cta-alt">No email app? <button type="button" class="linkish" data-copymail>Copy my address</button>${form ? ` · or <a href="${esc(form)}" target="_blank" rel="noopener">use the form</a>` : ""}</small></div>`;
+    const data = `data-subject="${esc(subject)}" data-body="${esc(body)}" data-item="${esc(item || "")}"`;
+    if (gform()) return `<div class="cta"><button type="button" class="btn have-btn" data-form ${data}>✉ ${esc(label)}</button>
+      <small class="cta-alt">Prefer email? <button type="button" class="linkish" data-mail ${data}>Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></small></div>`;
+    return `<div class="cta"><button type="button" class="btn have-btn" data-mail ${data}>✉ ${esc(label)}</button>
+      <small class="cta-alt">No email app? <button type="button" class="linkish" data-copymail>Copy my address</button></small></div>`;
+  }
+  function openForm(item, body) {
+    const g = gform(); if (!g) return;
+    let dlg = $("#cform");
+    if (!dlg) {
+      document.body.insertAdjacentHTML("beforeend", `<dialog id="cform" class="cform" aria-labelledby="cform-h">
+        <form method="dialog" novalidate>
+          <div class="cf-top"><h2 id="cform-h">Send me a message</h2><button type="button" class="cf-x" aria-label="Close">✕</button></div>
+          <label>Your name<input name="name" autocomplete="name" required></label>
+          <label>Your email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Card or player<input name="about"></label>
+          <label>Message<textarea name="message" rows="5" required></textarea></label>
+          <label class="cf-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+          <p class="cf-err" hidden></p>
+          <div class="cf-go"><button type="submit" class="btn have-btn">Send</button><small>I'll reply by email.</small></div>
+        </form>
+        <div class="cf-done" hidden><h2>Thanks!</h2><p>Your message is on its way. I'll reply by email.</p><button type="button" class="btn cf-x">Close</button></div>
+      </dialog>`);
+      dlg = $("#cform");
+      dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.closest(".cf-x")) dlg.close(); });
+      dlg.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const f = e.target, err = f.querySelector(".cf-err"), v = (n) => f.elements.namedItem(n).value.trim();
+        if (v("website")) { dlg.querySelector(".cf-done").hidden = false; f.hidden = true; return; }   // a bot filled the trap field
+        if (!v("name") || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("email")) || !v("message")) {
+          err.textContent = "Please add your name, a valid email address and a message."; err.hidden = false; return;
+        }
+        const g2 = gform(), fd = new FormData();
+        [["name", "name"], ["email", "email"], ["item", "about"], ["message", "message"]].forEach(([k, n]) => g2.fields[k] && fd.append(g2.fields[k], v(n)));
+        f.querySelector("[type=submit]").disabled = true;
+        try {
+          // Google Forms doesn't let other sites read its reply, so a request that goes through counts as sent.
+          await fetch(`https://docs.google.com/forms/d/e/${encodeURIComponent(g2.id)}/formResponse`, { method: "POST", mode: "no-cors", body: fd });
+          f.hidden = true; dlg.querySelector(".cf-done").hidden = false;
+        } catch (x) {
+          err.textContent = "That didn't send. Check your connection, or use “Email me” instead."; err.hidden = false;
+        } finally { f.querySelector("[type=submit]").disabled = false; }
+      });
+    }
+    const f = dlg.querySelector("form");
+    f.reset(); f.hidden = false; f.querySelector(".cf-err").hidden = true; dlg.querySelector(".cf-done").hidden = true;
+    f.elements.namedItem("about").value = item || ""; f.elements.message.value = body ? body.replace(/^Hi Ian,\s*/, "") : "";
+    dlg.showModal(); f.elements.name.focus();
   }
   document.addEventListener("click", async (e) => {
+    const fb = e.target.closest("[data-form]");
+    if (fb) { openForm(fb.dataset.item, fb.dataset.body); return; }
     const m = e.target.closest("[data-mail]");
-    if (m) { location.href = `mailto:${myEmail()}?subject=${encodeURIComponent(m.dataset.mail)}&body=${encodeURIComponent(m.dataset.body || "")}`; return; }
+    if (m) { location.href = `mailto:${myEmail()}?subject=${encodeURIComponent(m.dataset.subject || m.dataset.mail || "")}&body=${encodeURIComponent(m.dataset.body || "")}`; return; }
     const cp = e.target.closest("[data-copymail]"); if (!cp) return;
     const a = myEmail();
     try { await navigator.clipboard.writeText(a); cp.textContent = `Copied ${a}`; } catch (err) { cp.textContent = a; }
