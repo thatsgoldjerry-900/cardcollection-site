@@ -147,7 +147,7 @@ def extract_side_by_side(xlsx_bytes, spec):
                       "columns": [headers[i] for i in cols], "groups": groups,
                       "links": {n: u for n, u in links.items() if n in kept},
                       # Notes on the player-name cells, only for lists approved in "notesLists".
-                      **({"notes": {n: t for n, t in notes.items() if n in kept}} if slug in spec.get("notesLists", []) else {})})
+                      **({"notes": {n: t for n, t in notes.items() if n in kept and n not in spec.get("hideNotes", [])}} if slug in spec.get("notesLists", []) else {})})
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}
 
 

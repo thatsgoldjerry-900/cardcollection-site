@@ -22,7 +22,10 @@
         "nfl-tier-2-huskers",
         "pro-football-huskers"
       ],
-      "_notes": "\"notesLists\": lists whose player-name cell notes are published (Tier 2 and Tier 3 only)."
+      "_notes": "\"notesLists\": lists whose player-name cell notes are published (Tier 2 and Tier 3 only). \"hideNotes\": players whose note is never published.",
+      "hideNotes": [
+        "Thunder Collins"
+      ]
     },
     {
       "name": "inventory-stats",
