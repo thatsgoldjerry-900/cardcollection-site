@@ -1,7 +1,15 @@
 # Launch checklist
 
 Housekeeping to do just before or after the new site replaces the Google Site at ianbadeer.com.
-Claude: bring this list up when Ian says he is ready to publish or switch the domain.
+Claude: bring this list up when Ian says he is ready to publish or switch the domain, and remind Ian of
+"Ian's to-dos" when a session starts or he asks what's left.
+
+## Ian's to-dos
+- [ ] **Set up GoatCounter analytics** (free, no cookies, no cookie banner needed).
+  1. Sign up at goatcounter.com.
+  2. Pick a site code, e.g. "ianbadeer" (the dashboard becomes ianbadeer.goatcounter.com).
+  3. Send Claude the code. Claude puts it in `analytics.goatcounter` in `config/site.json`; every page then
+     counts on its own (e.g. `#/player/ricky-simmons`), and visits show up in the GoatCounter dashboard.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
