@@ -23,7 +23,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
   - [ ] Keep old `#/` links working.
 - [ ] **Link previews.** Site-wide preview image, title and description; per-page previews for player pages, collections, lists and Media.
-- [ ] **A 404 page** that sends people to the right place.
+- [x] **A 404 page** that sends people to the right place (done: 404.html with search, random card and main links). At the switch, old Google Sites addresses can be added to it as redirects.
 
 ## The switch
 - [ ] Point ianbadeer.com at GitHub Pages (Ian changes the DNS records at the registrar; add a `CNAME` file and turn on HTTPS in the repo settings).
