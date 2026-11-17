@@ -563,6 +563,8 @@
         <div class="prog"><b>${pct.toFixed(2)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
       </div>${showcase.length ? `<div class="ck-fan" aria-label="Autographs from this list">${showcase.map((c) => `<button type="button" class="cd" data-i="${c.i}" aria-label="${esc(c.name)}">
         <img alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"></button>`).join("")}</div>` : ""}</div>
+      ${{ "nfl-tier-1-huskers": "tier-1", "nfl-tier-2-huskers": "tier-2", "pro-football-huskers": "tier-3" }[page.slug]
+        ? `<p class="ck-plain"><a href="nfl-huskers/${{ "nfl-tier-1-huskers": "tier-1", "nfl-tier-2-huskers": "tier-2", "pro-football-huskers": "tier-3" }[page.slug]}.html">Plain version of this list to share or cite →</a></p>` : ""}
       <nav class="ck-others" aria-label="Other autograph lists">${CK_PAGES.filter((x) => x !== page && CHECK.lists.some((m) => m.slug === x.slug)).map((x) => `<a href="#/checklist${x.path}">${esc(x.label)} →</a>`).join("")}</nav>
       <div class="ck-body${typeRows.length ? "" : " solo"}">
         <div style="min-width:0">

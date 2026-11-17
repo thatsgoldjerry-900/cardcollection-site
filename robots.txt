@@ -1,4 +1,5 @@
-# IanBadeer.com: the card scans are Ian Badeer's. Search engines are welcome; AI-training crawlers are not.
+# IanBadeer.com: the card scans are Ian Badeer's. Search engines are welcome; AI crawlers are not, except for
+# the NFL Husker lists at /nfl-huskers/, which Ian is happy to have quoted with credit.
 # (Only read at the root of a domain, so this takes effect once ianbadeer.com points at this site.)
 User-agent: GPTBot
 User-agent: ChatGPT-User
@@ -18,6 +19,7 @@ User-agent: Diffbot
 User-agent: ImagesiftBot
 User-agent: Omgilibot
 User-agent: cohere-ai
+Allow: /nfl-huskers/
 Disallow: /
 
 User-agent: *
