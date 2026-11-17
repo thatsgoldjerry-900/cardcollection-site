@@ -830,7 +830,10 @@
       const l = CHECK.lists.find((q) => q.slug === x.listSlug), note = l && (l.notes || {})[x.name];
       for (const m of (note || "").matchAll(nick)) {
         if (/\b(BC|B\.C\.)\s$/.test(note.slice(Math.max(0, m.index - 5), m.index))) continue;   // the CFL's BC Lions
-        const t = byNick[m[1]]; if (t && !stints[t.slug]) stints[t.slug] = ["from my research notes"];
+        // The year(s) from the same sentence of the note ("…with the Bills in 2017"), if given; otherwise none.
+        const from = note.lastIndexOf("\n", m.index) + 1, sent = note.slice(Math.max(from, note.slice(0, m.index).search(/[.!?]\s+[^.!?]*$/) + 1), (note.slice(m.index).search(/[.!?](\s|$)|\n/) + 1 || note.length - m.index + 1) + m.index);
+        const yrs = (sent.match(/\b(?:19|20)\d{2}(?:\s*[-–]\s*(?:19|20)?\d{2})?\b/g) || []).map((y) => y.replace(/\s*-\s*/, "–"));
+        const t = byNick[m[1]]; if (t && !stints[t.slug]) stints[t.slug] = [yrs.join(", ")];
       }
       Object.entries(stints).forEach(([slug, yrs]) => TEAMIDX[slug].push({ x, tier: NFL[x.listSlug], yrs: [...new Set(yrs.filter(Boolean))].join(", ") }));
     });
