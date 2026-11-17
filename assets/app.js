@@ -323,6 +323,25 @@
     try { await navigator.clipboard.writeText(a); cp.textContent = `Copied ${a}`; } catch (err) { cp.textContent = a; }
   });
 
+  // Home: three quick paths for different visitors, and the Jermaine Dye career story.
+  function startHere() {
+    const dye = SECTIONS.find((x) => x.slug === "jermaine-dye"), st = DATA.site.dyeStory;
+    const go = (h, t) => `<a href="${h}">${t} →</a>`;
+    const col = (slug, t) => SECTIONS.some((x) => x.slug === slug) ? go(`#/c/${slug}`, t) : "";
+    const pick = (part) => CARDS.find((c) => dye && c.si === SECTIONS.indexOf(dye) && c.name.toLowerCase().includes(part.toLowerCase()));
+    const story = st && dye ? (st.highlights || []).map((h) => pick(h.card)).filter(Boolean).slice(0, 3) : [];
+    return `<section class="start" aria-label="Start here">
+      <div class="go-card"><h3>Royals fans</h3><p>My Alex Gordon and Jermaine Dye super collections, with thousands of scans.</p>
+        <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
+      <div class="go-card"><h3>Husker fans</h3><p>Every Husker who made it to the NFL, the autographs I've found, and a page for each player.</p>
+        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football cards")}</div></div>
+      <div class="go-card"><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, and the cards I'm still hunting.</p>
+        <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade on TCDb").replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
+      ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
+        <div><span class="kick">Featured story</span><h3>${esc(st.title)}</h3><p>Jermaine's career from the Braves to World Series MVP, told through the best cards in my collection.</p><span class="go-more">Read the story →</span></div></a>` : ""}
+    </section>`;
+  }
+
   function home() {
     setNav(null); setTitle("");
     const s = DATA.site;
@@ -365,6 +384,7 @@
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
+      ${startHere()}
       <div class="band">
       <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
       <section class="mq" aria-label="Newest additions">
@@ -787,6 +807,29 @@
     return [...(s.media?.items || []), ...(s.customsPhotos?.videos || [])]
       .filter((v) => (v.players || []).includes(slug)).map((v) => ({ title: v.title || v.caption, url: yt(v) }));
   }
+  // Bottom of a player page: previous / next player on the same list, and Huskers like him
+  // (same list, same position when known, closest final Nebraska seasons).
+  function moreHuskers(slug, info, p) {
+    const list = allPlayers().filter((x) => x.listSlug === info.listSlug);
+    const at = list.findIndex((x) => x.slug === slug); if (at < 0) return "";
+    const pos = (x) => ((PLAYERS.players || []).find((q) => q.slug === x.slug) || {}).position || "";
+    const group = (t) => { t = (t || "").toLowerCase(); const G = [["qb", /quarterback/], ["db", /cornerback|safety|defensive back|\bcb\b|\bdb\b/],
+        ["dl", /defensive (end|tackle|line)|nose|\bdt\b|\bde\b/], ["lb", /linebacker/], ["rb", /running back|fullback|halfback|tailback|i-?back|wingback/],
+        ["wr", /receiver|split end|flanker/], ["te", /tight end/], ["ol", /tackle|guard|center|offensive line/], ["k", /kicker|punter/],
+        ["p", /pitcher/], ["c", /catcher/], ["if", /infield|shortstop|base/], ["of", /outfield|fielder/], ["bb", /forward|guard|center/]];
+      const g = G.find(([, r]) => r.test(t)); return g ? g[0] : ""; };
+    const mine = group((p && p.position) || ""), yr = +info.year || 0;
+    const like = list.filter((x) => x.slug !== slug)
+      .map((x) => ({ x, sameGroup: mine && group(pos(x)) === mine, gap: Math.abs((+x.year || 0) - yr) }))
+      .sort((a, b) => (b.sameGroup - a.sameGroup) || (a.gap - b.gap)).slice(0, 6).map((o) => o.x);
+    const card = (x) => { const sc = x.have ? bestScan(x.name, x.sport) : null;
+      return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+        <span class="pm-t"><b>${esc(x.name)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
+    const prev = list[at - 1], next = list[at + 1];
+    return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>
+      <nav class="pl-nav" aria-label="Previous and next player">${prev ? `<a href="#/player/${prev.slug}">← ${esc(prev.name)}</a>` : "<span></span>"}${next ? `<a href="#/player/${next.slug}">${esc(next.name)} →</a>` : ""}</nav></section>`;
+  }
+
   function player(slug) {
     setNav("nfl-huskers");
     loadHub(() => {
@@ -880,6 +923,7 @@
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>
+        ${moreHuskers(slug, info, p)}
         ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} cards in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
@@ -962,7 +1006,11 @@
     state.list = shownCards;   // the card viewer steps through the cards on this page
   }
 
-  function notFound() { setTitle("Page not found"); $("#app").innerHTML = `<p class="empty">That page doesn't exist. <a href="#/">Go home</a></p>`; }
+  function notFound() {
+    setTitle("Page not found");
+    $("#app").innerHTML = `<div class="wrap nf"><h1>That page isn't here</h1><p>It may have moved when the site was rebuilt. Try searching above, or:</p>
+      <div class="go-links"><a href="#/">Home →</a><a href="#/random">Show me a random card →</a><a href="#/checklist">NFL Huskers autograph list →</a><a href="#/media">Media &amp; interviews →</a></div></div>`;
+  }
 
   /* ---------- Router ---------- */
   function route() {
@@ -985,6 +1033,7 @@
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "media") media();
+    else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
@@ -1041,6 +1090,8 @@
   const V = { list: [], k: 0, back: false };
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".cd[data-i]"); if (!b) return;
+    // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
+    if (b.closest(".mq")) { location.hash = "#/card/" + CARDS[+b.dataset.i].id; return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
     openViewer(list.findIndex((c) => c.i === i), list);
   });
@@ -1123,7 +1174,7 @@
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
-      $("#v-have").hidden = true; $("#v-dice").hidden = true;
+      $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = "";
       $("#v-flip").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
@@ -1147,6 +1198,11 @@
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
+    const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
+    const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => x.title === c.title) : [];
+    $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)})</button>` : "")
+      + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(c.title)} (${fmt(byPlayer.length)})</button>` : "");
+    V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
@@ -1154,6 +1210,12 @@
   const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
   $("#v-close").onclick = () => closeViewer();
+  // Keep exploring inside the viewer: swap in the cards from the same set, or of the same player.
+  $("#v-more").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-more]"); if (!b || !V.more) return;
+    const list = V.more[b.dataset.more]; if (!list || list.length < 2) return;
+    V.list = list; V.k = Math.min(1, list.length - 1); V.back = false; V.zoom = false; V.random = false; showCard();
+  });
   $("#v-save").onclick = saveCard;
   $("#v-flip").onclick = () => { V.back = !V.back; V.zoom = false; showCard(); };
   // Click an image: on desktop, zoom into that side (click again to go back);

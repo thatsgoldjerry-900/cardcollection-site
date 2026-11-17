@@ -505,3 +505,20 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 #v-img.wm,#v-img2.wm{object-position:-100000px 0;background-size:100% 100%;background-repeat:no-repeat}
 .ck-plain{margin:-4px 0 14px;font-size:13.5px}.ck-plain a{color:var(--mu)}.ck-plain a:hover{color:var(--acc)}
 .pl-about{margin:12px 0 6px;max-width:62ch;color:#d5dbe5;line-height:1.6}
+/* Home: Start here + featured story */
+.start{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 30px}
+.go-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.go-card h3{margin:0;font-size:20px}.go-card p{margin:0;color:#c3cad6;font-size:14px;line-height:1.5}
+.go-links{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px}.go-links a{color:var(--acc);text-decoration:none;font-size:14px;font-weight:500}.go-links a:hover{text-decoration:underline}
+.go-story{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center;text-decoration:none;color:var(--fg);background:linear-gradient(90deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:12px;padding:16px 20px}
+.go-story:hover{border-color:var(--acc)}.go-story h3{margin:4px 0;font-size:24px}.go-story p{margin:0;color:#c3cad6;font-size:14px}.go-story .kick{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.go-more{display:inline-block;margin-top:6px;color:var(--acc);font-size:14px;font-weight:500}
+.go-fan{display:flex;align-items:flex-end;height:120px;padding-left:4px}.go-fan img{width:78px;aspect-ratio:5/7;object-fit:cover;border-radius:5px;margin-left:-26px;box-shadow:0 8px 18px -8px rgba(0,0,0,.9);background:var(--panel-2)}
+.go-fan img:first-child{margin-left:0;transform:rotate(-6deg)}.go-fan img:nth-child(2){transform:translateY(-6px)}.go-fan img:nth-child(3){transform:rotate(6deg)}
+@media (max-width:900px){.start{grid-template-columns:1fr}.go-story{grid-template-columns:1fr;gap:12px}.go-fan{height:100px}}
+/* Viewer: more from this set / player */
+.v-more{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}.v-more:empty{display:none}.v-more .btn{white-space:normal;text-align:left;max-width:100%}
+/* Player page: more Huskers + prev/next */
+.more-huskers{margin:30px 0 10px}.pl-nav{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:14px}.pl-nav a{color:var(--acc);text-decoration:none}
+/* Not found */
+.nf{padding-block:60px}.nf h1{margin:0 0 10px}.nf p{color:#c3cad6}
