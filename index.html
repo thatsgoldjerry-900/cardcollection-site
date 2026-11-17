@@ -59,6 +59,7 @@
       <button type="button" id="v-dice" class="btn" hidden>🎲 Another</button>
       <button type="button" id="v-flip" class="btn" hidden>Show back</button>
       <button type="button" id="v-copy" class="btn">Copy link</button>
+      <button type="button" id="v-read" class="btn" hidden aria-expanded="false" aria-controls="v-text">📖 Read the back</button>
       <button type="button" id="v-save" class="btn">⬇ Save image</button>
       <button type="button" id="v-close" class="btn icon" aria-label="Close">✕</button>
     </div>
@@ -66,6 +67,7 @@
   <button type="button" class="v-nav prev" id="v-prev" aria-label="Previous card">‹</button>
   <div class="v-stage" id="v-stage"><img id="v-img" alt=""><img id="v-img2" alt="" hidden></div>
   <button type="button" class="v-nav next" id="v-next" aria-label="Next card">›</button>
+  <section class="v-text" id="v-text" hidden aria-label="Card back text"></section>
   <div class="v-meta" id="v-meta"></div>
 </div>
 <script src="assets/app.js"></script>

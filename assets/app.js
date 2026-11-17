@@ -1183,7 +1183,7 @@
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
-      $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = "";
+      $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
       $("#v-flip").hidden = true;
       $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
@@ -1207,6 +1207,7 @@
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
+    showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => x.title === c.title) : [];
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)})</button>` : "")
@@ -1216,6 +1217,36 @@
     $("#v-prev").style.visibility = V.k > 0 ? "visible" : "hidden";
     $("#v-next").style.visibility = V.k < V.list.length - 1 ? "visible" : "hidden";
   }
+  /* Card back text: transcriptions of custom card backs (data/card-text.json, keyed by Drive file ID),
+     readable under "Read the back" and linked to the image for screen readers. Loaded the first time it's needed. */
+  let BACKTEXT = null;
+  const backText = () => BACKTEXT || (BACKTEXT = fetch("data/card-text.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.cards || {}).catch(() => ({})));
+  function textHTML(t) {
+    const out = [];
+    for (const block of String(t || "").split(/\n\s*\n/)) {
+      const lines = block.split("\n").map((x) => x.trim()).filter(Boolean); if (!lines.length) continue;
+      if (lines.every((l) => l.includes(" | "))) {
+        const rows = lines.map((l) => l.split(" | ").map((x) => x.trim()));
+        out.push(`<div class="vt-tbl"><table><thead><tr>${rows[0].map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows.slice(1).map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);
+      } else if (lines[0].startsWith("## ")) {
+        out.push(`<h3>${esc(lines[0].slice(3))}</h3>` + (lines.length > 1 ? `<p>${lines.slice(1).map(esc).join("<br>")}</p>` : ""));
+      } else out.push(`<p>${lines.map(esc).join("<br>")}</p>`);
+    }
+    return out.join("");
+  }
+  function showBackText(c) {
+    const btn = $("#v-read"), box = $("#v-text"), im = $("#v-img");
+    btn.hidden = true; box.hidden = true; box.innerHTML = ""; btn.setAttribute("aria-expanded", "false"); im.removeAttribute("aria-describedby");
+    if (!c || c.photo) return;
+    backText().then((all) => {
+      if (V.list[V.k] !== c) return;
+      const e = all[c.id] || (c.backId && all[c.backId]); if (!e || !e.text) return;
+      box.innerHTML = `<div class="vt-in"><h2>Card back</h2>${textHTML(e.text)}<button type="button" class="btn vt-close">Close</button></div>`;
+      btn.hidden = false; im.setAttribute("aria-describedby", "v-text");
+    });
+  }
+  $("#v-read").addEventListener("click", () => { const box = $("#v-text"), open = box.hidden; box.hidden = !open; $("#v-read").setAttribute("aria-expanded", String(open)); if (open) box.scrollTop = 0; });
+  $("#v-text").addEventListener("click", (e) => { if (e.target.closest(".vt-close")) { $("#v-text").hidden = true; $("#v-read").setAttribute("aria-expanded", "false"); } });
   const step = (d) => { const n = V.k + d; if (n >= 0 && n < V.list.length) { V.k = n; V.back = false; V.zoom = false; showCard(); } };
   $("#v-prev").onclick = () => step(-1); $("#v-next").onclick = () => step(1);
   $("#v-close").onclick = () => closeViewer();

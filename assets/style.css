@@ -522,3 +522,12 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .more-huskers{margin:30px 0 10px}.pl-nav{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:14px}.pl-nav a{color:var(--acc);text-decoration:none}
 /* Not found */
 .nf{padding-block:60px}.nf h1{margin:0 0 10px}.nf p{color:#c3cad6}
+/* Card back text panel in the viewer */
+.v-text{position:absolute;left:0;right:0;bottom:0;max-height:62%;overflow:auto;z-index:5;background:#090c11;border-top:1px solid var(--line);box-shadow:0 -20px 40px -20px rgba(0,0,0,.9)}
+.v-text[hidden]{display:none}
+.vt-in{max-width:760px;margin:0 auto;padding:18px 18px 22px}
+.vt-in h2{font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:0 0 10px}
+.vt-in h3{font-size:18px;margin:14px 0 4px}.vt-in p{margin:0 0 12px;line-height:1.65;font-size:16px;color:#e3e8ef}
+.vt-tbl{overflow-x:auto;margin:0 0 12px}.vt-tbl table{border-collapse:collapse;font-size:14px}.vt-tbl th,.vt-tbl td{padding:5px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.vt-tbl th{color:var(--mu);font-weight:600}
+.vt-close{margin-top:4px}
