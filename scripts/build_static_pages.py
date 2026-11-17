@@ -135,7 +135,14 @@ def best_scan(idx, name, sport):
     if len(n.split()) < 2: return None
     hits = [c for t, c in idx.get(sport, []) if " " + n + " " in t]
     if not hits and ("own:" + n) in idx: hits = idx["own:" + n][2]
-    return next((c for c in hits if re.search(r"\b(auto|autograph|signed|signature)", c[2], re.I)), hits[0] if hits else None)
+    # Prefer a card with a picture over an index card, cut autograph or signed letter (same rule as the site).
+    who = r"[^#]*?".join(re.escape(w) for w in n.split())
+    picture = r"\b(photo|8x10|11x14|16x20|magazine|illustrated|poster|program|schedules?|postcard|card)\b"
+    nopic = lambda c: not re.search(r"\bcustom\b", c[2], re.I) and not re.search(picture, re.sub(r"index card", "", c[2], flags=re.I), re.I) and bool(re.search(r"\bcut\b|index card|\b(?:signed|autographed)\s+letter\b", c[2], re.I)
+                                                                      or re.search(rf"^\d{{4}}(?:-\d{{2}})?\s+{who}[^#]*?\b(?:signed\s+)?(?:cut\s+)?autograph", c[2], re.I))
+    signed = lambda c: re.search(r"\b(auto|autograph|signed|signature)", c[2], re.I)
+    pic = [c for c in hits if not nopic(c)]
+    return next((c for c in pic if signed(c)), pic[0] if pic else next((c for c in hits if signed(c)), hits[0] if hits else None))
 
 
 def img_url(card, w=600):

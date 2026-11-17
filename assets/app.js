@@ -711,9 +711,15 @@
     return Promise.resolve(CHECK || fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
   }
   const pslug = (n) => norm(n).replace(/ /g, "-");
+  // A player's main card: prefer a card with a picture over an index card, cut autograph or signed letter
+  // (those are "YEAR Player Autograph …" with no set, or say Cut / Letter). Signed pictures first.
+  const PICTURE = /\b(photo|8x10|11x14|16x20|magazine|illustrated|poster|program|schedules?|postcard|card)\b/i;
+  const noPicture = (c, name) => !c.tags.has("custom") && !PICTURE.test(c.name.replace(/index card/i, "")) && (/\bcut\b|index card|\b(?:signed|autographed)\s+letter\b/i.test(c.name)
+    || new RegExp(`^\\d{4}(?:-\\d{2})?\\s+${norm(name).split(" ").map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^#]*?")}[^#]*?\\b(?:signed\\s+)?(?:cut\\s+)?autograph`, "i").test(c.name));
   function bestScan(name, sport = "football") {
     const all = scansFor(name, sport).filter((c) => !/\(back\)/i.test(c.name));
-    return all.find((c) => c.tags.has("auto")) || all[0] || null;
+    const pic = all.filter((c) => !noPicture(c, name));
+    return pic.find((c) => c.tags.has("auto")) || pic[0] || all.find((c) => c.tags.has("auto")) || all[0] || null;
   }
   // Player pages for every name on the NFL, MLB and NBA lists. Slugs match scripts/build_players.py:
   // a name already used by an earlier list gets "-baseball" or "-basketball" added.
