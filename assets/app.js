@@ -719,7 +719,17 @@
   function bestScan(name, sport = "football") {
     const all = scansFor(name, sport).filter((c) => !/\(back\)/i.test(c.name));
     const pic = all.filter((c) => !noPicture(c, name));
-    return pic.find((c) => c.tags.has("auto")) || pic[0] || all.find((c) => c.tags.has("auto")) || all[0] || null;
+    // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
+    const solo = pic.filter((c) => !multiPlayer(c, name));
+    return solo.find((c) => c.tags.has("auto")) || solo[0] || pic.find((c) => c.tags.has("auto")) || pic[0]
+      || all.find((c) => c.tags.has("auto")) || all[0] || null;
+  }
+  let PNAMES = null;
+  function multiPlayer(c, name) {
+    if (/\b(dual|duos?|trios?|triple|quad|quads|tandem|combos?|pairings|teammates|and (?:\w+ )?others)\b/i.test(c.name.replace(/triple threads/i, ""))) return true;
+    if (!PNAMES) PNAMES = [...new Set((CHECK ? allPlayers() : []).map((p) => norm(p.name)).filter((n) => n.split(" ").length > 1))];
+    const t = " " + norm(c.name) + " ", me = norm(name);
+    return PNAMES.some((n) => n !== me && t.includes(" " + n + " ") && !me.includes(n));
   }
   // Player pages for every name on the NFL, MLB and NBA lists. Slugs match scripts/build_players.py:
   // a name already used by an earlier list gets "-baseball" or "-basketball" added.

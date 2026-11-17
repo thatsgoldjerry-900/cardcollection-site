@@ -130,6 +130,9 @@ def scans_index():
     return out
 
 
+PLAYER_NAMES = []   # every listed player's normalized name (filled in main), to spot multi-player cards
+
+
 def best_scan(idx, name, sport):
     n = norm(name)
     if len(n.split()) < 2: return None
@@ -142,7 +145,15 @@ def best_scan(idx, name, sport):
                                                                       or re.search(rf"^\d{{4}}(?:-\d{{2}})?\s+{who}[^#]*?\b(?:signed\s+)?(?:cut\s+)?autograph", c[2], re.I))
     signed = lambda c: re.search(r"\b(auto|autograph|signed|signature)", c[2], re.I)
     pic = [c for c in hits if not nopic(c)]
-    return next((c for c in pic if signed(c)), pic[0] if pic else next((c for c in hits if signed(c)), hits[0] if hits else None))
+    # A solo card of him beats one shared with other players (same rule as the site).
+    def multi(c):
+        if re.search(r"\b(dual|duos?|trios?|triple|quad|quads|tandem|combos?|pairings|teammates|and (?:\w+ )?others)\b", re.sub(r"triple threads", "", c[2], flags=re.I), re.I): return True
+        t = " " + norm(c[2]) + " "
+        return any(o != n and n.find(o) < 0 and " " + o + " " in t for o in PLAYER_NAMES)
+    solo = [c for c in pic if not multi(c)]
+    for group in (solo, pic):
+        if group: return next((c for c in group if signed(c)), group[0])
+    return next((c for c in hits if signed(c)), hits[0] if hits else None)
 
 
 def img_url(card, w=600):
@@ -326,6 +337,7 @@ def main():
     base = (base or "https://thatsgoldjerry-900.github.io/cardcollection-site/").rstrip("/") + "/"
     updated = datetime.date.today().isoformat()
     idx = scans_index()
+    PLAYER_NAMES[:] = sorted({norm(p["name"]) for p in players if len(norm(p["name"]).split()) > 1})
     urls = ["", "nfl-huskers/"]
     for folder in ("nfl-huskers", "players"): os.makedirs(os.path.join(ROOT, folder), exist_ok=True)
     # tier tables + overview
