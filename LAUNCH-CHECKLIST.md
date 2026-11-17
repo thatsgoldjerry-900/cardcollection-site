@@ -25,6 +25,6 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] Unpublish or archive the old Google Site once the new one is confirmed working.
 
 ## Open odds and ends (no rush)
-- [ ] Kansas City Star article: add its date on the Media page; decide later on a summary page or asking the Star for permission.
+- [x] Kansas City Star article: dated June 2020 on the Media page, linked to the PDF in Drive (done). A summary page or asking the Star for permission is on hold.
 - [ ] Short huskers.com-sourced summaries for Tier 2 and Tier 3 players with no Wikipedia article (305 players).
 - [x] Delete the unused Apps Script files in `tools/` (done).
