@@ -27,10 +27,13 @@ jobs:
       - name: Read private lists (only the chosen columns)
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: python3 scripts/build_lists.py
+        run: |
+          python3 scripts/build_lists.py
+          # The lists are rebuilt every run and published, never saved in the repo (data/lists is in .gitignore).
+          # If they didn't build, stop here so the site keeps its last good version.
+          test -s data/lists/husker-pros.json && test -s data/lists/inventory-stats.json
       - name: Save the updated card list
         run: |
-          git add -N data/lists 2>/dev/null || true
           if ! git diff --quiet data/; then
             git config user.name "catalog-bot"
             git config user.email "catalog-bot@users.noreply.github.com"

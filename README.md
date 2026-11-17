@@ -51,3 +51,13 @@ python3 -m http.server 8000         # then open http://localhost:8000
   autograph, relic, grading) come from the file names.
 - Images load straight from Google Drive at the size needed: small for the grid, large for the viewer,
   with a link to the original full-resolution file.
+
+## Lists from the private spreadsheets
+
+`data/lists/` is built by the robot on every run and published with the site, but never saved in the repo
+(it's in `.gitignore`), so the repo's history holds no spreadsheet data. To work on the lists locally, take
+them from the latest published site build:
+
+```bash
+gh run download --name github-pages --dir /tmp/pages && tar -xf /tmp/pages/artifact.tar -C /tmp/pages && cp -r /tmp/pages/data/lists data/
+```
