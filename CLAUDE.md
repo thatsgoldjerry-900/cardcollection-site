@@ -12,7 +12,7 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   in `hideNotes`.
 - **Sports focus:** Wikipedia bios keep only sports content; sentences about crimes, prison, suicide and
   similar are filtered out (scripts/build_players.py OFF_FIELD). Neutral jobs like "chief of police" are fine.
-- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF. Do not scrape
+- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json). Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
   article; link Ian's PDF.
 - **Cards shown:** hide any card whose name says "sold", and 2nd/3rd copies. Keep custom cards even when

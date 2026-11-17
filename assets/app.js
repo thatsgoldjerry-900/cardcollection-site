@@ -701,9 +701,28 @@
   /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
   let PLAYERS = null;
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
+  // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
+  // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
+  let HOF = null;
+  const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
+    .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
+  function hofFor(info) {
+    const me = hofName(info.name); if (!me.length || !HOF) return null;
+    const last = +(info.finalYear || info.year) || 0;
+    return HOF.find((h) => {
+      const n = hofName(h.name);
+      const same = n.join(" ") === me.join(" ") || (n[0] === me[0] && n[n.length - 1] === me[me.length - 1]);
+      if (!same) return false;
+      const ys = (String(h.years || "").match(/\d{2,4}/g) || []).map(Number), a = ys[0], b = ys.length > 1 ? ys[ys.length - 1] : a;
+      if (h.role || !last || !a) return n.join(" ") === me.join(" ") || !h.role;
+      const end = b < 100 ? Math.floor(a / 100) * 100 + b + (b < a % 100 ? 100 : 0) : b;
+      return last >= a - 1 && last <= end + 1;
+    }) || null;
+  }
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
+    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => (HOF = d.members || [])));
     if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)));
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
@@ -946,13 +965,14 @@
       state.list = all;
     });
   }
+  const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
   function player(slug) {
     setNav("nfl-huskers");
     loadHub(() => backText().then((CB) => {
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
-      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null;
+      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null, hof = hofFor(info);
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
@@ -1026,12 +1046,15 @@
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <h1>${esc(info.name)}</h1>
-            <div class="pl-badges"><span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            <div class="pl-badges">${hof ? `<span class="hof-badge">${HOF_ICON} Hall of Fame</span>` : ""}<span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${((DATA.site.playerExtras || {})[slug] || {}).about ? `<p class="pl-about">${esc(DATA.site.playerExtras[slug].about)}</p>` : ""}
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
               return t ? `<section class="why"><h2>Why he's on the ${esc((row.backLabel || "").replace(/ Huskers Autograph List$/, ""))} list</h2>${noteHTML(t)}</section>` : ""; })()}
+            ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
+              <b>Class of ${esc(String(hof.class))}</b><span>${hof.role ? esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role) + " · " : ""}${hof.years ? "Nebraska " + esc(String(hof.years).replace(/-/g, "–")) : "Nebraska"}</span>
+              <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
             <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}

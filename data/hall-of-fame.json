@@ -1,0 +1,1742 @@
+{
+ "_help": "Huskers in the Nebraska Football Hall of Fame (statewide hall; only people inducted for Nebraska are kept). From https://huskers.com/nebraska-football-hall-of-fame. Player pages show a Hall of Fame box when the name and Nebraska years match.",
+ "source": "https://huskers.com/nebraska-football-hall-of-fame",
+ "members": [
+  {
+   "name": "Bob Nelson",
+   "class": 2025,
+   "years": "1972-74"
+  },
+  {
+   "name": "Brett Maher",
+   "class": 2025,
+   "years": "2008-12"
+  },
+  {
+   "name": "Dahrran Diedrick",
+   "class": 2025,
+   "years": "1998-2002"
+  },
+  {
+   "name": "Derek Brown",
+   "class": 2025,
+   "years": "1990-92"
+  },
+  {
+   "name": "Kenny Bell",
+   "class": 2025,
+   "years": "2010-14"
+  },
+  {
+   "name": "Tom Welter",
+   "class": 2025,
+   "years": "1983-86"
+  },
+  {
+   "name": "Chris Kelsay",
+   "class": 2024,
+   "years": "1999-2002"
+  },
+  {
+   "name": "Jared Crick",
+   "class": 2024,
+   "years": "2008-11"
+  },
+  {
+   "name": "Keven Lightner",
+   "class": 2024,
+   "years": "1985-87"
+  },
+  {
+   "name": "Monte Johnson",
+   "class": 2024,
+   "years": "1970-72"
+  },
+  {
+   "name": "Rex Burkhead",
+   "class": 2024,
+   "years": "2009-12"
+  },
+  {
+   "name": "Terrell Farley",
+   "class": 2024,
+   "years": "1995-96"
+  },
+  {
+   "name": "Tyrone Byrd",
+   "class": 2024,
+   "years": "1989-92"
+  },
+  {
+   "name": "Coach W.C. “King” Cole",
+   "class": 2023,
+   "years": "1907-10"
+  },
+  {
+   "name": "David Clark",
+   "class": 2023,
+   "years": "1978-80"
+  },
+  {
+   "name": "Kyle Vanden Bosch",
+   "class": 2023,
+   "years": "1997-2000"
+  },
+  {
+   "name": "Leon G. Warner",
+   "class": 2023,
+   "years": "1910-11"
+  },
+  {
+   "name": "Sam Koch",
+   "class": 2023,
+   "years": "2003-05"
+  },
+  {
+   "name": "Spencer Long",
+   "class": 2023,
+   "years": "2011-13"
+  },
+  {
+   "name": "Taylor Martinez",
+   "class": 2023,
+   "years": "2010-13"
+  },
+  {
+   "name": "Troy Dumas",
+   "class": 2023,
+   "years": "1991-94"
+  },
+  {
+   "name": "Bruce Pickens",
+   "class": 2022,
+   "years": "1988-90"
+  },
+  {
+   "name": "Lee Kunz",
+   "class": 2022,
+   "years": "1976-78"
+  },
+  {
+   "name": "Prince Amukamara",
+   "class": 2022,
+   "years": "2007-10"
+  },
+  {
+   "name": "Ric Lindquist",
+   "class": 2022,
+   "years": "1979-81"
+  },
+  {
+   "name": "Ron McDole",
+   "class": 2022,
+   "years": "1958-60"
+  },
+  {
+   "name": "Toniu Fonoti",
+   "class": 2022,
+   "years": "1999-2001"
+  },
+  {
+   "name": "Bill Janssen",
+   "class": 2021,
+   "years": "1969-72"
+  },
+  {
+   "name": "Dave Mason",
+   "class": 2021,
+   "years": "1969-72"
+  },
+  {
+   "name": "Doug Dumier",
+   "class": 2021,
+   "years": "1970-72"
+  },
+  {
+   "name": "Jerry List",
+   "class": 2021,
+   "years": "1970-72"
+  },
+  {
+   "name": "John Adkins",
+   "class": 2021,
+   "years": "1968-71"
+  },
+  {
+   "name": "Keith Wortman",
+   "class": 2021,
+   "years": "1970-71"
+  },
+  {
+   "name": "Carl Selmer",
+   "class": 2020,
+   "years": "1962-72"
+  },
+  {
+   "name": "Dan Schneiss",
+   "class": 2020,
+   "years": "1968-70"
+  },
+  {
+   "name": "Doug DuBose",
+   "class": 2020,
+   "years": "1982-86"
+  },
+  {
+   "name": "Van Brownson",
+   "class": 2020,
+   "years": "1968-71"
+  },
+  {
+   "name": "Wally Winter",
+   "class": 2020,
+   "years": "1968-70"
+  },
+  {
+   "name": "Alex Henery",
+   "class": 2019,
+   "years": "2007-10"
+  },
+  {
+   "name": "Greg Jorgensen",
+   "class": 2019,
+   "years": "1975-77"
+  },
+  {
+   "name": "Jay Foreman",
+   "class": 2019,
+   "years": "1995-98"
+  },
+  {
+   "name": "Mark Behning",
+   "class": 2019,
+   "years": "1982-84"
+  },
+  {
+   "name": "Bob Sledge",
+   "class": 2018,
+   "years": "1986-88"
+  },
+  {
+   "name": "Dan Schmidt",
+   "class": 2018,
+   "years": "1974-76"
+  },
+  {
+   "name": "Kyle Larson",
+   "class": 2018,
+   "years": "2001-03"
+  },
+  {
+   "name": "Mike Rucker",
+   "class": 2018,
+   "years": "1995-98"
+  },
+  {
+   "name": "Chad Kelsay",
+   "class": 2017,
+   "years": "1995-98"
+  },
+  {
+   "name": "Donnie McGhee",
+   "class": 2017,
+   "years": "1968-70"
+  },
+  {
+   "name": "Randy Theiss",
+   "class": 2017,
+   "years": "1980-82"
+  },
+  {
+   "name": "Zac Taylor, Nebraska",
+   "class": 2017,
+   "years": "2005-06"
+  },
+  {
+   "name": "Adam Carriker",
+   "class": 2016,
+   "years": "2003-06"
+  },
+  {
+   "name": "Dean Sukup",
+   "class": 2016,
+   "years": "1978-79"
+  },
+  {
+   "name": "Kris Brown",
+   "class": 2016,
+   "years": "1995-98"
+  },
+  {
+   "name": "Scott Raridon",
+   "class": 2016,
+   "years": "1981-83"
+  },
+  {
+   "name": "Brook Berringer",
+   "class": 2015,
+   "years": "1992-95",
+   "role": "Honorary Inductee"
+  },
+  {
+   "name": "Demorrio Williams",
+   "class": 2015,
+   "years": "2002-03"
+  },
+  {
+   "name": "Harry Wilson",
+   "class": 2015,
+   "years": "1964-66"
+  },
+  {
+   "name": "Jeff Krejci",
+   "class": 2015,
+   "years": "1979-81"
+  },
+  {
+   "name": "Josh Bullocks",
+   "class": 2015,
+   "years": "2002-04"
+  },
+  {
+   "name": "Scott Frost",
+   "class": 2015,
+   "years": "1996-97"
+  },
+  {
+   "name": "Barrett Ruud",
+   "class": 2014,
+   "years": "2001-04"
+  },
+  {
+   "name": "Carl Johnson",
+   "class": 2014,
+   "years": "1970-71"
+  },
+  {
+   "name": "Mike Mandelko",
+   "class": 2014,
+   "years": "1980-82"
+  },
+  {
+   "name": "Russ Hochstein",
+   "class": 2014,
+   "years": "1997-2000"
+  },
+  {
+   "name": "John Havekost",
+   "class": 2013,
+   "years": "1976-79"
+  },
+  {
+   "name": "Keyuo Craver",
+   "class": 2013,
+   "years": "1998-2001"
+  },
+  {
+   "name": "Reggie Cooper",
+   "class": 2013,
+   "years": "1987-90"
+  },
+  {
+   "name": "Russell Gary",
+   "class": 2013,
+   "years": "1978-80"
+  },
+  {
+   "name": "Ahman Green",
+   "class": 2012,
+   "years": "1995-97"
+  },
+  {
+   "name": "Bill Weber",
+   "class": 2012,
+   "years": "1981-84"
+  },
+  {
+   "name": "Dale Klein",
+   "class": 2012,
+   "years": "1984-86"
+  },
+  {
+   "name": "DeJuan Groce",
+   "class": 2012,
+   "years": "1999-2002"
+  },
+  {
+   "name": "Frank Solich",
+   "class": 2012,
+   "years": "1979-2003",
+   "role": "Coach"
+  },
+  {
+   "name": "Josh Heskew",
+   "class": 2012,
+   "years": "1995-98"
+  },
+  {
+   "name": "Steve Manstedt",
+   "class": 2012,
+   "years": "1971-73"
+  },
+  {
+   "name": "Bob Terrio",
+   "class": 2011,
+   "years": "1970-71"
+  },
+  {
+   "name": "Carel Stith",
+   "class": 2011,
+   "years": "1965-66"
+  },
+  {
+   "name": "Lawrence Pete",
+   "class": 2011,
+   "years": "1986-88"
+  },
+  {
+   "name": "Mike Brown",
+   "class": 2011,
+   "years": "1996-99"
+  },
+  {
+   "name": "Ralph Brown",
+   "class": 2011,
+   "years": "1996-99"
+  },
+  {
+   "name": "Bob Pickens",
+   "class": 2010,
+   "years": "1966"
+  },
+  {
+   "name": "Carlos Polk",
+   "class": 2010,
+   "years": "1997-2000"
+  },
+  {
+   "name": "Chris Spachman",
+   "class": 2010,
+   "years": "1984-86"
+  },
+  {
+   "name": "Dan Alexander",
+   "class": 2010,
+   "years": "1997-2000"
+  },
+  {
+   "name": "Ed Periard",
+   "class": 2010,
+   "years": "1968-1970"
+  },
+  {
+   "name": "Ndamukong Suh",
+   "class": 2010,
+   "years": "2006-09"
+  },
+  {
+   "name": "Steve Lindquist",
+   "class": 2010,
+   "years": "1975-78"
+  },
+  {
+   "name": "Todd Millikan",
+   "class": 2010,
+   "years": "1985-88"
+  },
+  {
+   "name": "Dana Brinson",
+   "class": 2009,
+   "years": "1985-88"
+  },
+  {
+   "name": "Dennis Carlson",
+   "class": 2009,
+   "years": "1964-65"
+  },
+  {
+   "name": "Kelly Saalfeld",
+   "class": 2009,
+   "years": "1977-79"
+  },
+  {
+   "name": "Kenny Brown",
+   "class": 2009,
+   "years": "1975-79"
+  },
+  {
+   "name": "Steve Warren",
+   "class": 2009,
+   "years": "1996-99"
+  },
+  {
+   "name": "Alonzo \"Lonnie\" Stiner",
+   "class": 2008,
+   "years": "1925-26"
+  },
+  {
+   "name": "Bob Liggett",
+   "class": 2008,
+   "years": "1968-69"
+  },
+  {
+   "name": "Kelly Petersen",
+   "class": 2008,
+   "years": "1965-66"
+  },
+  {
+   "name": "Ken Clark",
+   "class": 2008,
+   "years": "1987-89"
+  },
+  {
+   "name": "Sheldon Jackson",
+   "class": 2008,
+   "years": "1995-98"
+  },
+  {
+   "name": "Tim Smith",
+   "class": 2008,
+   "years": "1977-78-79"
+  },
+  {
+   "name": "Tony Felici",
+   "class": 2008,
+   "years": "1980-82"
+  },
+  {
+   "name": "Adolph Wenke",
+   "class": 2007,
+   "years": "1920-22"
+  },
+  {
+   "name": "Donta Jones",
+   "class": 2007,
+   "years": "1991-94"
+  },
+  {
+   "name": "Eric Anderson",
+   "class": 2007,
+   "years": "1994-97"
+  },
+  {
+   "name": "Erik Wiegert",
+   "class": 2007,
+   "years": "1989-91"
+  },
+  {
+   "name": "Jason Peter",
+   "class": 2007,
+   "years": "1994-97"
+  },
+  {
+   "name": "Kevin Ramaekers",
+   "class": 2007,
+   "years": "1991-93"
+  },
+  {
+   "name": "Tyrone Legette",
+   "class": 2007,
+   "years": "1989-91"
+  },
+  {
+   "name": "Bob Lingenfelter",
+   "class": 2006,
+   "years": "1974-76"
+  },
+  {
+   "name": "Chris Dishman",
+   "class": 2006,
+   "years": "1993-96"
+  },
+  {
+   "name": "Christian Peter",
+   "class": 2006,
+   "years": "1993-95"
+  },
+  {
+   "name": "Jared Tomich",
+   "class": 2006,
+   "years": "1994-96"
+  },
+  {
+   "name": "Kerry Weinmaster",
+   "class": 2006,
+   "years": "1976-79"
+  },
+  {
+   "name": "Mike Minter",
+   "class": 2006,
+   "years": "1993-96"
+  },
+  {
+   "name": "Tyrone Williams",
+   "class": 2006,
+   "years": "1993-95"
+  },
+  {
+   "name": "Aaron Graham",
+   "class": 2005,
+   "years": "1992-95"
+  },
+  {
+   "name": "Barron Miles",
+   "class": 2005,
+   "years": "1992-94"
+  },
+  {
+   "name": "Dick Rupert",
+   "class": 2005,
+   "years": "1970-71"
+  },
+  {
+   "name": "Jim Ross",
+   "class": 2005,
+   "years": "1962-76",
+   "role": "Assistant coach"
+  },
+  {
+   "name": "Pat Tyrance",
+   "class": 2005,
+   "years": "1988-90"
+  },
+  {
+   "name": "Scott Strasburger",
+   "class": 2005,
+   "years": "1982-84"
+  },
+  {
+   "name": "Ted Connor",
+   "class": 2005,
+   "years": "1952-53"
+  },
+  {
+   "name": "Travis Hill",
+   "class": 2005,
+   "years": "1989-92"
+  },
+  {
+   "name": "Brenden Stai",
+   "class": 2004,
+   "years": "1991-94"
+  },
+  {
+   "name": "Calvin Jones",
+   "class": 2004,
+   "years": "1991-93"
+  },
+  {
+   "name": "Ed Husmann",
+   "class": 2004,
+   "years": "1950-52"
+  },
+  {
+   "name": "Ed Stewart",
+   "class": 2004,
+   "years": "1991-94"
+  },
+  {
+   "name": "Jeff Smith",
+   "class": 2004,
+   "years": "1982-84"
+  },
+  {
+   "name": "Jim Pillen",
+   "class": 2004,
+   "years": "1976-78"
+  },
+  {
+   "name": "Jon Bostick",
+   "class": 2004,
+   "years": "1989-91"
+  },
+  {
+   "name": "Keith Jones",
+   "class": 2004,
+   "years": "1984-87"
+  },
+  {
+   "name": "Mike Knox",
+   "class": 2004,
+   "years": "1981-85"
+  },
+  {
+   "name": "Bill Lewis",
+   "class": 2003,
+   "years": "1983-85"
+  },
+  {
+   "name": "Clete Pillen",
+   "class": 2003,
+   "years": "1974-76"
+  },
+  {
+   "name": "Ernest Kroger",
+   "class": 2003,
+   "years": "1907-08"
+  },
+  {
+   "name": "Harry Grimminger",
+   "class": 2003,
+   "years": "1982-84"
+  },
+  {
+   "name": "Jamie Williams",
+   "class": 2003,
+   "years": "1979-82"
+  },
+  {
+   "name": "Marvin Crenshaw",
+   "class": 2003,
+   "years": "1972-74"
+  },
+  {
+   "name": "Mike Croel",
+   "class": 2003,
+   "years": "1987-90"
+  },
+  {
+   "name": "Rod Horn",
+   "class": 2003,
+   "years": "1977-79"
+  },
+  {
+   "name": "Tom Davis",
+   "class": 2003,
+   "years": "1975-77"
+  },
+  {
+   "name": "Bill Glassford",
+   "class": 2002,
+   "years": "1949-55",
+   "role": "Coach"
+  },
+  {
+   "name": "Doug Glaser",
+   "class": 2002,
+   "years": "1987-89"
+  },
+  {
+   "name": "Eric Crouch",
+   "class": 2002,
+   "years": "1998-2001"
+  },
+  {
+   "name": "Jim McCord",
+   "class": 2002,
+   "years": "1965-67"
+  },
+  {
+   "name": "John McCormick",
+   "class": 2002,
+   "years": "1985-87"
+  },
+  {
+   "name": "John Westover",
+   "class": 2002,
+   "years": "1897, 1899-1902"
+  },
+  {
+   "name": "Kelvin Clark",
+   "class": 2002,
+   "years": "1976-78"
+  },
+  {
+   "name": "Lynn Senkbeil",
+   "class": 2002,
+   "years": "1964-66"
+  },
+  {
+   "name": "Randy Schleusener",
+   "class": 2002,
+   "years": "1978-80"
+  },
+  {
+   "name": "Tim H. Corey",
+   "class": 2002,
+   "years": "1914-16"
+  },
+  {
+   "name": "Bill Schabacker",
+   "class": 2001,
+   "years": "1951-53"
+  },
+  {
+   "name": "Dave Walline",
+   "class": 2001,
+   "years": "1968-70"
+  },
+  {
+   "name": "Dennis Richnafsky",
+   "class": 2001,
+   "years": "1965-67"
+  },
+  {
+   "name": "Dominic Raiola",
+   "class": 2001,
+   "years": "1998-2000"
+  },
+  {
+   "name": "Gerald Moore",
+   "class": 2001,
+   "years": "1945-46-48"
+  },
+  {
+   "name": "Jimmy Williams",
+   "class": 2001,
+   "years": "1979-81"
+  },
+  {
+   "name": "John Parrella",
+   "class": 2001,
+   "years": ""
+  },
+  {
+   "name": "Kenny Walker",
+   "class": 2001,
+   "years": "1989-90"
+  },
+  {
+   "name": "Marion Broadstone",
+   "class": 2001,
+   "years": "1928-30"
+  },
+  {
+   "name": "Wonder Monds",
+   "class": 2001,
+   "years": "1973-75"
+  },
+  {
+   "name": "Don Olson",
+   "class": 2000,
+   "years": "1957-59"
+  },
+  {
+   "name": "Gerry Gdowski",
+   "class": 2000,
+   "years": "1987-89"
+  },
+  {
+   "name": "Jake Young",
+   "class": 2000,
+   "years": "1986-89"
+  },
+  {
+   "name": "Jon McWilliams",
+   "class": 2000,
+   "years": "1953-55"
+  },
+  {
+   "name": "Kaye Carstens",
+   "class": 2000,
+   "years": "1964-66"
+  },
+  {
+   "name": "Robert Russell",
+   "class": 2000,
+   "years": "1920-22"
+  },
+  {
+   "name": "Ted Vactor",
+   "class": 2000,
+   "years": "1963-65"
+  },
+  {
+   "name": "Don Glantz",
+   "class": 1999,
+   "years": "1953-54"
+  },
+  {
+   "name": "Jarvis Redwine",
+   "class": 1999,
+   "years": "1979-80"
+  },
+  {
+   "name": "Jim McFarland",
+   "class": 1999,
+   "years": "1968-69"
+  },
+  {
+   "name": "Lyle Sittler",
+   "class": 1999,
+   "years": "1962-64"
+  },
+  {
+   "name": "Owen Frank",
+   "class": 1999,
+   "years": "1909-11"
+  },
+  {
+   "name": "Steve Taylor",
+   "class": 1999,
+   "years": "1985-88"
+  },
+  {
+   "name": "Tyrone Robertson",
+   "class": 1999,
+   "years": "1960-61-62"
+  },
+  {
+   "name": "Aaron Taylor",
+   "class": 1998,
+   "years": "1994-97"
+  },
+  {
+   "name": "Dale Bradley",
+   "class": 1998,
+   "years": "1940-42"
+  },
+  {
+   "name": "Derrie Nelson",
+   "class": 1998,
+   "years": "1978-80"
+  },
+  {
+   "name": "Dr. Tom Osborne",
+   "class": 1998,
+   "years": "1973-97",
+   "role": "Coach"
+  },
+  {
+   "name": "Grant Wistrom",
+   "class": 1998,
+   "years": "1994-97"
+  },
+  {
+   "name": "John Sedlacek",
+   "class": 1998,
+   "years": "1945-48"
+  },
+  {
+   "name": "Joy Berquist",
+   "class": 1998,
+   "years": "1921-23"
+  },
+  {
+   "name": "Mike Kennedy",
+   "class": 1998,
+   "years": "1963-65"
+  },
+  {
+   "name": "Neil Smith",
+   "class": 1998,
+   "years": "1985-87"
+  },
+  {
+   "name": "Paul Rogers",
+   "class": 1998,
+   "years": "1968-70"
+  },
+  {
+   "name": "Bill Kosch",
+   "class": 1997,
+   "years": "1969-71"
+  },
+  {
+   "name": "Frank Simon",
+   "class": 1997,
+   "years": "1949-51"
+  },
+  {
+   "name": "Jerry Brown",
+   "class": 1997,
+   "years": "1955-57"
+  },
+  {
+   "name": "Jim Anderson",
+   "class": 1997,
+   "years": "1969-71"
+  },
+  {
+   "name": "Johnny Howell",
+   "class": 1997,
+   "years": "1935-37"
+  },
+  {
+   "name": "Marc Munford",
+   "class": 1997,
+   "years": "1984-86"
+  },
+  {
+   "name": "Tom Ruud",
+   "class": 1997,
+   "years": "1972-74"
+  },
+  {
+   "name": "Bill Jennings",
+   "class": 1996,
+   "years": "1957-61",
+   "role": "Coach"
+  },
+  {
+   "name": "Bob Smith",
+   "class": 1996,
+   "years": "1951-54"
+  },
+  {
+   "name": "Bret Clark",
+   "class": 1996,
+   "years": "1982-84"
+  },
+  {
+   "name": "Dave Butterfield",
+   "class": 1996,
+   "years": "1974-76"
+  },
+  {
+   "name": "Jack Dodd",
+   "class": 1996,
+   "years": "1935, 37-38"
+  },
+  {
+   "name": "Jim Skow",
+   "class": 1996,
+   "years": "1983-85"
+  },
+  {
+   "name": "Ken Geddes",
+   "class": 1996,
+   "years": "1967-69"
+  },
+  {
+   "name": "Lloyd Voss",
+   "class": 1996,
+   "years": "1961-63"
+  },
+  {
+   "name": "Tommie Frazier",
+   "class": 1996,
+   "years": "1992-95"
+  },
+  {
+   "name": "William Mueller",
+   "class": 1996,
+   "years": "1947-50"
+  },
+  {
+   "name": "Dick Davis",
+   "class": 1995,
+   "years": "1966-68"
+  },
+  {
+   "name": "Guy Ingles",
+   "class": 1995,
+   "years": "1968-70"
+  },
+  {
+   "name": "I.M. Hipp",
+   "class": 1995,
+   "years": "1977-79"
+  },
+  {
+   "name": "LaVerne Allers",
+   "class": 1995,
+   "years": "1964-66"
+  },
+  {
+   "name": "Richard Hutton",
+   "class": 1995,
+   "years": "1946-48"
+  },
+  {
+   "name": "Robert Mullen",
+   "class": 1995,
+   "years": "1948-51"
+  },
+  {
+   "name": "Ron Douglas",
+   "class": 1995,
+   "years": "1934-36"
+  },
+  {
+   "name": "Steve Damkroger",
+   "class": 1995,
+   "years": "1979-82"
+  },
+  {
+   "name": "Zach Wiegert",
+   "class": 1995,
+   "years": "1991-94"
+  },
+  {
+   "name": "Broderick Thomas",
+   "class": 1994,
+   "years": "1985-88"
+  },
+  {
+   "name": "Charles Duda",
+   "class": 1994,
+   "years": "1941-42"
+  },
+  {
+   "name": "Daryl White",
+   "class": 1994,
+   "years": "1971-73"
+  },
+  {
+   "name": "E.E. Mockett",
+   "class": 1994,
+   "years": "1890-91"
+  },
+  {
+   "name": "Frosty Anderson",
+   "class": 1994,
+   "years": "1971-73"
+  },
+  {
+   "name": "Joe Armstrong",
+   "class": 1994,
+   "years": "1966-68"
+  },
+  {
+   "name": "Lee Penney",
+   "class": 1994,
+   "years": "1931-33"
+  },
+  {
+   "name": "Trev Alberts",
+   "class": 1994,
+   "years": "1990-93"
+  },
+  {
+   "name": "Bob Martin",
+   "class": 1993,
+   "years": "1973-75"
+  },
+  {
+   "name": "Choppy Rhodes",
+   "class": 1993,
+   "years": "1923-25"
+  },
+  {
+   "name": "Don Strasheim",
+   "class": 1993,
+   "years": "1950"
+  },
+  {
+   "name": "Irving Fryar",
+   "class": 1993,
+   "years": "1981-83"
+  },
+  {
+   "name": "Kent McCloughan",
+   "class": 1993,
+   "years": "1962-64"
+  },
+  {
+   "name": "Will Shields",
+   "class": 1993,
+   "years": "1989-92"
+  },
+  {
+   "name": "Fran Nagle",
+   "class": 1992,
+   "years": "1949-50"
+  },
+  {
+   "name": "Frank Solich",
+   "class": 1992,
+   "years": "1963-65"
+  },
+  {
+   "name": "Fred Preston",
+   "class": 1992,
+   "years": "1939-40"
+  },
+  {
+   "name": "Rick Berns",
+   "class": 1992,
+   "years": "1976-78"
+  },
+  {
+   "name": "Tom Rathman",
+   "class": 1992,
+   "years": "1983-85"
+  },
+  {
+   "name": "Clayton Curtis",
+   "class": 1991,
+   "years": "1950-52"
+  },
+  {
+   "name": "Danny Noonan",
+   "class": 1991,
+   "years": "1984-86"
+  },
+  {
+   "name": "Les McDonald",
+   "class": 1991,
+   "years": "1934-36"
+  },
+  {
+   "name": "Tony Davis",
+   "class": 1991,
+   "years": "1973-75"
+  },
+  {
+   "name": "Adolph J. Lewandowski",
+   "class": 1990,
+   "years": "1943-44",
+   "role": "Coach"
+  },
+  {
+   "name": "Andra Franklin",
+   "class": 1990,
+   "years": "1977-80"
+  },
+  {
+   "name": "Dennis Emanuel",
+   "class": 1990,
+   "years": "1951-52"
+  },
+  {
+   "name": "Don Boll",
+   "class": 1990,
+   "years": "1950-52"
+  },
+  {
+   "name": "Joe Blahak",
+   "class": 1990,
+   "years": "1970-72"
+  },
+  {
+   "name": "Joe Orduna",
+   "class": 1990,
+   "years": "1967-68, 1970"
+  },
+  {
+   "name": "Mark Traynowicz",
+   "class": 1990,
+   "years": "1982-84"
+  },
+  {
+   "name": "Ted Doyle",
+   "class": 1990,
+   "years": "1935-37"
+  },
+  {
+   "name": "Arnold Oehlrich",
+   "class": 1989,
+   "years": "1925-27"
+  },
+  {
+   "name": "Bob Churchich",
+   "class": 1989,
+   "years": "1964-66"
+  },
+  {
+   "name": "Bob Newton",
+   "class": 1989,
+   "years": "1969-70"
+  },
+  {
+   "name": "Don Purcell",
+   "class": 1989,
+   "years": "1959-61"
+  },
+  {
+   "name": "Raymond \"Bub\" Weller",
+   "class": 1989,
+   "years": "1920-22"
+  },
+  {
+   "name": "Roger Craig",
+   "class": 1989,
+   "years": "1980-82"
+  },
+  {
+   "name": "Turner Gill",
+   "class": 1989,
+   "years": "1981-83"
+  },
+  {
+   "name": "Willie Greenlaw",
+   "class": 1989,
+   "years": "1955-56"
+  },
+  {
+   "name": "Ernest E. Bearg",
+   "class": 1988,
+   "years": "1925-28",
+   "role": "Coach"
+  },
+  {
+   "name": "John Bordogna",
+   "class": 1988,
+   "years": "1951-53"
+  },
+  {
+   "name": "Junior Miller",
+   "class": 1988,
+   "years": "1977-79"
+  },
+  {
+   "name": "Mike Fultz",
+   "class": 1988,
+   "years": "1974-76"
+  },
+  {
+   "name": "R.B. \"Dick\" Rutherford",
+   "class": 1988,
+   "years": "1913-15"
+  },
+  {
+   "name": "Sam Vacanti",
+   "class": 1988,
+   "years": "1946"
+  },
+  {
+   "name": "Vic Schleich",
+   "class": 1988,
+   "years": "1940-42"
+  },
+  {
+   "name": "Walt Barnes",
+   "class": 1988,
+   "years": "1963-65"
+  },
+  {
+   "name": "Charles Bryant",
+   "class": 1987,
+   "years": "1951-54"
+  },
+  {
+   "name": "Jerry Murtaugh",
+   "class": 1987,
+   "years": "1968-70"
+  },
+  {
+   "name": "LaVerne Torczon",
+   "class": 1987,
+   "years": "1954-56"
+  },
+  {
+   "name": "Larry Kramer",
+   "class": 1987,
+   "years": "1962-64"
+  },
+  {
+   "name": "Leo Scherer",
+   "class": 1987,
+   "years": "1920-22"
+  },
+  {
+   "name": "Rex Fischer",
+   "class": 1987,
+   "years": "1955-56"
+  },
+  {
+   "name": "George Koster",
+   "class": 1986,
+   "years": "1929-31"
+  },
+  {
+   "name": "Hugh Rhea",
+   "class": 1986,
+   "years": "1929-31"
+  },
+  {
+   "name": "Ray Prochaska",
+   "class": 1986,
+   "years": "1938-40"
+  },
+  {
+   "name": "Tony Jeter",
+   "class": 1986,
+   "years": "1963-65"
+  },
+  {
+   "name": "Vike Francis",
+   "class": 1986,
+   "years": "1939-40"
+  },
+  {
+   "name": "Walter \"Butch\" Luther",
+   "class": 1986,
+   "years": "1938-40"
+  },
+  {
+   "name": "Bernie Scherer",
+   "class": 1985,
+   "years": "1933-35"
+  },
+  {
+   "name": "Bill \"Thunder\" Thornton",
+   "class": 1985,
+   "years": "1960-62"
+  },
+  {
+   "name": "Dave Humm",
+   "class": 1985,
+   "years": "1972-74"
+  },
+  {
+   "name": "George Andrews",
+   "class": 1985,
+   "years": "1976-78"
+  },
+  {
+   "name": "Grove Porter",
+   "class": 1985,
+   "years": "1914"
+  },
+  {
+   "name": "Harry Hopp",
+   "class": 1985,
+   "years": "1938-40"
+  },
+  {
+   "name": "Walter C. \"Bummy\" Booth",
+   "class": 1985,
+   "years": "1900-05",
+   "role": "Coach"
+  },
+  {
+   "name": "Willard Witte",
+   "class": 1985,
+   "years": "1927-29"
+  },
+  {
+   "name": "Charlie Toogood",
+   "class": 1984,
+   "years": "1947-50"
+  },
+  {
+   "name": "Clair Sloan",
+   "class": 1984,
+   "years": "1927-29"
+  },
+  {
+   "name": "Dean Steinkuhler",
+   "class": 1984,
+   "years": "1981-83"
+  },
+  {
+   "name": "Ewald O. \"Jumbo\" Stiehm",
+   "class": 1984,
+   "years": "1911-15",
+   "role": "Coach"
+  },
+  {
+   "name": "Frank Meier",
+   "class": 1984,
+   "years": "1932-34"
+  },
+  {
+   "name": "George Abel",
+   "class": 1984,
+   "years": "1939-41"
+  },
+  {
+   "name": "Mike Rozier",
+   "class": 1984,
+   "years": "1981-83"
+  },
+  {
+   "name": "Ray Richards",
+   "class": 1984,
+   "years": "1927-29"
+  },
+  {
+   "name": "Vince Ferragamo",
+   "class": 1984,
+   "years": "1975-76"
+  },
+  {
+   "name": "Bob Mehring",
+   "class": 1983,
+   "years": "1935-37"
+  },
+  {
+   "name": "Dave Rimington",
+   "class": 1983,
+   "years": "1980-83"
+  },
+  {
+   "name": "Herman Rohrig",
+   "class": 1983,
+   "years": "1938-40"
+  },
+  {
+   "name": "Paul Amen",
+   "class": 1983,
+   "years": "1935-37"
+  },
+  {
+   "name": "Willie Harper",
+   "class": 1983,
+   "years": "1970-72"
+  },
+  {
+   "name": "Carl Samuelson",
+   "class": 1982,
+   "years": "1945-47"
+  },
+  {
+   "name": "Freeman White",
+   "class": 1982,
+   "years": "1963-65"
+  },
+  {
+   "name": "Larry Wachholtz",
+   "class": 1982,
+   "years": "1964-66"
+  },
+  {
+   "name": "Roy \"Cowboy\" Petsch",
+   "class": 1982,
+   "years": "1938-40"
+  },
+  {
+   "name": "Ted James",
+   "class": 1982,
+   "years": "1926-28"
+  },
+  {
+   "name": "Ed Schwartzkopf",
+   "class": 1981,
+   "years": "1937-40"
+  },
+  {
+   "name": "Jeff Kinney",
+   "class": 1981,
+   "years": "1969-71"
+  },
+  {
+   "name": "Jerry Minnick",
+   "class": 1981,
+   "years": "1951-53"
+  },
+  {
+   "name": "John Dutton",
+   "class": 1981,
+   "years": "1970-73"
+  },
+  {
+   "name": "Rik Bonness",
+   "class": 1981,
+   "years": "1972-75"
+  },
+  {
+   "name": "Elmer Dohrmann",
+   "class": 1980,
+   "years": "1934-37"
+  },
+  {
+   "name": "Forrest Behm",
+   "class": 1980,
+   "years": "1937-40"
+  },
+  {
+   "name": "Mick Tinglehoff",
+   "class": 1980,
+   "years": "1951-54"
+  },
+  {
+   "name": "Steve Hokuf",
+   "class": 1980,
+   "years": "1929-32"
+  },
+  {
+   "name": "Cletus Fischer",
+   "class": 1979,
+   "years": "1945-48"
+  },
+  {
+   "name": "Daniel McMullen",
+   "class": 1979,
+   "years": "1925-28"
+  },
+  {
+   "name": "Elmer Greenberg",
+   "class": 1979,
+   "years": "1927-30"
+  },
+  {
+   "name": "Larry Jacobson",
+   "class": 1979,
+   "years": "1969-71"
+  },
+  {
+   "name": "Wayne Meylan",
+   "class": 1979,
+   "years": "1965-67"
+  },
+  {
+   "name": "Edward E. \"Blue\" Howell",
+   "class": 1978,
+   "years": "1926-28"
+  },
+  {
+   "name": "Jerry Tagge",
+   "class": 1978,
+   "years": "1969-71"
+  },
+  {
+   "name": "Sylvester V. Shonka",
+   "class": 1978,
+   "years": "1909-11"
+  },
+  {
+   "name": "Bernie Masterson",
+   "class": 1977,
+   "years": "1931-33"
+  },
+  {
+   "name": "Bob Brown",
+   "class": 1977,
+   "years": "1961-63"
+  },
+  {
+   "name": "Dennis Claridge",
+   "class": 1976,
+   "years": "1961-63"
+  },
+  {
+   "name": "Fred Shirey",
+   "class": 1976,
+   "years": "1935-37"
+  },
+  {
+   "name": "Johnny Bender",
+   "class": 1975,
+   "years": "1900-04"
+  },
+  {
+   "name": "Verne Lewellen",
+   "class": 1975,
+   "years": "1921-23"
+  },
+  {
+   "name": "Warren Alfson",
+   "class": 1975,
+   "years": "1938-40"
+  },
+  {
+   "name": "Clarence Swanson",
+   "class": 1974,
+   "years": "1919-22"
+  },
+  {
+   "name": "Dr. George Flippin",
+   "class": 1974,
+   "years": "1891-94"
+  },
+  {
+   "name": "Lawrence Ely",
+   "class": 1974,
+   "years": "1930-32"
+  },
+  {
+   "name": "Pat Fischer",
+   "class": 1974,
+   "years": "1958-60"
+  },
+  {
+   "name": "Glenn Presnell",
+   "class": 1973,
+   "years": "1925-27"
+  },
+  {
+   "name": "Johnny Rodgers",
+   "class": 1973,
+   "years": "1970-72"
+  },
+  {
+   "name": "Rich Glover",
+   "class": 1973,
+   "years": "1970-72"
+  },
+  {
+   "name": "Vic Halligan",
+   "class": 1973,
+   "years": "1912-14"
+  },
+  {
+   "name": "Bobby Reynolds",
+   "class": 1972,
+   "years": "1950-52"
+  },
+  {
+   "name": "Charlie Brock",
+   "class": 1972,
+   "years": "1936-38"
+  },
+  {
+   "name": "Dave Noble",
+   "class": 1972,
+   "years": "1922-24"
+  },
+  {
+   "name": "Lloyd Cardwell",
+   "class": 1972,
+   "years": "1934-36"
+  },
+  {
+   "name": "Roy (Link) Lyman",
+   "class": 1972,
+   "years": "1919-22"
+  },
+  {
+   "name": "Sam Francis",
+   "class": 1972,
+   "years": "1934-36"
+  },
+  {
+   "name": "Tom Novak",
+   "class": 1972,
+   "years": "1946-49"
+  },
+  {
+   "name": "Bob Devaney",
+   "class": 1971,
+   "years": "1962-72",
+   "role": "Coach"
+  },
+  {
+   "name": "Dana X. Bible",
+   "class": 1971,
+   "years": "1929-36",
+   "role": "Coach"
+  },
+  {
+   "name": "Ed Weir",
+   "class": 1971,
+   "years": "1923-25"
+  },
+  {
+   "name": "Edward N. Robinson",
+   "class": 1971,
+   "years": "1896-97",
+   "role": "Coach"
+  },
+  {
+   "name": "Fielding Yost",
+   "class": 1971,
+   "years": "1898",
+   "role": "Coach"
+  },
+  {
+   "name": "Fred Dawson",
+   "class": 1971,
+   "years": "1921-24",
+   "role": "Coach"
+  },
+  {
+   "name": "George Sauer",
+   "class": 1971,
+   "years": "1931-33"
+  },
+  {
+   "name": "Guy Chamberlin",
+   "class": 1971,
+   "years": "1913-15"
+  },
+  {
+   "name": "Lawrence McCeney \"Biff\" Jones",
+   "class": 1971,
+   "years": "1937-41",
+   "role": "Coach"
+  }
+ ]
+}
