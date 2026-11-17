@@ -504,3 +504,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Viewer: show the clean card (background) while the <img> itself is the watermarked copy, moved out of view */
 #v-img.wm,#v-img2.wm{object-position:-100000px 0;background-size:100% 100%;background-repeat:no-repeat}
 .ck-plain{margin:-4px 0 14px;font-size:13.5px}.ck-plain a{color:var(--mu)}.ck-plain a:hover{color:var(--acc)}
+.pl-about{margin:12px 0 6px;max-width:62ch;color:#d5dbe5;line-height:1.6}

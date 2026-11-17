@@ -183,6 +183,8 @@ def media_for(slug):
 def player_page(p, row, info, l, idx, updated):
     folder, tier_page, label, meaning = info
     sport = p.get("sport") or "football"
+    try: extras = (json.load(open(CONFIG)).get("playerExtras") or {}).get(p["slug"]) or {}
+    except (OSError, ValueError): extras = {}
     c = {k: i for i, k in enumerate(l["columns"])}
     get = lambda k: (row[c[k]] if k in c and c[k] < len(row) else "") or ""
     name, year, games, path = p["name"], get("Last Year"), get("NFL Games Played"), get("Career Notes")
@@ -226,6 +228,7 @@ def player_page(p, row, info, l, idx, updated):
 <div class="top"><div>
 <h1>{esc(name)}</h1>
 <p class="lead">{esc(lead)}</p>
+{f'<p>{esc(extras.get("about"))}</p>' if extras.get("about") else ""}
 {f'<section class="why"><h2 style="margin:6px 0 4px;font-size:17px">Why he&#39;s on the {esc(label)} list</h2>{paras(note)}</section>' if note else ""}
 <table class="kv">{"".join(f"<tr><th>{esc(k)}</th><td>{esc(v).replace(chr(10), '<br>')}</td></tr>" for k, v in facts if v)}</table>
 <p class="links">{" ".join(links)}</p>
