@@ -1597,7 +1597,9 @@
   // 1/1: gold glow, light rays and sparkles. Numbered /25 or lower: a soft pulsing glow. Autographs: a faint ink-blue
   // glow. Refractors, Prizms, chrome and foil: a rainbow halo circling the card's edge. The rarest one wins.
   const HOLO = /\b(refractors?|prizms?|chrome|foil|holo(?:foil|graphic)?|x-?fractors?|superfractors?|diffractors?|shimmer|mojo|cracked ice|mirror|atomic|spectrum|sapphire|optic|finest|wave|rainbow|galactic|lava|hyper|disco|scope)\b/i;
-  const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
+  // Dirt relics (the Dirt Relics group, or "Dirt"/"(Dirty" in the name): a dusty brown haze with kicked-up specks.
+  const isDirt = (c) => SECTIONS[c.si]?.groups[c.gi]?.slug === "dirt" || /\bdirt\b|\(dirty\b/i.test(c.name);
+  const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : isDirt(c) ? "dirt" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
   function placeAura() {
     const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
     if (!a.className.match(/\bt-/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
