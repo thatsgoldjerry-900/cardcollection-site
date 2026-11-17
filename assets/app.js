@@ -766,8 +766,8 @@
         ["receiving", "Receiving", ["REC", "YDS", "YPR", "LONG", "TD"]], ["defensive", "Defense", ["TOT", "SOLO", "TFL", "SACKS", "QB HUR", "PD", "TD"]],
         ["interceptions", "Interceptions", ["INT", "YDS", "AVG", "TD"]], ["kickReturns", "Kick returns", ["NO", "YDS", "AVG", "LONG", "TD"]],
         ["puntReturns", "Punt returns", ["NO", "YDS", "AVG", "LONG", "TD"]], ["kicking", "Kicking", ["FGM", "FGA", "PCT", "LONG", "XPM", "XPA", "PTS"]],
-        ["punting", "Punting", ["NO", "YDS", "YPP", "LONG", "IN 20", "TB"]]];
-      const LABEL = { COMPLETIONS: "CMP", "QB HUR": "QBH" };
+        ["punting", "Punting", ["NO", "YDS", "YPP", "LONG", "IN 20", "TB"]], ["scoring", "Scoring", ["TD", "XP1", "XP2", "FG", "TP"]]];
+      const LABEL = { COMPLETIONS: "CMP", "QB HUR": "QBH", XP1: "XP", XP2: "2PT", TP: "PTS" };
       const collegeHTML = college ? CATS.map(([key, title, order]) => {
         const yrs = Object.keys(college).filter((y) => college[y][key]); if (!yrs.length) return "";
         const cols = order.filter((k) => yrs.some((y) => college[y][key][k] !== undefined));
@@ -800,7 +800,9 @@
         </div>
         <div class="pl-grid">
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
-          ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">From CollegeFootballData.com.</p>`
+          ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
+              ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
+              : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
             : `<p class="muted">${!(p && (p.checked || p.wiki)) ? "Stats coming soon." : DEF.test(info.position || "") ? "Defensive stats from this era aren't in my data source yet." : (info.year || info.finalYear) < 2005 ? "Stats from this era are coming later." : "No individual college stats recorded."}</p>`}</section>`}
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
