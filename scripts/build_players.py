@@ -29,6 +29,43 @@ def norm(t):
     return re.sub(r"[^a-z0-9]+", " ", t).strip()
 
 
+# Ian wants the player pages to stay about sports: sentences about legal trouble, crimes (including accusations)
+# or suicide are left out of Wikipedia text, and a death place that is a prison or jail keeps only the date.
+OFF_FIELD = re.compile(r"\b(prison|jail(ed)?|incarcerat\w*|convict(ed|ion|ions)?|sentenced|arrest(ed|s)?|charged with|criminal|"
+                       r"felon(y|ies)?|misdemeanou?r|indict\w*|pleaded (guilty|no contest)|plea deal|guilty|acquitt\w*|"
+                       r"accus(ed|ation|ations)|alleg(ed|ation|ations|edly)|assault\w*|murder\w*|manslaughter|homicide|rape|"
+                       r"sexual(ly)? (assault|abuse|misconduct)|domestic (violence|abuse|assault)|kidnapp\w*|robbery|burglary|"
+                       r"drunk driving|dui|dwi|probation|parole|suicide|hanged|hanging himself|took his own life|killed himself|"
+                       r"custody|stalking|restraining order|trial|legal (trouble|troubles|issues|problems))\b", re.I)
+
+
+def off_field_out(text):
+    """Drop sentences about legal trouble, crimes or suicide from Wikipedia text; keep the rest."""
+    out = []
+    for para in re.split(r"\n\s*\n", text or ""):
+        sents = re.split(r"(?<=[.!?])\s+(?=[A-Z\"“(])", para.strip())
+        keep = [x for x in sents if x and not OFF_FIELD.search(x)]
+        if keep: out.append(" ".join(keep))
+    return "\n\n".join(out)
+
+
+def off_field_facts(sections):
+    """Infobox rows: a value line that mentions prison/jail etc. is dropped (e.g. the place of death), keeping the date."""
+    clean = {}
+    for head, rows in (sections or {}).items():
+        new = []
+        for r in rows:
+            if len(r) == 2 and OFF_FIELD.search(r[1]):
+                v = "\n".join(l for l in r[1].split("\n") if not OFF_FIELD.search(l))
+                if v.strip(): new.append([r[0], v])
+            elif len(r) == 1 and OFF_FIELD.search(r[0]):
+                continue
+            else:
+                new.append(r)
+        clean[head] = new
+    return clean
+
+
 def slugify(t):
     return re.sub(r"[^a-z0-9]+", "-", norm(t)).strip("-")
 
@@ -281,7 +318,8 @@ def main():
                     if art:
                         title, html = art
                         p["wiki"] = {"title": title, "url": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
-                                     "intro": intro_from_html(html), **parse_infobox(html)}
+                                     "intro": off_field_out(intro_from_html(html)), **parse_infobox(html)}
+                        p["wiki"]["sections"] = off_field_facts(p["wiki"].get("sections"))
                         ct = college_tables(html)
                         if ct: p["collegeTables"] = ct
                     else:

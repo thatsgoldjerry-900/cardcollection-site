@@ -222,7 +222,7 @@ def player_page(p, row, info, l, idx, updated):
 </div>
 {f"<h2>College stats</h2>{stats}" if stats else ""}
 {lists_html}
-{f'<h2>Biography</h2>{bio}<p class="mu" style="font-size:13px">From <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
+{f'<h2>Biography</h2>{bio}<p class="mu" style="font-size:13px">Adapted from <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
 <div class="credit"><p><strong>{esc(CREDIT)}.</strong> Part of Ian Badeer&#39;s {esc(label)} list.</p><p class="mu">{esc(QUOTE)}</p></div>"""
     desc = lead + (" " + re.sub(r"\s+", " ", note).strip()[:180] if note else "")
     ld = {"@context": "https://schema.org", "@type": "ProfilePage", "name": f"{name} · {label}", "dateModified": updated, "author": ian(),
