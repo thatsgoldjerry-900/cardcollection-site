@@ -77,6 +77,18 @@ def extract_side_by_side(xlsx_bytes, spec):
         author = (c.author or "").strip()
         if author and t.startswith(author + ":"): t = t[len(author) + 1:]
         t = re.sub(r"^[^\n:]{1,40}:\n", "", t)        # a leading "Name:" line Excel adds to notes
+        # Web addresses in notes are left out (Ian's call); the note text around them stays.
+        url = re.compile(r"(?:https?://|www\.)[^\s)\]>]+", re.I)
+        out = []
+        for line in t.split("\n"):
+            if not url.search(line): out.append(line); continue
+            l = url.sub("", line)
+            l = re.sub(r"[(\[<]\s*[)\]>]", "", l)                 # "()" where the link was
+            l = re.sub(r"\s+([.,;:!?])", r"\1", l).strip()
+            l = re.sub(r"[\s:–—|-]+$", "", l)                      # "Source:" → "Source"
+            if len(l.split()) <= 3 and not re.search(r"[.!?]$", l): continue   # only a label was left
+            out.append(l)
+        t = "\n".join(out)
         return re.sub(r"[ \t]+", " ", re.sub(r"\n{3,}", "\n\n", t)).strip()
     def link_at(ri, ci):
         """The web link on a cell (e.g. a player's name links to their stats page), if any."""
