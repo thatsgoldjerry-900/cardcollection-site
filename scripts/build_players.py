@@ -229,7 +229,10 @@ def college_tables(html):
                 cells = [[text(c).replace("\n", " "), int(c.get("colspan", 1) or 1)] for c in tr.find_all(["th", "td"])]
                 if any(x[0] for x in cells): rows.append(cells)
             has_seasons = any(re.match(r"^(19|20)\d\d", r[0][0]) for r in rows)
-            if len(rows) >= 2 and has_seasons and not re.search(r"recruit", ctx, re.I):
+            # Not a coaching record (e.g. Ray Richards' Pepperdine table): those have Overall/Standing/Bowl columns.
+            head = " ".join(c[0] for c in rows[0]) if rows else ""
+            coaching = re.search(r"coaching", ctx, re.I) or re.search(r"bowl|standing", head, re.I)
+            if len(rows) >= 2 and has_seasons and not coaching and not re.search(r"recruit", ctx, re.I):
                 out.append({"title": (text(t.caption) if t.caption else list(heads.values())[-1]), "rows": rows})
     return out
 
