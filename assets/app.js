@@ -75,6 +75,13 @@
       const [id, rk, name, si, gi, added, backId, backRk] = c;
       const p = parse(name);
       if (backId) p.tags.add("back");
+      // Customs page filters: which kind of custom it is, from the collection it lives in (or "non-sport" in the name).
+      if (p.tags.has("custom")) {
+        const sl = SECTIONS[si].slug;
+        if (/non[- ]?sport/i.test(name + " " + sl)) p.tags.add("nonsport");
+        else if (/^husker-/.test(sl)) p.tags.add("huskers");
+        else if (["royals", "alex-gordon", "jermaine-dye"].includes(sl)) p.tags.add("royals");
+      }
       // Hand corrections from config/site.json "tagFixes", e.g. {"auto": {"add": [card names], "remove": [card names]}}.
       for (const [tag, fix] of Object.entries(json.site.tagFixes || {})) {
         if ((fix.add || []).includes(name)) p.tags.add(tag);
@@ -106,6 +113,8 @@
   }
 
   /* ---------- Shared bits ---------- */
+  // The Customs page has its own filters (all its cards are customs).
+  const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
   const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
   const state = { filters: new Set(), sort: "new", list: [], shown: 0, q: "", where: null };
@@ -451,7 +460,7 @@
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${FILTERS.map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${(slug === "customs" ? CUSTOM_FILTERS.filter(([k]) => base.some((c) => c.tags.has(k))) : FILTERS).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r"><span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
@@ -1021,7 +1030,7 @@
     const key = a === "c" ? "c/" + b : a;
     // Filters and sort come from the address (?f=auto,relic&sort=old), so a filtered view can be shared or reloaded.
     // Moving between groups of the same collection keeps them.
-    const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => FILTERS.some(([x]) => x === k));
+    const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
     if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || "new"; }
     state.where = key;
