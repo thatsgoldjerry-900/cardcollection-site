@@ -296,7 +296,9 @@
           err.textContent = "Please add your name, a valid email address and a message."; err.hidden = false; return;
         }
         const g2 = gform(), fd = new FormData();
-        [["name", "name"], ["email", "email"], ["item", "about"], ["message", "message"]].forEach(([k, n]) => g2.fields[k] && fd.append(g2.fields[k], v(n)));
+        // With no separate card/player question on the Google Form, the card or player goes at the top of the message.
+        const msg = !g2.fields.item && v("about") ? `About: ${v("about")}\n\n${v("message")}` : v("message");
+        [["name", v("name")], ["email", v("email")], ["item", v("about")], ["message", msg]].forEach(([k, val]) => g2.fields[k] && fd.append(g2.fields[k], val));
         f.querySelector("[type=submit]").disabled = true;
         try {
           // Google Forms doesn't let other sites read its reply, so a request that goes through counts as sent.
