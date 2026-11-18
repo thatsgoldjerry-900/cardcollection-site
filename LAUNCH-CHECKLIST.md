@@ -55,10 +55,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner, Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom
   - [ ] Tennessee Titans: Jon Clanton, Mike Erickson
   - [ ] Washington Commanders: Ardell Johnson, Elmer Dohrmann, Jason Schwab, Jerald Foster, Jerry Minnick
-- [ ] **Friday (Nov 20), at home: check whether you have the Kenny Bell Panini Prizm Buccaneers Gold autograph.**
-  It isn't in the scans on the site yet. The site has his 2015 Prizm Rookie Signatures Violet Mosaic (/50) and the 2015 Prizm
-  Collegiate Draft Picks autographs (base, Blue, Camo, Red White and Blue Mojo, Tie Dyed), but no Gold Prizm. If you have it,
-  scan it into Drive; if not, it can go on the Want List.
+- [ ] **Friday (Nov 20), at home: check the Kenny Bell Prizm Gold autograph.** Your inventory lists a Panini Prizm
+  Buccaneers (Rookie Signatures) Gold, but your scan is the 2015 Prizm Collegiate Draft Picks Gold #207 (Huskers uniform).
+  Look at the card itself: if it's the Huskers Gold, fix the inventory line (probably an inventory error). The Huskers Gold
+  scan goes up with your new images; Claude checks it shows on the site after the upload.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
