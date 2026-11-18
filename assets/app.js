@@ -200,9 +200,37 @@
     });
     return changed ? out.join(" ") : null;
   }
+  // Plain-English search: "Gordon autos under /50", "1/1 relics", "Dye rookies 2000s", "Huskers patches before 1990".
+  // Kind words, print runs and years become filters; the other words still have to appear in the card.
+  const KIND_WORDS = [[/^(autos?|autographs?|autographed|signed|signatures?)$/, "auto", "autographs"], [/^(relics?|patch(es)?|memorabilia|swatch(es)?|game-?used)$/, "relic", "relics"],
+    [/^(rookies?|rcs?)$/, "rc", "rookies"], [/^(numbered|serial(ized)?)$/, "numbered", "numbered"], [/^(graded|slabbed|slabs?)$/, "graded", "graded"],
+    [/^(customs?)$/, "custom", "customs"], [/^(1\/1s?|one-of-ones?|oneofones?)$/, "one", "1 of 1"]];
+  const FILLER = new Set("show me my all the a an of with and cards card i have from in for by on any that are is".split(" "));
+  function parseQuery(q) {
+    let t = q.toLowerCase().replace(/[“”]/g, '"').replace(/\bone of (one|1)\b|\b1 of 1\b/g, "1/1");
+    const tests = [], said = [];
+    // Print runs: "under /50", "/25 or less", "numbered to 10 or lower", "less than 100", "below /99"
+    t = t.replace(/\b(?:under|below|less than|lower than|up to|at most)\s*\/?\s*(\d+)\b|\/(\d+)\s*(?:or\s*(?:less|lower|under|below))|(?:numbered|#'?d)\s*(?:to\s*)?\/?(\d+)\s*or\s*(?:less|lower)/g, (m, a, b, c) => {
+      const n = +(a || b || c), under = /under|below|less than|lower than/.test(m); tests.push((x) => x.serial > 0 && (under ? x.serial < n : x.serial <= n)); said.push(under ? `numbered under /${n}` : `numbered /${n} or lower`); return " "; });
+    // Years: "2010s", "1990-1995", "before 1990", "after 2010", "since 2015"
+    t = t.replace(/\b((?:19|20)\d)0'?s\b/g, (m, d) => { const a = +d * 10; tests.push((x) => x.year >= a && x.year <= a + 9); said.push(`${a}s`); return " "; });
+    t = t.replace(/\b((?:19|20)\d{2})\s*(?:-|–|to)\s*((?:19|20)\d{2})\b/g, (m, a, b) => { tests.push((x) => x.year >= +a && x.year <= +b); said.push(`${a}–${b}`); return " "; });
+    t = t.replace(/\b(before|pre|after|since|post)[- ]?((?:19|20)\d{2})\b/g, (m, w, y) => { const before = /before|pre/.test(w);
+      tests.push((x) => x.year < 9999 && (before ? x.year < +y : w === "since" ? x.year >= +y : x.year > +y)); said.push(`${w} ${y}`); return " "; });
+    const words = [];
+    t.split(/\s+/).filter(Boolean).forEach((w) => {
+      const k = KIND_WORDS.find(([re]) => re.test(w));
+      if (k) { tests.push((x) => x.tags.has(k[1])); said.push(k[2]); }
+      else if (/^(19|20)\d{2}$/.test(w)) { tests.push((x) => x.year === +w); said.push(w); }
+      else if (/^(huskers?|cornhuskers?|nebraska)$/.test(w)) { tests.push((x) => /nebraska|husker/.test(x.hay)); said.push("Huskers"); }
+      else if (!FILLER.has(w)) words.push(w);
+    });
+    return { words, tests, said: [...new Set(said)] };
+  }
   function search(list, q) {
-    const words = q.toLowerCase().split(/\s+/).filter(Boolean);
-    return words.length ? list.filter((c) => words.every((w) => c.hay.includes(w))) : list;
+    const { words, tests } = parseQuery(q);
+    if (!words.length && !tests.length) return list;
+    return list.filter((c) => words.every((w) => c.hay.includes(w)) && tests.every((f) => f(c)));
   }
 
   /* ---------- Views ---------- */
@@ -393,6 +421,7 @@
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
+        <a class="stat link" href="#/stats"><b>📊</b><span>All collection stats →</span></a>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
@@ -459,6 +488,7 @@
       <div style="min-width:0">
         <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}</div>
         ${mg}
+        ${slug === "search" && parseQuery(q).said.length ? `<p class="fixnote smart">Showing ${parseQuery(q).words.length ? `<b>${esc(parseQuery(q).words.join(" "))}</b> · ` : ""}${parseQuery(q).said.map((x) => `<span class="sq">${esc(x)}</span>`).join(" ")}</p>` : ""}
         ${fixed ? `<p class="fixnote">Nothing matched “${esc(state.q)}”, so these are results for <b>${esc(fixed)}</b>.</p>` : ""}
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
@@ -805,7 +835,7 @@
   /* ---------- Huskers by NFL Team ---------- */
   // Each NFL Husker's teams come from his Wikipedia career history ("St. Louis Rams (2003)" counts toward today's
   // Rams; "*" marks an offseason or practice-squad stint) and from the teams named in my research notes.
-  let NFLTEAMS = null, TEAMIDX = null;
+  let NFLTEAMS = null, TEAMIDX = null, NFLTEAMS_LIST = null;
   const nflTeamData = () => NFLTEAMS || (NFLTEAMS = fetch("data/nfl-teams.json").then((r) => (r.ok ? r.json() : { teams: [] })).then((d) => d.teams || []).catch(() => []));
   // The year a research note gives for a team: the nearest date after the team's name in that sentence
   // ("Released by the Broncos on 8/24/94", "the Raiders in '92"), else the nearest one before it
@@ -986,14 +1016,64 @@
       state.list = all;
     });
   }
+  /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
+  const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
+    [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
+  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro }) {
+    const NOW = new Date().getFullYear(), spans = [], marks = [];
+    const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
+    // College: Nebraska and any other school, else his final Nebraska season.
+    schools.forEach(([n, y]) => { const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
+    (info.playingCollege || []).forEach(([y, n]) => { const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
+    if (!spans.some((x) => x.neb) && +(info.year || info.finalYear)) marks.push({ y: +(info.year || info.finalYear), label: "Final Nebraska season", kind: "c" });
+    // Pro stops from Wikipedia ("Detroit Lions (2001–2014)", "*" = offseason / practice squad).
+    careerLines.forEach((e) => {
+      const m = e.match(/^(.*?)\s*\(([^)]*)\)\s*(\*?)/); if (!m) return;
+      m[2].split(/,\s*/).forEach((part) => { const v = yrs(part); if (v.length) spans.push({ lane: "p", a: v[0], b: v[v.length - 1], label: m[1].trim(), soft: !!m[3] }); });
+    });
+    const d = String(draft || "").match(/((?:19|20)\d{2})\s*[:/]?\s*(.*)/);
+    if (d) marks.push({ y: +d[1], label: "NFL draft", sub: d[2].replace(/(\d+)(?:st|nd|rd|th) round,?\s*/i, "Rd $1, ").replace(/(\d+)(?:st|nd|rd|th) overall pick/i, "#$1").replace(/,\s*$/, ""), kind: "d" });
+    // Dated moments from my research notes ("Released by the Broncos on 8/24/94"), one per sentence.
+    if (note && TEAMIDX_NICK) {
+      note.split(/(?<=[.!?])\s+|\n+/).forEach((sent) => {
+        const ym = [...sent.matchAll(YEAR_RE)][0]; if (!ym) return;
+        const yv = ym[1] || ym[2] || ym[3], y = yv.length === 4 ? +yv : (+yv <= NOW % 100 ? 2000 : 1900) + +yv;
+        const w = EVENT_WORDS.find(([re]) => re.test(sent)); if (!w) return;
+        const team = (sent.match(TEAMIDX_NICK) || [])[0] || "";
+        marks.push({ y, label: w[1], sub: team, full: sent.trim(), kind: "n" });
+      });
+    }
+    if (hof) marks.push({ y: +hof.class, label: "Nebraska Hall of Fame", kind: "h" });
+    if (pro) marks.push({ y: +pro, label: "Pro Football Hall of Fame", kind: "hp" });
+    if (spans.length + marks.length < 2) return "";
+    const all = [...spans.flatMap((x) => [x.a, x.b]), ...marks.map((x) => x.y)].filter((y) => y > 1850 && y <= NOW + 1);
+    if (!all.length) return "";
+    // Positions are percentages, so a short career fills the width; long careers get a minimum spacing and scroll.
+    const lo = Math.min(...all), hi = Math.max(...all), n = hi - lo + 1, px = (y) => ((y - lo) / n) * 100, step = n > 30 ? 10 : n > 14 ? 5 : n > 8 ? 2 : 1;
+    // Bars that would overlap go on another row.
+    const rowsFor = (items, a, b) => { const ends = []; return items.map((it) => { let r = ends.findIndex((e) => e < a(it)); if (r < 0) r = ends.length; ends[r] = b(it); return r; }); };
+    const bars = (lane) => { const it = spans.filter((x) => x.lane === lane).sort((x, y) => x.a - y.a), rows = rowsFor(it, (x) => x.a, (x) => x.b);
+      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}">${esc(x.label)}</div>`).join("")
+        + `<i class="tl-h" style="height:${(Math.max(-1, ...rows) + 1) * 30}px"></i>`; };
+    const gap = Math.max(2, Math.ceil(n / 6)), ms = marks.slice().sort((x, y) => x.y - y.y), mrows = rowsFor(ms, (x) => x.y, (x) => x.y + gap);
+    const cap = mrows.length ? Math.max(...mrows) + 1 : 0;
+    return `<section class="wide-sec tl-sec"><h2>Career timeline</h2><div class="tl-scroll"><div class="tl" style="min-width:${n * 12 + 60}px">
+      <div class="tl-years">${Array.from({ length: n }, (_, k) => lo + k).filter((y) => y % step === 0 || (y === lo && (Math.ceil(lo / step) * step - lo) * 2 >= step)).map((y) => `<span style="left:${px(y)}%">${y}</span>`).join("")}</div>
+      ${spans.some((x) => x.lane === "c") ? `<div class="tl-lane"><b class="tl-k">College</b><div class="tl-track">${bars("c")}</div></div>` : ""}
+      ${spans.some((x) => x.lane === "p") ? `<div class="tl-lane"><b class="tl-k">Pro</b><div class="tl-track">${bars("p")}</div></div>` : ""}
+      ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}><i></i><span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
+    </div></div><p class="note">From Wikipedia, my research notes and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
+  }
+  let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
   function player(slug) {
     setNav("nfl-huskers");
-    loadHub(() => backText().then((CB) => {
+    loadHub(() => Promise.all([backText(), nflTeamData().then((t) => (NFLTEAMS_LIST = t))]).then(([CB]) => {
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
       const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null, hof = hofFor(info), pro = PROHOF[slug];
+      if (!TEAMIDX_NICK && NFLTEAMS_LIST) TEAMIDX_NICK = new RegExp(`\\b(${NFLTEAMS_LIST.flatMap((t) => t.nick).join("|")})\\b`);
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
@@ -1084,6 +1164,9 @@
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
+        ${football ? careerTimeline({ info: { ...info, playingCollege: (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) }, schools, careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
+            .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
+          draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
         <div class="pl-grid">
 
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
@@ -1194,6 +1277,57 @@
   // A second or third copy of a card ("... 2nd (Sold to ...)") is the same card for rainbows and sets.
   const copyKey = (x) => x.name.toLowerCase().replace(/\s+(?:2nd|3rd|\d+th)\b(?:\s*\([^)]*\))?\s*$/, "").trim();
   let RAINBOWS = null;
+  /* ---------- Collection stats (#/stats) ---------- */
+  function statsPage() {
+    setNav(""); setTitle("Collection stats");
+    const cards = CARDS.filter((c) => !c.photo && SECTIONS[c.si].kind !== "want"), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
+    const bar = (label, n, max, href) => `<li>${href ? `<a href="${href}">` : "<span>"}<b>${esc(label)}</b><i style="--w:${max ? (n / max) * 100 : 0}%"></i><em>${fmt(n)}</em>${href ? "</a>" : "</span>"}</li>`;
+    // By card year
+    const byYear = new Map(); cards.forEach((c) => c.year < 9999 && byYear.set(c.year, (byYear.get(c.year) || 0) + 1));
+    const years = [...byYear.keys()].sort((a, b) => a - b), ymax = Math.max(1, ...byYear.values());
+    const yearCols = years.length ? Array.from({ length: years[years.length - 1] - years[0] + 1 }, (_, k) => years[0] + k)
+      .map((y) => `<a class="st-col" href="#/search/${y}" title="${y}: ${fmt(byYear.get(y) || 0)} cards"><i style="--h:${((byYear.get(y) || 0) / ymax) * 100}%"></i>${y % (years[years.length - 1] - years[0] > 40 ? 20 : 5) === 0 ? `<span>${y}</span>` : ""}</a>`).join("") : "";
+    // What kind of card
+    const has = (t) => cards.filter((c) => c.tags.has(t)).length;
+    const both = cards.filter((c) => c.tags.has("auto") && c.tags.has("relic")).length;
+    const kinds = [["Autographs", has("auto"), "#/search/autos"], ["Relics & patches", has("relic"), "#/search/relics"], ["Autograph + relic", both, "#/search/autos relics"],
+      ["Numbered", has("numbered"), "#/search/numbered"], ["Rookie cards", has("rc"), "#/search/rookies"], ["Customs", has("custom"), "#/customs"], ["Graded", has("graded"), "#/search/graded"]];
+    const kmax = Math.max(...kinds.map((k) => k[1]));
+    // Print runs
+    const tiers = [["1 of 1", (c) => c.one], ["/2 – /5", (c) => !c.one && c.serial && c.serial <= 5], ["/6 – /10", (c) => c.serial > 5 && c.serial <= 10], ["/11 – /25", (c) => c.serial > 10 && c.serial <= 25],
+      ["/26 – /50", (c) => c.serial > 25 && c.serial <= 50], ["/51 – /99", (c) => c.serial > 50 && c.serial <= 99], ["/100 – /250", (c) => c.serial > 99 && c.serial <= 250], ["/251 and up", (c) => c.serial > 250]]
+      .map(([l, f]) => [l, cards.filter(f).length]);
+    const tmax = Math.max(1, ...tiers.map((t) => t[1]));
+    // By collection
+    const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x) && x.kind !== "want").sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
+    // Added per month (last 24 months)
+    const byMonth = new Map(); cards.forEach((c) => c.added && byMonth.set(c.added.slice(0, 7), (byMonth.get(c.added.slice(0, 7)) || 0) + 1));
+    const months = [...byMonth.keys()].sort().slice(-24), mmax = Math.max(1, ...months.map((m) => byMonth.get(m)));
+    const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    // Leaderboards
+    const rarest = cards.filter((c) => c.serial).sort((a, b) => (b.one - a.one) || a.serial - b.serial || a.year - b.year).slice(0, 12);
+    const rb = new Map(); cards.forEach((c) => { const k = rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
+    const rainbows = [...rb.values()].filter((l) => l.length > 2).sort((a, b) => b.length - a.length).slice(0, 10);
+    const players = new Map(); cards.forEach((c) => c.title && players.set(plainTitle(c), (players.get(plainTitle(c)) || 0) + 1));
+    const top = [...players.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10), pmax = Math.max(1, ...top.map((x) => x[1]));
+    $("#app").innerHTML = `<div class="wrap stp">
+      <div class="c-head"><div class="kick">Whole collection</div><h1>Collection stats</h1><p>${fmt(N)} scanned cards, by the numbers. Tap a bar to see those cards.</p></div>
+      <div class="st-tiles"><div><b>${fmt(N)}</b><span>cards</span></div><div><b>${fmt(has("one"))}</b><span>one-of-ones</span></div>
+        <div><b>${fmt(has("auto"))}</b><span>autographs (${pct(has("auto")).toFixed(0)}%)</span></div><div><b>${fmt(players.size)}</b><span>players</span></div>
+        <div><b>${years.length ? years[0] : "–"}</b><span>oldest card year</span></div></div>
+      <section class="st-box"><h2>Cards by year</h2><div class="st-years">${yearCols}</div></section>
+      <div class="st-two">
+        <section class="st-box"><h2>What kind of card</h2><ul class="st-bars">${kinds.map(([l, n, h]) => bar(l, n, kmax, h)).join("")}</ul></section>
+        <section class="st-box"><h2>Print runs</h2><ul class="st-bars">${tiers.map(([l, n]) => bar(l, n, tmax)).join("")}</ul></section>
+        <section class="st-box"><h2>By collection</h2><ul class="st-bars">${secs.map(([x, n]) => bar(x.title, n, smax, "#/c/" + x.slug)).join("")}</ul></section>
+        <section class="st-box"><h2>Most cards of one player</h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent(n))).join("")}</ul></section>
+      </div>
+      <section class="st-box"><h2>Cards added, month by month</h2><div class="st-years months">${months.map((m) => `<span class="st-col" title="${MON[+m.slice(5) - 1]} ${m.slice(0, 4)}: ${fmt(byMonth.get(m))} cards"><i style="--h:${(byMonth.get(m) / mmax) * 100}%"></i><span>${m.slice(5) === "01" ? "Jan ’" + m.slice(2, 4) : ""}</span></span>`).join("")}</div></section>
+      <section class="st-box"><h2>Rarest cards</h2><div class="grid small">${rarest.map((c) => cardHTML(c)).join("")}</div></section>
+      <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions</em></a></li>`).join("")}</ol></section>
+    </div>`;
+    state.list = rarest;
+  }
   function rainbowKey(c) {
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m || !c.title) return null;
     // Autographed and relic versions are their own rainbows (same card number, different card).
@@ -1391,6 +1525,7 @@
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
     else if (a === "media") media();
+    else if (a === "stats") statsPage();
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
     else if (a === "letters") lettersPage(b);
