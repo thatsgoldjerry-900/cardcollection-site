@@ -59,6 +59,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   Buccaneers (Rookie Signatures) Gold, but your scan is the 2015 Prizm Collegiate Draft Picks Gold #207 (Huskers uniform).
   Look at the card itself: if it's the Huskers Gold, fix the inventory line (probably an inventory error). The Huskers Gold
   scan goes up with your new images; Claude checks it shows on the site after the upload.
+- [ ] **Find out which 2015 Upper Deck Inscriptions Kenny Bell you sold.** The site shows two as still in your collection:
+  the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
+  and mark the sold one "Sold" in its file name and inventory.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
