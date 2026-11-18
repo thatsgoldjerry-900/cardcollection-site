@@ -1097,8 +1097,11 @@
       const debut = Object.entries(sec).find(([k]) => /debut$/i.test(k));
       // The College line can list several schools, e.g. "LSU (2019–2021)Nebraska (2022)".
       const schools = [...((pick("College") || [])[1] || "").matchAll(/([^()\n]+?)\s*\(([^)]*)\)/g)].map((m) => [m[1].trim(), m[2].trim()]);
-      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", info.year || info.finalYear],
-        ["Nebraska years", (schools.find(([n]) => /nebraska/i.test(n)) || [])[1]],
+      // Nebraska years: Wikipedia's range when its last year agrees with my final season; otherwise (or with no range) my final season only.
+      const myFinal = info.year || info.finalYear, wikiNeb = (schools.find(([n]) => /nebraska/i.test(n)) || [])[1] || "";
+      const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
+      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", useWiki ? "" : myFinal],
+        ["Nebraska years", useWiki ? wikiNeb : ""],
         ["Also played at", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
         [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
@@ -1164,7 +1167,8 @@
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
-        ${football ? careerTimeline({ info: { ...info, playingCollege: (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) }, schools, careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
+        ${football ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
+          schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
           draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
         <div class="pl-grid">
