@@ -804,3 +804,9 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-leaf.to-right{left:16px;width:calc(50% - 16px)}
 .b-leaf.single{left:58px;width:calc(100% - 74px)}
 .b-leaf .b-page{background:linear-gradient(160deg,#fbfcfd,#e9edf1 45%,#f1f4f6)}
+/* Logos on the home page's Royals / Husker / Collectors boxes (Wikipedia logo files; TCDb as a small badge) */
+.go-card{position:relative}
+.go-logos{display:flex;gap:8px;align-items:center;margin:0 0 8px}
+.go-logo{height:38px;width:auto;max-width:60px;object-fit:contain}
+.tcdb-badge{display:grid;place-items:center;height:30px;padding:0 7px;border-radius:6px;background:#c8501e;color:#fff;font:800 13px/1 var(--f-d,inherit);letter-spacing:.02em;width:auto}
+@media (max-width:700px){.go-logo{height:32px}.tcdb-badge{height:26px}}
