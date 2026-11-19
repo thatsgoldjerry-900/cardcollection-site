@@ -775,33 +775,29 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-spread:not(.two){padding-left:58px}
 .b-spread.two::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:40px;transform:translateX(-50%);
   background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 40%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.10) 60%,rgba(0,0,0,0))}
-.b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:.7%;padding:2% 2% 4% 7%;
+.b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:.7%;padding:2% 2% 4% 7.5%;
   width:min(calc(100vw - 24px - 74px),calc((100dvh - 110px - 32px) * .74));aspect-ratio:.74;border-radius:3px;
   background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(228,232,237,.55) 45%,rgba(240,243,246,.7));
   box-shadow:0 1px 4px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.85)}
-.b-spread.two .b-page{width:min(calc(50vw - 24px - 16px),calc((100dvh - 110px - 32px) * .74));padding:2% 2% 4% 7%}
-.b-spread.two .b-page:first-child{padding:2% 7% 4% 2%}
-/* The punched strip on the ring side, with its three holes */
-.b-page::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6%;border-right:1px solid rgba(150,160,170,.35);
-  background:radial-gradient(circle at 50% 16.7%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%),radial-gradient(circle at 50% 50%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%),
-    radial-gradient(circle at 50% 83.3%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%);background-repeat:no-repeat}
+.b-spread.two{column-gap:34px}
+.b-spread.two .b-page{width:min(calc(50vw - 24px - 16px - 17px),calc((100dvh - 110px - 32px) * .74));padding:2% 2% 4% 7.5%}
+.b-spread.two .b-page:first-child{padding:2% 7.5% 4% 2%}
+/* The punched strip on the ring side; the three holes are real elements (.b-hole) so the rings can find them */
+.b-page::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6.5%;border-right:1px solid rgba(150,160,170,.35);background:linear-gradient(90deg,rgba(255,255,255,.35),rgba(255,255,255,.1))}
 .b-spread.two .b-page:first-child::before{left:auto;right:0;border-right:0;border-left:1px solid rgba(150,160,170,.35)}
+.b-hole{position:absolute;left:3.3%;width:min(17px,3.6%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,#5d5a55,#8d8a84 70%,#a9a69f);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 0 2px rgba(255,255,255,.7),0 0 0 3px rgba(140,150,160,.45)}
+.b-spread.two .b-page:first-child .b-hole{left:auto;right:3.3%;transform:translate(50%,-50%)}
+.b-leaf .b-hole{display:none}
 .b-pk{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;min-height:0;padding:3%;border:0;border-radius:2px;cursor:pointer;
   background:rgba(255,255,255,.28);box-shadow:inset 0 0 0 1px rgba(150,160,172,.5),inset 0 7px 6px -6px rgba(255,255,255,.95)}
 .b-pk img{max-width:100%;max-height:100%;object-fit:contain;border-radius:2px;opacity:0;transition:opacity .2s;box-shadow:0 1px 2px rgba(0,0,0,.28)}
 .b-pk img.ok{opacity:1}
 .b-pk.empty,.b-pk.need{cursor:default}
 .b-num{color:#9aa0a6}
-/* Steel ring mechanism: a brushed plate with three rings */
-.b-rings{position:absolute;top:16px;bottom:16px;left:50%;width:70px;transform:translateX(-50%);pointer-events:none;z-index:2}
-.b-rings.left{left:6px;transform:none;width:84px}
-.b-rings .plate{position:absolute;top:3%;bottom:3%;left:50%;width:20px;transform:translateX(-50%);border-radius:10px;
-  background:linear-gradient(90deg,#6d737a,#cfd4d9 22%,#f7f9fa 40%,#b3b9bf 62%,#80868d 80%,#5b6066);box-shadow:0 2px 6px rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.25)}
-.b-rings.left .plate{left:22px}
-.b-rings svg{position:absolute;left:0;width:100%;height:38px;margin-top:-19px;overflow:visible;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
 .b-leaf{top:16px;bottom:16px}
-.b-leaf.to-left{width:calc(50% - 16px)}
-.b-leaf.to-right{left:16px;width:calc(50% - 16px)}
+.b-leaf.to-left{left:calc(50% + 17px);width:calc(50% - 33px)}
+.b-leaf.to-right{left:16px;width:calc(50% - 33px)}
 .b-leaf.single{left:58px;width:calc(100% - 74px)}
 .b-leaf .b-page{background:linear-gradient(160deg,#fbfcfd,#e9edf1 45%,#f1f4f6)}
 /* Logos on the home page's Royals / Husker / Collectors boxes (Wikipedia logo files; TCDb as a small badge) */
@@ -810,3 +806,5 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .go-logo{height:38px;width:auto;max-width:60px;object-fit:contain}
 .tcdb-badge{display:grid;place-items:center;height:30px;padding:0 7px;border-radius:6px;background:#c8501e;color:#fff;font:800 13px/1 var(--f-d,inherit);letter-spacing:.02em;width:auto}
 @media (max-width:700px){.go-logo{height:32px}.tcdb-badge{height:26px}}
+.b-mech{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:visible}
+.b-spread.flipping .b-mech{z-index:2}.b-spread.flipping .b-leaf{z-index:3}
