@@ -1342,13 +1342,17 @@
     setTimeout(go, 50);
   }
   // Page turns: the page lifts at the spine and flips over in 3D, showing the next page on its back (a real binder).
-  let FLIPPING = false;
-  function turn(d) {
+  let FLIPPING = false, QUEUED = 0;
+  async function turn(d) {
+    if (FLIPPING) { QUEUED = d; return; }   // a tap during a turn happens right after it, instead of being dropped
     const pages = Math.ceil(BINDER.items.length / 9), n = perView(), k = BINDER.k + d * n;
-    if (k < 0 || k >= pages || FLIPPING) return;
+    if (k < 0 || k >= pages) return;
+    FLIPPING = true;
+    await preloadPages([k, k + 1].filter((p) => p < pages));
+    if ($("#binder").hidden) { FLIPPING = false; return; }
     const old = BINDER.k; BINDER.k = k;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return drawBinder();
-    FLIPPING = true; binderAddress();
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { FLIPPING = false; return drawBinder(); }
+    binderAddress();
     const P = (p) => pageHTML(p, pages), stage = $("#b-stage");
     let under, leaf;
     if (n === 2) {
@@ -1367,15 +1371,26 @@
     stage.innerHTML = `<div class="b-spread flipping${n === 2 ? " two" : ""}">${under}${leaf}</div>`;
     placeRings();
     const lf = stage.querySelector(".b-leaf");
-    const done = () => { FLIPPING = false; drawBinder(); };
-    lf.addEventListener("animationend", done, { once: true });
+    const done = () => { if (!FLIPPING) return; FLIPPING = false; drawBinder(); const q = QUEUED; QUEUED = 0; if (q) turn(q); };
+    lf.addEventListener("animationend", (e) => { if (e.target === lf) done(); });
     setTimeout(() => FLIPPING && done(), 1400);   // safety net
     updateBinderBar(pages, n);
   }
+  // Binder images are loaded and decoded before a page is shown, and remembered (with their shape), so turning
+  // a page never shows empty pockets or images popping in.
+  const BIMG = new Map();
+  window.__bimg = (el) => { BIMG.set(el.getAttribute("src"), [el.naturalWidth, el.naturalHeight]); if (el.naturalWidth > el.naturalHeight * 1.05) el.classList.add("land"); el.classList.add("ok"); };
+  const pocketURL = (x) => (x && !x.empty ? img(x.id, x.rk, 400) : "");
+  function preloadPages(ps) {
+    const urls = ps.flatMap((p) => BINDER.items.slice(p * 9, p * 9 + 9).map(pocketURL)).filter((u) => u && !BIMG.has(u));
+    const one = (u) => new Promise((ok) => { const im = new Image(); im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { BIMG.set(u, [im.naturalWidth, im.naturalHeight]); ok(); }); }; im.onerror = ok; im.src = u; });
+    return Promise.race([Promise.all(urls.map(one)), new Promise((ok) => setTimeout(ok, 700))]);
+  }
   function pocketHTML(x, i) {
-    return !x ? `<div class="b-pk empty"></div>`
-      : x.empty ? `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`
-      : `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" src="${img(x.id, x.rk, 400)}" onload="if (this.naturalWidth > this.naturalHeight * 1.05) this.classList.add('land'); this.classList.add('ok')"></button>`;
+    if (!x) return `<div class="b-pk empty"></div>`;
+    if (x.empty) return `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`;
+    const u = pocketURL(x), m = BIMG.get(u), cls = m ? `ok${m[0] > m[1] * 1.05 ? " land" : ""}` : "";
+    return `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" decoding="sync" src="${u}"${cls ? ` class="${cls}"` : ` onload="__bimg(this)"`}></button>`;
   }
   const HOLES = [17, 50, 83];
   const pageHTML = (p, pages) => p < 0 || p >= pages ? "" : `<div class="b-page${p % 2 ? " right" : ""}">${Array.from({ length: 9 }, (_, j) => pocketHTML(BINDER.items[p * 9 + j], p * 9 + j)).join("")}<span class="b-num">${p + 1}</span>${HOLES.map((t) => `<i class="b-hole" style="top:${t}%"></i>`).join("")}</div>`;
@@ -1394,8 +1409,8 @@
     let svg = `<svg class="b-mech" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs>
       <linearGradient id="bm-plate" x1="0" x2="1"><stop offset="0" stop-color="#5d636a"/><stop offset=".18" stop-color="#aeb4ba"/><stop offset=".42" stop-color="#eef1f3"/><stop offset=".55" stop-color="#c9ced3"/><stop offset=".8" stop-color="#868c93"/><stop offset="1" stop-color="#53585e"/></linearGradient>
       <linearGradient id="bm-ring" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7c8289"/><stop offset=".22" stop-color="#f4f6f7"/><stop offset=".42" stop-color="#d3d7db"/><stop offset=".7" stop-color="#7f858c"/><stop offset="1" stop-color="#4b5056"/></linearGradient>
-      <filter id="bm-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="${t * 0.45}"/></filter></defs>
-      <rect x="${plateX - plateW / 2 + 2}" y="${top + 3}" width="${plateW}" height="${bot - top}" rx="${plateW / 2}" fill="rgba(0,0,0,.35)" filter="url(#bm-blur)"/>
+</defs>
+      <rect x="${plateX - plateW / 2 + 2}" y="${top + 3}" width="${plateW}" height="${bot - top}" rx="${plateW / 2}" fill="rgba(0,0,0,.22)"/>
       <rect x="${plateX - plateW / 2}" y="${top}" width="${plateW}" height="${bot - top}" rx="${plateW / 2}" fill="url(#bm-plate)" stroke="rgba(0,0,0,.35)" stroke-width=".8"/>
       ${[top + plateW * 0.75, bot - plateW * 0.75].map((y) => `<circle cx="${plateX}" cy="${y}" r="${plateW * 0.18}" fill="#8b9197" stroke="#4d5258" stroke-width=".8"/><circle cx="${plateX - plateW * 0.05}" cy="${y - plateW * 0.05}" r="${plateW * 0.07}" fill="#f2f4f5"/>`).join("")}`;
     HOLES.forEach((_, k) => {
@@ -1403,7 +1418,7 @@
       const xb = two ? hole(pages[1], k)[0] : hole(pages[0], k)[0];
       // A ring seen from above: a round steel bar from hole to hole (from the plate to the hole with one page), its
       // shadow on the pages, and a bright line along the top where the light catches it.
-      svg += `<rect x="${xa - t * 0.2}" y="${y - t / 2 + t * 0.55}" width="${xb - xa + t * 0.4}" height="${t}" rx="${t / 2}" fill="rgba(0,0,0,.45)" filter="url(#bm-blur)"/>
+      svg += `<rect x="${xa - t * 0.2}" y="${y - t / 2 + t * 0.55}" width="${xb - xa + t * 0.4}" height="${t}" rx="${t / 2}" fill="rgba(0,0,0,.25)"/>
         <rect x="${xa - t * 0.15}" y="${y - t / 2}" width="${xb - xa + t * 0.3}" height="${t}" rx="${t / 2}" fill="url(#bm-ring)" stroke="rgba(0,0,0,.4)" stroke-width=".7"/>
         <rect x="${xa + t * 0.3}" y="${y - t * 0.28}" width="${Math.max(0, xb - xa - t * 0.6)}" height="${t * 0.14}" rx="${t * 0.07}" fill="rgba(255,255,255,.85)"/>`;
     });
@@ -1423,6 +1438,7 @@
     binderAddress();
     // The D-ring mechanism is drawn after layout (placeRings), from where the holes are.
     $("#b-stage").innerHTML = `<div class="b-spread${n === 2 ? " two" : ""}">${pageHTML(BINDER.k, pages)}${n === 2 ? pageHTML(BINDER.k + 1, pages) : ""}</div>`;
+    setTimeout(() => preloadPages([BINDER.k + n, BINDER.k + n + 1, BINDER.k - n, BINDER.k - n + 1].filter((p) => p >= 0 && p < pages)), 300);
     requestAnimationFrame(placeRings);
     updateBinderBar(pages, n);
   }

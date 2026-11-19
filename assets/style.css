@@ -821,3 +821,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-need{border-color:rgba(255,255,255,.5);color:rgba(255,255,255,.75)}
 .b-leaf .b-page{background:linear-gradient(160deg,#8d9298,#757a80 45%,#82878d)}
 .b-backside{background:linear-gradient(180deg,#868b91,#6f747a)!important}
+/* Smoother page turns: the turning page gets its own layer; cached images show at once (no fade) */
+.b-leaf{will-change:transform}
+.b-pk img.ok{transition:none}
+.b-spread{isolation:isolate}
