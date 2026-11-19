@@ -377,7 +377,7 @@
       <div class="go-card"><h3>Royals fans</h3><p>Check out the Gordon and Dye Super Collections, or the Kansas City Royals Team Collection.</p>
         <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
       <div class="go-card"><h3>Husker fans</h3><p>Dig into the history of NFL Huskers, check out the autographs, and see an epic Husker card collection.</p>
-        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football cards")}</div></div>
+        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football Cards and Autos")}</div></div>
       <div class="go-card"><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, and the cards I'm still hunting.</p>
         <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
       ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
