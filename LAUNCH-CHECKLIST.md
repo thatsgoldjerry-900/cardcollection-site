@@ -63,8 +63,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
   and mark the sold one "Sold" in its file name and inventory.
 - [ ] **TCDb player IDs for the TCDb buttons on player pages.** Football (453 Huskers) and baseball (45) are done,
-  from your saved TCDb Top Names pages. Still to do: your **basketball** Top Names pages (Save Page As, HTML only).
-  Buddy Hunter wasn't in your baseball Top Names, so he has no TCDb buttons yet. The football Mike Anderson has no TCDb cards (no button, as intended); the baseball
+  from your saved TCDb Top Names pages. Still to do: your **basketball** Top Names pages (Save Page As, HTML only). The football Mike Anderson has no TCDb cards (no button, as intended); the baseball
   Mike Anderson gets synced with the baseball pages. Every player with an ID gets both buttons, including "View … cards for trade" (decided: TCDb can't be
   read live, so it shows on every page).
 
