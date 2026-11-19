@@ -1546,6 +1546,14 @@
     state.list = shown;
     state.binderItems = L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }]));
   }
+  // Rainbow pages: a soft glow of each parallel's color behind its card (around it, never on the scan).
+  const PAR_COLORS = [[/superfractor|rainbow|tie[- ]?dye|mojo|prismatic|kaleidoscope|disco|camo/i, "conic-gradient(from 0deg,#ff5f6d,#ffc371,#5ee7a0,#5aa9ff,#b07cff,#ff5f6d)"],
+    [/printing plates?\b.*\bcyan|\bcyan\b/i, "#22c4e0"], [/\bmagenta\b/i, "#d6339a"], [/printing plates?\b.*\byellow|\byellow\b/i, "#f2d33a"],
+    [/\bgold(en)?\b/i, "#e0b13a"], [/\borange\b/i, "#f28c28"], [/\bruby\b/i, "#c4123c"], [/\bred\b/i, "#e0453a"], [/\bpink\b/i, "#f06aa8"],
+    [/\bsapphire\b/i, "#2a5fd6"], [/\b(light|sky) blue\b|\baqua\b|\bteal\b/i, "#3cc8d8"], [/\bblue\b/i, "#3b74e0"], [/\bemerald\b|\bgreen\b/i, "#2ea85a"],
+    [/\bpurple\b|\bviolet\b/i, "#9a62e0"], [/\bbronze\b|\bcopper\b/i, "#c07a3c"], [/\bplatinum\b/i, "#dfe3ea"], [/\bblack\b/i, "#5d6470"],
+    [/\bwhite\b/i, "#eef1f5"], [/\bsilver\b|\bchrome\b|refractor|prizm|holo|foil/i, "#c3cad4"]];
+  const parColor = (c) => { const t = (c.par || "") + " " + c.name; const hit = PAR_COLORS.find(([re]) => re.test(t)); return hit ? hit[1] : ""; };
   function rainbow(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
     const all = rainbowOf(c); if (all.length < 2) return notFound();
@@ -1558,7 +1566,9 @@
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
-      <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
+      <div class="grid rb-grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
+    document.querySelectorAll("#grid .cd[data-i]").forEach((el) => { const col = parColor(CARDS[+el.dataset.i]);
+      if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); } });
     state.list = all;
   }
   function notFound() {

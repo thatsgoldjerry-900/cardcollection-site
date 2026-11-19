@@ -735,3 +735,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-need b{font:700 clamp(18px,4vw,34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
 .b-num{position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font:600 11px var(--f-m);color:#8c8475}
 .hero h1 .nw{white-space:nowrap}
+/* Rainbow pages: each card sits on a soft glow of its parallel's color (around the card; the scan is untouched) */
+.rb-grid .cd .ph{padding:6%;background:var(--panel)}
+.rb-grid .cd.par-bg .ph{background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--pc,#888) 55%,transparent),color-mix(in srgb,var(--pc,#888) 22%,var(--panel)) 70%);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#888) 45%,var(--line))}
+.rb-grid .cd.par-bg[style*="--pg"] .ph{background:linear-gradient(color-mix(in srgb,var(--panel) 55%,transparent),color-mix(in srgb,var(--panel) 55%,transparent)),var(--pg)}
