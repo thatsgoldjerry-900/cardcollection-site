@@ -22,49 +22,40 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   2. Pick a site code, e.g. "ianbadeer" (the dashboard becomes ianbadeer.goatcounter.com).
   3. Send Claude the code. Claude puts it in `analytics.goatcounter` in `config/site.json`; every page then
      counts on its own (e.g. `#/player/ricky-simmons`), and visits show up in the GoatCounter dashboard.
-- [ ] **Add years for Huskers by NFL Team** (110 players with no year yet). In the player's research note on your NFL list,
-  put a date or year in the same sentence as the team, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92".
-  The team page and the player's career timeline pick it up after the next data update (until then the timeline lists
-  the team under "With these teams (year not in my notes)"). Cross a player off once his year shows.
+- [ ] **Add years for Huskers by NFL Team** (110 players; 40 now show a year from Pro Football Archives, marked "PFA").
+  For those, the site already shows PFA's year; copy it into your research note when convenient. For the rest, put a date
+  or year in the same sentence as the team in the note, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92".
+  Team pages and career timelines pick it up after the next data update. Cross a player off once his year is in your note.
   - [ ] Arizona Cardinals: Aaron Golliday, Chris Spachman, Jeff Lake, Jon Zatechka
-  - [ ] Atlanta Falcons: Corey Dixon, Pat Ricketts
-  - [ ] Baltimore Ravens: Terrence Moore
+  - [ ] Atlanta Falcons: Corey Dixon (PFA: 1994–1995), Pat Ricketts
+  - [ ] Baltimore Ravens: Terrence Moore (PFA: 2012)
   - [ ] Carolina Panthers: Adi Kunalic, Brian Schuster
-  - [ ] Chicago Bears: Bert Gissler, Dana Stephenson, George Abel, Kenny Wilhite, Lynn Senkbeil
-  - [ ] Cincinnati Bengals: Jack Gangwish, Kenny Brown, Paul Rogers
-  - [ ] Cleveland Browns: Dedrick Young, Randy Poeschl
-  - [ ] Dallas Cowboys: Bob Taucher, Dave Volk, Glenn Patterson, Larry Mushinskie, Ola Dagunduro, P.J. Mangieri
-  - [ ] Denver Broncos: John Havekost
-  - [ ] Detroit Lions: Loran Kaiser, Patrick Kabongo, Phil Bates, Preston Love, Ray Novak
-  - [ ] Green Bay Packers: Al Grubaugh, Bert Gissler, Charles Bryant, Curenski Gilleylen, Fred Preston, Terrell Farley, Terry Connealy, Tony Jeter, Wilson Thomas
+  - [ ] Chicago Bears: Bert Gissler, Dana Stephenson (PFA: 1970), George Abel, Kenny Wilhite (PFA: 1993), Lynn Senkbeil (PFA: 1966–1967)
+  - [ ] Cincinnati Bengals: Jack Gangwish, Kenny Brown (PFA: 1981), Paul Rogers
+  - [ ] Cleveland Browns: Dedrick Young, Randy Poeschl (PFA: 1979)
+  - [ ] Dallas Cowboys: Bob Taucher (PFA: 1968), Dave Volk, Glenn Patterson (PFA: 1970), Larry Mushinskie (PFA: 1976), Ola Dagunduro, P.J. Mangieri
+  - [ ] Denver Broncos: John Havekost (PFA: 1980–1981)
+  - [ ] Detroit Lions: Loran Kaiser, Patrick Kabongo (PFA: 2004), Phil Bates (PFA: 1982), Preston Love (PFA: 1965), Ray Novak (PFA: 1954)
+  - [ ] Green Bay Packers: Al Grubaugh (PFA: 1944), Bert Gissler, Charles Bryant (PFA: 1955), Curenski Gilleylen, Fred Preston (PFA: 1942), Terrell Farley (PFA: 1998), Terry Connealy, Tony Jeter (PFA: 1966), Wilson Thomas
   - [ ] Houston Texans: Damion Daniels, Pheldarious Payne
-  - [ ] Indianapolis Colts: Ron Kirkland, Van Brownson
+  - [ ] Indianapolis Colts: Ron Kirkland (PFA: 1967), Van Brownson (PFA: 1972)
   - [ ] Jacksonville Jaguars: Benard Thomas, Kevin Maurice, Kyler Reed, Oliver Martin, Todd Peterson
   - [ ] Kansas City Chiefs: Aaron Golliday, Brandon Kinnie, Guy Ingles, Jake Andersen, Ray Novak
   - [ ] Las Vegas Raiders: Phalen Sanford
-  - [ ] Los Angeles Chargers: Barry Cryer, Ben Cotton, Mike Green
-  - [ ] Los Angeles Rams: Bobby Reynolds, Clarence Cook, Cortney Grixby, Dave Theisen, Pat Tyrance, Walter "Butch" Luther
+  - [ ] Los Angeles Chargers: Barry Cryer, Ben Cotton, Mike Green (PFA: 1970)
+  - [ ] Los Angeles Rams: Bobby Reynolds, Clarence Cook (PFA: 1957), Cortney Grixby, Dave Theisen (PFA: 1963–1964), Pat Tyrance (PFA: 1991), Walter "Butch" Luther (PFA: 1941)
   - [ ] Minnesota Vikings: Ira Cooper, Mike Caputo, Terrell Newby, Tyler Hoppes
   - [ ] New England Patriots: Chris Spachman, Dan Hadenfeldt, Eric Alford, Jerry Murtaugh, Sam Cotton
-  - [ ] New Orleans Saints: Bob Taucher, Jermarcus Hardrick
-  - [ ] New York Giants: Bert Gissler, Bob Mills, Greg Jorgensen, Matt O'Hanlon
-  - [ ] New York Jets: Dave Butterfield, George Mills, Jamie Burrow, Josh Davis, Mike Anderson, Scott Raridon
-  - [ ] Philadelphia Eagles: Ted Connor, Ty Steinkuhler
-  - [ ] Pittsburgh Steelers: Byron McCane, Tamon Lynum, Tony Jeter
+  - [ ] New Orleans Saints: Bob Taucher (PFA: 1968–1969), Jermarcus Hardrick
+  - [ ] New York Giants: Bert Gissler, Bob Mills (PFA: 1939), Greg Jorgensen (PFA: 1978), Matt O'Hanlon
+  - [ ] New York Jets: Dave Butterfield (PFA: 1977), George Mills, Jamie Burrow, Josh Davis (PFA: 2004–2005), Mike Anderson, Scott Raridon
+  - [ ] Philadelphia Eagles: Ted Connor (PFA: 1954), Ty Steinkuhler
+  - [ ] Pittsburgh Steelers: Byron McCane (PFA: 1968), Tamon Lynum, Tony Jeter (PFA: 1966–1969)
   - [ ] San Francisco 49ers: Anthony West
   - [ ] Seattle Seahawks: Austin Cassidy, Deontai Williams, Kevin Dixon, Rickey Thenarse
-  - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner, Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom
+  - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner (PFA: 1988), Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom (PFA: 2002)
   - [ ] Tennessee Titans: Jon Clanton, Mike Erickson
-  - [ ] Washington Commanders: Ardell Johnson, Elmer Dohrmann, Jason Schwab, Jerald Foster, Jerry Minnick
-- [ ] **Friday (Nov 20), at home: check the Kenny Bell Prizm Gold autograph.** Your inventory lists a Panini Prizm
-  Buccaneers (Rookie Signatures) Gold, but your scan is the 2015 Prizm Collegiate Draft Picks Gold #207 (Huskers uniform).
-  Look at the card itself: if it's the Huskers Gold, fix the inventory line (probably an inventory error). The Huskers Gold
-  scan goes up with your new images; Claude checks it shows on the site after the upload.
-- [ ] **Find out which 2015 Upper Deck Inscriptions Kenny Bell you sold.** The site shows two as still in your collection:
-  the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
-  and mark the sold one "Sold" in its file name and inventory.
-- [x] **TCDb player IDs for the TCDb buttons on player pages.** Done from your saved TCDb Top Names pages: football (453),
-  baseball (all 47) and basketball (all 14), plus Dye. Every player with an ID gets both buttons.
+  - [ ] Washington Commanders: Ardell Johnson (PFA: 1975), Elmer Dohrmann (PFA: 1938), Jason Schwab, Jerald Foster, Jerry Minnick (PFA: 1954)
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.

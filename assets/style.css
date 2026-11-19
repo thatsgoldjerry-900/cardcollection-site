@@ -849,3 +849,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .tl-undated span{color:var(--mu)}
 .tl-team{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);color:var(--fg);text-decoration:none;font-weight:600}
 .tl-team:hover{border-color:var(--acc)}
+.pm-t .src{color:var(--mu);font-size:.92em}
