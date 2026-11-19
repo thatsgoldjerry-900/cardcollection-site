@@ -550,9 +550,8 @@
     const cfg = DATA.site.customsPhotos || {}, vids = (cfg.videos || []).filter((v) => v.id);
     const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
       <img decoding="async" alt="" src="${img(p.id, p.rk, 500)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
-    const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2>
-      <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(55, PHOTOS.length * 12)}s">
-        ${PHOTOS.map(tile).join("")}<div class="mq-dup" aria-hidden="true">${PHOTOS.map(tile).join("")}</div></div></section>` : "";
+    // A still row of photos; one at a time fades out and another fades in (startPhotoRow).
+    const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2><section class="ph-row" id="ph-row" aria-label="Photos with the players"></section>` : "";
     const videos = vids.length ? `<div class="vids">${vids.map((v) => `<figure class="vid">
         <div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}${v.start ? `?start=${+v.start}` : ""}" title="${esc(v.caption || "Video")}" loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
@@ -1817,7 +1816,32 @@
   let LAST_BASE = null;
   // Sliding strips (.mq) start moving only once their pictures have loaded, so nothing changes width mid-slide
   // (that shoved the whole strip and made it stutter). Gives up waiting after 4 seconds.
+  // Custom Cards "With the players": as many photos as fit in one row; every few seconds one fades out and a photo
+  // not on screen fades in. Pauses on hover, off screen and in a background tab.
+  let PHOTO_TIMER = 0;
+  function startPhotoRow() {
+    const row = $("#ph-row"); clearInterval(PHOTO_TIMER); if (!row || !PHOTOS.length) return;
+    const order = PHOTOS.map((_, k) => k).sort(() => Math.random() - 0.5);
+    const tile = (k) => { const p = PHOTOS[k]; return `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}"><img decoding="async" alt="" src="${img(p.id, p.rk, 500)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`; };
+    const n = Math.min(order.length, Math.max(2, Math.floor(row.clientWidth / 250)));
+    row.style.setProperty("--n", n);
+    row.innerHTML = order.slice(0, n).map((k) => `<div class="ph-slot">${tile(k)}</div>`).join("");
+    if (order.length <= n || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let next = n, slot = 0, seen = true;
+    new IntersectionObserver((es) => (seen = es[0].isIntersecting)).observe(row);
+    // Load the next photo first, so it appears already drawn.
+    const pre = (k) => new Promise((ok) => { const im = new Image(); im.onload = im.onerror = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(ok); im.src = img(PHOTOS[k].id, PHOTOS[k].rk, 500); });
+    PHOTO_TIMER = setInterval(async () => {
+      if (!row.isConnected) return clearInterval(PHOTO_TIMER);
+      if (!seen || document.hidden || row.matches(":hover") || !$("#viewer").hidden) return;
+      const k = order[next++ % order.length], el = row.children[slot % n]; slot += 1 + Math.floor(Math.random() * Math.max(1, n - 1));
+      await pre(k);
+      el.classList.add("out");
+      setTimeout(() => { el.innerHTML = tile(k); el.querySelector("img").classList.add("ok"); el.classList.remove("out"); }, 600);
+    }, 3200);
+  }
   function readyMarquees() {
+    startPhotoRow();
     document.querySelectorAll(".mq:not(.ready)").forEach((m) => {
       const imgs = [...m.querySelectorAll("img")];
       const loaded = imgs.map((i) => (i.complete ? 0 : new Promise((r) => { i.addEventListener("load", r, { once: true }); i.addEventListener("error", r, { once: true }); })));
