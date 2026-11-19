@@ -423,7 +423,7 @@
       </section>
       <section class="stats" aria-label="Collection stats">
         <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></a>
-        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
+        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
