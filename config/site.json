@@ -1116,5 +1116,11 @@
       "jack-mcveigh": 370001,
       "eric-johnson-basketball": 7334
     }
+  },
+  "playerAliases": {
+    "_help": "Other names a player goes by, so the Find a player boxes find him (list name: [other names]).",
+    "JoJo Domann": [
+      "Johansen Domann"
+    ]
   }
 }

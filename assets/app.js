@@ -597,9 +597,44 @@
     { path: "/mlb", slug: "baseball-mlb", label: "MLB Huskers Autograph List", blurb: "One autograph of every Husker who played in the major leagues." },
     { path: "/nba", slug: "basketball-nba", label: "NBA Huskers Autograph List", blurb: "One autograph of every Husker who played in the NBA." },
   ];
+  /* "Find a player" boxes: other names a player goes by also find him. Sources: common nicknames (Cam = Cameron,
+     Mike = Michael…), the name Wikipedia opens his article with ("Cameron Jurgens"), and hand-added names in
+     config/site.json "playerAliases" ("JoJo Domann": ["Johansen Domann"]). Each word typed must match one of them;
+     a name that finds nobody is then spell-checked against the list's names (fixQuery). */
+  const NICK_GROUPS = ["cam cameron", "mike michael mikey", "matt matthew", "chris christopher", "nick nicholas nicky", "tom thomas tommy",
+    "bob robert rob bobby robbie", "bill william will billy willie", "jim james jimmy jamie", "joe joseph joey", "dave david davey", "dan daniel danny",
+    "ben benjamin benny", "tony anthony", "andy andrew drew", "steve steven stephen", "jon jonathan john johnny jack", "ed edward eddie ted",
+    "rick richard rich ricky dick", "pat patrick", "sam samuel sammy", "alex alexander", "zach zachary zack zac", "jake jacob", "josh joshua",
+    "ken kenneth kenny", "ron ronald ronnie", "don donald donnie", "greg gregory", "jeff jeffrey jeffery", "larry lawrence", "jerry gerald jerald",
+    "charlie charles chuck charley", "fred frederick freddie", "tim timothy timmy", "vince vincent", "nate nathan nathaniel", "gabe gabriel",
+    "max maxwell", "doug douglas", "phil phillip philip", "ray raymond", "al albert alan allen", "gene eugene", "herb herbert", "les lester",
+    "lenny leonard leo", "walt walter", "hank henry", "harry harold", "jojo johansen", "tj", "dj", "aj", "cj", "jj"];
+  const NICKS = new Map(); NICK_GROUPS.forEach((g) => { const w = g.split(" "); w.forEach((x) => NICKS.set(x, w)); });
+  const ALIAS_CACHE = new Map();
+  function playerHay(name) {
+    if (ALIAS_CACHE.has(name)) return ALIAS_CACHE.get(name);
+    const names = [name, ...((DATA && DATA.site.playerAliases) || {})[name] || []];
+    const p = PLAYERS && (PLAYERS.players || []).find((x) => x.name === name);
+    const m = p && ((p.wiki || {}).intro || "").match(/^([A-Z][^(,]{2,60}?)\s*\(/); if (m) names.push(m[1].replace(/["“][^"”]*["”]/g, " "));
+    const words = new Set(names.flatMap((n) => norm(n).split(" ")).filter(Boolean));
+    [...words].forEach((w) => (NICKS.get(w) || []).forEach((x) => words.add(x)));
+    const hay = " " + [...words].join(" ") + " " + names.join(" ").toLowerCase() + " ";
+    if (PLAYERS) ALIAS_CACHE.set(name, hay);
+    return hay;
+  }
+  // Does this player match what was typed? Every word has to start a word of one of his names (or appear in "extra").
+  const playerMatch = (name, q, extra = "") => { const hay = playerHay(name) + " " + extra.toLowerCase();
+    return norm(q).split(" ").filter(Boolean).every((w) => hay.includes(" " + w) || (w.length > 3 && hay.includes(w))); };
+  // A typed name that finds nobody: the closest spelling among these names (and their other names).
+  function fixPlayerQuery(q, names, ok) {
+    const vocab = new Map(); names.forEach((n) => playerHay(n).split(" ").forEach((w) => w.length > 2 && /^[a-z]+$/.test(w) && vocab.set(w, (vocab.get(w) || 0) + 1)));
+    const f = fixQuery(q.toLowerCase(), vocab, (w) => vocab.has(w), 3);
+    return f && ok(f) ? f : null;
+  }
   function checklist(which) {
     const page = CK_PAGES.find((x) => x.path === (which ? "/" + which : "")) || CK_PAGES[0];
     setNav("checklist" + page.path); setTitle(page.label);
+    if (!PLAYERS) fetch("data/players.json").then((r) => (r.ok ? r.json() : null)).then((d) => { if (!d || PLAYERS) return; PLAYERS = d; ALIAS_CACHE.clear(); if (CK.q && $("#ck-table")) table(); }).catch(() => {});
     if (!CHECK) {
       $("#app").innerHTML = `<p class="loading">Loading the checklist…</p>`;
       fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); })
@@ -690,11 +725,10 @@
     const label = (c) => (c === "Signed" ? "Signed on" : c);
     // A name that finds nobody tries the closest spelling among this list's players ("ndamukong sue" → "ndamukong suh").
     let q = CK.q.toLowerCase(), fixedQ = null;
-    const passes = (r, qq) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && r.join(" ").toLowerCase().includes(qq);
+    const passes = (r, qq) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!qq || playerMatch(r[0], qq, r.slice(1).join(" ")));
     if (q && !l.groups.some((g) => g.rows.some((r) => passes(r, q)))) {
-      const vocab = new Map(); l.groups.forEach((g) => g.rows.forEach((r) => norm(r[0]).split(" ").forEach((w) => w.length > 2 && vocab.set(w, (vocab.get(w) || 0) + 1))));
-      const f = fixQuery(q, vocab, (w) => l.groups.some((g) => g.rows.some((r) => r[0].toLowerCase().includes(w))), 3);
-      if (f && l.groups.some((g) => g.rows.some((r) => passes(r, f)))) { q = f; fixedQ = f; }
+      const f = fixPlayerQuery(q, l.groups.flatMap((g) => g.rows.map((r) => r[0])), (f) => l.groups.some((g) => g.rows.some((r) => passes(r, f))));
+      if (f) { q = f; fixedQ = f; }
     }
     let count = 0;
     const gi = cols.indexOf("NFL Games Played"), yi = cols.indexOf("Last Year"), si = cols.indexOf("Signed");
@@ -706,7 +740,7 @@
       have: (a, b) => ((a.r[ai] === "Yes") - (b.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
     const sortRows = (rows) => rows.map((r, k) => ({ r, k })).sort((a, b) => cmp(a, b) * CK.dir).map((x) => x.r);
     const body = l.groups.map((g) => {
-      const rows = sortRows(g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q))));
+      const rows = sortRows(g.rows.filter((r) => passes(r, q)));
       count += rows.length; if (!rows.length) return "";
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
@@ -973,8 +1007,11 @@
         </div>
         <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
       const apply = () => {
-        const q = HUB.q.toLowerCase();
-        HUB.rows = all.filter((p) => (HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page)) && (!q || p.name.toLowerCase().includes(q)));
+        let q = HUB.q; HUB.fixed = null;
+        const shownBy = (p) => HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page);
+        const hits = (qq) => all.filter((p) => shownBy(p) && (!qq || playerMatch(p.name, qq)));
+        HUB.rows = hits(q);
+        if (q && !HUB.rows.length) { const f = fixPlayerQuery(q, all.map((p) => p.name), (f) => hits(f).length > 0); if (f) { HUB.fixed = f; HUB.rows = hits(f); } }
         // The checklist is newest first; "with autographs first" keeps that order within each group.
         const scanned = (p) => (p.have && bestScan(p.name) ? 0 : 1), yr = (p) => parseInt(p.year) || 0;
         // Games like "1*" count as 1; players with no games listed go last either way.
@@ -982,8 +1019,8 @@
         const byGames = (dir) => (a, b) => (gm(a) === null) - (gm(b) === null) || dir * ((gm(a) || 0) - (gm(b) || 0));
         const by = { scans: (a, b) => scanned(a) - scanned(b), new: () => 0, old: (a, b) => yr(a) - yr(b), most: byGames(-1), fewest: byGames(1), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
         HUB.rows = HUB.rows.map((p, i) => [p, i]).sort((a, b) => by(a[0], b[0]) || a[1] - b[1]).map(([p]) => p);
-        HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? "" : `<li class="empty">Nobody matches.</li>`;
-        $("#hub-count").textContent = `${fmt(HUB.rows.length)} players`; hubMore();
+        HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? (HUB.fixed ? `<li class="fixnote">No one matched “${esc(HUB.q)}”, so these are results for <b>${esc(HUB.fixed)}</b>.</li>` : "") : `<li class="empty">Nobody matches.</li>`;
+        $("#hub-count").textContent = `${fmt(HUB.rows.length)} player${HUB.rows.length === 1 ? "" : "s"}`; hubMore();
       };
       $(".hub .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; HUB.show = b.dataset.show; document.querySelectorAll(".hub .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); apply(); });
       $("#hub-q").addEventListener("input", (e) => { HUB.q = e.target.value.trim(); apply(); });
@@ -996,7 +1033,7 @@
     const next = HUB.rows.slice(HUB.shown, HUB.shown + 60); HUB.shown += next.length;
     list.insertAdjacentHTML("beforeend", next.map((p) => {
       const sc = p.have ? bestScan(p.name) : null;
-      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.q)}${hofMarks(p)}</a>`;
+      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.fixed || HUB.q)}${hofMarks(p)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
