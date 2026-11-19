@@ -684,7 +684,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .tl-m.r{flex-direction:row-reverse;transform:translateX(calc(-100% + 12px));text-align:right}.tl-m.r span{align-items:flex-end}
 /* Collection stats page */
 .stp .st-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
-.stp .st-tiles div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stp .st-tiles a{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--fg)}
+.stp .st-tiles a:hover{border-color:var(--acc)}.stp .st-tiles a span{color:var(--acc)}
 .stp .st-tiles b{display:block;font:700 26px var(--f-d,inherit)}.stp .st-tiles span{font-size:12.5px;color:var(--mu)}
 .st-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;min-width:0}
 .st-box h2{font-size:15px;margin:0 0 12px}
@@ -748,3 +749,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .best-slot.in{animation:best-in .7s ease-out}
 @keyframes best-in{from{opacity:0;transform:scale(.92) rotateY(-25deg)}to{opacity:1;transform:none}}
 .best-grid{perspective:900px}
+.st-more{float:right;font-size:12.5px;font-weight:500;color:var(--acc);text-decoration:none}
+.st-rank{list-style:none}
+.st-rank .st-r{display:inline-block;min-width:2.4em;color:var(--mu);font:600 11.5px var(--f-m)}

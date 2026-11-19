@@ -207,11 +207,14 @@
     [/^(customs?)$/, "custom", "customs"], [/^(1\/1s?|one-of-ones?|oneofones?)$/, "one", "1 of 1"]];
   const FILLER = new Set("show me my all the a an of with and cards card i have from in for by on any that are is".split(" "));
   function parseQuery(q) {
+    // "=Jermaine Dye": exactly that player's own cards (used by the players ranking, so its counts match).
+    if (q.startsWith("=")) { const who = q.slice(1).trim().toLowerCase(); return { words: [], tests: [(x) => plainTitle(x).toLowerCase() === who], said: [`only ${q.slice(1).trim()}`] }; }
     let t = q.toLowerCase().replace(/[“”]/g, '"').replace(/\bone of (one|1)\b|\b1 of 1\b/g, "1/1");
     const tests = [], said = [];
     // Print runs: "under /50", "/25 or less", "numbered to 10 or lower", "less than 100", "below /99"
     t = t.replace(/\b(?:under|below|less than|lower than|up to|at most)\s*\/?\s*(\d+)\b|\/(\d+)\s*(?:or\s*(?:less|lower|under|below))|(?:numbered|#'?d)\s*(?:to\s*)?\/?(\d+)\s*or\s*(?:less|lower)/g, (m, a, b, c) => {
       const n = +(a || b || c), under = /under|below|less than|lower than/.test(m); tests.push((x) => x.serial > 0 && (under ? x.serial < n : x.serial <= n)); said.push(under ? `numbered under /${n}` : `numbered /${n} or lower`); return " "; });
+    t = t.replace(/\b(?:over|above|more than|higher than)\s*\/\s*(\d+)\b/g, (m, a) => { tests.push((x) => x.serial > +a); said.push(`numbered over /${a}`); return " "; });
     // Years: "2010s", "1990-1995", "before 1990", "after 2010", "since 2015"
     t = t.replace(/\b((?:19|20)\d)0'?s\b/g, (m, d) => { const a = +d * 10; tests.push((x) => x.year >= a && x.year <= a + 9); said.push(`${a}s`); return " "; });
     t = t.replace(/\b((?:19|20)\d{2})\s*(?:-|–|to)\s*((?:19|20)\d{2})\b/g, (m, a, b) => { tests.push((x) => x.year >= +a && x.year <= +b); said.push(`${a}–${b}`); return " "; });
@@ -468,7 +471,7 @@
       base = CARDS.filter((c) => c.tags.has("custom")); title = "Custom Cards"; kick = "Made by hand"; color = "gold";
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
     } else {
-      base = CARDS; title = state.q ? `Results for “${esc(state.q)}”` : "Every card"; kick = "Whole collection";
+      base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
     setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
@@ -1385,10 +1388,20 @@
     return pool;
   }
 
+  // Every player in the scans, most cards first (#/stats/players). Each row opens a search for that player.
+  function statsPlayers() {
+    setNav(""); setTitle("Players by number of cards");
+    const m = new Map(); CARDS.forEach((c) => { if (c.photo || !c.title) return; const n = plainTitle(c); if (n) m.set(n, (m.get(n) || 0) + 1); });
+    const rows = [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])), max = rows.length ? rows[0][1] : 1;
+    $("#app").innerHTML = `<div class="wrap stp"><a class="back" href="#/stats">← Scanned Collection Stats</a>
+      <div class="c-head"><div class="kick">Scanned Collection Stats</div><h1>Players by number of cards</h1><p>${fmt(rows.length)} players, most cards first. Tap a player to see his cards.</p></div>
+      <section class="st-box"><ol class="st-bars st-rank">${rows.map(([n, k], i) => `<li><a href="#/search/${encodeURIComponent("=" + n)}"><b><span class="st-r">${i + 1}</span>${esc(n)}</b><i style="--w:${(k / max) * 100}%"></i><em>${fmt(k)}</em></a></li>`).join("")}</ol></section></div>`;
+  }
+
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
     setNav(""); setTitle("Scanned Collection Stats");
-    const cards = CARDS.filter((c) => !c.photo && SECTIONS[c.si].kind !== "want"), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
+    const cards = CARDS.filter((c) => !c.photo), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
     const bar = (label, n, max, href) => `<li>${href ? `<a href="${href}">` : "<span>"}<b>${esc(label)}</b><i style="--w:${max ? (n / max) * 100 : 0}%"></i><em>${fmt(n)}</em>${href ? "</a>" : "</span>"}</li>`;
     // By card year
     const byYear = new Map(); cards.forEach((c) => c.year < 9999 && byYear.set(c.year, (byYear.get(c.year) || 0) + 1));
@@ -1402,16 +1415,12 @@
       ["Numbered", has("numbered"), "#/search/numbered"], ["Rookie cards", has("rc"), "#/search/rookies"], ["Customs", has("custom"), "#/customs"], ["Graded", has("graded"), "#/search/graded"]];
     const kmax = Math.max(...kinds.map((k) => k[1]));
     // Print runs
-    const tiers = [["1 of 1", (c) => c.one], ["/2 – /5", (c) => !c.one && c.serial && c.serial <= 5], ["/6 – /10", (c) => c.serial > 5 && c.serial <= 10], ["/11 – /25", (c) => c.serial > 10 && c.serial <= 25],
-      ["/26 – /50", (c) => c.serial > 25 && c.serial <= 50], ["/51 – /99", (c) => c.serial > 50 && c.serial <= 99], ["/100 – /250", (c) => c.serial > 99 && c.serial <= 250], ["/251 and up", (c) => c.serial > 250]]
-      .map(([l, f]) => [l, cards.filter(f).length]);
+    const tiers = [["1 of 1", (c) => c.one, "1/1"], ["/2 – /5", (c) => !c.one && c.serial && c.serial <= 5, "over /1 /5 or less"], ["/6 – /10", (c) => c.serial > 5 && c.serial <= 10, "over /5 /10 or less"], ["/11 – /25", (c) => c.serial > 10 && c.serial <= 25, "over /10 /25 or less"],
+      ["/26 – /50", (c) => c.serial > 25 && c.serial <= 50, "over /25 /50 or less"], ["/51 – /99", (c) => c.serial > 50 && c.serial <= 99, "over /50 /99 or less"], ["/100 – /250", (c) => c.serial > 99 && c.serial <= 250, "over /99 /250 or less"], ["/251 and up", (c) => c.serial > 250, "over /250"]]
+      .map(([l, f, q]) => [l, cards.filter(f).length, "#/search/" + q]);
     const tmax = Math.max(1, ...tiers.map((t) => t[1]));
     // By collection
-    const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x) && x.kind !== "want").sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
-    // Added per month (last 24 months)
-    const byMonth = new Map(); cards.forEach((c) => c.added && byMonth.set(c.added.slice(0, 7), (byMonth.get(c.added.slice(0, 7)) || 0) + 1));
-    const months = [...byMonth.keys()].sort().slice(-24), mmax = Math.max(1, ...months.map((m) => byMonth.get(m)));
-    const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x)).sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
     // Leaderboards
     const rb = new Map(); cards.forEach((c) => { const k = rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
     const rainbows = [...rb.values()].filter((l) => l.length > 2).sort((a, b) => b.length - a.length).slice(0, 10);
@@ -1419,17 +1428,16 @@
     const top = [...players.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10), pmax = Math.max(1, ...top.map((x) => x[1]));
     $("#app").innerHTML = `<div class="wrap stp">
       <div class="c-head"><div class="kick">Whole collection</div><h1>Scanned Collection Stats</h1><p>${fmt(N)} scanned cards, by the numbers. Tap a bar to see those cards.</p></div>
-      <div class="st-tiles"><div><b>${fmt(N)}</b><span>cards</span></div><div><b>${fmt(has("one"))}</b><span>one-of-ones</span></div>
-        <div><b>${fmt(has("auto"))}</b><span>autographs (${pct(has("auto")).toFixed(0)}%)</span></div><div><b>${fmt(players.size)}</b><span>players</span></div>
-        <div><b>${years.length ? years[0] : "–"}</b><span>oldest card year</span></div></div>
+      <div class="st-tiles"><a href="#/all"><b>${fmt(N)}</b><span>cards →</span></a><a href="#/search/1/1"><b>${fmt(has("one"))}</b><span>one-of-ones →</span></a>
+        <a href="#/search/autos"><b>${fmt(has("auto"))}</b><span>autographs (${pct(has("auto")).toFixed(0)}%) →</span></a><a href="#/stats/players"><b>${fmt(players.size)}</b><span>players →</span></a>
+        <a href="#/all?sort=old"><b>${years.length ? years[0] : "–"}</b><span>oldest card year →</span></a></div>
       <section class="st-box"><h2>Cards by year</h2><div class="st-years">${yearCols}</div></section>
       <div class="st-two">
         <section class="st-box"><h2>What kind of card</h2><ul class="st-bars">${kinds.map(([l, n, h]) => bar(l, n, kmax, h)).join("")}</ul></section>
-        <section class="st-box"><h2>Print runs</h2><ul class="st-bars">${tiers.map(([l, n]) => bar(l, n, tmax)).join("")}</ul></section>
+        <section class="st-box"><h2>Print runs</h2><ul class="st-bars">${tiers.map(([l, n, h]) => bar(l, n, tmax, h)).join("")}</ul></section>
         <section class="st-box"><h2>By collection</h2><ul class="st-bars">${secs.map(([x, n]) => bar(x.title, n, smax, "#/c/" + x.slug)).join("")}</ul></section>
-        <section class="st-box"><h2>Most cards of one player</h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent(n))).join("")}</ul></section>
+        <section class="st-box"><h2>Most cards of one player <a class="st-more" href="#/stats/players">All ${fmt(players.size)} →</a></h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent("=" + n))).join("")}</ul></section>
       </div>
-      <section class="st-box"><h2>Cards added, month by month</h2><div class="st-years months">${months.map((m) => `<span class="st-col" title="${MON[+m.slice(5) - 1]} ${m.slice(0, 4)}: ${fmt(byMonth.get(m))} cards"><i style="--h:${(byMonth.get(m) / mmax) * 100}%"></i><span>${m.slice(5) === "01" ? "Jan ’" + m.slice(2, 4) : ""}</span></span>`).join("")}</div></section>
       <section class="st-box best"><h2>🔥 Best of the Best</h2><p class="best-sub">1/1s, bat knobs, laundry tags, nameplates, buttons, SSPs and the best patches, rotating through.</p><div class="grid small best-grid" id="best"></div></section>
       <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions</em></a></li>`).join("")}</ol></section>
     </div>`;
@@ -1649,7 +1657,7 @@
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
     else if (a === "media") media();
-    else if (a === "stats") statsPage();
+    else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
     else if (a === "letters") lettersPage(b);
