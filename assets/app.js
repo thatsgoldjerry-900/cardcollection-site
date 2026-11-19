@@ -1298,10 +1298,12 @@
       <div class="v-top"><button type="button" class="v-ic" id="b-back" aria-label="Close binder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         <div class="v-mid"><b id="b-title"></b><span id="b-pos"></span></div>
         <div class="v-tools"><button type="button" class="v-ic" id="b-prev" aria-label="Previous page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="v-ic" id="b-next" aria-label="Next page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
-      <div class="b-stage" id="b-stage"></div></div>`);
+      <div class="b-stage" id="b-stage"></div>
+      <button type="button" class="b-side left" id="b-left" aria-label="Previous page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button type="button" class="b-side right" id="b-right" aria-label="Next page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>`);
     b = $("#binder");
     $("#b-back").onclick = () => closeBinder();
-    $("#b-prev").onclick = () => turn(-1); $("#b-next").onclick = () => turn(1);
+    $("#b-prev").onclick = $("#b-left").onclick = () => turn(-1); $("#b-next").onclick = $("#b-right").onclick = () => turn(1);
     let sx = null;
     $("#b-stage").addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
     $("#b-stage").addEventListener("touchend", (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 50) turn(dx < 0 ? 1 : -1); });
@@ -1317,30 +1319,62 @@
   const perView = () => (window.matchMedia("(min-width: 900px)").matches ? 2 : 1);
   function openBinder(items, title) {
     const b = binderEl(); BINDER.items = items; BINDER.k = 0; BINDER.title = title;
-    b.hidden = false; document.body.style.overflow = "hidden"; drawBinder(0);
+    b.hidden = false; document.body.style.overflow = "hidden"; drawBinder();
     if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", location.href);
   }
   function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
   function closeBinder() { if (history.state && history.state.binder) history.back(); else hideBinder(); }
+  // Page turns: the page lifts at the spine and flips over in 3D, showing the next page on its back (a real binder).
+  let FLIPPING = false;
   function turn(d) {
-    const pages = Math.ceil(BINDER.items.length / 9), step = perView(), k = BINDER.k + d * step;
-    if (k < 0 || k >= pages) return;
-    BINDER.k = k; drawBinder(d);
+    const pages = Math.ceil(BINDER.items.length / 9), n = perView(), k = BINDER.k + d * n;
+    if (k < 0 || k >= pages || FLIPPING) return;
+    const old = BINDER.k; BINDER.k = k;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return drawBinder();
+    FLIPPING = true;
+    const P = (p) => pageHTML(p, pages), stage = $("#b-stage");
+    let under, leaf;
+    if (n === 2) {
+      // Next: the right page swings over to the left. Prev: the left page swings over to the right.
+      under = d > 0 ? P(old) + P(k + 1) : P(k) + P(old + 1);
+      leaf = d > 0 ? `<div class="b-leaf to-left"><div class="face front">${P(old + 1)}</div><div class="face back">${P(k)}</div></div>`
+                   : `<div class="b-leaf to-right"><div class="face front">${P(old)}</div><div class="face back">${P(k + 1)}</div></div>`;
+      if (d < 0 && !P(old + 1)) under = P(k) + `<div class="b-page b-ghost"></div>`;
+      if (d > 0 && !P(k + 1)) under = P(old) + `<div class="b-page b-ghost"></div>`;
+    } else {
+      // One page at a time (phones): next lifts the page away to the left; prev brings the earlier page back over it.
+      under = d > 0 ? P(k) : P(old);
+      leaf = d > 0 ? `<div class="b-leaf single out"><div class="face front">${P(old)}</div><div class="face back"><div class="b-page b-backside"></div></div></div>`
+                   : `<div class="b-leaf single in"><div class="face front">${P(k)}</div><div class="face back"><div class="b-page b-backside"></div></div></div>`;
+    }
+    const rings = n === 2 ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : "";
+    stage.innerHTML = `<div class="b-spread flipping${n === 2 ? " two" : ""}">${under}${rings}${leaf}</div>`;
+    const lf = stage.querySelector(".b-leaf");
+    const done = () => { FLIPPING = false; drawBinder(); };
+    lf.addEventListener("animationend", done, { once: true });
+    setTimeout(() => FLIPPING && done(), 1400);   // safety net
+    updateBinderBar(pages, n);
   }
-  function drawBinder(dir) {
-    const pages = Math.max(1, Math.ceil(BINDER.items.length / 9)), n = perView();
-    BINDER.k -= BINDER.k % n;
-    const pocket = (x, i) => !x ? `<div class="b-pk empty"></div>`
+  function pocketHTML(x, i) {
+    return !x ? `<div class="b-pk empty"></div>`
       : x.empty ? `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`
       : `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" src="${img(x.id, x.rk, 400)}" onload="if (this.naturalWidth > this.naturalHeight * 1.05) this.classList.add('land'); this.classList.add('ok')"></button>`;
-    const page = (p) => p >= pages ? "" : `<div class="b-page${p % 2 ? " right" : ""}">${Array.from({ length: 9 }, (_, j) => pocket(BINDER.items[p * 9 + j], p * 9 + j)).join("")}<span class="b-num">${p + 1}</span></div>`;
-    // Two pages open: a metal three-ring binder down the middle.
-    const both = n === 2 && BINDER.k + 1 < pages;
-    $("#b-stage").innerHTML = `<div class="b-spread${dir > 0 ? " in-next" : dir < 0 ? " in-prev" : ""}${n === 2 ? " two" : ""}">${page(BINDER.k)}${n === 2 ? page(BINDER.k + 1) : ""}${both ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : ""}</div>`;
+  }
+  const pageHTML = (p, pages) => p < 0 || p >= pages ? "" : `<div class="b-page${p % 2 ? " right" : ""}">${Array.from({ length: 9 }, (_, j) => pocketHTML(BINDER.items[p * 9 + j], p * 9 + j)).join("")}<span class="b-num">${p + 1}</span></div>`;
+  function updateBinderBar(pages, n) {
     $("#b-title").textContent = BINDER.title;
     const last = Math.min(pages, BINDER.k + n);
     $("#b-pos").textContent = `${n === 2 && last > BINDER.k + 1 ? `Pages ${BINDER.k + 1}–${last}` : `Page ${BINDER.k + 1}`} of ${pages} · ${fmt(BINDER.items.filter((x) => !x.empty).length)} scans`;
-    $("#b-prev").disabled = BINDER.k === 0; $("#b-next").disabled = BINDER.k + n >= pages;
+    const first = BINDER.k === 0, end = BINDER.k + n >= pages;
+    $("#b-prev").disabled = $("#b-left").disabled = first; $("#b-next").disabled = $("#b-right").disabled = end;
+  }
+  function drawBinder() {
+    const pages = Math.max(1, Math.ceil(BINDER.items.length / 9)), n = perView();
+    BINDER.k -= BINDER.k % n;
+    // Two pages open: a metal three-ring binder down the middle.
+    const both = n === 2 && BINDER.k + 1 < pages;
+    $("#b-stage").innerHTML = `<div class="b-spread${n === 2 ? " two" : ""}">${pageHTML(BINDER.k, pages)}${n === 2 ? pageHTML(BINDER.k + 1, pages) : ""}${both ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : ""}</div>`;
+    updateBinderBar(pages, n);
   }
   document.addEventListener("click", (e) => {
     if (!e.target.closest("[data-binder]")) return;
