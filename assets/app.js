@@ -1324,6 +1324,9 @@
   }
   function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
   function closeBinder() { if (history.state && history.state.binder) history.back(); else hideBinder(); }
+  // The ring mechanism: a steel plate and three rings (down the middle of two open pages, or along the left edge of one).
+  const RING = `<svg viewBox="0 0 84 38" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#c3c8cd"/><stop offset=".6" stop-color="#6b7178"/><stop offset="1" stop-color="#d4d8dc"/></linearGradient></defs><ellipse cx="42" cy="19" rx="36" ry="12" fill="none" stroke="url(#rg)" stroke-width="5"/><ellipse cx="42" cy="17" rx="36" ry="12" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/></svg>`;
+  const ringsHTML = (side) => `<div class="b-rings${side ? " left" : ""}" aria-hidden="true"><div class="plate"></div>${[17, 50, 83].map((t) => RING.replace("<svg ", `<svg style="top:${t}%" `)).join("")}</div>`;
   // Page turns: the page lifts at the spine and flips over in 3D, showing the next page on its back (a real binder).
   let FLIPPING = false;
   function turn(d) {
@@ -1347,7 +1350,7 @@
       leaf = d > 0 ? `<div class="b-leaf single out"><div class="face front">${P(old)}</div><div class="face back"><div class="b-page b-backside"></div></div></div>`
                    : `<div class="b-leaf single in"><div class="face front">${P(k)}</div><div class="face back"><div class="b-page b-backside"></div></div></div>`;
     }
-    const rings = n === 2 ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : "";
+    const rings = ringsHTML(n !== 2);
     stage.innerHTML = `<div class="b-spread flipping${n === 2 ? " two" : ""}">${under}${rings}${leaf}</div>`;
     const lf = stage.querySelector(".b-leaf");
     const done = () => { FLIPPING = false; drawBinder(); };
@@ -1373,7 +1376,7 @@
     BINDER.k -= BINDER.k % n;
     // Two pages open: a metal three-ring binder down the middle.
     const both = n === 2 && BINDER.k + 1 < pages;
-    $("#b-stage").innerHTML = `<div class="b-spread${n === 2 ? " two" : ""}">${pageHTML(BINDER.k, pages)}${n === 2 ? pageHTML(BINDER.k + 1, pages) : ""}${both ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : ""}</div>`;
+    $("#b-stage").innerHTML = `<div class="b-spread${n === 2 ? " two" : ""}">${pageHTML(BINDER.k, pages)}${n === 2 ? pageHTML(BINDER.k + 1, pages) : ""}${both ? ringsHTML(false) : n === 1 ? ringsHTML(true) : ""}</div>`;
     updateBinderBar(pages, n);
   }
   document.addEventListener("click", (e) => {

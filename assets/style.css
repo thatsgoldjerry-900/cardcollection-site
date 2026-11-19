@@ -720,17 +720,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @keyframes b-next{from{transform:rotateY(-24deg) translateX(30px);opacity:.3}to{transform:none;opacity:1}}
 @keyframes b-prev{from{transform:rotateY(24deg) translateX(-30px);opacity:.3}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.b-spread .b-page{animation:none!important}}
-.b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2.2%;padding:4% 4% 6%;
-  width:min(calc(100vw - 24px),calc((100dvh - 110px) * .74));aspect-ratio:.74;border-radius:6px;
-  background:linear-gradient(180deg,#f4f1ea,#e6e1d6);box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.08)}
-.b-spread.two .b-page{width:min(calc(50vw - 24px),calc((100dvh - 110px) * .74))}
-.b-spread.two .b-page:first-child{border-radius:6px 0 0 6px;box-shadow:0 10px 40px rgba(0,0,0,.6),inset -10px 0 18px -10px rgba(0,0,0,.35)}
-.b-spread.two .b-page.right{border-radius:0 6px 6px 0;box-shadow:0 10px 40px rgba(0,0,0,.6),inset 10px 0 18px -10px rgba(0,0,0,.35)}
-.b-pk{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;min-height:0;padding:5%;border:0;border-radius:3px;cursor:pointer;
-  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(210,214,222,.35));box-shadow:inset 0 0 0 1.5px rgba(150,160,175,.55),inset 0 2px 0 rgba(255,255,255,.9),0 1px 2px rgba(0,0,0,.12)}
-.b-pk img{max-width:100%;max-height:100%;object-fit:contain;border-radius:3px;opacity:0;transition:opacity .2s;box-shadow:0 1px 3px rgba(0,0,0,.35)}
-.b-pk img.ok{opacity:1}
-.b-pk.empty{cursor:default;box-shadow:inset 0 0 0 1.5px rgba(150,160,175,.35)}
 .b-pk.need{cursor:default}
 .b-need{display:grid;place-items:center;width:78%;aspect-ratio:2.5/3.5;border:2px dashed #b9b2a3;border-radius:4px;color:#8c8475;text-align:center}
 .b-need b{font:700 clamp(18px,4vw,34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
@@ -756,18 +745,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Binder: horizontal cards turn sideways in their pockets, bottom of the card toward the right */
 .b-pk{container-type:size}
 .b-pk img.land{max-width:100cqh;max-height:100cqw;transform:rotate(-90deg)}
-/* Binder: metal three-ring spine between two open pages */
-.b-spread{position:relative}
-.b-rings{position:absolute;top:2%;bottom:2%;left:50%;width:56px;transform:translateX(-50%);display:flex;flex-direction:column;justify-content:space-around;align-items:center;pointer-events:none;z-index:2}
-.b-rings::before{content:"";position:absolute;top:4%;bottom:4%;left:50%;width:22px;transform:translateX(-50%);border-radius:6px;
-  background:linear-gradient(90deg,#4a4f55,#c9cdd2 30%,#f4f6f8 48%,#9ba1a8 70%,#3f444a);box-shadow:0 0 10px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.25)}
-.b-rings i{position:relative;width:56px;height:20px;border-radius:12px;border:5px solid transparent;
-  background:linear-gradient(#e8ebee,#e8ebee) padding-box,linear-gradient(180deg,#ffffff,#b9bec4 35%,#5d636a 60%,#d7dbe0) border-box;
-  -webkit-mask:linear-gradient(#000 0 0) border-box,linear-gradient(#000 0 0) padding-box;-webkit-mask-composite:xor;mask-composite:exclude;
-  filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
-/* Punched holes on each page by the rings */
-.b-spread.two .b-page{background-image:radial-gradient(circle at 98.5% 16.7%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 98.5% 50%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 98.5% 83.3%,#2a2520 0 5px,transparent 6px),linear-gradient(180deg,#f4f1ea,#e6e1d6)}
-.b-spread.two .b-page.right{background-image:radial-gradient(circle at 1.5% 16.7%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 1.5% 50%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 1.5% 83.3%,#2a2520 0 5px,transparent 6px),linear-gradient(180deg,#f4f1ea,#e6e1d6)}
 /* Binder: side arrows and the 3D page turn */
 .b-side{position:absolute;top:50%;z-index:4;width:46px;height:46px;margin-top:-23px;display:grid;place-items:center;border-radius:50%;border:0;cursor:pointer;
   color:#fff;background:rgba(20,16,12,.65);box-shadow:0 2px 10px rgba(0,0,0,.4);transition:background .15s,opacity .15s}
@@ -792,3 +769,38 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @keyframes flip-in{0%{transform:rotateY(-180deg);opacity:0}20%{opacity:1}100%{transform:rotateY(0);opacity:1}}
 @keyframes flip-shade{0%,100%{opacity:0}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.b-leaf,.b-leaf .face::after{animation:none!important}}
+/* Binder, realistic: white vinyl cover, clear plastic 9-pocket sheets, steel ring mechanism */
+.b-spread{padding:16px;border-radius:12px;background:linear-gradient(135deg,#fdfdfb,#ebebe7 60%,#e2e2dd);
+  box-shadow:0 22px 60px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.08),inset 0 0 0 6px #f6f6f3,inset 0 0 0 7px rgba(0,0,0,.06)}
+.b-spread:not(.two){padding-left:58px}
+.b-spread.two::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:40px;transform:translateX(-50%);
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 40%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.10) 60%,rgba(0,0,0,0))}
+.b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:.7%;padding:2% 2% 4% 7%;
+  width:min(calc(100vw - 24px - 74px),calc((100dvh - 110px - 32px) * .74));aspect-ratio:.74;border-radius:3px;
+  background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(228,232,237,.55) 45%,rgba(240,243,246,.7));
+  box-shadow:0 1px 4px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.85)}
+.b-spread.two .b-page{width:min(calc(50vw - 24px - 16px),calc((100dvh - 110px - 32px) * .74));padding:2% 2% 4% 7%}
+.b-spread.two .b-page:first-child{padding:2% 7% 4% 2%}
+/* The punched strip on the ring side, with its three holes */
+.b-page::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6%;border-right:1px solid rgba(150,160,170,.35);
+  background:radial-gradient(circle at 50% 16.7%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%),radial-gradient(circle at 50% 50%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%),
+    radial-gradient(circle at 50% 83.3%,#d9d9d4 0 32%,rgba(0,0,0,.18) 34%,transparent 40%);background-repeat:no-repeat}
+.b-spread.two .b-page:first-child::before{left:auto;right:0;border-right:0;border-left:1px solid rgba(150,160,170,.35)}
+.b-pk{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;min-height:0;padding:3%;border:0;border-radius:2px;cursor:pointer;
+  background:rgba(255,255,255,.28);box-shadow:inset 0 0 0 1px rgba(150,160,172,.5),inset 0 7px 6px -6px rgba(255,255,255,.95)}
+.b-pk img{max-width:100%;max-height:100%;object-fit:contain;border-radius:2px;opacity:0;transition:opacity .2s;box-shadow:0 1px 2px rgba(0,0,0,.28)}
+.b-pk img.ok{opacity:1}
+.b-pk.empty,.b-pk.need{cursor:default}
+.b-num{color:#9aa0a6}
+/* Steel ring mechanism: a brushed plate with three rings */
+.b-rings{position:absolute;top:16px;bottom:16px;left:50%;width:70px;transform:translateX(-50%);pointer-events:none;z-index:2}
+.b-rings.left{left:6px;transform:none;width:84px}
+.b-rings .plate{position:absolute;top:3%;bottom:3%;left:50%;width:20px;transform:translateX(-50%);border-radius:10px;
+  background:linear-gradient(90deg,#6d737a,#cfd4d9 22%,#f7f9fa 40%,#b3b9bf 62%,#80868d 80%,#5b6066);box-shadow:0 2px 6px rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.25)}
+.b-rings.left .plate{left:22px}
+.b-rings svg{position:absolute;left:0;width:100%;height:38px;margin-top:-19px;overflow:visible;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.b-leaf{top:16px;bottom:16px}
+.b-leaf.to-left{width:calc(50% - 16px)}
+.b-leaf.to-right{left:16px;width:calc(50% - 16px)}
+.b-leaf.single{left:58px;width:calc(100% - 74px)}
+.b-leaf .b-page{background:linear-gradient(160deg,#fbfcfd,#e9edf1 45%,#f1f4f6)}
