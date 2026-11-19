@@ -808,3 +808,16 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (max-width:700px){.go-logo{height:32px}.tcdb-badge{height:26px}}
 .b-mech{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:visible}
 .b-spread.flipping .b-mech{z-index:2}.b-spread.flipping .b-leaf{z-index:3}
+/* Binder, all gray: textured vinyl cover (fine grain + a softer pebble), with the clear sheets letting it show through */
+.b-spread{background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='turbulence' baseFrequency='.18' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E"),
+  linear-gradient(135deg,#8a8f95,#71767c 55%,#62676d)}
+.b-page{background:linear-gradient(160deg,rgba(255,255,255,.22),rgba(255,255,255,.06) 45%,rgba(255,255,255,.16));
+  box-shadow:0 1px 4px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.45)}
+.b-page::before{background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(255,255,255,.06));border-color:rgba(255,255,255,.3)!important}
+.b-pk{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.38),inset 0 7px 6px -6px rgba(255,255,255,.6)}
+.b-num{color:rgba(255,255,255,.7)}
+.b-need{border-color:rgba(255,255,255,.5);color:rgba(255,255,255,.75)}
+.b-leaf .b-page{background:linear-gradient(160deg,#8d9298,#757a80 45%,#82878d)}
+.b-backside{background:linear-gradient(180deg,#868b91,#6f747a)!important}
