@@ -49,7 +49,7 @@ main{min-height:70vh;outline:none}
 /* Home */
 .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;align-items:center;padding-block:44px 36px}
 .hero .kick{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
-.hero h1{font-size:clamp(40px,6vw,76px);font-weight:800;margin:10px 0 16px}
+.hero h1{font-size:clamp(32px,5vw,62px);font-weight:800;margin:10px 0 16px}
 .hero h1 em{font-style:normal;color:var(--acc)}
 .hero p{color:#c3cad6;max-width:62ch;margin:0 0 18px}
 .pills{display:flex;flex-wrap:wrap;gap:8px}
@@ -734,3 +734,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-need{display:grid;place-items:center;width:78%;aspect-ratio:2.5/3.5;border:2px dashed #b9b2a3;border-radius:4px;color:#8c8475;text-align:center}
 .b-need b{font:700 clamp(18px,4vw,34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
 .b-num{position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font:600 11px var(--f-m);color:#8c8475}
+.hero h1 .nw{white-space:nowrap}

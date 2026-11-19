@@ -376,7 +376,7 @@
       <div class="go-card"><h3>Husker fans</h3><p>Dig into the history of NFL Huskers, check out the autographs, and see an epic Husker card collection.</p>
         <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football cards")}</div></div>
       <div class="go-card"><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, and the cards I'm still hunting.</p>
-        <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade on TCDb").replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
+        <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
       ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <div><span class="kick">Featured story</span><h3>${esc(st.title)}</h3><p>Jermaine's career from the Braves to World Series MVP, told through the best cards in my collection.</p><span class="go-more">Read the story →</span></div></a>` : ""}
     </section>`;
@@ -411,7 +411,7 @@
       <section class="hero">
         <div>
           <div class="kick">The collection of Ian Badeer</div>
-          <h1>Alex Gordon & Jermaine Dye <em>super collector</em></h1>
+          <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
           <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
