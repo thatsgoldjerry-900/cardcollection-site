@@ -56,6 +56,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner (PFA: 1988), Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom (PFA: 2002)
   - [ ] Tennessee Titans: Jon Clanton, Mike Erickson
   - [ ] Washington Commanders: Ardell Johnson (PFA: 1975), Elmer Dohrmann (PFA: 1938), Jason Schwab, Jerald Foster, Jerry Minnick (PFA: 1954)
+- [ ] **Next week (after the usage reset): the rest of the team logos on career timelines.** 63 teams have logos
+  (scripts/build_team_logos.py, run by the GitHub Action). 93 still don't, e.g. BC Lions, Birmingham Stallions, Canton
+  Bulldogs, Frankford Yellow Jackets: the Wikipedia summary it reads only shows freely licensed pictures. Plan: have the
+  script read each article's infobox logo instead, keep the football-only checks, and retry the names in data/team-logos.json
+  "tried". (Lions-style redesigns within one city still use the current logo.) Nothing for Ian to do but say go.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
