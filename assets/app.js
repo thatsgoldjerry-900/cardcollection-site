@@ -1251,7 +1251,7 @@
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${(() => { const T = DATA.site.tcdb || {}, pid = (T.players || {})[slug]; if (!pid) return "";
               const fill = (u) => u.replace("{pid}", pid).replace("{name}", encodeURIComponent(info.name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""))).replace("{member}", encodeURIComponent(T.member || ""));
-              return `<div class="tcdb-row">${T.collectionUrl ? `<a class="btn tcdb" href="${esc(fill(T.collectionUrl))}" target="_blank" rel="noopener">View my full ${esc(info.name)} collection on TCDb ↗</a>` : ""}${T.tradeUrl ? `<a class="btn tcdb" href="${esc(fill(T.tradeUrl))}" target="_blank" rel="noopener">View ${esc(info.name)} cards for trade ↗</a>` : ""}</div>`; })()}
+              return `<div class="tcdb-row"><span class="tcdb-badge tcdb-mark" aria-hidden="true">TCDb</span>${T.collectionUrl ? `<a class="btn tcdb" href="${esc(fill(T.collectionUrl))}" target="_blank" rel="noopener">View my full ${esc(info.name)} collection on TCDb ↗</a>` : ""}${T.tradeUrl ? `<a class="btn tcdb" href="${esc(fill(T.tradeUrl))}" target="_blank" rel="noopener">View my ${esc(info.name)} cards for trade ↗</a>` : ""}</div>`; })()}
             ${((DATA.site.playerExtras || {})[slug] || {}).about ? `<p class="pl-about">${esc(DATA.site.playerExtras[slug].about)}</p>` : ""}
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
