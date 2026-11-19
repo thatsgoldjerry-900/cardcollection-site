@@ -868,10 +868,11 @@
   // Rams; "*" marks an offseason or practice-squad stint) and from the teams named in my research notes.
   let NFLTEAMS = null, TEAMIDX = null, NFLTEAMS_LIST = null;
   // Team years from Pro Football Archives, for teams my notes name without a year (data/team-years.json).
-  let TEAMYEARS = {};
+  let TEAMYEARS = {}, TEAMLOGOS = {};   // TEAMLOGOS: logos by team name of the time (data/team-logos.json)
   const nflTeamData = () => NFLTEAMS || (NFLTEAMS = Promise.all([
     fetch("data/nfl-teams.json").then((r) => (r.ok ? r.json() : { teams: [] })).then((d) => d.teams || []).catch(() => []),
-    fetch("data/team-years.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMYEARS = d.players || {})).catch(() => {})]).then(([t]) => t));
+    fetch("data/team-years.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMYEARS = d.players || {})).catch(() => {}),
+    fetch("data/team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMLOGOS = d.byName || {})).catch(() => {})]).then(([t]) => t));
   // The year a research note gives for a team: the nearest date after the team's name in that sentence
   // ("Released by the Broncos on 8/24/94", "the Raiders in '92"), else the nearest one before it
   // ("Released 8/17/88 after the Bears"), stopping at another team's name. Two-digit years are 19xx or 20xx.
@@ -1072,7 +1073,9 @@
       const m = e.match(/^(.*?)\s*\(([^)]*)\)\s*(\*?)/); if (!m) return;
       m[2].split(/,\s*/).forEach((part) => { const v = yrs(part); if (v.length) spans.push({ lane: "p", a: v[0], b: v[v.length - 1], label: m[1].trim(), soft: !!m[3] }); });
     });
-    spans.forEach((x) => { if (x.lane === "p") x.team = teamOf(x.label); });
+    spans.forEach((x) => { if (x.lane !== "p") return; x.team = teamOf(x.label);
+      // The logo of the time: "St. Louis Rams" gets the St. Louis Rams logo, a CFL team its own logo.
+      const nm = x.label.replace(/\*$/, "").trim(); if (TEAMLOGOS[nm]) x.eraLogo = { logo: TEAMLOGOS[nm] }; });
     // Teams from my research notes (as on Huskers by NFL Team): a bar when the note gives a year, otherwise listed below.
     noteTeams.forEach(({ t, yrs: ys, pfa }) => {
       if (spans.some((x) => x.lane === "p" && x.team === t)) return;
@@ -1102,7 +1105,7 @@
     // Bars that would overlap go on another row.
     const rowsFor = (items, a, b) => { const ends = []; return items.map((it) => { let r = ends.findIndex((e) => e < a(it)); if (r < 0) r = ends.length; ends[r] = b(it); return r; }); };
     const bars = (lane) => { const it = spans.filter((x) => x.lane === lane).sort((x, y) => x.a - y.a), rows = rowsFor(it, (x) => x.a, (x) => x.b);
-      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.neb ? NEB : x.team)}${esc(x.label)}</div>`).join("")
+      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.neb ? NEB : x.eraLogo || x.team)}${esc(x.label)}</div>`).join("")
         + `<i class="tl-h" style="height:${(Math.max(-1, ...rows) + 1) * 30}px"></i>`; };
     const gap = Math.max(2, Math.ceil(n / 6)), ms = marks.slice().sort((x, y) => x.y - y.y), mrows = rowsFor(ms, (x) => x.y, (x) => x.y + gap);
     const cap = mrows.length ? Math.max(...mrows) + 1 : 0;

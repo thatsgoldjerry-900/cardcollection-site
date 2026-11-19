@@ -34,6 +34,8 @@ jobs:
           test -s data/lists/husker-pros.json && test -s data/lists/inventory-stats.json
       - name: Plain list and player pages + sitemap (crawlable, built from the lists above)
         run: python3 scripts/build_static_pages.py
+      - name: Team logos for career timelines (Wikipedia, cached; never fails the build)
+        run: python3 scripts/build_team_logos.py || true
       - name: Save the updated card list
         run: |
           if ! git diff --quiet data/; then
