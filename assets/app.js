@@ -1547,7 +1547,13 @@
     state.binderItems = L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }]));
   }
   // Rainbow pages: a soft glow of each parallel's color behind its card (around it, never on the scan).
-  const PAR_COLORS = [[/superfractor|rainbow|tie[- ]?dye|mojo|prismatic|kaleidoscope|disco|camo/i, "conic-gradient(from 0deg,#ff5f6d,#ffc371,#5ee7a0,#5aa9ff,#b07cff,#ff5f6d)"],
+  // An American flag (stripes, blue canton with star dots) for Independence Day and other stars-and-stripes parallels.
+  const FLAG = (() => { const h = 100 / 13; let svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 190 100' preserveAspectRatio='none'>`;
+    for (let k = 0; k < 13; k++) svg += `<rect y='${(k * h).toFixed(2)}' width='190' height='${(h + 0.2).toFixed(2)}' fill='${k % 2 ? "#fff" : "#b22234"}'/>`;
+    svg += `<rect width='76' height='${(7 * h).toFixed(2)}' fill='#3c3b6e'/>`;
+    for (let r = 0; r < 9; r++) for (let c = 0; c < (r % 2 ? 5 : 6); c++) svg += `<circle cx='${(6.3 + c * 12.6 + (r % 2 ? 6.3 : 0)).toFixed(1)}' cy='${(5.4 + r * 5.4).toFixed(1)}' r='1.7' fill='#fff'/>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(svg + "</svg>")}") center/cover no-repeat`; })();
+  const PAR_COLORS = [[/independence day|stars (and|&) stripes|red,? white,? (and|&) blue|\bpatriotic\b/i, FLAG], [/superfractor|rainbow|tie[- ]?dye|mojo|prismatic|kaleidoscope|disco|camo/i, "conic-gradient(from 0deg,#ff5f6d,#ffc371,#5ee7a0,#5aa9ff,#b07cff,#ff5f6d)"],
     [/printing plates?\b.*\bcyan|\bcyan\b/i, "#22c4e0"], [/\bmagenta\b/i, "#d6339a"], [/printing plates?\b.*\byellow|\byellow\b/i, "#f2d33a"],
     [/\bgold(en)?\b/i, "#e0b13a"], [/\borange\b/i, "#f28c28"], [/\bruby\b/i, "#c4123c"], [/\bred\b/i, "#e0453a"], [/\bpink\b/i, "#f06aa8"],
     [/\bsapphire\b/i, "#2a5fd6"], [/\b(light|sky) blue\b|\baqua\b|\bteal\b/i, "#3cc8d8"], [/\bblue\b/i, "#3b74e0"], [/\bemerald\b|\bgreen\b/i, "#2ea85a"],
@@ -1568,7 +1574,7 @@
       <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid rb-grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     document.querySelectorAll("#grid .cd[data-i]").forEach((el) => { const col = parColor(CARDS[+el.dataset.i]);
-      if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); } });
+      if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
     state.list = all;
   }
   function notFound() {
