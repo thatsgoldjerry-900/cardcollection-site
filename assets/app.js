@@ -494,7 +494,7 @@
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${(slug === "customs" ? CUSTOM_FILTERS : FILTERS).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
-          <div class="tools-r"><span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
+          <div class="tools-r">${binderBtn()}<span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
       </div></div>`;
@@ -1281,6 +1281,65 @@
   // A second or third copy of a card ("... 2nd (Sold to ...)") is the same card for rainbows and sets.
   const copyKey = (x) => x.name.toLowerCase().replace(/\s+(?:2nd|3rd|\d+th)\b(?:\s*\([^)]*\))?\s*$/, "").trim();
   let RAINBOWS = null;
+  /* ---------- Binder view: any card list as 9-pocket binder pages (two pages side by side on wide screens) ----------
+     Pockets frame the card; nothing is drawn on the scan. Letterman pages add empty "Need" pockets for missing letters. */
+  const BINDER = { items: [], k: 0, title: "" };
+  const binderBtn = () => `<button type="button" class="btn binder-btn" data-binder>${BINDER_ICON} Binder view</button>`;
+  const BINDER_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5zM5 3v18M9 7h6M9 11h6"/></svg>`;
+  function binderEl() {
+    let b = $("#binder"); if (b) return b;
+    document.body.insertAdjacentHTML("beforeend", `<div class="binder" id="binder" hidden role="dialog" aria-modal="true" aria-label="Binder view">
+      <div class="v-top"><button type="button" class="v-ic" id="b-back" aria-label="Close binder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="v-mid"><b id="b-title"></b><span id="b-pos"></span></div>
+        <div class="v-tools"><button type="button" class="v-ic" id="b-prev" aria-label="Previous page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="v-ic" id="b-next" aria-label="Next page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
+      <div class="b-stage" id="b-stage"></div></div>`);
+    b = $("#binder");
+    $("#b-back").onclick = () => closeBinder();
+    $("#b-prev").onclick = () => turn(-1); $("#b-next").onclick = () => turn(1);
+    let sx = null;
+    $("#b-stage").addEventListener("touchstart", (e) => (sx = e.touches[0].clientX), { passive: true });
+    $("#b-stage").addEventListener("touchend", (e) => { if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null; if (Math.abs(dx) > 50) turn(dx < 0 ? 1 : -1); });
+    $("#b-stage").addEventListener("click", (e) => {
+      const p = e.target.closest("[data-bk]"); if (!p) return;
+      const cards = BINDER.items.filter((x) => !x.empty), c = BINDER.items[+p.dataset.bk];
+      openViewer(cards.indexOf(c), cards);
+    });
+    addEventListener("keydown", (e) => { if (b.hidden || !$("#viewer").hidden) return; if (e.key === "ArrowLeft") turn(-1); else if (e.key === "ArrowRight") turn(1); else if (e.key === "Escape") closeBinder(); });
+    addEventListener("popstate", () => { if (!b.hidden && !(history.state && (history.state.binder || history.state.v))) hideBinder(); });
+    return b;
+  }
+  const perView = () => (window.matchMedia("(min-width: 900px)").matches ? 2 : 1);
+  function openBinder(items, title) {
+    const b = binderEl(); BINDER.items = items; BINDER.k = 0; BINDER.title = title;
+    b.hidden = false; document.body.style.overflow = "hidden"; drawBinder(0);
+    if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", location.href);
+  }
+  function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
+  function closeBinder() { if (history.state && history.state.binder) history.back(); else hideBinder(); }
+  function turn(d) {
+    const pages = Math.ceil(BINDER.items.length / 9), step = perView(), k = BINDER.k + d * step;
+    if (k < 0 || k >= pages) return;
+    BINDER.k = k; drawBinder(d);
+  }
+  function drawBinder(dir) {
+    const pages = Math.max(1, Math.ceil(BINDER.items.length / 9)), n = perView();
+    BINDER.k -= BINDER.k % n;
+    const pocket = (x, i) => !x ? `<div class="b-pk empty"></div>`
+      : x.empty ? `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`
+      : `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" src="${img(x.id, x.rk, 400)}" onload="this.classList.add('ok')"></button>`;
+    const page = (p) => p >= pages ? "" : `<div class="b-page${p % 2 ? " right" : ""}">${Array.from({ length: 9 }, (_, j) => pocket(BINDER.items[p * 9 + j], p * 9 + j)).join("")}<span class="b-num">${p + 1}</span></div>`;
+    $("#b-stage").innerHTML = `<div class="b-spread${dir > 0 ? " in-next" : dir < 0 ? " in-prev" : ""}${n === 2 ? " two" : ""}">${page(BINDER.k)}${n === 2 ? page(BINDER.k + 1) : ""}</div>`;
+    $("#b-title").textContent = BINDER.title;
+    const last = Math.min(pages, BINDER.k + n);
+    $("#b-pos").textContent = `${n === 2 && last > BINDER.k + 1 ? `Pages ${BINDER.k + 1}–${last}` : `Page ${BINDER.k + 1}`} of ${pages} · ${fmt(BINDER.items.filter((x) => !x.empty).length)} cards`;
+    $("#b-prev").disabled = BINDER.k === 0; $("#b-next").disabled = BINDER.k + n >= pages;
+  }
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-binder]")) return;
+    const items = state.binderItems && state.binderItems.length ? state.binderItems : state.list;
+    if (items.length) openBinder(items, ($("#app h1") || {}).textContent || "Binder");
+  });
+
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
     setNav(""); setTitle("Collection stats");
@@ -1385,7 +1444,7 @@
     setNav(sec.slug); setTitle(title);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} cards in my collection, in card-number order.</p></div>
+      <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} cards in my collection, in card-number order.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     state.list = all;
   }
@@ -1463,7 +1522,7 @@
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman sets</div><h1>All my ${esc(word)} sets</h1>
       <p>${fmt(sets.length)} sets, ${fmt(have)} of ${fmt(sets.length * word.length)} letters in my collection${done ? `, ${fmt(done)} complete` : ""}. Tap a name for that set's page.</p></div>
-      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
+      <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
     state.list = shown;
   }
   function lettersPage(id) {
@@ -1483,8 +1542,9 @@
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
       <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters in my collection${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
-      <div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.${L.word && letterSets(L.word).length > 1 ? ` <a href="#/word/${L.word.toLowerCase()}">See all my ${esc(L.word)} sets →</a>` : ""}</p></div></div>`;
+      <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.${L.word && letterSets(L.word).length > 1 ? ` <a href="#/word/${L.word.toLowerCase()}">See all my ${esc(L.word)} sets →</a>` : ""}</p></div></div>`;
     state.list = shown;
+    state.binderItems = L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }]));
   }
   function rainbow(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
@@ -1497,7 +1557,7 @@
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div>
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     state.list = all;
   }
@@ -1509,7 +1569,7 @@
 
   /* ---------- Router ---------- */
   function route() {
-    closeViewer(true);
+    closeViewer(true); hideBinder(); state.binderItems = null;
     const [path, qs = ""] = location.hash.replace(/^#\/?/, "").split("?");
     const h = decodeURIComponent(path).split("/");
     const [a, b, c] = h;

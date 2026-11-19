@@ -705,3 +705,32 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .st-rb a{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;text-decoration:none;color:var(--fg)}
 .st-rb span{font-size:12.5px;color:var(--mu)}.st-rb em{font-style:normal;font-size:12px;color:var(--acc);margin-left:auto}
 .fixnote.smart .sq{display:inline-block;padding:1px 8px;margin:2px 2px 0 0;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);font-size:12.5px}
+/* Binder view: 9-pocket pages; the pockets frame each card, nothing is drawn on the scan */
+.binder-btn{display:inline-flex;align-items:center;gap:6px}
+.binder-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.b-row{margin:4px 0 14px}
+.tools-r .binder-btn{margin-right:8px}
+.binder{position:fixed;inset:0;z-index:45;display:grid;grid-template-rows:auto 1fr;background:radial-gradient(ellipse at 50% 0%,#2a1f17,#120d09 70%);padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.binder[hidden]{display:none}
+.binder .v-ic:disabled{opacity:.3;cursor:default}
+.b-stage{display:flex;align-items:center;justify-content:center;min-height:0;padding:12px;overflow:hidden;touch-action:pan-y}
+.b-spread{display:flex;gap:0;max-height:100%;perspective:1600px}
+.b-spread.in-next .b-page{animation:b-next .35s ease-out}.b-spread.in-prev .b-page{animation:b-prev .35s ease-out}
+@keyframes b-next{from{transform:rotateY(-24deg) translateX(30px);opacity:.3}to{transform:none;opacity:1}}
+@keyframes b-prev{from{transform:rotateY(24deg) translateX(-30px);opacity:.3}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.b-spread .b-page{animation:none!important}}
+.b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2.2%;padding:4% 4% 6%;
+  width:min(calc(100vw - 24px),calc((100dvh - 110px) * .74));aspect-ratio:.74;border-radius:6px;
+  background:linear-gradient(180deg,#f4f1ea,#e6e1d6);box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.08)}
+.b-spread.two .b-page{width:min(calc(50vw - 24px),calc((100dvh - 110px) * .74))}
+.b-spread.two .b-page:first-child{border-radius:6px 0 0 6px;box-shadow:0 10px 40px rgba(0,0,0,.6),inset -10px 0 18px -10px rgba(0,0,0,.35)}
+.b-spread.two .b-page.right{border-radius:0 6px 6px 0;box-shadow:0 10px 40px rgba(0,0,0,.6),inset 10px 0 18px -10px rgba(0,0,0,.35)}
+.b-pk{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;min-height:0;padding:5%;border:0;border-radius:3px;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(210,214,222,.35));box-shadow:inset 0 0 0 1.5px rgba(150,160,175,.55),inset 0 2px 0 rgba(255,255,255,.9),0 1px 2px rgba(0,0,0,.12)}
+.b-pk img{max-width:100%;max-height:100%;object-fit:contain;border-radius:3px;opacity:0;transition:opacity .2s;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.b-pk img.ok{opacity:1}
+.b-pk.empty{cursor:default;box-shadow:inset 0 0 0 1.5px rgba(150,160,175,.35)}
+.b-pk.need{cursor:default}
+.b-need{display:grid;place-items:center;width:78%;aspect-ratio:2.5/3.5;border:2px dashed #b9b2a3;border-radius:4px;color:#8c8475;text-align:center}
+.b-need b{font:700 clamp(18px,4vw,34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+.b-num{position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font:600 11px var(--f-m);color:#8c8475}
