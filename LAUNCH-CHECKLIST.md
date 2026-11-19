@@ -61,6 +61,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   Bulldogs, Frankford Yellow Jackets: the Wikipedia summary it reads only shows freely licensed pictures. Plan: have the
   script read each article's infobox logo instead, keep the football-only checks, and retry the names in data/team-logos.json
   "tried". (Lions-style redesigns within one city still use the current logo.) Nothing for Ian to do but say go.
+- [ ] **Next week (after the usage reset): signature showcase on player pages (pilot).** Cut just the signature out of each
+  player's autograph scan, on screen only (files untouched, like the binder's slab crop), and show it on his player page on a
+  dark panel with a soft red glow. Plan: Claude hand-picks the signature area for ~10 players as a pilot; Ian looks and decides
+  how to scale (hand-picked for favorites, automatic ink detection for the rest, or a mix). Add a CLAUDE.md note that this
+  display-only crop is Ian's request.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
