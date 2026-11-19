@@ -62,6 +62,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Find out which 2015 Upper Deck Inscriptions Kenny Bell you sold.** The site shows two as still in your collection:
   the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
   and mark the sold one "Sold" in its file name and inventory.
+- [ ] **Send Claude TCDb player IDs** for the TCDb buttons on player pages ("View my full … collection on TCDb" and
+  "View … cards for trade"). On a player's TCDb page, the ID is the number after /pid/ in the address (Alex Gordon is 2167,
+  already done). Start with the players you care most about, e.g. Jermaine Dye.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.

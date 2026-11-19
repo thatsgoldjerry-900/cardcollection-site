@@ -599,7 +599,7 @@
     "_help": "TCDb links on player pages. \"member\": your TCDb name. \"players\": player page slug -> TCDb person ID (the number after /pid/ in a TCDb player link). A player with an ID gets \"View my full collection on TCDb\" (and a for-trade button once its link format is set in \"tradeUrl\").",
     "member": "DyeHardFan",
     "collectionUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=G",
-    "tradeUrl": "",
+    "tradeUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=S",
     "players": {
       "alex-gordon": 2167
     }
