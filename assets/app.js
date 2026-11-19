@@ -627,7 +627,7 @@
         <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${pct.toFixed(2)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
       </div>${showcase.length ? `<div class="ck-fan" aria-label="Autographs from this list">${showcase.map((c) => `<button type="button" class="cd" data-i="${c.i}" aria-label="${esc(c.name)}">
-        <img alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"></button>`).join("")}</div>` : ""}</div>
+        <img alt="" src="${img(c.id, c.rk, 400)}" onload="fanFit(this); this.classList.add('ok')"></button>`).join("")}</div>` : ""}</div>
       ${{ "nfl-tier-1-huskers": "tier-1", "nfl-tier-2-huskers": "tier-2", "pro-football-huskers": "tier-3" }[page.slug]
         ? `<p class="ck-plain"><a href="nfl-huskers/${{ "nfl-tier-1-huskers": "tier-1", "nfl-tier-2-huskers": "tier-2", "pro-football-huskers": "tier-3" }[page.slug]}.html">Plain version of this list to share or cite →</a></p>` : ""}
       <nav class="ck-others" aria-label="Other autograph lists">${CK_PAGES.filter((x) => x !== page && CHECK.lists.some((m) => m.slug === x.slug)).map((x) => `<a href="#/checklist${x.path}">${esc(x.label)} →</a>`).join("")}</nav>
@@ -665,7 +665,7 @@
       setTimeout(() => {
         const pre = new Image();
         pre.onload = pre.onerror = () => {
-          im.src = pre.src; btn.dataset.i = next.i; btn.setAttribute("aria-label", next.name);
+          im.src = pre.src; fanFit(im, pre); btn.dataset.i = next.i; btn.setAttribute("aria-label", next.name);
           shown[slot] = next; btn.classList.remove("swap"); slot = (slot + 1) % 3; busy = false;
         };
         pre.src = img(next.id, next.rk, 400);
@@ -1513,6 +1513,13 @@
       <div class="c-head"><div class="kick">Scanned Collection Stats</div><h1>Players by number of scans</h1><p>${fmt(rows.length)} players, most scans first. These are the cards scanned into the site, not every card I own. Tap a player to see his scans.</p></div>
       <section class="st-box"><ol class="st-bars st-rank">${rows.map(([n, k], i) => `<li><a href="#/search/${encodeURIComponent("=" + n)}"><b><span class="st-r">${i + 1}</span>${esc(n)}</b><i style="--w:${(k / max) * 100}%"></i><em>${fmt(k)}</em></a></li>`).join("")}</ol></section></div>`;
   }
+
+  // List-page fan: a horizontal card turns sideways (bottom to the right) and its frame takes the card's own shape, so no bars.
+  window.fanFit = (im, src = im) => {
+    const w = src.naturalWidth, h = src.naturalHeight, land = w > h * 1.05, fr = im.parentNode;
+    im.classList.toggle("land", land);
+    fr.style.aspectRatio = land ? `${h} / ${w}` : ""; im.style.setProperty("--r", land ? w / h : 1);
+  };
 
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
