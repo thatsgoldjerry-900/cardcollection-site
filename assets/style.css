@@ -770,8 +770,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @keyframes flip-shade{0%,100%{opacity:0}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.b-leaf,.b-leaf .face::after{animation:none!important}}
 /* Binder, realistic: white vinyl cover, clear plastic 9-pocket sheets, steel ring mechanism */
-.b-spread{padding:16px;border-radius:12px;background:linear-gradient(135deg,#fdfdfb,#ebebe7 60%,#e2e2dd);
-  box-shadow:0 22px 60px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.08),inset 0 0 0 6px #f6f6f3,inset 0 0 0 7px rgba(0,0,0,.06)}
+.b-spread{padding:16px;border-radius:12px;background:linear-gradient(135deg,#8a8f95,#71767c 55%,#62676d);
+  box-shadow:0 22px 60px rgba(0,0,0,.6),inset 0 0 0 1px rgba(0,0,0,.25),inset 0 0 0 6px #7c8187,inset 0 0 0 7px rgba(0,0,0,.18)}
 .b-spread:not(.two){padding-left:58px}
 .b-spread.two::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:40px;transform:translateX(-50%);
   background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 40%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.10) 60%,rgba(0,0,0,0))}
@@ -786,7 +786,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-page::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6.5%;border-right:1px solid rgba(150,160,170,.35);background:linear-gradient(90deg,rgba(255,255,255,.35),rgba(255,255,255,.1))}
 .b-spread.two .b-page:first-child::before{left:auto;right:0;border-right:0;border-left:1px solid rgba(150,160,170,.35)}
 .b-hole{position:absolute;left:3.3%;width:min(17px,3.6%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(circle at 50% 35%,#5d5a55,#8d8a84 70%,#a9a69f);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 0 2px rgba(255,255,255,.7),0 0 0 3px rgba(140,150,160,.45)}
+  background:radial-gradient(circle at 50% 35%,#4c5056,#6c7177 70%,#7d8288);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 0 2px rgba(255,255,255,.7),0 0 0 3px rgba(140,150,160,.45)}
 .b-spread.two .b-page:first-child .b-hole{left:auto;right:3.3%;transform:translate(50%,-50%)}
 .b-leaf .b-hole{display:none}
 .b-pk{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-width:0;min-height:0;padding:3%;border:0;border-radius:2px;cursor:pointer;
