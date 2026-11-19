@@ -421,7 +421,7 @@
       <section class="stats" aria-label="Collection stats">
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
         <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
-        <a class="stat link" href="#/stats"><b>📊</b><span>All collection stats →</span></a>
+        <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
       </section>
@@ -1387,7 +1387,7 @@
 
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
-    setNav(""); setTitle("Collection stats");
+    setNav(""); setTitle("Scanned Collection Stats");
     const cards = CARDS.filter((c) => !c.photo && SECTIONS[c.si].kind !== "want"), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
     const bar = (label, n, max, href) => `<li>${href ? `<a href="${href}">` : "<span>"}<b>${esc(label)}</b><i style="--w:${max ? (n / max) * 100 : 0}%"></i><em>${fmt(n)}</em>${href ? "</a>" : "</span>"}</li>`;
     // By card year
@@ -1418,7 +1418,7 @@
     const players = new Map(); cards.forEach((c) => c.title && players.set(plainTitle(c), (players.get(plainTitle(c)) || 0) + 1));
     const top = [...players.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10), pmax = Math.max(1, ...top.map((x) => x[1]));
     $("#app").innerHTML = `<div class="wrap stp">
-      <div class="c-head"><div class="kick">Whole collection</div><h1>Collection stats</h1><p>${fmt(N)} scanned cards, by the numbers. Tap a bar to see those cards.</p></div>
+      <div class="c-head"><div class="kick">Whole collection</div><h1>Scanned Collection Stats</h1><p>${fmt(N)} scanned cards, by the numbers. Tap a bar to see those cards.</p></div>
       <div class="st-tiles"><div><b>${fmt(N)}</b><span>cards</span></div><div><b>${fmt(has("one"))}</b><span>one-of-ones</span></div>
         <div><b>${fmt(has("auto"))}</b><span>autographs (${pct(has("auto")).toFixed(0)}%)</span></div><div><b>${fmt(players.size)}</b><span>players</span></div>
         <div><b>${years.length ? years[0] : "–"}</b><span>oldest card year</span></div></div>
