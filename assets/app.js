@@ -425,7 +425,7 @@
         <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
-        <div class="stat"><b>${fmt(ones)}</b><span>one-of-ones</span></div>
+        <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
       ${startHere()}
@@ -450,7 +450,7 @@
   }
 
   function collection(slug, gslug) {
-    const virtual = slug === "customs" || slug === "all" || slug === "search";
+    const virtual = slug === "customs" || slug === "all" || slug === "search" || slug === "rarest";
     const si = SECTIONS.findIndex((x) => x.slug === slug);
     const sec = virtual ? null : SECTIONS[si];
     if (!virtual && !sec) return notFound();
@@ -470,10 +470,14 @@
     } else if (slug === "customs") {
       base = CARDS.filter((c) => c.tags.has("custom")); title = "Custom Cards"; kick = "Made by hand"; color = "gold";
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
+    } else if (slug === "rarest") {
+      // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
+      base = CARDS.filter((c) => c.one || c.serial); title = "Rarest Cards"; kick = "Whole collection";
+      blurb = "Every numbered card I've scanned, rarest first: one-of-ones, then /2, /3 and up.";
     } else {
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
-    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
+    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
         <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
         ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
@@ -1830,13 +1834,14 @@
     // Moving between groups of the same collection keeps them.
     const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
-    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || "new"; }
+    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); }
     state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     if (!a) home();
     else if (a === "c") collection(b, c);
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
+    else if (a === "rarest") collection("rarest");
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
