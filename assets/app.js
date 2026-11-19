@@ -1320,10 +1320,13 @@
   // The binder has its own address (…?binder=3 = page 3), so a binder page can be shared or reloaded.
   const withBinder = (hash, page) => { const [path, qs = ""] = hash.split("?"); const prm = new URLSearchParams(qs); prm.delete("binder");
     if (page) prm.set("binder", page); const q = prm.toString().replace(/%2C/g, ","); return path + (q ? "?" + q : ""); };
-  // Decas and booklets don't fit a 9-pocket page, so they're left out of the binder.
-  const NOT_IN_BINDER = /\b(deca|booklets?)\b/i;
+  // Anything that doesn't fit a 9-pocket page stays out of the binder: decas and booklets, sizes written out
+  // (3x5, 4x6, 5x7, 5x7.75, 8x10, 11x14…), oversized cards, box loaders and box toppers, postcards, posters,
+  // Fatheads, photos, magazines and programs.
+  const NOT_IN_BINDER = /\b(deca|booklets?|oversized?|box ?loaders?|box ?toppers?|post ?cards?|posters?|fathead|photos?|magazines?|programs?)\b|\b\d{1,2}(\.\d+)?\s*[x×]\s*\d{1,2}(\.\d+)?\b/i;
   function openBinder(items, title, page, shared) {
-    items = items.filter((x) => x.empty || !NOT_IN_BINDER.test(x.name || ""));
+    const fits = (n) => !NOT_IN_BINDER.test(n.replace(/\b2\.5\s*[x×]\s*3\.5\b/gi, ""));   // a standard 2.5x3.5 card still fits
+    items = items.filter((x) => x.empty || fits(x.name || ""));
     const b = binderEl(); BINDER.items = items; BINDER.title = title;
     BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
     if (shared) history.replaceState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));

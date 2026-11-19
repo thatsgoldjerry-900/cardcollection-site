@@ -20,7 +20,8 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
 - **Scans are never altered.** Effects go around the card (viewer auras), not on it. Display is clean;
   only saved images get the IANBADEER.COM watermark.
   In binder view only, graded cards are cropped on screen to show the card without its slab (Ian's request; files untouched),
-  and decas and booklets are left out of the binder.
+  and anything that doesn't fit a 9-pocket page (decas, booklets, 3x5/4x6/5x7/8x10 and other written sizes, oversized cards,
+  box loaders/toppers, postcards, posters, Fatheads, photos, magazines, programs) is left out of the binder.
 - **Email:** never write Ian's address in the page or repo as plain text (it's encoded in config and
   built on click).
 - **Wording:** "Super Collection" is two words everywhere. Ian likes consistency and uniformity.
