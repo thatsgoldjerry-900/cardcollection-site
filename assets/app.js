@@ -1353,20 +1353,32 @@
   let BEST_TIMER = 0;
   function bestShow(cards) {
     clearInterval(BEST_TIMER);
-    const pool = cards.map((c) => [bestScore(c), c]).filter(([n]) => n >= 9).sort((a, b) => b[0] - a[0]).slice(0, 80).map((x) => x[1]);
+    const pool = cards.map((c) => [bestScore(c), c]).filter(([n]) => n >= 9).sort((a, b) => b[0] - a[0]).map((x) => x[1])
+      .filter((c, k, a) => a.findIndex((x) => x.name === c.name) === k).slice(0, 80);   // a card filed in two collections counts once
     for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
-    const box = () => $("#best"), N = Math.min(6, pool.length);
-    let next = N;
-    const fill = () => { const b = box(); if (!b) return; b.innerHTML = pool.slice(0, N).map((c) => `<div class="best-slot">${cardHTML(c)}</div>`).join(""); };
-    setTimeout(fill, 0);
+    // As many cards as fit: two full rows on wide screens (three on phones), from the grid's column count.
+    const box = () => $("#best");
+    let N = 6, next = 0;
+    const fit = () => { const b = box(); if (!b) return;
+      b.innerHTML = '<div class="best-slot"></div>';
+      const cols = getComputedStyle(b).gridTemplateColumns.split(" ").filter(Boolean).length || 2;
+      N = Math.min(pool.length, cols * (cols <= 2 ? 3 : 2));
+      b.innerHTML = pool.slice(next % pool.length).concat(pool).slice(0, N).map((c) => `<div class="best-slot">${cardHTML(c)}</div>`).join("");
+      next += N; };
+    setTimeout(fit, 0);
+    let rt = 0; const onResize = () => { if (!box()) return removeEventListener("resize", onResize); clearTimeout(rt); rt = setTimeout(fit, 250); };
+    addEventListener("resize", onResize);
     state.list = pool;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches || pool.length <= N) return pool;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || pool.length <= 6) return pool;
     let slot = 0;
     BEST_TIMER = setInterval(() => {
       const b = box(); if (!b) return clearInterval(BEST_TIMER);
       if (!$("#viewer").hidden || document.hidden) return;
-      const el = b.children[slot % N]; slot += 1 + Math.floor(Math.random() * (N - 1));
-      const c = pool[next++ % pool.length];
+      if (pool.length <= N) return;
+      const el = b.children[slot % N]; slot += 1 + Math.floor(Math.random() * Math.max(1, N - 1));
+      const onScreen = new Set([...b.querySelectorAll(".cd[data-i]")].map((x) => +x.dataset.i));
+      let c = pool[next++ % pool.length], tries = 0;
+      while (onScreen.has(c.i) && tries++ < pool.length) c = pool[next++ % pool.length];
       el.classList.add("out");
       setTimeout(() => { el.innerHTML = cardHTML(c); el.classList.remove("out"); el.classList.add("in"); setTimeout(() => el.classList.remove("in"), 700); }, 600);
     }, 2600);
