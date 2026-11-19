@@ -1514,11 +1514,12 @@
       <section class="st-box"><ol class="st-bars st-rank">${rows.map(([n, k], i) => `<li><a href="#/search/${encodeURIComponent("=" + n)}"><b><span class="st-r">${i + 1}</span>${esc(n)}</b><i style="--w:${(k / max) * 100}%"></i><em>${fmt(k)}</em></a></li>`).join("")}</ol></section></div>`;
   }
 
-  // List-page fan: a horizontal card stays upright in a wider, horizontal frame (no bars), zoomed in slightly so its
-  // shape sits closer to the upright cards (a little is trimmed off the sides, on screen only).
+  // List-page fan: a horizontal card stays upright in a frame of its own shape (no bars, nothing trimmed), made wider
+  // than the upright cards so it shows at a similar size.
   window.fanFit = (im, src = im) => {
-    const land = src.naturalWidth > src.naturalHeight * 1.05;
-    im.classList.toggle("land", land); im.parentNode.classList.toggle("land", land);
+    const w = src.naturalWidth, h = src.naturalHeight, land = w > h * 1.05, fr = im.parentNode;
+    im.classList.toggle("land", land); fr.classList.toggle("land", land);
+    fr.style.aspectRatio = land ? `${w} / ${h}` : ""; fr.style.setProperty("--ar", land ? (w / h).toFixed(3) : "");
   };
 
   /* ---------- Collection stats (#/stats) ---------- */
