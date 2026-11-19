@@ -248,7 +248,7 @@ def player_page(p, row, info, l, idx, updated):
         lead = f"{name} played basketball at Nebraska{yr} and reached the NBA."
     if pos and sport == "football": lead = lead.replace(" played college football", f", a {pos.lower()}, played college football", 1)
     facts = [("Position", pos), ("Last Nebraska season", year)] + ([("NFL games", games)] if "NFL Games Played" in c else []) + \
-            ([("Path to the pros", path)] if path and p["list"] != "nfl-tier-1-huskers" else [("Other leagues / notes", path)] if path else [])
+            ([("Career notes", path)] if path and p["list"] != "nfl-tier-1-huskers" else [("Other leagues / notes", path)] if path else [])
     sec = w.get("sections") or {}
     for head in ("Personal information", "Career information", "MLB debut", "Last MLB appearance", "MLB statistics", "NBA statistics"):
         facts += [(r[0], r[1]) for r in sec.get(head, []) if len(r) == 2]
@@ -311,7 +311,7 @@ def list_page(slug, info, l, slug_of, updated):
                    + f'<td class="opt">{esc(r[c["Career Notes"]]) if "Career Notes" in c else ""}</td>'
                    + (f'<td class="note">{paras(notes.get(r[0], ""))}</td>' if notes else "") + "</tr>")
     head = ("<tr><th>Player</th><th>Last Nebraska season</th>" + ("<th>NFL games</th>" if has_games else "")
-            + '<th class="opt">Path to the pros</th>' + ("<th>Why he's on this list</th>" if notes else "") + "</tr>")
+            + '<th class="opt">Career notes</th>' + ("<th>Why he's on this list</th>" if notes else "") + "</tr>")
     body = f"""<div class="kick"><a href="./">NFL Husker lists</a> · <a href="../">{SITE}</a></div>
 <h1>{esc(name)}</h1>
 <p>{esc(meaning)} {len(rows)} players.</p>
