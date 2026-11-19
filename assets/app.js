@@ -549,7 +549,7 @@
   function withPlayers() {
     const cfg = DATA.site.customsPhotos || {}, vids = (cfg.videos || []).filter((v) => v.id);
     const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
-      <img loading="lazy" decoding="async" alt="" src="${img(p.id, p.rk, 700)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
+      <img decoding="async" alt="" src="${img(p.id, p.rk, 500)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
     const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2>
       <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(40, PHOTOS.length * 9)}s">
         ${PHOTOS.map(tile).join("")}<div class="mq-dup" aria-hidden="true">${PHOTOS.map(tile).join("")}</div></div></section>` : "";
@@ -1815,7 +1815,17 @@
 
   /* ---------- Router ---------- */
   let LAST_BASE = null;
+  // Sliding strips (.mq) start moving only once their pictures have loaded, so nothing changes width mid-slide
+  // (that shoved the whole strip and made it stutter). Gives up waiting after 4 seconds.
+  function readyMarquees() {
+    document.querySelectorAll(".mq:not(.ready)").forEach((m) => {
+      const imgs = [...m.querySelectorAll("img")];
+      const loaded = imgs.map((i) => (i.complete ? 0 : new Promise((r) => { i.addEventListener("load", r, { once: true }); i.addEventListener("error", r, { once: true }); })));
+      Promise.race([Promise.all(loaded), new Promise((r) => setTimeout(r, 4000))]).then(() => m.classList.add("ready"));
+    });
+  }
   function route() {
+    requestAnimationFrame(() => requestAnimationFrame(readyMarquees));
     const bpage = +(new URLSearchParams(location.hash.split("?")[1] || "").get("binder") || 0), base = withBinder(location.hash, 0);
     if (base === LAST_BASE && $("#app h1")) {   // only the binder part changed (e.g. Back out of the binder): keep the page as it is
       closeViewer(true);

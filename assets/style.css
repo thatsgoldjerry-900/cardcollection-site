@@ -276,13 +276,17 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hub-name.nobio{color:var(--fg)}
 .hub-row.need .hub-name.nobio{color:#c3cad6;font-weight:500}
 /* Newest additions: a slowly scrolling strip that pauses under the mouse or keyboard */
-.mq{overflow:hidden;margin:0 calc(-1 * var(--gut)) 44px;padding:6px var(--gut) 10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
-.mq-track{display:flex;gap:16px;width:max-content;animation:mq var(--dur,160s) linear infinite}
+.mq{position:relative;overflow:hidden;margin:0 calc(-1 * var(--gut)) 44px;padding:6px var(--gut) 10px}
+/* Soft fade at both edges, drawn as still overlays (a mask on the moving strip made it redraw every frame) */
+.mq::before,.mq::after{content:"";position:absolute;top:0;bottom:0;width:4%;min-width:18px;z-index:2;pointer-events:none}
+.mq::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}.mq::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.mq-track{display:flex;gap:16px;width:max-content;animation:mq var(--dur,160s) linear infinite;animation-play-state:paused;will-change:transform;backface-visibility:hidden}
+.mq.ready .mq-track{animation-play-state:running}
 .mq-dup{display:flex;gap:16px}
-.mq:hover .mq-track,.mq:focus-within .mq-track{animation-play-state:paused}
+.mq.ready:hover .mq-track,.mq.ready:focus-within .mq-track{animation-play-state:paused}
 .mq .cd{width:150px;flex:none}
 @keyframes mq{to{transform:translateX(calc(-50% - 8px))}}
-@media (prefers-reduced-motion:reduce){.mq{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.mq-track{animation:none}.mq-dup{display:none}}
+@media (prefers-reduced-motion:reduce){.mq{overflow-x:auto}.mq::before,.mq::after{display:none}.mq-track{animation:none}.mq-dup{display:none}}
 /* Player pages offered in search results */
 .pmatch{margin:0 0 22px}
 .pmatch h4{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin:0 0 10px}
@@ -862,3 +866,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
    them (the costliest thing to redraw while scrolling on phones); sideways-scrolling rows keep their scroll to themselves. */
 .grid > .cd{content-visibility:auto;contain-intrinsic-size:auto 320px}
 .v-more,.v-actions,.mgroups,.tl-scroll,.st-years,#nav{overscroll-behavior-x:contain}
+.band .mq::before{background:linear-gradient(90deg,var(--band),transparent)}.band .mq::after{background:linear-gradient(270deg,var(--band),transparent)}
