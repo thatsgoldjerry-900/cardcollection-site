@@ -842,3 +842,10 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .th-sort span{font-size:.8em;opacity:.7}
 #ck-sort{margin:0}
 .ck .tools-r{flex-wrap:wrap;gap:8px}
+/* Career timeline: team logos on pro bars, and teams with no year */
+.tl-bar{display:flex;align-items:center;gap:5px}
+.tl-logo{width:18px;height:18px;flex:none;object-fit:contain;background:#fff;border-radius:50%;padding:1px}
+.tl-undated{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 4px;font-size:13px}
+.tl-undated span{color:var(--mu)}
+.tl-team{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);color:var(--fg);text-decoration:none;font-weight:600}
+.tl-team:hover{border-color:var(--acc)}

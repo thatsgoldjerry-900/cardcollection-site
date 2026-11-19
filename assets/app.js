@@ -1042,8 +1042,11 @@
   /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
   const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
     [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
-  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro }) {
-    const NOW = new Date().getFullYear(), spans = [], marks = [];
+  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro, noteTeams = [] }) {
+    const NOW = new Date().getFullYear(), spans = [], marks = [], undated = [];
+    // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
+    const teamOf = (name) => (NFLTEAMS_LIST || []).find((t) => t.names.some((n) => name.toLowerCase().startsWith(n.toLowerCase())));
+    const logo = (t) => t && t.logo ? `<img class="tl-logo" alt="" loading="lazy" src="${esc(t.logo)}" onerror="this.remove()">` : "";
     const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
     // College: Nebraska and any other school, else his final Nebraska season.
     schools.forEach(([n, y]) => { const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
@@ -1053,6 +1056,14 @@
     careerLines.forEach((e) => {
       const m = e.match(/^(.*?)\s*\(([^)]*)\)\s*(\*?)/); if (!m) return;
       m[2].split(/,\s*/).forEach((part) => { const v = yrs(part); if (v.length) spans.push({ lane: "p", a: v[0], b: v[v.length - 1], label: m[1].trim(), soft: !!m[3] }); });
+    });
+    spans.forEach((x) => { if (x.lane === "p") x.team = teamOf(x.label); });
+    // Teams from my research notes (as on Huskers by NFL Team): a bar when the note gives a year, otherwise listed below.
+    noteTeams.forEach(({ t, yrs: ys }) => {
+      if (spans.some((x) => x.lane === "p" && x.team === t)) return;
+      const v = yrs(ys);
+      if (v.length) spans.push({ lane: "p", a: Math.min(...v), b: Math.max(...v), label: t.name, team: t, soft: /offseason|practice/i.test(ys), fromNote: true });
+      else if (!undated.includes(t)) undated.push(t);
     });
     const d = String(draft || "").match(/((?:19|20)\d{2})\s*[:/]?\s*(.*)/);
     if (d) marks.push({ y: +d[1], label: "NFL draft", sub: d[2].replace(/(\d+)(?:st|nd|rd|th) round,?\s*/i, "Rd $1, ").replace(/(\d+)(?:st|nd|rd|th) overall pick/i, "#$1").replace(/,\s*$/, ""), kind: "d" });
@@ -1068,7 +1079,7 @@
     }
     if (hof) marks.push({ y: +hof.class, label: "Nebraska Hall of Fame", kind: "h" });
     if (pro) marks.push({ y: +pro, label: "Pro Football Hall of Fame", kind: "hp" });
-    if (spans.length + marks.length < 2) return "";
+    if (spans.length + marks.length + undated.length < 2) return "";
     const all = [...spans.flatMap((x) => [x.a, x.b]), ...marks.map((x) => x.y)].filter((y) => y > 1850 && y <= NOW + 1);
     if (!all.length) return "";
     // Positions are percentages, so a short career fills the width; long careers get a minimum spacing and scroll.
@@ -1076,7 +1087,7 @@
     // Bars that would overlap go on another row.
     const rowsFor = (items, a, b) => { const ends = []; return items.map((it) => { let r = ends.findIndex((e) => e < a(it)); if (r < 0) r = ends.length; ends[r] = b(it); return r; }); };
     const bars = (lane) => { const it = spans.filter((x) => x.lane === lane).sort((x, y) => x.a - y.a), rows = rowsFor(it, (x) => x.a, (x) => x.b);
-      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}">${esc(x.label)}</div>`).join("")
+      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : ""}">${logo(x.team)}${esc(x.label)}</div>`).join("")
         + `<i class="tl-h" style="height:${(Math.max(-1, ...rows) + 1) * 30}px"></i>`; };
     const gap = Math.max(2, Math.ceil(n / 6)), ms = marks.slice().sort((x, y) => x.y - y.y), mrows = rowsFor(ms, (x) => x.y, (x) => x.y + gap);
     const cap = mrows.length ? Math.max(...mrows) + 1 : 0;
@@ -1085,7 +1096,8 @@
       ${spans.some((x) => x.lane === "c") ? `<div class="tl-lane"><b class="tl-k">College</b><div class="tl-track">${bars("c")}</div></div>` : ""}
       ${spans.some((x) => x.lane === "p") ? `<div class="tl-lane"><b class="tl-k">Pro</b><div class="tl-track">${bars("p")}</div></div>` : ""}
       ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}><i></i><span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
-    </div></div><p class="note">From Wikipedia, my research notes and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
+    </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
+    <p class="note">From Wikipedia, my research notes and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
   }
   let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
@@ -1196,6 +1208,7 @@
         ${football ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
+          noteTeams: NFLTEAMS_LIST ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs }))); })() : [],
           draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
         <div class="pl-grid">
 
