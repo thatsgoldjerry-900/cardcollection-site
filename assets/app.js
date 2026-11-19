@@ -413,7 +413,6 @@
     $("#app").innerHTML = `<div class="wrap">
       <section class="hero">
         <div>
-          <div class="kick">The collection of Ian Badeer</div>
           <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
           <p>${esc(s.intro).replace("a Husker autograph I need", `<a class="inl" href="#/checklist">a Husker autograph I need</a>`)}</p>
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
