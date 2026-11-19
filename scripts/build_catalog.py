@@ -52,9 +52,14 @@ def list_folder(fid, rk, depth=0):
     return files
 
 BACK = re.compile(r"\s*(\((?:back|back single|inside back)\)|\bback)\s*$", re.I)
+# "Back" before a trailing note also marks a back: "… Custom Back (Gifted to Austin Allen)" pairs with
+# "… Custom (Gifted to Austin Allen)".
+BACK_NOTE = re.compile(r"\s+back(?=\s*\([^()]*\)\s*$)", re.I)
 def base_name(name):
     stem = re.sub(r"\.[a-z0-9]+$", "", name, flags=re.I)
-    return BACK.sub("", stem).strip(), bool(BACK.search(stem))
+    if BACK.search(stem): return BACK.sub("", stem).strip(), True
+    if BACK_NOTE.search(stem): return re.sub(r"\s+", " ", BACK_NOTE.sub("", stem)).strip(), True
+    return stem.strip(), False
 
 # ---------- Reading one parent folder through the Drive API (the robot) ----------
 # Layout:  Parent / Section folder / Group folder / scans   (deeper subfolders join their group)
