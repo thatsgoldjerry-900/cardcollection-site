@@ -3,7 +3,7 @@
   "use strict";
   const $ = (s, r = document) => r.querySelector(s);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const fmt = (n) => n.toLocaleString("en-US");
+  const NUMFMT = new Intl.NumberFormat("en-US"), fmt = (n) => NUMFMT.format(n);   // one formatter, reused (toLocaleString rebuilds it every call)
 
   // Image URLs straight from Google Drive. A page can override this (used by the offline preview).
   const img = window.IMG_SRC || ((id, rk, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}${rk ? `?resourcekey=${rk}` : ""}`);
