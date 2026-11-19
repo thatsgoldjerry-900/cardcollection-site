@@ -289,7 +289,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · All scans © Ian Badeer. Please ask before reusing them.</span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · All scans © Ian Badeer. Please ask before reusing them.</span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -303,7 +303,7 @@
   /* ---------- Contact: my address is only put together when someone clicks, so scrapers can't read it ---------- */
   const myEmail = () => { const c = DATA.site.contact || {}; try { return c.code ? atob(c.code).split("").reverse().join("") : ""; } catch (e) { return ""; } };
   // An email button (opens the visitor's mail app with the subject and message filled in), plus a fallback
-  // for people without a mail app: copy my address, or the Google Form when one is set up.
+  // for people without a mail app: copy my email, or the Google Form when one is set up.
   // A Google Form, filled in from a form on this page, delivers messages to me (config: contact.googleForm =
   // {"id": "<form id from its link>", "fields": {"name": "entry…", "email": "entry…", "item": "entry…", "message": "entry…"}}).
   const gform = () => { const g = (DATA.site.contact || {}).googleForm || {}; return g.id && g.fields && g.fields.email && g.fields.message ? g : null; };
@@ -312,9 +312,9 @@
   function contactHTML(label, subject, body, item) {
     const data = `data-subject="${esc(subject)}" data-body="${esc(body)}" data-item="${esc(item || "")}"`;
     if (gform()) return `<div class="cta"><button type="button" class="btn have-btn" data-form ${data}>✉ ${esc(label)}</button>
-      <small class="cta-alt">Prefer email? <button type="button" class="linkish" data-mail ${data}>Email me</button> · <button type="button" class="linkish" data-copymail>Copy my address</button></small></div>`;
+      <small class="cta-alt">Prefer email? <button type="button" class="linkish" data-mail ${data}>Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></small></div>`;
     return `<div class="cta"><button type="button" class="btn have-btn" data-mail ${data}>✉ ${esc(label)}</button>
-      <small class="cta-alt">No email app? <button type="button" class="linkish" data-copymail>Copy my address</button></small></div>`;
+      <small class="cta-alt">No email app? <button type="button" class="linkish" data-copymail>Copy my email</button></small></div>`;
   }
   function openForm(item, body) {
     const g = gform(); if (!g) return;
