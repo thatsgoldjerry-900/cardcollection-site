@@ -1379,7 +1379,7 @@
   const NOT_IN_BINDER = /\b(deca|booklets?|oversized?|box ?loaders?|box ?toppers?|post ?cards?|posters?|fathead|photos?|magazines?|programs?)\b|\b\d{1,2}(\.\d+)?\s*[x×]\s*\d{1,2}(\.\d+)?\b/i;
   function openBinder(items, title, page, shared) {
     const fits = (n) => !NOT_IN_BINDER.test(n.replace(/\b2\.5\s*[x×]\s*3\.5\b/gi, ""));   // a standard 2.5x3.5 card still fits
-    items = items.filter((x) => x.empty || fits(x.name || ""));
+    items = items.filter((x) => x.empty || (fits(x.name || "") && !isWant(x)));   // Want List cards aren't in my binder
     const b = binderEl(); BINDER.items = items; BINDER.title = title;
     BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
     if (shared) history.replaceState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
@@ -1599,7 +1599,7 @@
     // By collection
     const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x)).sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
     // Leaderboards
-    const rb = new Map(); cards.forEach((c) => { const k = rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
+    const rb = new Map(); cards.forEach((c) => { const k = !isWant(c) && rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
     const rainbows = [...rb.values()].filter((l) => l.length > 2).sort((a, b) => b.length - a.length).slice(0, 10);
     const players = new Map(); cards.forEach((c) => c.title && players.set(plainTitle(c), (players.get(plainTitle(c)) || 0) + 1));
     const top = [...players.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10), pmax = Math.max(1, ...top.map((x) => x[1]));
@@ -1626,7 +1626,8 @@
     const kind = (c.tags.has("auto") ? "a" : "") + (c.tags.has("relic") ? "r" : "");
     return [m[1], m[2].replace(PARALLEL_WORDS, "").toLowerCase(), m[3].toLowerCase(), norm(c.title), kind].join("|");
   }
-  function rainbowOf(c) {
+  const isWant = (x) => !!(x && SECTIONS[x.si] && SECTIONS[x.si].kind === "want");
+  function rainbowOf(c, withWants = false) {
     if (!RAINBOWS) {
       RAINBOWS = new Map();
       const seen = new Set();   // a card uploaded twice counts once
@@ -1637,6 +1638,8 @@
     }
     const k = rainbowKey(c); let all = (k && RAINBOWS.get(k)) || [];
     if (!all.includes(c)) all = all.map((x) => (copyKey(x) === copyKey(c) ? c : x));   // opened the duplicate copy
+    // Want List cards aren't part of a rainbow (they're shown as "Need it" placeholders on the rainbow page instead).
+    all = all.filter((x) => withWants || !isWant(x));
     // 1/1 first, then lowest print run to highest, then unnumbered versions.
     return all.slice().sort((a, b) => (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
   }
@@ -1792,19 +1795,26 @@
   function rainbow(id) {
     const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
     const all = rainbowOf(c); if (all.length < 2) return notFound();
+    // Want List versions of this rainbow I don't have yet: "Need it" placeholders in their rarity spot.
+    const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
+    const needs = rainbowOf(c, true).filter((x) => isWant(x) && !all.some((y) => haveKey(y) === haveKey(x)));
+    const both = [...all, ...needs].sort((a, b) => (b.one - a.one) || (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
+    const needHTML = (x) => `<div class="cd need-cd" data-need="${x.i}" aria-label="Need: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>Need it</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
+      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}</div></div>`;
     // The rainbow's name: the set, plus its insert name with the colors taken off ("Five Star - Golden Graphs").
     // Only when every version shares it (no plain base card among them).
     const pars = all.map((x) => (x.par || "").replace(PARALLEL_WORDS, "").trim());
     const common = pars.every(Boolean) ? pars.slice().sort((p, q) => p.length - q.length).find((p) => pars.every((q) => q.toLowerCase().startsWith(p.toLowerCase()))) : "";
-    const sec = SECTIONS[c.si], base = c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "") + (common ? ` - ${common}` : "");
+    const sec = SECTIONS[(isWant(c) ? all[0] : c).si], base = c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "") + (common ? ` - ${common}` : "");
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions scanned, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
-      <div class="grid rb-grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
-    document.querySelectorAll("#grid .cd[data-i]").forEach((el) => { const col = parColor(CARDS[+el.dataset.i]);
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions scanned${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
+      <div class="grid rb-grid" id="grid">${both.map((x) => (isWant(x) ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
+    document.querySelectorAll("#grid .cd[data-i], #grid .cd[data-need]").forEach((el) => { const col = parColor(CARDS[+(el.dataset.i ?? el.dataset.need)]);
       if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
     state.list = all;
+    state.binderItems = both.map((x) => (isWant(x) ? { empty: true, label: x.one ? "1/1" : x.serial ? "/" + x.serial : "Need" } : x));
   }
   function notFound() {
     setTitle("Page not found");
