@@ -753,3 +753,18 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .st-rank{list-style:none}
 .st-rank .st-r{display:inline-block;min-width:2.4em;color:var(--mu);font:600 11.5px var(--f-m)}
 .tcdb-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.btn.tcdb{white-space:normal;text-align:left}
+/* Binder: horizontal cards turn sideways in their pockets, bottom of the card toward the right */
+.b-pk{container-type:size}
+.b-pk img.land{max-width:100cqh;max-height:100cqw;transform:rotate(-90deg)}
+/* Binder: metal three-ring spine between two open pages */
+.b-spread{position:relative}
+.b-rings{position:absolute;top:2%;bottom:2%;left:50%;width:56px;transform:translateX(-50%);display:flex;flex-direction:column;justify-content:space-around;align-items:center;pointer-events:none;z-index:2}
+.b-rings::before{content:"";position:absolute;top:4%;bottom:4%;left:50%;width:22px;transform:translateX(-50%);border-radius:6px;
+  background:linear-gradient(90deg,#4a4f55,#c9cdd2 30%,#f4f6f8 48%,#9ba1a8 70%,#3f444a);box-shadow:0 0 10px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.25)}
+.b-rings i{position:relative;width:56px;height:20px;border-radius:12px;border:5px solid transparent;
+  background:linear-gradient(#e8ebee,#e8ebee) padding-box,linear-gradient(180deg,#ffffff,#b9bec4 35%,#5d636a 60%,#d7dbe0) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) border-box,linear-gradient(#000 0 0) padding-box;-webkit-mask-composite:xor;mask-composite:exclude;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
+/* Punched holes on each page by the rings */
+.b-spread.two .b-page{background-image:radial-gradient(circle at 98.5% 16.7%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 98.5% 50%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 98.5% 83.3%,#2a2520 0 5px,transparent 6px),linear-gradient(180deg,#f4f1ea,#e6e1d6)}
+.b-spread.two .b-page.right{background-image:radial-gradient(circle at 1.5% 16.7%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 1.5% 50%,#2a2520 0 5px,transparent 6px),radial-gradient(circle at 1.5% 83.3%,#2a2520 0 5px,transparent 6px),linear-gradient(180deg,#f4f1ea,#e6e1d6)}

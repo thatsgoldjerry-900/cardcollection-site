@@ -1332,9 +1332,11 @@
     BINDER.k -= BINDER.k % n;
     const pocket = (x, i) => !x ? `<div class="b-pk empty"></div>`
       : x.empty ? `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`
-      : `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" src="${img(x.id, x.rk, 400)}" onload="this.classList.add('ok')"></button>`;
+      : `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" src="${img(x.id, x.rk, 400)}" onload="if (this.naturalWidth > this.naturalHeight * 1.05) this.classList.add('land'); this.classList.add('ok')"></button>`;
     const page = (p) => p >= pages ? "" : `<div class="b-page${p % 2 ? " right" : ""}">${Array.from({ length: 9 }, (_, j) => pocket(BINDER.items[p * 9 + j], p * 9 + j)).join("")}<span class="b-num">${p + 1}</span></div>`;
-    $("#b-stage").innerHTML = `<div class="b-spread${dir > 0 ? " in-next" : dir < 0 ? " in-prev" : ""}${n === 2 ? " two" : ""}">${page(BINDER.k)}${n === 2 ? page(BINDER.k + 1) : ""}</div>`;
+    // Two pages open: a metal three-ring binder down the middle.
+    const both = n === 2 && BINDER.k + 1 < pages;
+    $("#b-stage").innerHTML = `<div class="b-spread${dir > 0 ? " in-next" : dir < 0 ? " in-prev" : ""}${n === 2 ? " two" : ""}">${page(BINDER.k)}${n === 2 ? page(BINDER.k + 1) : ""}${both ? `<div class="b-rings" aria-hidden="true"><i></i><i></i><i></i></div>` : ""}</div>`;
     $("#b-title").textContent = BINDER.title;
     const last = Math.min(pages, BINDER.k + n);
     $("#b-pos").textContent = `${n === 2 && last > BINDER.k + 1 ? `Pages ${BINDER.k + 1}–${last}` : `Page ${BINDER.k + 1}`} of ${pages} · ${fmt(BINDER.items.filter((x) => !x.empty).length)} scans`;
