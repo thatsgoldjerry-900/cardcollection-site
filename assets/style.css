@@ -752,3 +752,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .st-more{float:right;font-size:12.5px;font-weight:500;color:var(--acc);text-decoration:none}
 .st-rank{list-style:none}
 .st-rank .st-r{display:inline-block;min-width:2.4em;color:var(--mu);font:600 11.5px var(--f-m)}
+.tcdb-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.btn.tcdb{white-space:normal;text-align:left}

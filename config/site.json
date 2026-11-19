@@ -594,5 +594,14 @@
   },
   "_playerExtrasHelp": "\"playerExtras\": {\"player-page-slug\": {\"about\": \"a sentence or two\"}} adds an About line to that player's page and plain page.",
   "letterWords": {},
-  "_letterWordsHelp": "\"letterWords\": {\"<year>|<player>|<card number letters>\": \"WORD\"} sets the word a letterman set spells when the site can't work it out (it tries the player's last or full name, CORNHUSKERS, HUSKERS, NEBRASKA, ROOKIE + last name, and last name + KANSAS CITY ROYALS / ROYALS)."
+  "_letterWordsHelp": "\"letterWords\": {\"<year>|<player>|<card number letters>\": \"WORD\"} sets the word a letterman set spells when the site can't work it out (it tries the player's last or full name, CORNHUSKERS, HUSKERS, NEBRASKA, ROOKIE + last name, and last name + KANSAS CITY ROYALS / ROYALS).",
+  "tcdb": {
+    "_help": "TCDb links on player pages. \"member\": your TCDb name. \"players\": player page slug -> TCDb person ID (the number after /pid/ in a TCDb player link). A player with an ID gets \"View my full collection on TCDb\" (and a for-trade button once its link format is set in \"tradeUrl\").",
+    "member": "DyeHardFan",
+    "collectionUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=G",
+    "tradeUrl": "",
+    "players": {
+      "alex-gordon": 2167
+    }
+  }
 }
