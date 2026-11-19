@@ -64,8 +64,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   and mark the sold one "Sold" in its file name and inventory.
 - [ ] **TCDb player IDs for the TCDb buttons on player pages.** Football is done (453 Huskers, from your saved TCDb
   Top Names pages), plus Gordon and Dye. Still to do: save and upload your **baseball** and **basketball** Top Names pages
-  the same way (Save Page As, HTML only). Mike Anderson has two TCDb entries and the search couldn't tell which is the
-  Husker: send his TCDb link if you know it. Still to decide: show "View … cards for trade" for every player with an ID
+  the same way (Save Page As, HTML only). The football Mike Anderson has no TCDb cards (no button, as intended); the baseball
+  Mike Anderson gets synced with the baseball pages. Still to decide: show "View … cards for trade" for every player with an ID
   (may open an empty list), or only for players you name.
 
 ## Before the switch
