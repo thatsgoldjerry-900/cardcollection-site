@@ -110,7 +110,7 @@
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
     const d30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
     if (NEW_CUTOFF < d30) NEW_CUTOFF = dates[0];
-    $("#q").placeholder = `Search ${fmt(CARDS.length)} cards… try “Triple Threads”`;
+    $("#q").placeholder = `Search ${fmt(CARDS.length)} scans… try “Triple Threads”`;
     renderNav(); renderFoot(); route();
   }
 
@@ -402,13 +402,13 @@
         <div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <h3>${esc(sec.title)}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
-        <div class="tm"><span>${fmt(list.length)} cards</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
+        <div class="tm"><span>${fmt(list.length)} scans</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
     }).join("");
     function customsTile() {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
       const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
       const step = Math.max(1, Math.floor(list.length / 4)), four = [0, 1, 2, 3].map((k) => list[k * step]).filter(Boolean);
       return `<a class="tile c-gold" href="#/customs"><div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
-        <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} cards</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
+        <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
     }
     $("#app").innerHTML = `<div class="wrap">
       <section class="hero">
@@ -506,7 +506,7 @@
       state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
       state.list = sortList(list, state.sort); state.shown = 0;
       $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${slug === "customs" && state.filters.has("nonsport") ? "Non-sport customs, like my Sonic the Hedgehog cards, are coming soon." : state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
-      $("#count").textContent = `${fmt(state.list.length)} card${state.list.length === 1 ? "" : "s"}`;
+      $("#count").textContent = `${fmt(state.list.length)} scan${state.list.length === 1 ? "" : "s"}`;
       more();
     };
     $(".chips").addEventListener("click", (e) => {
@@ -1014,7 +1014,7 @@
       $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
         <a class="back" href="#/player/${esc(slug)}">← ${esc(info.name)}</a>
         <div class="c-head"><div class="kick">Every card I have</div><h1>${esc(info.name)}</h1>
-        <p>${fmt(all.length)} card${all.length === 1 ? "" : "s"} in my collection, oldest first${where.length > 1 ? `, from ${where.map(esc).join(", ")}` : ""}.</p></div>
+        <p>${fmt(all.length)} scan${all.length === 1 ? "" : "s"} in my collection, oldest first${where.length > 1 ? `, from ${where.map(esc).join(", ")}` : ""}.</p></div>
         <div class="grid" id="grid">${all.map((c) => cardHTML(c)).join("")}</div></div></div>`;
       state.list = all;
     });
@@ -1191,9 +1191,9 @@
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>
         ${moreHuskers(slug, info, p)}
-        ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} cards in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
+        ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} scans in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
-        ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See all ${n === 1 ? "" : fmt(n) + " "}card${n === 1 ? "" : "s"} I have of ${esc(info.name)} →</a></p>` : ""; })()}
+        ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See ${n === 1 ? "the 1 scan" : `all ${fmt(n)} scans`} of ${esc(info.name)} in my collection →</a></p>` : ""; })()}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
       </div>`;
@@ -1260,7 +1260,7 @@
         <div class="ds-ch-h"><span class="ds-num">${String(n + 1).padStart(2, "0")}</span><div><h2>${esc(ch.team)}</h2><span class="ds-yrs">${esc(ch.years)}</span></div></div>
         ${ch.paragraphs.map((p, k) => { const two = cards.slice(k * 2, k * 2 + 2);
           return `<div class="ds-row${k % 2 ? " flip" : ""}"><p>${esc(p)}</p>${two.length ? `<div class="ds-cards">${two.map(card).join("")}</div>` : ""}</div>`; }).join("")}
-        ${gi >= 0 ? `<a class="ds-all" href="#/c/${sec.slug}/${sec.groups[gi].slug}">See all ${fmt(sec.groups[gi].count)} of my ${esc(ch.group)} cards →</a>` : ""}
+        ${gi >= 0 ? `<a class="ds-all" href="#/c/${sec.slug}/${sec.groups[gi].slug}">See all ${fmt(sec.groups[gi].count)} scans of my ${esc(ch.group)} cards →</a>` : ""}
       </section>`;
     }).join("");
     $("#app").innerHTML = `<div class="wrap ds c-royal">
@@ -1270,7 +1270,7 @@
       <div class="ds-intro">${(st.intro || []).map((p) => `<p>${esc(p)}</p>`).join("")}</div>
       ${hi.length ? `<section class="ds-hi"><h2 class="sub-h">Favorite pieces</h2><div class="ds-hi-grid">${hi.map((h) => `<figure>${card(h.c)}<figcaption>${esc(h.cap)}</figcaption></figure>`).join("")}</div></section>` : ""}
       ${chapters}
-      <p class="ds-end"><a href="#/c/${sec.slug}">Browse all ${fmt(mine.length)} of my Jermaine Dye cards →</a></p>
+      <p class="ds-end"><a href="#/c/${sec.slug}">Browse all ${fmt(mine.length)} scans of my Jermaine Dye cards →</a></p>
     </div>`;
     state.list = shownCards;   // the card viewer steps through the cards on this page
   }
@@ -1334,7 +1334,7 @@
     $("#b-stage").innerHTML = `<div class="b-spread${dir > 0 ? " in-next" : dir < 0 ? " in-prev" : ""}${n === 2 ? " two" : ""}">${page(BINDER.k)}${n === 2 ? page(BINDER.k + 1) : ""}</div>`;
     $("#b-title").textContent = BINDER.title;
     const last = Math.min(pages, BINDER.k + n);
-    $("#b-pos").textContent = `${n === 2 && last > BINDER.k + 1 ? `Pages ${BINDER.k + 1}–${last}` : `Page ${BINDER.k + 1}`} of ${pages} · ${fmt(BINDER.items.filter((x) => !x.empty).length)} cards`;
+    $("#b-pos").textContent = `${n === 2 && last > BINDER.k + 1 ? `Pages ${BINDER.k + 1}–${last}` : `Page ${BINDER.k + 1}`} of ${pages} · ${fmt(BINDER.items.filter((x) => !x.empty).length)} scans`;
     $("#b-prev").disabled = BINDER.k === 0; $("#b-next").disabled = BINDER.k + n >= pages;
   }
   document.addEventListener("click", (e) => {
@@ -1390,11 +1390,11 @@
 
   // Every player in the scans, most cards first (#/stats/players). Each row opens a search for that player.
   function statsPlayers() {
-    setNav(""); setTitle("Players by number of cards");
+    setNav(""); setTitle("Players by number of scans");
     const m = new Map(); CARDS.forEach((c) => { if (c.photo || !c.title) return; const n = plainTitle(c); if (n) m.set(n, (m.get(n) || 0) + 1); });
     const rows = [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])), max = rows.length ? rows[0][1] : 1;
     $("#app").innerHTML = `<div class="wrap stp"><a class="back" href="#/stats">← Scanned Collection Stats</a>
-      <div class="c-head"><div class="kick">Scanned Collection Stats</div><h1>Players by number of cards</h1><p>${fmt(rows.length)} players, most cards first. Tap a player to see his cards.</p></div>
+      <div class="c-head"><div class="kick">Scanned Collection Stats</div><h1>Players by number of scans</h1><p>${fmt(rows.length)} players, most scans first. These are the cards scanned into the site, not every card I own. Tap a player to see his scans.</p></div>
       <section class="st-box"><ol class="st-bars st-rank">${rows.map(([n, k], i) => `<li><a href="#/search/${encodeURIComponent("=" + n)}"><b><span class="st-r">${i + 1}</span>${esc(n)}</b><i style="--w:${(k / max) * 100}%"></i><em>${fmt(k)}</em></a></li>`).join("")}</ol></section></div>`;
   }
 
@@ -1407,7 +1407,7 @@
     const byYear = new Map(); cards.forEach((c) => c.year < 9999 && byYear.set(c.year, (byYear.get(c.year) || 0) + 1));
     const years = [...byYear.keys()].sort((a, b) => a - b), ymax = Math.max(1, ...byYear.values());
     const yearCols = years.length ? Array.from({ length: years[years.length - 1] - years[0] + 1 }, (_, k) => years[0] + k)
-      .map((y) => `<a class="st-col" href="#/search/${y}" title="${y}: ${fmt(byYear.get(y) || 0)} cards"><i style="--h:${((byYear.get(y) || 0) / ymax) * 100}%"></i>${y % (years[years.length - 1] - years[0] > 40 ? 20 : 5) === 0 ? `<span>${y}</span>` : ""}</a>`).join("") : "";
+      .map((y) => `<a class="st-col" href="#/search/${y}" title="${y}: ${fmt(byYear.get(y) || 0)} scans"><i style="--h:${((byYear.get(y) || 0) / ymax) * 100}%"></i>${y % (years[years.length - 1] - years[0] > 40 ? 20 : 5) === 0 ? `<span>${y}</span>` : ""}</a>`).join("") : "";
     // What kind of card
     const has = (t) => cards.filter((c) => c.tags.has(t)).length;
     const both = cards.filter((c) => c.tags.has("auto") && c.tags.has("relic")).length;
@@ -1427,19 +1427,19 @@
     const players = new Map(); cards.forEach((c) => c.title && players.set(plainTitle(c), (players.get(plainTitle(c)) || 0) + 1));
     const top = [...players.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10), pmax = Math.max(1, ...top.map((x) => x[1]));
     $("#app").innerHTML = `<div class="wrap stp">
-      <div class="c-head"><div class="kick">Whole collection</div><h1>Scanned Collection Stats</h1><p>${fmt(N)} scanned cards, by the numbers. Tap a bar to see those cards.</p></div>
-      <div class="st-tiles"><a href="#/all"><b>${fmt(N)}</b><span>cards →</span></a><a href="#/search/1/1"><b>${fmt(has("one"))}</b><span>one-of-ones →</span></a>
+      <div class="c-head"><div class="kick">Whole collection</div><h1>Scanned Collection Stats</h1><p>${fmt(N)} scans, by the numbers. These count the cards scanned into the site, not every card I own. Tap a number or bar to see those scans.</p></div>
+      <div class="st-tiles"><a href="#/all"><b>${fmt(N)}</b><span>scans →</span></a><a href="#/search/1/1"><b>${fmt(has("one"))}</b><span>one-of-ones →</span></a>
         <a href="#/search/autos"><b>${fmt(has("auto"))}</b><span>autographs (${pct(has("auto")).toFixed(0)}%) →</span></a><a href="#/stats/players"><b>${fmt(players.size)}</b><span>players →</span></a>
         <a href="#/all?sort=old"><b>${years.length ? years[0] : "–"}</b><span>oldest card year →</span></a></div>
-      <section class="st-box"><h2>Cards by year</h2><div class="st-years">${yearCols}</div></section>
+      <section class="st-box"><h2>Scans by card year</h2><div class="st-years">${yearCols}</div></section>
       <div class="st-two">
         <section class="st-box"><h2>What kind of card</h2><ul class="st-bars">${kinds.map(([l, n, h]) => bar(l, n, kmax, h)).join("")}</ul></section>
         <section class="st-box"><h2>Print runs</h2><ul class="st-bars">${tiers.map(([l, n, h]) => bar(l, n, tmax, h)).join("")}</ul></section>
         <section class="st-box"><h2>By collection</h2><ul class="st-bars">${secs.map(([x, n]) => bar(x.title, n, smax, "#/c/" + x.slug)).join("")}</ul></section>
-        <section class="st-box"><h2>Most cards of one player <a class="st-more" href="#/stats/players">All ${fmt(players.size)} →</a></h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent("=" + n))).join("")}</ul></section>
+        <section class="st-box"><h2>Most scans of one player <a class="st-more" href="#/stats/players">All ${fmt(players.size)} →</a></h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent("=" + n))).join("")}</ul></section>
       </div>
       <section class="st-box best"><h2>🔥 Best of the Best</h2><p class="best-sub">1/1s, bat knobs, laundry tags, nameplates, buttons, SSPs and the best patches, rotating through.</p><div class="grid small best-grid" id="best"></div></section>
-      <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions</em></a></li>`).join("")}</ol></section>
+      <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions scanned</em></a></li>`).join("")}</ol></section>
     </div>`;
     bestShow(cards);
   }
@@ -1496,7 +1496,7 @@
     setNav(sec.slug); setTitle(title);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} cards in my collection, in card-number order.</p></div><div class="b-row">${binderBtn()}</div>
+      <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} scans, in card-number order.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     state.list = all;
   }
@@ -1573,7 +1573,7 @@
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman sets</div><h1>All my ${esc(word)} sets</h1>
-      <p>${fmt(sets.length)} sets, ${fmt(have)} of ${fmt(sets.length * word.length)} letters in my collection${done ? `, ${fmt(done)} complete` : ""}. Tap a name for that set's page.</p></div>
+      <p>${fmt(sets.length)} sets, ${fmt(have)} of ${fmt(sets.length * word.length)} letters scanned${done ? `, ${fmt(done)} complete` : ""}. Tap a name for that set's page.</p></div>
       <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
     state.list = shown;
   }
@@ -1593,7 +1593,7 @@
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
-      <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters in my collection${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
+      <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters scanned${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
       <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.${L.word && letterSets(L.word).length > 1 ? ` <a href="#/word/${L.word.toLowerCase()}">See all my ${esc(L.word)} sets →</a>` : ""}</p></div></div>`;
     state.list = shown;
     state.binderItems = L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }]));
@@ -1623,7 +1623,7 @@
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions in my collection, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} versions scanned, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid rb-grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
     document.querySelectorAll("#grid .cd[data-i]").forEach((el) => { const col = parColor(CARDS[+el.dataset.i]);
       if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
@@ -1871,8 +1871,8 @@
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
-    $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)})</button>` : "")
-      + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)})</button>` : "");
+    $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)} scan${bySet.length === 1 ? "" : "s"})</button>` : "")
+      + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)} scan${byPlayer.length === 1 ? "" : "s"})</button>` : "");
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     const rb = rainbowOf(c);
     const lt = lettersOf(c);

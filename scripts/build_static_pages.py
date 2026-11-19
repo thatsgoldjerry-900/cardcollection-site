@@ -264,7 +264,7 @@ def player_page(p, row, info, l, idx, updated):
     up = f'<a href="{tier_page}">{esc(label)}</a>' if tier_page else esc(label)
     links = [f'<a href="../#/player/{esc(p["slug"])}">His cards and full page on {SITE}</a>']
     own = idx.get("own:" + norm(name))
-    if own: links.insert(0, f'<a href="../#/c/{esc(own[0])}">All {len(own[2]):,} cards in Ian&#39;s {esc(own[1])} collection</a>')
+    if own: links.insert(0, f'<a href="../#/c/{esc(own[0])}">All {len(own[2]):,} scans in Ian&#39;s {esc(own[1])} collection</a>')
     if src.startswith("http"): links.append(f'<a href="{esc(src)}" rel="nofollow">Career stats</a>')
     if w.get("pfr") and w.get("pfr") != src: links.append(f'<a href="{esc(w["pfr"])}" rel="nofollow">Pro Football Reference</a>')
     if w.get("url"): links.append(f'<a href="{esc(w["url"])}">Wikipedia</a>')
