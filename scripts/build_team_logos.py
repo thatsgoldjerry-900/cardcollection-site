@@ -11,7 +11,7 @@ import json, os, re, sys, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "team-logos.json")
-UA = {"User-Agent": "IanBadeer.com card site build (team logos; slow, cached)"}
+UA = {"User-Agent": "IanBadeerCardSite/1.0 (https://thatsgoldjerry-900.github.io/cardcollection-site/; team logos, cached) python-urllib", "Api-User-Agent": "IanBadeerCardSite/1.0 (https://thatsgoldjerry-900.github.io/cardcollection-site/)"}
 teams = json.load(open(os.path.join(ROOT, "data", "nfl-teams.json")))["teams"]
 players = json.load(open(os.path.join(ROOT, "data", "players.json")))["players"]
 cache = json.load(open(OUT)) if os.path.exists(OUT) else {"byName": {}, "tried": []}
@@ -33,15 +33,17 @@ for p in players:
             if n in current or any(n.lower().startswith(x.lower()) for x in current): continue
             names.add(n)
 
+class Failed(Exception): pass
 def summary(title):
+    """The article summary; None when there's no such article; raises Failed on any other problem (not cached)."""
     u = "https://en.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(title.replace(" ", "_"))
     try:
         return json.load(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=20))
     except urllib.error.HTTPError as e:
-        if e.code == 429: raise
-        return None
-    except Exception:
-        return None
+        if e.code == 404: return None
+        raise Failed(f"HTTP {e.code}")
+    except Exception as e:
+        raise Failed(str(e))
 
 def logo_for(name):
     tries = ([f"History of the {name}"] if name in nfl_names else []) + [name, f"{name} (American football)", f"{name} (Canadian football)", f"{name} (football)"]
@@ -63,8 +65,8 @@ found = 0
 for n in todo:
     try:
         u = logo_for(n)
-    except urllib.error.HTTPError:
-        print("Wikipedia asked us to wait; stopping for now (the next run continues).", file=sys.stderr)
+    except Failed as e:
+        print(f"Wikipedia lookup failed ({e}); stopping for now, the next run continues.", file=sys.stderr)
         break
     if u: cache["byName"][n] = u; found += 1
     else: cache["tried"].append(n)

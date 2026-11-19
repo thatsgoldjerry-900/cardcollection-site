@@ -1,8 +1,1 @@
-{
- "_help": "Team logos for career timelines, from Wikipedia (scripts/build_team_logos.py): past NFL team names get the logo of that era, other leagues' teams their logo. 'tried' = names with no logo found (not looked up again).",
- "byName": {},
- "tried": [
-  "Abilene Ruff Riders",
-  "Akron Pros"
- ]
-}
+{"byName": {}, "tried": []}
