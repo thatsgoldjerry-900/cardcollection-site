@@ -1061,6 +1061,7 @@
     // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
     const teamOf = (name) => (NFLTEAMS_LIST || []).find((t) => t.names.some((n) => name.toLowerCase().startsWith(n.toLowerCase())));
     const logo = (t) => t && t.logo ? `<img class="tl-logo" alt="" loading="lazy" src="${esc(t.logo)}" onerror="this.remove()">` : "";
+    const NEB = { logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" };
     const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
     // College: Nebraska and any other school, else his final Nebraska season.
     schools.forEach(([n, y]) => { const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
@@ -1101,7 +1102,7 @@
     // Bars that would overlap go on another row.
     const rowsFor = (items, a, b) => { const ends = []; return items.map((it) => { let r = ends.findIndex((e) => e < a(it)); if (r < 0) r = ends.length; ends[r] = b(it); return r; }); };
     const bars = (lane) => { const it = spans.filter((x) => x.lane === lane).sort((x, y) => x.a - y.a), rows = rowsFor(it, (x) => x.a, (x) => x.b);
-      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.team)}${esc(x.label)}</div>`).join("")
+      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.neb ? NEB : x.team)}${esc(x.label)}</div>`).join("")
         + `<i class="tl-h" style="height:${(Math.max(-1, ...rows) + 1) * 30}px"></i>`; };
     const gap = Math.max(2, Math.ceil(n / 6)), ms = marks.slice().sort((x, y) => x.y - y.y), mrows = rowsFor(ms, (x) => x.y, (x) => x.y + gap);
     const cap = mrows.length ? Math.max(...mrows) + 1 : 0;
@@ -1109,7 +1110,7 @@
       <div class="tl-years">${Array.from({ length: n }, (_, k) => lo + k).filter((y) => y % step === 0 || (y === lo && (Math.ceil(lo / step) * step - lo) * 2 >= step)).map((y) => `<span style="left:${px(y)}%">${y}</span>`).join("")}</div>
       ${spans.some((x) => x.lane === "c") ? `<div class="tl-lane"><b class="tl-k">College</b><div class="tl-track">${bars("c")}</div></div>` : ""}
       ${spans.some((x) => x.lane === "p") ? `<div class="tl-lane"><b class="tl-k">Pro</b><div class="tl-track">${bars("p")}</div></div>` : ""}
-      ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}><i></i><span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
+      ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}>${x.kind === "c" ? `<i class="tl-n">${logo(NEB)}</i>` : "<i></i>"}<span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
     </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
     <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? `, <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""} and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
   }

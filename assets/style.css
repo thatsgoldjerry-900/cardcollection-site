@@ -850,3 +850,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .tl-team{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);color:var(--fg);text-decoration:none;font-weight:600}
 .tl-team:hover{border-color:var(--acc)}
 .pm-t .src{color:var(--mu);font-size:.92em}
+/* Nebraska "N" on the college bar and the final-season mark */
+.tl-m i.tl-n{width:18px;height:18px;margin-top:0;background:#fff;display:grid;place-items:center;overflow:hidden}
+.tl-m i.tl-n .tl-logo{width:16px;height:16px;padding:0}
