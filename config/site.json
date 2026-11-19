@@ -601,7 +601,8 @@
     "collectionUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=G",
     "tradeUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=S",
     "players": {
-      "alex-gordon": 2167
+      "alex-gordon": 2167,
+      "jermaine-dye": 1638
     }
   }
 }
