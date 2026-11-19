@@ -853,3 +853,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Nebraska "N" on the college bar and the final-season mark */
 .tl-m i.tl-n{width:20px;height:20px;margin-top:0;background:#fff;border-radius:4px;display:grid;place-items:center}
 .tl-m i.tl-n .tl-logo{width:18px;height:18px;padding:1px}
+/* Home stats: Nebraska N on the right of the NFL Husker Chase tile */
+.stat.has-logo{position:relative;padding-right:64px}
+.stat-logo{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:42px;height:42px;object-fit:contain}
+@media (max-width:700px){.stat.has-logo{padding-right:48px}.stat-logo{right:10px;width:32px;height:32px}}

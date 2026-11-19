@@ -422,7 +422,7 @@
         ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 600)}" srcset="${img(feat.id, feat.rk, 400)} 400w, ${img(feat.id, feat.rk, 600)} 600w, ${img(feat.id, feat.rk, 800)} 800w" sizes="(max-width: 800px) 200px, 320px" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
       <section class="stats" aria-label="Collection stats">
-        <a class="stat link" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span></a>
+        <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></a>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
