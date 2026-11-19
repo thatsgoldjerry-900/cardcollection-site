@@ -63,8 +63,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
   and mark the sold one "Sold" in its file name and inventory.
 - [x] **TCDb player IDs for the TCDb buttons on player pages.** Done from your saved TCDb Top Names pages: football (453),
-  baseball (all 47) and basketball (all 14), plus Dye. Every player with an ID gets both buttons. The baseball Mike Anderson
-  (TCDb 76240) gets connected when he's added to your MLB list.
+  baseball (all 47) and basketball (all 14), plus Dye. Every player with an ID gets both buttons.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
