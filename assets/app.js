@@ -1320,7 +1320,10 @@
   // The binder has its own address (…?binder=3 = page 3), so a binder page can be shared or reloaded.
   const withBinder = (hash, page) => { const [path, qs = ""] = hash.split("?"); const prm = new URLSearchParams(qs); prm.delete("binder");
     if (page) prm.set("binder", page); const q = prm.toString().replace(/%2C/g, ","); return path + (q ? "?" + q : ""); };
+  // Decas and booklets don't fit a 9-pocket page, so they're left out of the binder.
+  const NOT_IN_BINDER = /\b(deca|booklets?)\b/i;
   function openBinder(items, title, page, shared) {
+    items = items.filter((x) => x.empty || !NOT_IN_BINDER.test(x.name || ""));
     const b = binderEl(); BINDER.items = items; BINDER.title = title;
     BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
     if (shared) history.replaceState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
@@ -1389,7 +1392,11 @@
   function pocketHTML(x, i) {
     if (!x) return `<div class="b-pk empty"></div>`;
     if (x.empty) return `<div class="b-pk need"><div class="b-need"><b>${esc(x.label || "?")}</b><small>Need</small></div></div>`;
-    const u = pocketURL(x), m = BIMG.get(u), cls = m ? `ok${m[0] > m[1] * 1.05 ? " land" : ""}` : "";
+    const u = pocketURL(x), m = BIMG.get(u);
+    // A graded card shows just the card in the pocket: the slab and its label are cropped away on screen
+    // (the scan itself is untouched). Based on a standard PSA/BGS slab.
+    if (x.tags && x.tags.has("graded")) return `<button type="button" class="b-pk slab" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><span class="slabcrop"><img alt="" decoding="sync" src="${u}"${m ? ` class="ok"` : ` onload="this.classList.add('ok');__bimg(this)"`}></span></button>`;
+    const cls = m ? `ok${m[0] > m[1] * 1.05 ? " land" : ""}` : "";
     return `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" decoding="sync" src="${u}"${cls ? ` class="${cls}"` : ` onload="__bimg(this)"`}></button>`;
   }
   const HOLES = [17, 50, 83];

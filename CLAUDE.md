@@ -19,6 +19,8 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   they're copies (they were commissions).
 - **Scans are never altered.** Effects go around the card (viewer auras), not on it. Display is clean;
   only saved images get the IANBADEER.COM watermark.
+  In binder view only, graded cards are cropped on screen to show the card without its slab (Ian's request; files untouched),
+  and decas and booklets are left out of the binder.
 - **Email:** never write Ian's address in the page or repo as plain text (it's encoded in config and
   built on click).
 - **Wording:** "Super Collection" is two words everywhere. Ian likes consistency and uniformity.
