@@ -280,12 +280,13 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Soft fade at both edges, drawn as still overlays (a mask on the moving strip made it redraw every frame) */
 .mq::before,.mq::after{content:"";position:absolute;top:0;bottom:0;width:4%;min-width:18px;z-index:2;pointer-events:none}
 .mq::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}.mq::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
-.mq-track{display:flex;gap:16px;width:max-content;animation:mq var(--dur,160s) linear infinite;animation-play-state:paused;will-change:transform;backface-visibility:hidden}
+.mq-track{display:flex;gap:16px;width:max-content;animation:mq var(--dur,160s) linear infinite;animation-play-state:paused;will-change:transform;backface-visibility:hidden;contain:layout style}
 .mq.ready .mq-track{animation-play-state:running}
 .mq-dup{display:flex;gap:16px}
 .mq.ready:hover .mq-track,.mq.ready:focus-within .mq-track{animation-play-state:paused}
 .mq .cd{width:150px;flex:none}
-@keyframes mq{to{transform:translateX(calc(-50% - 8px))}}
+/* translate3d keeps Firefox on its smooth (compositor) path */
+@keyframes mq{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% - 8px),0,0)}}
 @media (prefers-reduced-motion:reduce){.mq{overflow-x:auto}.mq::before,.mq::after{display:none}.mq-track{animation:none}.mq-dup{display:none}}
 /* Player pages offered in search results */
 .pmatch{margin:0 0 22px}

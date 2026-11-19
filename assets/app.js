@@ -551,7 +551,7 @@
     const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
       <img decoding="async" alt="" src="${img(p.id, p.rk, 500)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
     const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2>
-      <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(40, PHOTOS.length * 9)}s">
+      <section class="mq photos" aria-label="Photos with the players"><div class="mq-track" style="--dur:${Math.max(55, PHOTOS.length * 12)}s">
         ${PHOTOS.map(tile).join("")}<div class="mq-dup" aria-hidden="true">${PHOTOS.map(tile).join("")}</div></div></section>` : "";
     const videos = vids.length ? `<div class="vids">${vids.map((v) => `<figure class="vid">
         <div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}${v.start ? `?start=${+v.start}` : ""}" title="${esc(v.caption || "Video")}" loading="lazy"
