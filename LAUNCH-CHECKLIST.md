@@ -24,7 +24,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
      counts on its own (e.g. `#/player/ricky-simmons`), and visits show up in the GoatCounter dashboard.
 - [ ] **Add years for Huskers by NFL Team** (110 players with no year yet). In the player's research note on your NFL list,
   put a date or year in the same sentence as the team, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92".
-  The team page picks it up after the next data update. Cross a player off once his year shows.
+  The team page and the player's career timeline pick it up after the next data update (until then the timeline lists
+  the team under "With these teams (year not in my notes)"). Cross a player off once his year shows.
   - [ ] Arizona Cardinals: Aaron Golliday, Chris Spachman, Jeff Lake, Jon Zatechka
   - [ ] Atlanta Falcons: Corey Dixon, Pat Ricketts
   - [ ] Baltimore Ravens: Terrence Moore
