@@ -188,10 +188,10 @@
     }
     return p[b.length];
   }
-  function fixQuery(q, vocab, known) {
+  function fixQuery(q, vocab, known, minLen = 4) {
     let changed = false;
     const out = q.toLowerCase().split(/\s+/).filter(Boolean).map((w) => {
-      if (w.length < 4 || /\d/.test(w) || known(w)) return w;
+      if (w.length < minLen || /\d/.test(w) || known(w)) return w;
       const max = w.length >= 8 ? 2 : 1;
       let best = null, bd = max + 1, bn = 0;
       vocab.forEach((n, t) => { const d = typoDist(w, t, max); if (d <= max && (d < bd || (d === bd && n > bn))) { best = t; bd = d; bn = n; } });
@@ -686,7 +686,15 @@
     const shown = cols.map((c, i) => i).filter((i) => i !== ai);
     const opt = (c) => /notes|games|role/i.test(c) ? " opt" : "";
     const label = (c) => (c === "Signed" ? "Signed on" : c);
-    const q = CK.q.toLowerCase(); let count = 0;
+    // A name that finds nobody tries the closest spelling among this list's players ("ndamukong sue" → "ndamukong suh").
+    let q = CK.q.toLowerCase(), fixedQ = null;
+    const passes = (r, qq) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && r.join(" ").toLowerCase().includes(qq);
+    if (q && !l.groups.some((g) => g.rows.some((r) => passes(r, q)))) {
+      const vocab = new Map(); l.groups.forEach((g) => g.rows.forEach((r) => norm(r[0]).split(" ").forEach((w) => w.length > 2 && vocab.set(w, (vocab.get(w) || 0) + 1))));
+      const f = fixQuery(q, vocab, (w) => l.groups.some((g) => g.rows.some((r) => r[0].toLowerCase().includes(w))), 3);
+      if (f && l.groups.some((g) => g.rows.some((r) => passes(r, f)))) { q = f; fixedQ = f; }
+    }
+    let count = 0;
     const gi = cols.indexOf("NFL Games Played"), yi = cols.indexOf("Last Year"), si = cols.indexOf("Signed");
     if ((CK.sort === "games" && gi < 0) || (CK.sort === "signed" && si < 0)) CK.sort = "year";
     const num = (v) => { const n = parseInt(String(v).replace(/[^\d]/g, ""), 10); return isNaN(n) ? -1 : n; };
@@ -701,7 +709,7 @@
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
         return `<tr class="${have ? "have" : "need"}"${scans.length ? ` data-peek="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}"` : ""}><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span>${(l.notes || {})[r[0]] ? `<button type="button" class="nt-btn nt-m" data-note="${esc(r[0])}" aria-expanded="false" aria-label="Why ${esc(r[0])} is on this list">i</button>` : ""}</td>
-          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], CK.q)}</a>` : hl(r[i], CK.q)) + ((l.notes || {})[r[i]] ? ` <button type="button" class="nt-btn nt-d" data-note="${esc(r[i])}" aria-expanded="false" aria-label="Why ${esc(r[i])} is on this list" title="Why he's on this list">i</button>` : "") : esc(r[i])}</td>`).join("")}
+          ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], fixedQ || CK.q)}</a>` : hl(r[i], fixedQ || CK.q)) + ((l.notes || {})[r[i]] ? ` <button type="button" class="nt-btn nt-d" data-note="${esc(r[i])}" aria-expanded="false" aria-label="Why ${esc(r[i])} is on this list" title="Why he's on this list">i</button>` : "") : esc(r[i])}</td>`).join("")}
           <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
     }).join("");
@@ -710,7 +718,7 @@
     // Arrows show the direction on screen: Year and Games start highest first (▼), Last name A–Z (▲).
     const down = (key) => (key === "year" || key === "games" ? CK.dir > 0 : CK.dir < 0);
     const th = (text, key, cls = "") => `<th class="${cls}"${key ? ` aria-sort="${CK.sort === key ? (down(key) ? "descending" : "ascending") : "none"}"` : ""}>${key ? `<button type="button" class="th-sort${CK.sort === key ? " on" : ""}" data-sort="${key}">${esc(text)}<span aria-hidden="true">${CK.sort === key ? (down(key) ? " ▼" : " ▲") : " ↕"}</span></button>` : esc(text)}</th>`;
-    $("#ck-table").innerHTML = count ? `<table><thead><tr>${th("Status", "have")}${shown.map((i) => th(label(cols[i]), SORT_OF[cols[i]], opt(cols[i]).trim())).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
+    $("#ck-table").innerHTML = (fixedQ ? `<p class="fixnote">No one matched “${esc(CK.q)}”, so these are results for <b>${esc(fixedQ)}</b>.</p>` : "") + (count ? `<table><thead><tr>${th("Status", "have")}${shown.map((i) => th(label(cols[i]), SORT_OF[cols[i]], opt(cols[i]).trim())).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`);
   }
   // My research note on why a player is on the Tier 2 or Tier 3 list opens in a row under his name.
   const noteHTML = (t) => t.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("");
