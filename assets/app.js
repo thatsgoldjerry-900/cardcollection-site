@@ -1317,13 +1317,30 @@
     return b;
   }
   const perView = () => (window.matchMedia("(min-width: 900px)").matches ? 2 : 1);
-  function openBinder(items, title) {
-    const b = binderEl(); BINDER.items = items; BINDER.k = 0; BINDER.title = title;
+  // The binder has its own address (…?binder=3 = page 3), so a binder page can be shared or reloaded.
+  const withBinder = (hash, page) => { const [path, qs = ""] = hash.split("?"); const prm = new URLSearchParams(qs); prm.delete("binder");
+    if (page) prm.set("binder", page); const q = prm.toString().replace(/%2C/g, ","); return path + (q ? "?" + q : ""); };
+  function openBinder(items, title, page, shared) {
+    const b = binderEl(); BINDER.items = items; BINDER.title = title;
+    BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
+    if (shared) history.replaceState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
+    else if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
     b.hidden = false; document.body.style.overflow = "hidden"; drawBinder();
-    if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", location.href);
   }
+  const binderAddress = () => { if (!$("#binder").hidden) history.replaceState(history.state, "", withBinder(location.hash, BINDER.k + 1)); };
   function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
-  function closeBinder() { if (history.state && history.state.binder) history.back(); else hideBinder(); }
+  function closeBinder() {
+    if (history.state && history.state.binder && !BINDER.shared) return history.back();
+    hideBinder(); history.replaceState(null, "", withBinder(location.hash, 0)); BINDER.shared = false;
+  }
+  // Opening a shared binder address: wait for the page's cards, then open the binder on that page.
+  function openSharedBinder(page) {
+    let tries = 0;
+    const go = () => { const items = state.binderItems && state.binderItems.length ? state.binderItems : state.list;
+      if (items && items.length && $("#app h1")) { BINDER.shared = true; openBinder(items, $("#app h1").textContent, page, true); }
+      else if (tries++ < 50) setTimeout(go, 100); };
+    setTimeout(go, 50);
+  }
   // The ring mechanism: a steel plate and three rings (down the middle of two open pages, or along the left edge of one).
   const RING = `<svg viewBox="0 0 84 38" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#c3c8cd"/><stop offset=".6" stop-color="#6b7178"/><stop offset="1" stop-color="#d4d8dc"/></linearGradient></defs><ellipse cx="42" cy="19" rx="36" ry="12" fill="none" stroke="url(#rg)" stroke-width="5"/><ellipse cx="42" cy="17" rx="36" ry="12" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"/></svg>`;
   const ringsHTML = (side) => `<div class="b-rings${side ? " left" : ""}" aria-hidden="true"><div class="plate"></div>${[17, 50, 83].map((t) => RING.replace("<svg ", `<svg style="top:${t}%" `)).join("")}</div>`;
@@ -1334,7 +1351,7 @@
     if (k < 0 || k >= pages || FLIPPING) return;
     const old = BINDER.k; BINDER.k = k;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return drawBinder();
-    FLIPPING = true;
+    FLIPPING = true; binderAddress();
     const P = (p) => pageHTML(p, pages), stage = $("#b-stage");
     let under, leaf;
     if (n === 2) {
@@ -1374,6 +1391,7 @@
   function drawBinder() {
     const pages = Math.max(1, Math.ceil(BINDER.items.length / 9)), n = perView();
     BINDER.k -= BINDER.k % n;
+    binderAddress();
     // Two pages open: a metal three-ring binder down the middle.
     const both = n === 2 && BINDER.k + 1 < pages;
     $("#b-stage").innerHTML = `<div class="b-spread${n === 2 ? " two" : ""}">${pageHTML(BINDER.k, pages)}${n === 2 ? pageHTML(BINDER.k + 1, pages) : ""}${both ? ringsHTML(false) : n === 1 ? ringsHTML(true) : ""}</div>`;
@@ -1678,7 +1696,16 @@
   }
 
   /* ---------- Router ---------- */
+  let LAST_BASE = null;
   function route() {
+    const bpage = +(new URLSearchParams(location.hash.split("?")[1] || "").get("binder") || 0), base = withBinder(location.hash, 0);
+    if (base === LAST_BASE && $("#app h1")) {   // only the binder part changed (e.g. Back out of the binder): keep the page as it is
+      closeViewer(true);
+      if (!bpage) hideBinder(); else if (!$("#binder") || $("#binder").hidden) openSharedBinder(bpage);
+      return;
+    }
+    LAST_BASE = base;
+    if (bpage) openSharedBinder(bpage);
     closeViewer(true); hideBinder(); state.binderItems = null;
     const [path, qs = ""] = location.hash.replace(/^#\/?/, "").split("?");
     const h = decodeURIComponent(path).split("/");
