@@ -572,7 +572,7 @@
   let CHECK = null;
   const CK = { list: 0, q: "", show: "all", sort: "year", dir: 1 };
   // Autograph list sorting: Year (the list's own order, the default), last name, NFL games played, or need/have (needs first).
-  const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Need / Have"]];
+  const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Need / Have"], ["signed", "Signed on"]];
   const lastName = (n) => { const w = String(n).replace(/["“][^"”]*["”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").replace(/[.,]/g, " ").trim().split(/\s+/); return (w[w.length - 1] + " " + w.slice(0, -1).join(" ")).toLowerCase(); };
   const norm = (t) => String(t).toLowerCase().replace(/"[^"]*"/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
@@ -639,7 +639,7 @@
           <div class="tools">
             <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${CK.show === k}">${t}</button>`).join("")}</div>
             <div class="tools-r"><label class="sr" for="ck-q">Search this list</label><input id="ck-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(CK.q)}">
-              <label class="sr" for="ck-sort">Sort</label><select id="ck-sort">${CK_SORTS.filter(([k]) => k !== "games" || CHECK.lists[CK.list].columns.includes("NFL Games Played")).map(([k, t]) => `<option value="${k}"${CK.sort === k ? " selected" : ""}>Sort: ${t}</option>`).join("")}</select><span class="count" id="ck-count"></span></div>
+              <label class="sr" for="ck-sort">Sort</label><select id="ck-sort">${CK_SORTS.filter(([k]) => (k !== "games" || CHECK.lists[CK.list].columns.includes("NFL Games Played")) && (k !== "signed" || CHECK.lists[CK.list].columns.includes("Signed"))).map(([k, t]) => `<option value="${k}"${CK.sort === k ? " selected" : ""}>Sort: ${t}</option>`).join("")}</select><span class="count" id="ck-count"></span></div>
           </div>
           <div class="ck-table" id="ck-table"></div>
         </div>
@@ -687,11 +687,12 @@
     const opt = (c) => /notes|games|role/i.test(c) ? " opt" : "";
     const label = (c) => (c === "Signed" ? "Signed on" : c);
     const q = CK.q.toLowerCase(); let count = 0;
-    const gi = cols.indexOf("NFL Games Played"), yi = cols.indexOf("Last Year");
-    if (CK.sort === "games" && gi < 0) CK.sort = "year";
+    const gi = cols.indexOf("NFL Games Played"), yi = cols.indexOf("Last Year"), si = cols.indexOf("Signed");
+    if ((CK.sort === "games" && gi < 0) || (CK.sort === "signed" && si < 0)) CK.sort = "year";
     const num = (v) => { const n = parseInt(String(v).replace(/[^\d]/g, ""), 10); return isNaN(n) ? -1 : n; };
     const cmp = { year: (a, b) => (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k, name: (a, b) => lastName(a.r[0]).localeCompare(lastName(b.r[0])),
       games: (a, b) => (num(b.r[gi]) - num(a.r[gi])) || lastName(a.r[0]).localeCompare(lastName(b.r[0])),
+      signed: (a, b) => (!a.r[si]) - (!b.r[si]) || String(a.r[si] || "").localeCompare(String(b.r[si] || "")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k,
       have: (a, b) => ((a.r[ai] === "Yes") - (b.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
     const sortRows = (rows) => rows.map((r, k) => ({ r, k })).sort((a, b) => cmp(a, b) * CK.dir).map((x) => x.r);
     const body = l.groups.map((g) => {
@@ -705,7 +706,7 @@
       }).join("");
     }).join("");
     $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
-    const SORT_OF = { Player: "name", "NFL Games Played": "games", "Last Year": "year" };
+    const SORT_OF = { Player: "name", "NFL Games Played": "games", "Last Year": "year", Signed: "signed" };
     // Arrows show the direction on screen: Year and Games start highest first (▼), Last name A–Z (▲).
     const down = (key) => (key === "year" || key === "games" ? CK.dir > 0 : CK.dir < 0);
     const th = (text, key, cls = "") => `<th class="${cls}"${key ? ` aria-sort="${CK.sort === key ? (down(key) ? "descending" : "ascending") : "none"}"` : ""}>${key ? `<button type="button" class="th-sort${CK.sort === key ? " on" : ""}" data-sort="${key}">${esc(text)}<span aria-hidden="true">${CK.sort === key ? (down(key) ? " ▼" : " ▲") : " ↕"}</span></button>` : esc(text)}</th>`;
