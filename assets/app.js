@@ -49,6 +49,9 @@
     // Absolute Memorabilia's Tools of the Trade inserts carry swatches; older sets with that name don't.
     if (RX.relic.test(relicName) || /absolute.*tools of the trade/i.test(name)) out.tags.add("relic");
     if (RX.custom.test(name)) out.tags.add("custom");
+    // An inscribed autograph: Ian adds the word "inscription" to the file name. (Plural "Inscriptions" is a set name, e.g.
+    // Score Inscriptions, so only the singular word counts.)
+    if (/\binscription\b/i.test(name)) out.tags.add("inscr");
     if (RX.rc.test(name)) out.tags.add("rc");
     if (out.serial) out.tags.add("numbered");
     if (out.one) out.tags.add("one");
@@ -116,6 +119,8 @@
 
   /* ---------- Shared bits ---------- */
   // The Customs page has its own filters (all its cards are customs).
+  // Extra filter chips for particular pages.
+  const INSCR = ["inscr", "Inscriptions"], PAGE_FILTERS = { "husker-football": [INSCR], customs: [INSCR] };
   const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
   const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
@@ -499,7 +504,7 @@
         ${slug === "search" ? `<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${(slug === "customs" ? CUSTOM_FILTERS : FILTERS).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r">${binderBtn()}<span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
@@ -1915,7 +1920,7 @@
     const key = a === "c" ? "c/" + b : a;
     // Filters and sort come from the address (?f=auto,relic&sort=old), so a filtered view can be shared or reloaded.
     // Moving between groups of the same collection keeps them.
-    const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS].some(([x]) => x === k));
+    const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS, INSCR].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
     if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); }
     state.where = key;
