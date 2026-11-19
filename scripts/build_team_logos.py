@@ -46,13 +46,17 @@ def summary(title):
         raise Failed(str(e))
 
 def logo_for(name):
-    tries = ([f"History of the {name}"] if name in nfl_names else []) + [name, f"{name} (American football)", f"{name} (Canadian football)", f"{name} (football)"]
+    # Football-specific articles first, so "St. Louis Cardinals" finds the NFL team, not the baseball team.
+    base = re.sub(r"\s*\(NFL\)$", "", name)
+    tries = ([f"{base} (NFL)", f"History of the {base}"] if name in nfl_names else []) + [f"{base} (American football)", f"{base} (Canadian football)", f"{base} (football)", base]
     for t in tries:
         r = summary(t); time.sleep(1.2)
         if not r or r.get("type") == "disambiguation": continue
         img = (r.get("originalimage") or r.get("thumbnail") or {}).get("source", "")
         about = (r.get("description", "") + " " + r.get("extract", "")).lower()
-        if img and re.search(r"logo", img, re.I) and re.search(r"football|nfl|cfl|usfl|xfl|arena|league", about):
+        desc = r.get("description", "").lower()
+        if re.search(r"baseball|hockey|basketball|soccer|association football|cricket|rugby", desc): continue   # another sport's team
+        if img and re.search(r"logo|wordmark|emblem|crest", img, re.I) and re.search(r"\bfootball\b|\bnfl\b|\bcfl\b|\busfl\b|\bxfl\b|arena football|\baaf\b|\bufl\b", about):
             # A small, standard-size thumbnail on upload.wikimedia.org (thumb.* style addresses can be blocked).
             img = img.split("?")[0].replace("https://thumb.wikimedia.org/", "https://upload.wikimedia.org/")
             img = re.sub(r"/\d+px-", "/120px-", img)
