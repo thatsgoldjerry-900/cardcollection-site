@@ -571,8 +571,8 @@
   /* ---------- Husker checklist (from the private master, published columns only) ---------- */
   let CHECK = null;
   const CK = { list: 0, q: "", show: "all", sort: "year", dir: 1 };
-  // Autograph list sorting: Year (the list's own order, the default), last name, NFL games played, or have/need.
-  const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Have / Need"]];
+  // Autograph list sorting: Year (the list's own order, the default), last name, NFL games played, or need/have (needs first).
+  const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Need / Have"]];
   const lastName = (n) => { const w = String(n).replace(/["“][^"”]*["”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").replace(/[.,]/g, " ").trim().split(/\s+/); return (w[w.length - 1] + " " + w.slice(0, -1).join(" ")).toLowerCase(); };
   const norm = (t) => String(t).toLowerCase().replace(/"[^"]*"/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
@@ -692,7 +692,7 @@
     const num = (v) => { const n = parseInt(String(v).replace(/[^\d]/g, ""), 10); return isNaN(n) ? -1 : n; };
     const cmp = { year: (a, b) => (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k, name: (a, b) => lastName(a.r[0]).localeCompare(lastName(b.r[0])),
       games: (a, b) => (num(b.r[gi]) - num(a.r[gi])) || lastName(a.r[0]).localeCompare(lastName(b.r[0])),
-      have: (a, b) => ((b.r[ai] === "Yes") - (a.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
+      have: (a, b) => ((a.r[ai] === "Yes") - (b.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
     const sortRows = (rows) => rows.map((r, k) => ({ r, k })).sort((a, b) => cmp(a, b) * CK.dir).map((x) => x.r);
     const body = l.groups.map((g) => {
       const rows = sortRows(g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q))));
