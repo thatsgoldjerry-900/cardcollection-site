@@ -1340,6 +1340,39 @@
     if (items.length) openBinder(items, ($("#app h1") || {}).textContent || "Binder");
   });
 
+  /* Best of the Best: the standout cards (1/1s, bat knobs, laundry tags, nameplates, buttons, shields, SSPs, low-numbered
+     prime patches and autographs), cycling in and out on the stats page. */
+  const BEST_RULES = [[/\bknob/i, 9], [/laundry|\btag\b|logo ?man/i, 8], [/nameplate|shield|button|barrel/i, 7], [/\bssp\b|super short|image variation|\bvariation\b/i, 6],
+    [/\bprime\b|jumbo/i, 4], [/booklet|dual auto|triple auto|quad auto|cut auto/i, 3]];
+  function bestScore(c) {
+    let n = BEST_RULES.reduce((t, [re, v]) => t + (re.test(c.name) ? v : 0), 0);
+    if (c.one) n += 10; else if (c.serial && c.serial <= 5) n += 7; else if (c.serial && c.serial <= 10) n += 5; else if (c.serial && c.serial <= 25) n += 2;
+    if (c.tags.has("auto") && c.tags.has("relic")) n += 3; else if (c.tags.has("auto")) n += 1;
+    return n;
+  }
+  let BEST_TIMER = 0;
+  function bestShow(cards) {
+    clearInterval(BEST_TIMER);
+    const pool = cards.map((c) => [bestScore(c), c]).filter(([n]) => n >= 9).sort((a, b) => b[0] - a[0]).slice(0, 80).map((x) => x[1]);
+    for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
+    const box = () => $("#best"), N = Math.min(6, pool.length);
+    let next = N;
+    const fill = () => { const b = box(); if (!b) return; b.innerHTML = pool.slice(0, N).map((c) => `<div class="best-slot">${cardHTML(c)}</div>`).join(""); };
+    setTimeout(fill, 0);
+    state.list = pool;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || pool.length <= N) return pool;
+    let slot = 0;
+    BEST_TIMER = setInterval(() => {
+      const b = box(); if (!b) return clearInterval(BEST_TIMER);
+      if (!$("#viewer").hidden || document.hidden) return;
+      const el = b.children[slot % N]; slot += 1 + Math.floor(Math.random() * (N - 1));
+      const c = pool[next++ % pool.length];
+      el.classList.add("out");
+      setTimeout(() => { el.innerHTML = cardHTML(c); el.classList.remove("out"); el.classList.add("in"); setTimeout(() => el.classList.remove("in"), 700); }, 600);
+    }, 2600);
+    return pool;
+  }
+
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
     setNav(""); setTitle("Collection stats");
@@ -1368,7 +1401,6 @@
     const months = [...byMonth.keys()].sort().slice(-24), mmax = Math.max(1, ...months.map((m) => byMonth.get(m)));
     const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     // Leaderboards
-    const rarest = cards.filter((c) => c.serial).sort((a, b) => (b.one - a.one) || a.serial - b.serial || a.year - b.year).slice(0, 12);
     const rb = new Map(); cards.forEach((c) => { const k = rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
     const rainbows = [...rb.values()].filter((l) => l.length > 2).sort((a, b) => b.length - a.length).slice(0, 10);
     const players = new Map(); cards.forEach((c) => c.title && players.set(plainTitle(c), (players.get(plainTitle(c)) || 0) + 1));
@@ -1386,10 +1418,10 @@
         <section class="st-box"><h2>Most cards of one player</h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent(n))).join("")}</ul></section>
       </div>
       <section class="st-box"><h2>Cards added, month by month</h2><div class="st-years months">${months.map((m) => `<span class="st-col" title="${MON[+m.slice(5) - 1]} ${m.slice(0, 4)}: ${fmt(byMonth.get(m))} cards"><i style="--h:${(byMonth.get(m) / mmax) * 100}%"></i><span>${m.slice(5) === "01" ? "Jan ’" + m.slice(2, 4) : ""}</span></span>`).join("")}</div></section>
-      <section class="st-box"><h2>Rarest cards</h2><div class="grid small">${rarest.map((c) => cardHTML(c)).join("")}</div></section>
+      <section class="st-box best"><h2>🔥 Best of the Best</h2><p class="best-sub">1/1s, bat knobs, laundry tags, nameplates, buttons, SSPs and the best patches, rotating through.</p><div class="grid small best-grid" id="best"></div></section>
       <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions</em></a></li>`).join("")}</ol></section>
     </div>`;
-    state.list = rarest;
+    bestShow(cards);
   }
   function rainbowKey(c) {
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m || !c.title) return null;

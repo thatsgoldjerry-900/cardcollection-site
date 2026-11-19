@@ -740,3 +740,11 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .rb-grid .cd.par-bg .ph{background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--pc,#888) 55%,transparent),color-mix(in srgb,var(--pc,#888) 22%,var(--panel)) 70%);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc,#888) 45%,var(--line))}
 .rb-grid .cd.par-bg[style*="--pg"] .ph{background:linear-gradient(color-mix(in srgb,var(--panel) 55%,transparent),color-mix(in srgb,var(--panel) 55%,transparent)),var(--pg)}
 .rb-grid .cd.par-bg.flag .ph{background:linear-gradient(color-mix(in srgb,var(--panel) 45%,transparent),color-mix(in srgb,var(--panel) 45%,transparent)),var(--pg)}
+/* Best of the Best: cards fade and flip in and out as the showcase rotates */
+.best h2{font-size:17px}
+.best-sub{margin:-6px 0 12px;font-size:12.5px;color:var(--mu)}
+.best-slot{transition:opacity .6s ease,transform .6s ease}
+.best-slot.out{opacity:0;transform:scale(.92) rotateY(25deg)}
+.best-slot.in{animation:best-in .7s ease-out}
+@keyframes best-in{from{opacity:0;transform:scale(.92) rotateY(-25deg)}to{opacity:1;transform:none}}
+.best-grid{perspective:900px}
