@@ -237,23 +237,23 @@
   }
 
   /* ---------- Views ---------- */
-  // One order everywhere (home tiles, sidebar): Gordon, Dye, the Nebraska sections, Customs,
+  // One order everywhere (menu, home tiles, sidebar): the Nebraska sections, Gordon, Dye, Customs,
   // the other collections, Detroit Lions last. "customs" stands for the Customs page.
   const LAST = ["lions"];
   function siteOrder() {
     const secs = SECTIONS.filter(shown), other = secs.filter((s) => !isNeb(s));
     const lead = other.filter((s) => !LAST.includes(s.slug)).slice(0, 2);
-    return [...lead, ...secs.filter(isNeb), "customs", ...other.filter((s) => !lead.includes(s) && !LAST.includes(s.slug)), ...other.filter((s) => LAST.includes(s.slug))];
+    return [...secs.filter(isNeb), ...lead, "customs", ...other.filter((s) => !lead.includes(s) && !LAST.includes(s.slug)), ...other.filter((s) => LAST.includes(s.slug))];
   }
   // Nebraska sections and the Husker autograph pages share one "Nebraska Cornhuskers" dropdown.
   const isNeb = (s) => /^husker-/.test(s.slug);
   function renderNav() {
     const neb = SECTIONS.filter((s) => shown(s) && isNeb(s));
-    // Menu order: Alex Gordon, Jermaine Dye, Nebraska Cornhuskers ▾, Customs, the other collections, Detroit Lions last.
+    // Menu order: Nebraska Cornhuskers ▾, Alex Gordon, Jermaine Dye, Customs, the other collections, Detroit Lions last.
     const links = siteOrder().filter((s) => s === "customs" || !isNeb(s))
       .map((s) => s === "customs" ? `<a href="#/customs" data-s="customs">Customs</a>` : `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
     if ((DATA.site.media?.items || []).length) links.push(`<a href="#/media" data-s="media">Media</a>`);
-    links.splice(2, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
+    links.splice(0, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
     $("#nav").innerHTML = links.join("");
     document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
     $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
