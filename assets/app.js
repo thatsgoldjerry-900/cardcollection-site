@@ -1398,7 +1398,8 @@
     const u = pocketURL(x), m = BIMG.get(u);
     // A graded card shows just the card in the pocket: the slab and its label are cropped away on screen
     // (the scan itself is untouched). Based on a standard PSA/BGS slab.
-    if (x.tags && x.tags.has("graded")) return `<button type="button" class="b-pk slab" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><span class="slabcrop"><img alt="" decoding="sync" src="${u}"${m ? ` class="ok"` : ` onload="this.classList.add('ok');__bimg(this)"`}></span></button>`;
+    // A slab scanned sideways (label strip on the right) gets its own crop, then turns like other horizontal cards.
+    if (x.tags && x.tags.has("graded")) return `<button type="button" class="b-pk slab" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><span class="slabcrop${m && m[0] > m[1] ? " wide" : ""}"><img alt="" decoding="sync" src="${u}"${m ? ` class="ok"` : ` onload="if (this.naturalWidth > this.naturalHeight) this.parentNode.classList.add('wide'); this.classList.add('ok'); __bimg(this)"`}></span></button>`;
     const cls = m ? `ok${m[0] > m[1] * 1.05 ? " land" : ""}` : "";
     return `<button type="button" class="b-pk" data-bk="${i}" aria-label="${esc(x.name || x.caption || "")}"><img alt="" decoding="sync" src="${u}"${cls ? ` class="${cls}"` : ` onload="__bimg(this)"`}></button>`;
   }
