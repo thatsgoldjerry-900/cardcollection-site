@@ -570,7 +570,10 @@
 
   /* ---------- Husker checklist (from the private master, published columns only) ---------- */
   let CHECK = null;
-  const CK = { list: 0, q: "", show: "all" };
+  const CK = { list: 0, q: "", show: "all", sort: "year", dir: 1 };
+  // Autograph list sorting: Year (the list's own order, the default), last name, NFL games played, or have/need.
+  const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Have / Need"]];
+  const lastName = (n) => { const w = String(n).replace(/["“][^"”]*["”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").replace(/[.,]/g, " ").trim().split(/\s+/); return (w[w.length - 1] + " " + w.slice(0, -1).join(" ")).toLowerCase(); };
   const norm = (t) => String(t).toLowerCase().replace(/"[^"]*"/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
   // same name in different sports (e.g. Eric Johnson, football and basketball) never share cards.
@@ -635,12 +638,17 @@
         <div style="min-width:0">
           <div class="tools">
             <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${CK.show === k}">${t}</button>`).join("")}</div>
-            <div class="tools-r"><label class="sr" for="ck-q">Search this list</label><input id="ck-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(CK.q)}"><span class="count" id="ck-count"></span></div>
+            <div class="tools-r"><label class="sr" for="ck-q">Search this list</label><input id="ck-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(CK.q)}">
+              <label class="sr" for="ck-sort">Sort</label><select id="ck-sort">${CK_SORTS.filter(([k]) => k !== "games" || CHECK.lists[CK.list].columns.includes("NFL Games Played")).map(([k, t]) => `<option value="${k}"${CK.sort === k ? " selected" : ""}>Sort: ${t}</option>`).join("")}</select><span class="count" id="ck-count"></span></div>
           </div>
           <div class="ck-table" id="ck-table"></div>
         </div>
         ${typeRows.length ? `<aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>` : ""}
       </div></div>`;
+    $("#ck-sort").addEventListener("change", (e) => { CK.sort = e.target.value; CK.dir = 1; table(); });
+    $("#ck-table").addEventListener("click", (e) => { const b = e.target.closest("[data-sort]"); if (!b) return;
+      if (CK.sort === b.dataset.sort) CK.dir = -CK.dir; else { CK.sort = b.dataset.sort; CK.dir = 1; }
+      $("#ck-sort").value = CK.sort; table(); });
     $(".ck .chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; CK.show = b.dataset.show; document.querySelectorAll(".ck .chip").forEach((x) => x.setAttribute("aria-pressed", x === b)); table(); });
     $("#ck-q").addEventListener("input", (e) => { CK.q = e.target.value.trim(); table(); });
     state.list = showcase;
@@ -679,8 +687,15 @@
     const opt = (c) => /notes|games|role/i.test(c) ? " opt" : "";
     const label = (c) => (c === "Signed" ? "Signed on" : c);
     const q = CK.q.toLowerCase(); let count = 0;
+    const gi = cols.indexOf("NFL Games Played"), yi = cols.indexOf("Last Year");
+    if (CK.sort === "games" && gi < 0) CK.sort = "year";
+    const num = (v) => { const n = parseInt(String(v).replace(/[^\d]/g, ""), 10); return isNaN(n) ? -1 : n; };
+    const cmp = { year: (a, b) => (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k, name: (a, b) => lastName(a.r[0]).localeCompare(lastName(b.r[0])),
+      games: (a, b) => (num(b.r[gi]) - num(a.r[gi])) || lastName(a.r[0]).localeCompare(lastName(b.r[0])),
+      have: (a, b) => ((b.r[ai] === "Yes") - (a.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
+    const sortRows = (rows) => rows.map((r, k) => ({ r, k })).sort((a, b) => cmp(a, b) * CK.dir).map((x) => x.r);
     const body = l.groups.map((g) => {
-      const rows = g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q)));
+      const rows = sortRows(g.rows.filter((r) => (CK.show === "all" || (CK.show === "have") === (r[ai] === "Yes")) && (!q || r.join(" ").toLowerCase().includes(q))));
       count += rows.length; if (!rows.length) return "";
       return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
@@ -690,7 +705,11 @@
       }).join("");
     }).join("");
     $("#ck-count").textContent = `${fmt(count)} ${count === 1 ? "person" : "people"}`;
-    $("#ck-table").innerHTML = count ? `<table><thead><tr><th>Status</th>${shown.map((i) => `<th class="${opt(cols[i]).trim()}">${esc(label(cols[i]))}</th>`).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
+    const SORT_OF = { Player: "name", "NFL Games Played": "games", "Last Year": "year" };
+    // Arrows show the direction on screen: Year and Games start highest first (▼), Last name A–Z (▲).
+    const down = (key) => (key === "year" || key === "games" ? CK.dir > 0 : CK.dir < 0);
+    const th = (text, key, cls = "") => `<th class="${cls}"${key ? ` aria-sort="${CK.sort === key ? (down(key) ? "descending" : "ascending") : "none"}"` : ""}>${key ? `<button type="button" class="th-sort${CK.sort === key ? " on" : ""}" data-sort="${key}">${esc(text)}<span aria-hidden="true">${CK.sort === key ? (down(key) ? " ▼" : " ▲") : " ↕"}</span></button>` : esc(text)}</th>`;
+    $("#ck-table").innerHTML = count ? `<table><thead><tr>${th("Status", "have")}${shown.map((i) => th(label(cols[i]), SORT_OF[cols[i]], opt(cols[i]).trim())).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`;
   }
   // My research note on why a player is on the Tier 2 or Tier 3 list opens in a row under his name.
   const noteHTML = (t) => t.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("");

@@ -836,3 +836,9 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ck-fan .cd img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .ck-fan .cd.land{width:min(270px,calc(165px * var(--ar,1.4)))}
 @media (max-width:900px){.ck-fan .cd.land{width:min(44vw,calc(min(27vw,112px) * 1.1 * var(--ar,1.4)))}}
+/* Autograph lists: sortable column headings */
+.th-sort{all:unset;cursor:pointer;white-space:nowrap}
+.th-sort:hover,.th-sort.on{color:var(--acc)}
+.th-sort span{font-size:.8em;opacity:.7}
+#ck-sort{margin:0}
+.ck .tools-r{flex-wrap:wrap;gap:8px}
