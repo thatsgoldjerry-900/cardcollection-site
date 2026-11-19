@@ -328,7 +328,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Home stats: a link stat, and no empty half-row on phones */
 .stat.link{text-decoration:none;color:inherit;transition:background .15s}
 .stat.link:hover{background:var(--panel-2)}
-#stat-nfl b{color:var(--husker)}
 .stat.link span{color:var(--acc)}
 .stats .stat:last-child:nth-child(odd){grid-column:1/-1}
 @media (min-width:801px){.stats .stat:last-child:nth-child(odd){grid-column:auto}}
