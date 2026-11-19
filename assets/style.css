@@ -881,3 +881,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .need-stamp{display:grid;place-items:center;gap:2px;padding:10px 14px;border:3px solid #e2453a;border-radius:8px;color:#ff5a4e;transform:rotate(-12deg);
   font:800 clamp(18px,4.5vw,26px)/1 var(--f-d,inherit);text-transform:uppercase;letter-spacing:.04em;background:rgba(10,12,16,.35);box-shadow:0 0 0 2px rgba(226,69,58,.25) inset}
 .need-stamp small{font:700 14px/1 var(--f-m);letter-spacing:0;color:#ffd1cc}
+/* Player lists: horizontal cards keep their full shape in a wider frame */
+.hub-ph.land{width:auto;height:calc(72px * 7 / 5)}
+.pm-ph.land{width:auto;height:calc(40px * 7 / 5)}
+.hub-ph.land img,.pm-ph.land img{object-fit:contain}

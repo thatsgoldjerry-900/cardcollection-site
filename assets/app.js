@@ -540,7 +540,7 @@
       if (!hits.length) return;
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
-        return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+        return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
           <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.league} Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
@@ -979,7 +979,7 @@
       setTitle(`Huskers on the ${t.name}`);
       const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
-        return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+        return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
           <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}${e.pfa ? ` <span class="src" title="Year from Pro Football Archives">· Pro Football Archives</span>` : ""}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
       $("#app").innerHTML = `<div class="wrap tm tm-team" style="${teamVars(t)}"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
@@ -1035,7 +1035,7 @@
       const sc = p.have ? bestScan(p.name) : null;
       const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.fixed || HUB.q)}${hofMarks(p)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
-        ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="this.classList.add('ok')"></button>`
+        ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="thumbFit(this)"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
         <div class="hub-info">${nm}<div class="hub-meta">Final Nebraska season ${esc(p.year)}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.notes ? ` · ${esc(p.notes)}` : ""}</div>
           <div class="hub-meta2"><span class="st ${p.have ? "have" : "need"}">${p.have ? "Have" : "Need"}</span>${p.have && p.signed ? `<span>Signed ${esc(p.signed.toLowerCase())}</span>` : ""}</div></div></li>`;
@@ -1065,7 +1065,7 @@
       .map((x) => ({ x, sameGroup: mine && group(pos(x)) === mine, gap: Math.abs((+x.year || 0) - yr) }))
       .sort((a, b) => (b.sameGroup - a.sameGroup) || (a.gap - b.gap)).slice(0, 6).map((o) => o.x);
     const card = (x) => { const sc = x.have ? bestScan(x.name, x.sport) : null;
-      return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="this.classList.add('ok')">` : ""}</span>
+      return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
         <span class="pm-t"><b>${esc(x.name)}${hofMarks(x)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
     const prev = list[at - 1], next = list[at + 1];
     return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>
@@ -1604,6 +1604,9 @@
       <section class="st-box"><ol class="st-bars st-rank">${rows.map(([n, k], i) => `<li><a href="#/search/${encodeURIComponent("=" + n)}"><b><span class="st-r">${i + 1}</span>${esc(n)}</b><i style="--w:${(k / max) * 100}%"></i><em>${fmt(k)}</em></a></li>`).join("")}</ol></section></div>`;
   }
 
+  // Player-list thumbnails: a horizontal card gets a horizontal frame of its own shape (same height, wider), shown whole.
+  window.thumbFit = (im) => { const w = im.naturalWidth, h = im.naturalHeight, f = im.parentNode;
+    if (w > h * 1.05) { f.classList.add("land"); f.style.aspectRatio = `${w} / ${h}`; } im.classList.add("ok"); };
   // List-page fan: a horizontal card stays upright in a frame of its own shape (no bars, nothing trimmed), made wider
   // than the upright cards so it shows at a similar size.
   window.fanFit = (im, src = im) => {
