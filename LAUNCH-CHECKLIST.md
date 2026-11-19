@@ -62,9 +62,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Find out which 2015 Upper Deck Inscriptions Kenny Bell you sold.** The site shows two as still in your collection:
   the base #KB and the Black #KB (/25). Sold cards are hidden from the site, so check your sales records and Drive file names,
   and mark the sold one "Sold" in its file name and inventory.
-- [ ] **TCDb player IDs for the TCDb buttons on player pages.** Football is done (453 Huskers, from your saved TCDb
-  Top Names pages), plus Gordon and Dye. Still to do: save and upload your **baseball** and **basketball** Top Names pages
-  the same way (Save Page As, HTML only). The football Mike Anderson has no TCDb cards (no button, as intended); the baseball
+- [ ] **TCDb player IDs for the TCDb buttons on player pages.** Football (453 Huskers) and baseball (45) are done,
+  from your saved TCDb Top Names pages. Still to do: your **basketball** Top Names pages (Save Page As, HTML only).
+  Drew Anderson and Buddy Hunter weren't in your baseball Top Names, so they have no TCDb buttons yet. The football Mike Anderson has no TCDb cards (no button, as intended); the baseball
   Mike Anderson gets synced with the baseball pages. Every player with an ID gets both buttons, including "View … cards for trade" (decided: TCDb can't be
   read live, so it shows on every page).
 
