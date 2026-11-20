@@ -60,7 +60,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Signature showcase: 69 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
+- [ ] **Signature showcase: 79 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
   light label, one player per card) has no more Tier 1 candidates. Next, if wanted: Tier 1 players with black ink or busier
   labels (hand-picked), then Tier 2/3 and other collections. Each batch goes to Ian on a sheet before going live.
 - [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
@@ -69,7 +69,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   scripts/build_players.py also read `cardPlayers` (sports content only, same filters), and the page show the bio and stats under
   Ian's write-up. Coaches (Osborne, Devaney) keep their coaching years instead of a final playing season. Nothing for Ian to do but say go.
 - [x] **Neon signatures for Tier 2/3 from the Fan Day sheets** (done 2026-11-22: 23 players, Ian approved; red Sharpie ink mode added).
-  Next: Tier 2/3 players with no Fan Day box, from their trading-card autographs.
+  Tier 2/3 card batch (10) done too. The rest of Tier 2/3 (and Tier 1) need hand-picked cards (black ink, busy labels).
 - [ ] **More Fan Day sheets:** the 2022–2025 sheets are matched (the newest box is the main picture for players with no signed trading card scan; config "fanDay"). The 2015
   "Signed Page", the 2009/2010 Fan Day sheets and the 2023 roster card have no name boxes, so they aren't matched yet.
 - [ ] **Scan these certified autograph cards** (listed as "Certified Card" in my lists, but no autograph scan on the site yet; checked 2026-11-22):
