@@ -123,8 +123,8 @@
      GitHub Pages serves a page for each main address (built by scripts/build_route_pages.py); any other address
      reaches 404.html, which hands it back to the app. */
   const BASE = location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/";
-  const ALIAS = { "nfl-huskers": "player-pages" };   // app route → address (nfl-huskers/ holds the plain list pages)
-  const UNALIAS = Object.fromEntries(Object.entries(ALIAS).map(([a, b]) => [b, a]));
+  const ALIAS = { "nfl-huskers": "husker-bios" };   // app route → address (nfl-huskers/ holds the plain list pages)
+  const UNALIAS = { ...Object.fromEntries(Object.entries(ALIAS).map(([a, b]) => [b, a])), "player-pages": "nfl-huskers" };   // player-pages/: its first address
   function toURL(h) {
     const [path, qs] = String(h || "").replace(/^#?\/?/, "").split("?");
     const parts = path.split("/").filter(Boolean); if (parts.length && ALIAS[parts[0]]) parts[0] = ALIAS[parts[0]];
@@ -436,7 +436,7 @@
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
       if (!r.ok || $('#dd-menu a[data-s="checklist"]')) return;
       $("#dd-menu").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x, k) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}"${k === 0 ? ' class="sep"' : ""}>${x.label}</a>`).join("")}
-        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers Player Pages</a>
+        <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">Husker Bios</a>
         <a href="#/nfl-teams" data-s="nfl-teams">Huskers by NFL Team</a>`);
       setNav(NAV_NOW);
     }).catch(() => {});
@@ -552,7 +552,7 @@
       <div class="go-card"><div class="go-logos"><img class="go-logo" alt="Kansas City Royals logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></div><h3>Royals fans</h3><p>Check out the Gordon and Dye Super Collections, or the Kansas City Royals Team Collection.</p>
         <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
       <div class="go-card"><div class="go-logos"><img class="go-logo" alt="Nebraska Cornhuskers logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></div><h3>Husker fans</h3><p>Dig into the history of NFL Huskers, check out the autographs, and see an epic Husker card collection.</p>
-        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football Cards &amp; Autos")}</div></div>
+        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Husker Bios")}${col("husker-football", "Nebraska Football Cards &amp; Autos")}</div></div>
       <div class="go-card"><div class="go-logos"><span class="go-logo tcdb-badge" aria-label="TCDb">TCDb</span><img class="go-logo" alt="YouTube logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/120px-YouTube_full-color_icon_%282017%29.svg.png" onerror="this.remove()"></div><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, the cards I'm still hunting, and my duplicates.</p>
         <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${DUPES.length ? go("#/duplicates", "Duplicates") : ""}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("<a ", '<a class="go-tcdb" ').replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
       ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
@@ -745,7 +745,7 @@
         if (f) hits = find(f);
       }
       if (!hits.length) return;
-      box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
+      box.innerHTML = `<div class="pmatch"><h4>Husker Bios</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
         return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
           <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.tagline ? esc(p.tagline) : `${p.league} Husker`}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
@@ -1067,7 +1067,7 @@
   // a name already used by an earlier list gets "-baseball" or "-basketball" added.
   // [sport, list, label, back link, back label, slug suffix for a name already used by an earlier list].
   // Order matters (it decides who gets the plain slug) and must match SPORTS in scripts/build_players.py.
-  const SPORT_LISTS = [["football", "nfl-tier-1-huskers", "NFL", "#/nfl-huskers", "NFL Huskers Player Pages", "football"],
+  const SPORT_LISTS = [["football", "nfl-tier-1-huskers", "NFL", "#/nfl-huskers", "Husker Bios", "football"],
     ["baseball", "baseball-mlb", "MLB", "#/checklist/mlb", "MLB Huskers Autograph List", "baseball"],
     ["basketball", "basketball-nba", "NBA", "#/checklist/nba", "NBA Huskers Autograph List", "basketball"],
     ["football", "nfl-tier-2-huskers", "NFL Tier 2", "#/checklist/tier-2", "NFL Tier 2 Huskers Autograph List", "tier-2"],
@@ -1209,11 +1209,11 @@
   }
 
   function hub() {
-    setNav("nfl-huskers"); setTitle("NFL Huskers Player Pages");
+    setNav("nfl-huskers"); setTitle("Husker Bios");
     loadHub(() => {
       const all = tier1(), have = all.filter((p) => p.have).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
-        <div class="c-head"><div class="kick">Autograph collection</div><h1>NFL Huskers Player Pages</h1>
+        <div class="c-head"><div class="kick">Autograph collection</div><h1>Husker Bios</h1>
           <p>Every Nebraska Cornhusker who played in at least one NFL game. Pick a name for that player's page, with the autograph I have when I have one.</p>
           <div class="prog"><b>${((have / all.length) * 100).toFixed(2)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
         <div class="tools">
@@ -1479,7 +1479,7 @@
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
-      const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "NFL Huskers Player Pages";
+      const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "Husker Bios";
       const sport = info.sport || "football";
       const scans = scansFor(info.name, sport).filter((c) => !isBackScan(c));
       // A Husker with his own collection on the site (Alex Gordon): show one of those autographs and link to it.

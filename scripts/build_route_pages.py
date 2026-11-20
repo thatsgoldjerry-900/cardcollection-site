@@ -47,7 +47,8 @@ write("media/", "Media", "Interviews, podcasts and videos about the collection."
 write("letters/", "All letterman sets", "Every letterman set in the collection, by the word it spells, with the letters still needed.")
 write("about/", "About & sharing", "About IanBadeer.com, sharing the research, and using the images.")
 write("nfl-teams/", "Huskers by NFL Team", "Every Nebraska Cornhusker on each NFL team, with their years.")
-write("player-pages/", "NFL Huskers Player Pages", "A page for every Nebraska Cornhusker who played in the NFL: career, cards and autographs.")
+for rel in ("husker-bios/", "player-pages/"):   # player-pages/ was the first address; kept so early links work
+    write(rel, "Husker Bios", "A page for every Nebraska Cornhusker who made the pros: career, cards and autographs.")
 for path, label in (("", "NFL Tier 1 Huskers Autograph List"), ("tier-2/", "NFL Tier 2 Huskers Autograph List"), ("tier-3/", "NFL Tier 3 Huskers Autograph List"),
                     ("mlb/", "MLB Huskers Autograph List"), ("nba/", "NBA Huskers Autograph List")):
     write("checklist/" + path, label, "Ian Badeer's autograph list: one autograph of every Husker who made the pros.")
