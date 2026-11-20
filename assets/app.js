@@ -555,7 +555,7 @@
         ${mg}
         ${slug === "search" && parseQuery(q).said.length ? `<p class="fixnote smart">Showing ${parseQuery(q).words.length ? `<b>${esc(parseQuery(q).words.join(" "))}</b> · ` : ""}${parseQuery(q).said.map((x) => `<span class="sq">${esc(x)}</span>`).join(" ")}</p>` : ""}
         ${fixed ? `<p class="fixnote">Nothing matched “${esc(state.q)}”, so these are results for <b>${esc(fixed)}</b>.</p>` : ""}
-        ${slug === "search" ? `<div id="pmatch"></div>` : ""}
+        ${slug === "search" ? `${pageShortcut(state.q)}<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
@@ -590,6 +590,12 @@
     if (state.filters.size || state.sort !== "new") syncURL();
     io.observe($("#sentinel"));
     if (slug === "search") playerMatches(q, state.q);
+  }
+  // Searching for a page by what it's about puts that page first ("letter", "letterman", "lettermen" → all letterman sets).
+  function pageShortcut(q) {
+    if (!/^\s*(letter|letters|letterman|lettermans|lettermen)(\s+sets?)?\s*$/i.test(q || "")) return "";
+    return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/letters"><span class="pm-ph pm-ic" aria-hidden="true">🔤</span>
+      <span class="pm-t"><b>All letterman sets</b><small>Every set by the word it spells, with the letters I still need</small></span><span class="pm-go">→</span></a></div></div>`;
   }
   // Searching a name also offers that player's NFL Huskers page.
   function playerMatches(q, asked = q) {
