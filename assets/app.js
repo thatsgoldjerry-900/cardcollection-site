@@ -1245,7 +1245,8 @@
   // Signature showcase (config "signatures", Ian's request): the signature's ink lifted out of one autograph scan and shown
   // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed.
   // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
-  // ink "blue" (blue marker), "dark" (black marker: darker than the card around it) or "both", t (ink threshold).
+  // ink "blue" (blue marker), "red" (red Sharpie), "dark" (black marker: darker than the card around it) or "both",
+  // t (ink threshold), w (scan width to load; Fan Day sheets use 2000).
   // Fan Day sheets (config "fanDay"): the player's own box from a multi-signed sheet, cropped on screen only (files
   // untouched). Tap to open the whole sheet.
   function fanDayOf(slug) {   // the newest Fan Day box for this player
@@ -1291,7 +1292,8 @@
       const th = g.t || 40;
       for (let k = 0; k < N; k++) {
         const blue = (px[4 * k + 2] - (px[4 * k] + px[4 * k + 1]) / 2) * 1.6, dark = bg ? bg[k] - lum[k] : 0;
-        const sc = g.ink === "dark" ? dark : g.ink === "both" ? Math.max(blue, dark) : blue;
+        const red = (px[4 * k] - (px[4 * k + 1] + px[4 * k + 2]) / 2) * 1.6;
+        const sc = g.ink === "dark" ? dark : g.ink === "red" ? red : g.ink === "both" ? Math.max(blue, dark) : blue;
         m[k] = Math.min(1, Math.max(0, (sc - th) / 30));
       }
       // Drop specks (foil sparkle, printed patterns): pieces of ink smaller than 0.15% of the area.
@@ -1316,7 +1318,7 @@
         o[4 * k] = 255; o[4 * k + 1] = Math.round(40 + 190 * cc); o[4 * k + 2] = Math.round(30 + 180 * cc); o[4 * k + 3] = Math.round(255 * a); }
       cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0); cv.classList.add("on");
     };
-    im.src = img(c.id, c.rk, 1200);
+    im.src = img(c.id, c.rk, g.w || 1200);   // Fan Day sheets: w 2000, since each box is a small part of the sheet
   }
   function player(slug) {
     setNav("nfl-huskers");
