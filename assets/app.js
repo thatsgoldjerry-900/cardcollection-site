@@ -608,7 +608,7 @@
       box.innerHTML = `<div class="pmatch"><h4>Player pages</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
         return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
-          <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.league} Husker${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+          <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.tagline ? esc(p.tagline) : `${p.league} Husker`}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
@@ -650,7 +650,8 @@
   const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "nfl-tier-2-huskers": "football", "pro-football-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball" };
   function scansFor(name, sport = "football") {
     if (!scanIndex[sport]) {
-      const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport);
+      // A sport ("football" → my Nebraska football section) or a section slug ("royals", for cardPlayers).
+      const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport) >= 0 ? SECTIONS.findIndex((s) => s.slug === "husker-" + sport) : SECTIONS.findIndex((s) => s.slug === sport);
       // "(Hand Signed by Tyrone Fahie)": the autograph is his, so the card goes on his page only, not the pictured player's.
       const who = (c) => { const m = c.name.match(/\(\s*hand signed by ([^)]+)\)/i); return m ? m[1] : c.name; };
       scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si).map((c) => [" " + norm(who(c)) + " ", c]);
@@ -947,6 +948,13 @@
           signed: c["Signed"] >= 0 ? r[c["Signed"]] : "", link: (l.links || {})[r[0]] || "" });
       });
     });
+    // People I made custom cards of who aren't on a list (config "cardPlayers"): a page from their cards and my write-ups.
+    Object.entries((DATA.site.cardPlayers) || {}).filter(([k]) => !k.startsWith("_")).forEach(([where, people]) => people.forEach((x) => {
+      let slug = pslug(x.name); if (used.has(slug)) slug += "-card"; used.add(slug);
+      const sec = SECTIONS.find((s) => s.slug === (where === "football" ? "husker-football" : where)) || {};
+      ALL.push({ sport: where, league: "Nebraska", tagline: x.tagline || "", listSlug: "card-" + where, back: "#/c/" + (sec.slug || ""), backLabel: sec.title || "",
+        name: x.name, slug, year: x.year || "", position: x.position || "", have: true, games: "", notes: "", signed: "", link: "", card: true });
+    }));
     return ALL;
   }
   const slugFor = (listSlug, name) => (allPlayers().find((p) => p.listSlug === listSlug && p.name === name.trim()) || {}).slug || pslug(name);
@@ -1337,10 +1345,10 @@
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
             <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
-            ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
+            ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : info.card ? "" : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
         </div>
-        ${football ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
+        ${football && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
           noteTeams: NFLTEAMS_LIST ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs, pfa: e.pfa }))); })() : [],
@@ -1354,7 +1362,7 @@
               ? `<table class="kv"><tbody>${h.map((k, n) => (n === 0 && h.length > 2 ? "" : `<tr><th>${esc(k)}</th><td>${esc(rows[0][n] ?? "")}</td></tr>`)).join("")}</tbody></table>`
               : `<div class="vt-tbl"><table><thead><tr>${h.map((k) => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
             return `<section><h2>${esc(st.title || "Stats")} <span class="star" title="From my custom card">★</span></h2>${body}<p class="note">From my custom card.</p></section>`; }).join("")}
-          ${!football && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
+          ${(!football || info.card) && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
               ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
               : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
             : `<p class="muted">Not available yet.</p>`}</section>`}

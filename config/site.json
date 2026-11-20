@@ -1134,5 +1134,72 @@
   },
   "freshUpload": false,
   "_freshUploadHelp": "While freshUpload is true, a card the robot can't match to one it saw before is dated freshUploadDate (not today), so the big football re-upload doesn't all show as NEW. Turn off after the re-upload.",
-  "freshUploadDate": "2022-11-28"
+  "freshUploadDate": "2022-11-28",
+  "cardPlayers": {
+    "_help": "People I made custom cards of who aren't on my Pro-player lists: each gets a player page built from his cards and my card-back write-ups (data/card-text.json). grouped by where their cards are: 'football' = my Nebraska football cards, or a section slug such as 'royals'; 'year' = final Nebraska season; 'position' as written on my card.",
+    "football": [
+      {
+        "name": "Tom Osborne",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Bob Devaney",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Larry Frost",
+        "position": "RB/WR",
+        "year": "1969"
+      },
+      {
+        "name": "Alonzo Whaley",
+        "position": "",
+        "year": "2012"
+      },
+      {
+        "name": "Bill Bomberger",
+        "position": "Kicker / fullback",
+        "year": "1970"
+      },
+      {
+        "name": "Randy Reeves",
+        "position": "Safety",
+        "year": "1969"
+      },
+      {
+        "name": "Ladas Hubka",
+        "position": "Guard",
+        "year": "1935"
+      },
+      {
+        "name": "Omar Manning",
+        "position": "Wide receiver",
+        "year": ""
+      },
+      {
+        "name": "Maurice Washington",
+        "position": "Running back",
+        "year": "2019"
+      },
+      {
+        "name": "Mick Stoltenberg",
+        "position": "Defensive lineman",
+        "year": "2018"
+      },
+      {
+        "name": "Sam Foltz",
+        "position": "Punter",
+        "year": "2015"
+      }
+    ],
+    "royals": [
+      {
+        "name": "Brewer Hicklen",
+        "position": "Kansas City Royals · Outfielder",
+        "tagline": "Kansas City Royals"
+      }
+    ]
+  }
 }
