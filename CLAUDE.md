@@ -15,7 +15,7 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
 - **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
   article; link Ian's PDF.
-- **Cards shown:** hide any card whose name says "sold", and 2nd/3rd copies. Keep custom cards even when
+- **Cards shown:** hide any card whose name says "sold" or "gifted to", and 2nd/3rd copies. Keep custom cards even when
   they're copies (they were commissions).
 - **Scans are never altered.** Effects go around the card (viewer auras), not on it. Display is clean;
   only saved images get the IANBADEER.COM watermark.
