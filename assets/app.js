@@ -2180,23 +2180,35 @@
     const k = Math.min(W / ar, H);
     el.style.height = Math.floor(k) + "px"; el.style.width = Math.floor(k * ar) + "px";
   }
-  function loadInto(el, c, id, rk, alt, done) {
+  // Front and back side by side (wide screens): both images change together. Each side waits until the other is
+  // ready too, so the old back never lingers next to the new front.
+  function showGroup(need) {
+    const g = { fns: [], fired: false, add(f) { if (this.fired) return requestAnimationFrame(f); this.fns.push(f); if (this.fns.length === need) this.fire(); },
+      fire() { if (this.fired) return; this.fired = true; requestAnimationFrame(() => { this.fns.forEach((f) => f()); if (this.after) this.after(); }); } };
+    setTimeout(() => g.fire(), 2500);   // safety net: never wait forever for a slow image
+    return g;
+  }
+  function loadInto(el, c, id, rk, alt, done, group) {
     el.dataset.id = id; el.alt = alt;
-    let big = false;
+    let big = false, open = !group, pend = null, told = false;
     const live = () => el.dataset.id === id && V.list[V.k] === c;
-    const showBig = (u) => { big = true; el.style.setProperty("--plain", `url("${u.plain}")`); el.classList.add("wm"); el.src = u.marked; };
-    if (READY.has(id)) { showBig(READY.get(id)); if (done) done(); return; }
+    const tell = () => { if (!told && done) { told = true; done(); } };
+    // Every change to the image goes through the gate: straight away, or (side by side) when both sides are ready.
+    const gate = (fn) => { if (open) return fn(); const first = !pend; pend = fn; if (first) group.add(() => { open = true; if (live()) pend(); }); };
+    const showBig = (u) => gate(() => { big = true; el.style.setProperty("--plain", `url("${u.plain}")`); el.classList.add("wm"); el.src = u.marked; tell(); });
+    if (READY.has(id)) { showBig(READY.get(id)); return; }
     const t = new Image(); t.src = img(id, rk, 400);
     t.decode().catch(() => {}).then(() => {
       if (!live() || big) return;
-      el.classList.remove("wm"); el.style.removeProperty("--plain"); fitImg(el, t.naturalWidth, t.naturalHeight); el.src = t.src;
-      if (done) done();
+      gate(() => { if (big) return; el.classList.remove("wm"); el.style.removeProperty("--plain"); fitImg(el, t.naturalWidth, t.naturalHeight); el.src = t.src; tell(); });
     });
     ready(id, rk).then((u) => { if (live()) requestAnimationFrame(() => { if (live()) showBig(u); }); })
-      .catch(() => { if (live()) el.src = img(id, rk, 1600); });   // no mark possible: plain large image
+      .catch(() => { if (live()) gate(() => { el.src = img(id, rk, 1600); tell(); }); });   // no mark possible: plain large image
   }
   // Get the next card ready while this one is looked at.
-  const prefetch = () => { const n = V.list[V.k + 1]; if (n && n.id && !n.photo && !READY.has(n.id)) setTimeout(() => ready(n.id, n.rk).catch(() => {}), 600); };
+  const prefetch = () => { const n = V.list[V.k + 1]; if (!n || !n.id || n.photo) return;
+    setTimeout(() => { if (!READY.has(n.id)) ready(n.id, n.rk).catch(() => {});
+      if (n.backId && wide.matches && !READY.has(n.backId)) ready(n.backId, n.backRk).catch(() => {}); }, 600); };
   // "Save image": the marked image, named after the card.
   async function saveCard() {
     const c = V.list[V.k]; if (!c) return;
@@ -2228,9 +2240,13 @@
     const pair = isPair(c), stage = $("#v-stage"), im = $("#v-img"), im2 = $("#v-img2");
     const back = !pair && V.back;
     const id = back ? c.backId : c.id, rk = back ? c.backRk : c.rk;
-    loadInto(im, c, id, rk, c.name + (back ? " (back)" : ""), () => aura(c));
+    const g = pair ? showGroup(2) : null;
+    // A back slot that was hidden (last card had no back) may still hold an old image: keep it invisible until both are ready.
+    if (g && (im2.hidden || !im2.getAttribute("src"))) { im2.style.visibility = "hidden"; g.after = () => (im2.style.visibility = ""); }
+    else im2.style.visibility = "";
+    loadInto(im, c, id, rk, c.name + (back ? " (back)" : ""), () => aura(c), g);
     im2.hidden = !pair;
-    if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)");
+    if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)", null, g);
     stage.classList.toggle("pair", pair);
     stage.classList.toggle("zoom", V.zoom && wide.matches);
     [im, im2].forEach((e) => e.dataset.id && e.getAttribute("src") && fitImg(e));
