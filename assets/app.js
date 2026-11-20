@@ -1304,7 +1304,7 @@
         n++; let sp = 0, size = 0; stack[sp++] = k; lab[k] = n;
         while (sp) { const q = stack[--sp]; size++; const qx = q % W;
           for (const r of [q - W, q + W, qx > 0 ? q - 1 : -1, qx < W - 1 ? q + 1 : -1]) if (r >= 0 && r < N && !lab[r] && m[r] >= 0.5) { lab[r] = n; stack[sp++] = r; } }
-        keep[n] = size >= 0.0015 * N ? 1 : 0;
+        keep[n] = size >= (g.minArea || 0.0015) * N ? 1 : 0;   // minArea: smaller, to keep an i-dot on a clean image
       }
       // Soft edges stay only next to kept ink.
       const near = (k) => { const kx = k % W; for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const xx = kx + dx, r = k + dy * W + dx; if (xx >= 0 && xx < W && r >= 0 && r < N && keep[lab[r]]) return true; } return false; };

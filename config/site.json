@@ -2186,6 +2186,21 @@
       "ink": "black",
       "t": 55,
       "grow": 3
+    },
+    "rich-glover": {
+      "id": "1CdeWVgu_ZcU1B1PmXrZPhsj4RHUDkwHS",
+      "src": "assets/signatures/rich-glover.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 4.197,
+      "ink": "black",
+      "t": 60,
+      "grow": 2,
+      "minArea": 0.0001
     }
   },
   "fanDay": {
