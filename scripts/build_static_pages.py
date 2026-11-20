@@ -18,6 +18,9 @@ PLAYERS = os.path.join(ROOT, "data", "players.json")
 CATALOG = os.path.join(ROOT, "data", "catalog.json")
 CONFIG = os.path.join(ROOT, "config", "site.json")
 SITE = "IanBadeer.com"
+def _base():
+    try: return (json.load(open(CONFIG)).get("siteUrl") or "").rstrip("/") + "/"
+    except Exception: return "/"
 CREDIT = "Researched and verified by Ian Badeer"
 LICENSE = "https://creativecommons.org/licenses/by-nc/4.0/"
 QUOTE = ("My player lists and research are licensed under CC BY-NC 4.0: share and adapt them for non-commercial use with credit "
@@ -104,7 +107,8 @@ def page(title, desc, body, updated, ld, image=""):
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{SITE}">
-{f'<meta property="og:image" content="{esc(image)}">' if image else ""}
+<meta property="og:image" content="{esc(image or _base() + 'assets/preview.jpg')}">
+<meta name="twitter:card" content="{'summary_large_image' if not image else 'summary'}">
 <script type="application/ld+json">{json.dumps(ld)}</script>
 <style>{CSS}</style>
 </head>

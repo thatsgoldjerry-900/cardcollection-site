@@ -100,7 +100,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **A plain, crawlable page for every player** (like `/nfl-huskers/`), so searches for a player's name can land on Ian's page about him.
 - [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
   - [ ] Keep old `#/` links working.
-- [ ] **Link previews.** Site-wide preview image, title and description; per-page previews for player pages, collections, lists and Media.
+- [x] **Link previews** (2026-11-22): site-wide preview image (assets/preview.jpg), title and description in index.html; the plain
+  player and list pages have their own title, description and card picture. Collections and Media get their own previews once
+  pages have real addresses (the item above). At the switch, update the addresses in index.html's preview tags.
 - [x] **A 404 page** that sends people to the right place (done: 404.html with search, random card and main links). At the switch, old Google Sites addresses can be added to it as redirects.
 
 ## The switch
