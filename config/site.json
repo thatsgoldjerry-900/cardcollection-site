@@ -2172,6 +2172,19 @@
       ],
       "ar": 2.5056,
       "t": 18
+    },
+    "ed-husmann": {
+      "id": "1psEl7OZyAJq21wKde4kYG0aPCCO6kS1m",
+      "src": "assets/signatures/ed-husmann.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 3.3113,
+      "ink": "black",
+      "t": 105
     }
   },
   "fanDay": {
