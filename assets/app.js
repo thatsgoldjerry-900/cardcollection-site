@@ -559,7 +559,7 @@
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
-          <div class="tools-r">${binderBtn()}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
+          <div class="tools-r">${binderBtn()}${(sec || slug === "customs") && gi < 0 ? `<button type="button" class="btn" data-share-c="${slug}" aria-label="Share this collection">Share</button>` : ""}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
             const teams = [...new Set(base.map((c) => c.team).filter(Boolean))].sort((a, b) => a.localeCompare(b));
             const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
             return tm + (ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""); })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
@@ -591,6 +591,14 @@
     io.observe($("#sentinel"));
     if (slug === "search") playerMatches(q, state.q);
   }
+  // Share a collection: its c/<slug>/ link, which shows the collection's own picture and title in texts and on social media.
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-share-c]"); if (!b) return;
+    const url = location.href.split("#")[0].replace(/index\.html$/, "") + "c/" + b.dataset.shareC + "/", title = document.title;
+    if (navigator.share && matchMedia("(pointer: coarse)").matches) { try { await navigator.share({ title, url }); } catch (err) {} return; }
+    try { await navigator.clipboard.writeText(url); b.textContent = "Link copied"; } catch (err) { prompt("Copy this link:", url); }
+    setTimeout(() => (b.textContent = "Share"), 2000);
+  });
   // Searching for a page by what it's about puts that page first ("letter", "letterman", "lettermen" → all letterman sets).
   function pageShortcut(q) {
     if (!/^\s*(letter|letters|letterman|lettermans|lettermen)(\s+sets?)?\s*$/i.test(q || "")) return "";

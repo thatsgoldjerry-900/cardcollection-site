@@ -101,8 +101,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
   - [ ] Keep old `#/` links working.
 - [x] **Link previews** (2026-11-22): site-wide preview image (assets/preview.jpg), title and description in index.html; the plain
-  player and list pages have their own title, description and card picture. Collections and Media get their own previews once
-  pages have real addresses (the item above). At the switch, update the addresses in index.html's preview tags.
+  player and list pages have their own title, description and card picture. Collections have their own previews too (2026-11-22):
+  the Share button on a collection gives a c/<slug>/ link with that collection's picture (assets/previews/, remake with
+  scripts/make_preview_images.py). Media and player pages share the site preview until pages have real addresses. At the switch, update the addresses in index.html's preview tags.
 - [x] **A 404 page** that sends people to the right place (done: 404.html with search, random card and main links). At the switch, old Google Sites addresses can be added to it as redirects.
 
 ## The switch
