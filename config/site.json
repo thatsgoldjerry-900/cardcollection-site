@@ -2301,10 +2301,10 @@
         0.96
       ],
       "ar": 3.4444,
-      "ink": "dark",
-      "t": 12,
-      "grow": 2,
-      "minArea": 0.0006
+      "ink": "black",
+      "t": 140,
+      "grow": 1,
+      "minArea": 0.0005
     }
   },
   "fanDay": {
