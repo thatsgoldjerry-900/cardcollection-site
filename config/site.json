@@ -1460,6 +1460,226 @@
         0.5065
       ],
       "ar": 1.6667
+    },
+    "fabian-washington": {
+      "id": "1l2S2gbUPJLMBdY19m912Ze05rt3CI-NS",
+      "box": [
+        0.179,
+        0.6458,
+        0.3539,
+        0.1633
+      ],
+      "ar": 0.7153
+    },
+    "bill-barnett": {
+      "id": "1jQ22LH54s7DPOo84wY6FlsSKAE9YgnVf",
+      "box": [
+        0.2951,
+        0.333,
+        0.5018,
+        0.4269
+      ],
+      "ar": 1.6611
+    },
+    "darrion-daniels": {
+      "id": "1Yz8iOmDo1H6yM-m_sol-xcSSJBcG9pQc",
+      "box": [
+        0.1786,
+        0.736,
+        0.6227,
+        0.1919
+      ],
+      "ar": 0.7123
+    },
+    "rex-burkhead": {
+      "id": "1Wv7FyqLn7KiS7qamtxgM4moYv5BYH1rL",
+      "box": [
+        0.1813,
+        0.6705,
+        0.5734,
+        0.1589
+      ],
+      "ar": 0.7123
+    },
+    "trey-palmer": {
+      "id": "1n95yKVi9TxKPSFBGfitpktVSJ8eRICtf",
+      "box": [
+        0.2424,
+        0.7247,
+        0.3651,
+        0.133
+      ],
+      "ar": 0.7102
+    },
+    "adam-carriker": {
+      "id": "1z1afEsl8mzjfMad2TzaEKv8wqmlinuYX",
+      "box": [
+        0.391,
+        0.625,
+        0.5421,
+        0.2207
+      ],
+      "ar": 1.3928
+    },
+    "roger-craig": {
+      "id": "1pmuxr37gkrCueOqVIcMikicBU2wcUGPn",
+      "box": [
+        0.1252,
+        0.7838,
+        0.7616,
+        0.2023
+      ],
+      "ar": 0.7143
+    },
+    "andy-janovich": {
+      "id": "1yLiKao4N9lhOSoeOd9h380D2cAD6iPGi",
+      "box": [
+        0.4566,
+        0.609,
+        0.4368,
+        0.2193
+      ],
+      "ar": 1.3928
+    },
+    "niles-paul": {
+      "id": "1UnnGjhfqcUchREgUDirNH-iCpG_-9Afz",
+      "box": [
+        0.5252,
+        0.7308,
+        0.3875,
+        0.2051
+      ],
+      "ar": 1.4124
+    },
+    "barrett-ruud": {
+      "id": "1zJ_SdO5Tev2ICvrtDOoNV9qQ6TcbQBwd",
+      "box": [
+        0.2792,
+        0.521,
+        0.4995,
+        0.1186
+      ],
+      "ar": 0.7112
+    },
+    "jerry-tagge": {
+      "id": "1k1RveIZLNucFXGFYPR1423X1TGd55np8",
+      "box": [
+        0.0264,
+        0.8309,
+        0.7011,
+        0.1691
+      ],
+      "ar": 0.7163
+    },
+    "ndamukong-suh": {
+      "id": "1ZCO0h1oIsWGVwaiQenBtVS4jiz1PWV2A",
+      "box": [
+        0.4086,
+        0.5411,
+        0.4368,
+        0.2717
+      ],
+      "ar": 1.4045
+    },
+    "cam-taylor-britt": {
+      "id": "1lZvSTbTanWQZlO61wbdqX67NzZuXf0v7",
+      "box": [
+        0.3996,
+        0.8117,
+        0.3427,
+        0.086
+      ],
+      "ar": 0.5834
+    },
+    "freeman-white": {
+      "id": "14gMZIcCaGA5W8gsee3liL6fLin88iY7D",
+      "box": [
+        0.0266,
+        0.7719,
+        0.9587,
+        0.2281
+      ],
+      "ar": 0.7194
+    },
+    "jared-crick": {
+      "id": "1w2kUSlWpYUrn-Z3rhhj1NA4fKkZRmd9G",
+      "box": [
+        0.2895,
+        0.5889,
+        0.681,
+        0.371
+      ],
+      "ar": 1.3928
+    },
+    "jojo-domann": {
+      "id": "1lAV1U6TSY76bZXTf8DO6J_5Lz4QxN7Sa",
+      "box": [
+        0.2923,
+        0.6707,
+        0.3674,
+        0.1366
+      ],
+      "ar": 0.7133
+    },
+    "ochaun-mathis": {
+      "id": "1eOTwSUPTmsGNBvu_H63vMVGhn7bgqsHj",
+      "box": [
+        0.191,
+        0.6431,
+        0.504,
+        0.1409
+      ],
+      "ar": 0.7143
+    },
+    "lamar-jackson": {
+      "id": "1BHc4JXZLwSHks3hvqexeNbOxXTzA67F0",
+      "box": [
+        0.0407,
+        0.6895,
+        0.6966,
+        0.1984
+      ],
+      "ar": 0.7092
+    },
+    "johnny-rodgers": {
+      "id": "1EdBkUGuebubpV9mRnxWGwMZseD0qsinS",
+      "box": [
+        0.0829,
+        0.6504,
+        0.8422,
+        0.2165
+      ],
+      "ar": 0.7163
+    },
+    "dan-alexander": {
+      "id": "1VUg4fBRPln_nOiEkZTCVYH0CwLaHDhNo",
+      "box": [
+        0.0939,
+        0.784,
+        0.6742,
+        0.181
+      ],
+      "ar": 0.7133
+    },
+    "prince-amukamara": {
+      "id": "1z3PUYXxMyVOLfjIvAe9NSNasdTsFjxiV",
+      "box": [
+        0.1555,
+        0.78,
+        0.569,
+        0.1774
+      ],
+      "ar": 0.7133
+    },
+    "tony-jeter": {
+      "id": "1SlJ0FFT-QlCk2JVAIRT8o3w8SYV50jhk",
+      "box": [
+        0.0118,
+        0.7545,
+        0.9744,
+        0.2455
+      ],
+      "ar": 0.7143
     }
   }
 }

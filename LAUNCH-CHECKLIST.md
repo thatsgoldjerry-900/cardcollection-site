@@ -60,12 +60,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Signature showcase: 24 approved** (pilot 5 + Tier 1 batch 1 of 19, 2026-11-22). Next: Tier 1 batch 2 (27 more candidates found
-  automatically: blue ink on a plain light label), then more players,
-  shown to Ian on a sheet before going live (rules in CLAUDE.md). These pages show just the signature from one
-  autograph scan as a glowing red neon sign on black, under the main picture (config/site.json "signatures"; the ink is
-  lifted out on screen, scans untouched; per player: crop box, ink colour blue/dark/both, threshold).
-  Options: hand-picked for favorites, automatic ink detection for the rest, or a mix.
+- [ ] **Signature showcase: 46 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
+  light label, one player per card) has no more Tier 1 candidates. Next, if wanted: Tier 1 players with black ink or busier
+  labels (hand-picked), then Tier 2/3 and other collections. Each batch goes to Ian on a sheet before going live.
 - [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
   config/site.json: Tom Osborne, Bob Devaney, Larry Frost, Alonzo Whaley, Bill Bomberger, Randy Reeves, Ladas Hubka, Omar Manning,
   Maurice Washington, Mick Stoltenberg, Sam Foltz, Brewer Hicklen). Wikipedia was refusing requests on 2026-11-20. Plan: have
