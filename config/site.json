@@ -2057,6 +2057,109 @@
         0.1758
       ],
       "ar": 0.7163
+    },
+    "brenden-jaimes": {
+      "id": "1710GXcnKJISpFUkMpXjhOpRIZPZnH3ix",
+      "box": [
+        0.177,
+        0.3141,
+        0.5779,
+        0.5294
+      ],
+      "ar": 1.6779,
+      "ink": "red"
+    },
+    "mike-mcneill": {
+      "id": "1YlzUpof6QdYZPoy9Y33fsYjWtYRKDb-Z",
+      "box": [
+        0.2538,
+        0.2309,
+        0.5264,
+        0.4985
+      ],
+      "ar": 1.6556,
+      "ink": "red"
+    },
+    "eric-martin": {
+      "id": "1JOkitsZn_lEo_H1oVkiAQ9RQxc2FKdWq",
+      "box": [
+        0.0118,
+        0.12,
+        0.9744,
+        0.6238
+      ],
+      "ar": 1.6611,
+      "ink": "red"
+    },
+    "zach-sterup": {
+      "id": "1xZV8PgWM7sXgU_EdJ3FYJg0HSU_PJ99Q",
+      "box": [
+        0.1272,
+        0.1767,
+        0.6115,
+        0.5417
+      ],
+      "ar": 1.6393,
+      "ink": "black",
+      "t": 105
+    },
+    "le-kevin-smith": {
+      "id": "1MmXGPS5OX1h4NBcT3co2l1h0jU7hBj4y",
+      "box": [
+        0.146,
+        0.2793,
+        0.448,
+        0.5024
+      ],
+      "ar": 1.6949,
+      "ink": "black",
+      "t": 105
+    },
+    "nick-gates": {
+      "id": "1Gsu0sLA_t3R-QqJigDDNhkmBhExYJtYL",
+      "box": [
+        0.1338,
+        0.2274,
+        0.4144,
+        0.3709
+      ],
+      "ar": 1.6447,
+      "ink": "black",
+      "t": 105
+    },
+    "luke-mccaffrey": {
+      "id": "1x9hfurEVqLl-6G33EZpIQfOGTRUDJPVI",
+      "box": [
+        0.332,
+        0.7216,
+        0.3741,
+        0.1123
+      ],
+      "ar": 0.5848
+    },
+    "warren-powers": {
+      "id": "1mY_yOR3rdVCR7BH5ybMZS_kzXZqbSMaw",
+      "box": [
+        0.0723,
+        0.1057,
+        0.8534,
+        0.3368
+      ],
+      "ar": 1.6667,
+      "ink": "black",
+      "t": 105
+    },
+    "jim-burrow": {
+      "id": "1Xo9jUtZlyKSPsuj6-rOf4SFu46MuA1qX",
+      "box": [
+        0.0118,
+        0.007,
+        0.9744,
+        0.3439
+      ],
+      "ar": 1.6447,
+      "ink": "black",
+      "t": 105
     }
   },
   "fanDay": {
