@@ -1235,17 +1235,69 @@
   }
   let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
-  // Signature showcase (pilot, config "signatures"): just the signature area of one autograph scan, cropped on screen
-  // only (the scan is untouched), on a dark panel with a soft red glow. Tap it to open the whole card.
+  // Signature showcase (config "signatures", Ian's request): the signature's ink lifted out of one autograph scan and shown
+  // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed.
+  // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
+  // ink "blue" (blue marker), "dark" (black marker: darker than the card around it) or "both", t (ink threshold).
   function signatureHTML(slug, name) {
     const g = (DATA.site.signatures || {})[slug]; if (!g || !g.box) return "";
     const c = CARDS.find((x) => x.id === g.id); if (!c) return "";
-    const [x, y, w, h] = g.box, ar = g.ar || 0.7;
-    const pos = (v, s) => (s >= 1 ? 0 : (v / (1 - s)) * 100);
-    return `<button type="button" class="sig-panel" data-i="${c.i}" aria-label="${esc(name)}'s signature, from ${esc(c.name)}">
-      <span class="sig-k">Signature</span>
-      <span class="sig-crop" style="aspect-ratio:${((w * ar) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, 1200)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span>
-    </button>`;
+    const [, , w, h] = g.box, ar = g.ar || 0.7;
+    requestAnimationFrame(() => drawNeon(slug, c, g));
+    return `<button type="button" class="sig-panel" data-i="${c.i}" aria-label="${esc(name)}'s signature, from ${esc(c.name)}. Opens the card.">
+      <canvas class="sig-neon" id="sig-${esc(slug)}" style="aspect-ratio:${((w * ar) / h).toFixed(3)}" aria-hidden="true"></canvas></button>`;
+  }
+  function drawNeon(slug, c, g) {
+    const cv = document.getElementById("sig-" + slug); if (!cv) return;
+    const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => {
+      const [x, y, w, h] = g.box, sx = x * im.naturalWidth, sy = y * im.naturalHeight, sw = w * im.naturalWidth, sh = h * im.naturalHeight;
+      const W = 900, H = Math.round((W * sh) / sw);
+      const cx = document.createElement("canvas"); cx.width = W; cx.height = H;
+      const t = cx.getContext("2d", { willReadFrequently: true }); t.drawImage(im, sx, sy, sw, sh, 0, 0, W, H);
+      let d; try { d = t.getImageData(0, 0, W, H); } catch (e) { return; }
+      const px = d.data, N = W * H, lum = new Float32Array(N), m = new Float32Array(N);
+      for (let k = 0; k < N; k++) lum[k] = 0.299 * px[4 * k] + 0.587 * px[4 * k + 1] + 0.114 * px[4 * k + 2];
+      // "Darker than the card around it": compare with a wide box blur of the brightness (the local background).
+      let bg = null;
+      if (g.ink === "dark" || g.ink === "both") {
+        const R = 24, I = new Float64Array((W + 1) * (H + 1));
+        for (let yy = 0; yy < H; yy++) { let row = 0; for (let xx = 0; xx < W; xx++) { row += lum[yy * W + xx]; I[(yy + 1) * (W + 1) + xx + 1] = I[yy * (W + 1) + xx + 1] + row; } }
+        bg = new Float32Array(N);
+        for (let yy = 0; yy < H; yy++) for (let xx = 0; xx < W; xx++) {
+          const a = Math.max(0, xx - R), b = Math.max(0, yy - R), e = Math.min(W, xx + R + 1), f = Math.min(H, yy + R + 1);
+          bg[yy * W + xx] = (I[f * (W + 1) + e] - I[b * (W + 1) + e] - I[f * (W + 1) + a] + I[b * (W + 1) + a]) / ((e - a) * (f - b));
+        }
+      }
+      const th = g.t || 40;
+      for (let k = 0; k < N; k++) {
+        const blue = (px[4 * k + 2] - (px[4 * k] + px[4 * k + 1]) / 2) * 1.6, dark = bg ? bg[k] - lum[k] : 0;
+        const sc = g.ink === "dark" ? dark : g.ink === "both" ? Math.max(blue, dark) : blue;
+        m[k] = Math.min(1, Math.max(0, (sc - th) / 30));
+      }
+      // Drop specks (foil sparkle, printed patterns): pieces of ink smaller than 0.15% of the area.
+      const lab = new Int32Array(N), keep = new Uint8Array(N + 1), stack = new Int32Array(N); let n = 0;
+      for (let k = 0; k < N; k++) {
+        if (m[k] < 0.5 || lab[k]) continue;
+        n++; let sp = 0, size = 0; stack[sp++] = k; lab[k] = n;
+        while (sp) { const q = stack[--sp]; size++; const qx = q % W;
+          for (const r of [q - W, q + W, qx > 0 ? q - 1 : -1, qx < W - 1 ? q + 1 : -1]) if (r >= 0 && r < N && !lab[r] && m[r] >= 0.5) { lab[r] = n; stack[sp++] = r; } }
+        keep[n] = size >= 0.0015 * N ? 1 : 0;
+      }
+      // Soft edges stay only next to kept ink.
+      const near = (k) => { const kx = k % W; for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const xx = kx + dx, r = k + dy * W + dx; if (xx >= 0 && xx < W && r >= 0 && r < N && keep[lab[r]]) return true; } return false; };
+      for (let k = 0; k < N; k++) if (m[k] > 0 && !(lab[k] && keep[lab[k]]) && !near(k)) m[k] = 0;
+      // The tube: hot pinkish-white in the middle of each stroke, red toward its edges.
+      const core = new Float32Array(N);
+      for (let k = 0; k < N; k++) { if (m[k] < 0.5) continue; const kx = k % W; let lo = 1;
+        for (let dy = -2; dy <= 2 && lo > 0; dy++) for (let dx = -2; dx <= 2; dx++) { const xx = kx + dx, r = k + dy * W + dx; lo = Math.min(lo, xx >= 0 && xx < W && r >= 0 && r < N ? m[r] : 0); }
+        core[k] = lo; }
+      const out = t.createImageData(W, H), o = out.data;
+      for (let k = 0; k < N; k++) { const a = m[k]; if (!a) continue; const cc = core[k];
+        o[4 * k] = 255; o[4 * k + 1] = Math.round(40 + 190 * cc); o[4 * k + 2] = Math.round(30 + 180 * cc); o[4 * k + 3] = Math.round(255 * a); }
+      cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0); cv.classList.add("on");
+    };
+    im.src = img(c.id, c.rk, 1200);
   }
   function player(slug) {
     setNav("nfl-huskers");

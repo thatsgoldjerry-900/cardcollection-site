@@ -62,7 +62,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
 - [ ] **Signature showcase pilot is live (2026-11-22): Ian to look and decide how to scale.** 10 player pages (Rodgers, Rozier,
   Crouch, Frazier, Craig, Fryar, Ahman Green, Lavonte David, Will Shields, Ameer Abdullah) show just the signature from one
-  autograph scan on a dark panel with a red glow, under the main picture (config/site.json "signatures"; display-only crop).
+  autograph scan as a glowing red neon sign on black, under the main picture (config/site.json "signatures"; the ink is
+  lifted out on screen, scans untouched; per player: crop box, ink colour blue/dark/both, threshold).
   Options: hand-picked for favorites, automatic ink detection for the rest, or a mix.
 - [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
   config/site.json: Tom Osborne, Bob Devaney, Larry Frost, Alonzo Whaley, Bill Bomberger, Randy Reeves, Ladas Hubka, Omar Manning,

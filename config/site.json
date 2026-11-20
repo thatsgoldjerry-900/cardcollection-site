@@ -1220,7 +1220,7 @@
     ]
   },
   "signatures": {
-    "_help": "Signature showcase (pilot, Ian's request): on these player pages, just the signature area of one autograph scan, cropped on screen only (the scan file is untouched), on a dark panel. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height.",
+    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background).",
     "johnny-rodgers": {
       "id": "17wlVkPM9DX_oF7zcJ0HEdnX4y6ZE1I84",
       "box": [
@@ -1239,17 +1239,20 @@
         0.52,
         0.14
       ],
-      "ar": 0.6667
+      "ar": 0.6667,
+      "t": 60
     },
     "eric-crouch": {
       "id": "1azvxI2MVdt0dXXz0ZLrZ1Uu8A4q25yn6",
       "box": [
         0.03,
-        0.63,
+        0.675,
         0.94,
-        0.32
+        0.25
       ],
-      "ar": 0.7151
+      "ar": 0.7151,
+      "ink": "dark",
+      "t": 45
     },
     "tommie-frazier": {
       "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
@@ -1262,14 +1265,14 @@
       "ar": 0.7109
     },
     "roger-craig": {
-      "id": "183KFO9SXzKxXu3adHivWQnAuQVagWylw",
+      "id": "1ZAVIuAdolIeGDmPifxRPJyGJVos8iUue",
       "box": [
-        0.09,
-        0.7,
-        0.68,
-        0.18
+        0.12,
+        0.79,
+        0.82,
+        0.17
       ],
-      "ar": 0.7092
+      "ar": 0.7126
     },
     "irving-fryar": {
       "id": "1DspQx4CkedecFj0B_s7qbBpwa4N9WUG4",
