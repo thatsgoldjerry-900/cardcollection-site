@@ -98,7 +98,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
     reads the tag to place the card in that group, so one file shows in its home collection and the group; the tag can
     be hidden from the displayed name. (Alternatives: Drive shortcuts, or a list of card IDs in the site settings.)
 - [ ] **A plain, crawlable page for every player** (like `/nfl-huskers/`), so searches for a player's name can land on Ian's page about him.
-- [ ] **Real page addresses** (`/player/ricky-simmons` instead of `#/player/ricky-simmons`), so each page can have its own link preview and Google can index it.
+- [x] **Real page addresses** (done 2026-11-22): /player/ricky-simmons/, /c/royals/, /customs/, /checklist/tier-2/… (the NFL
+  Huskers hub is /player-pages/, since /nfl-huskers/ holds the plain list pages). Each main page has its own file with its own
+  title, description and link-preview picture (scripts/build_route_pages.py, run by the Action; also added to sitemap.xml).
+  Other addresses (searches, cards) go through 404.html to the site. Old #/ links still work.
   - [ ] Keep old `#/` links working.
 - [x] **Link previews** (2026-11-22): site-wide preview image (assets/preview.jpg), title and description in index.html; the plain
   player and list pages have their own title, description and card picture. Collections have their own previews too (2026-11-22):

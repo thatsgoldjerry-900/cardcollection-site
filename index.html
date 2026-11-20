@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+  // Every page of the site is this same page at its own address (/player/ricky-simmons/ …), so files load from the
+  // site's folder: the root at ianbadeer.com, /cardcollection-site/ on GitHub's address.
+  document.write('<base href="' + (location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/") + '">');
+</script>
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noai, noimageai">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -24,7 +29,7 @@
 <link rel="preconnect" href="https://lh3.googleusercontent.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="preload" href="data/catalog.json" as="fetch" crossorigin>
-<link rel="stylesheet" href="assets/style.css?v=20261122x">
+<link rel="stylesheet" href="assets/style.css?v=20261122y">
 </head>
 <body>
 <header class="top">
@@ -90,6 +95,6 @@
   <section class="v-text" id="v-text" hidden aria-label="Card back text"></section>
   <div class="v-meta" id="v-meta"></div>
 </div>
-<script src="assets/app.js?v=20261122x"></script>
+<script src="assets/app.js?v=20261122y"></script>
 </body>
 </html>

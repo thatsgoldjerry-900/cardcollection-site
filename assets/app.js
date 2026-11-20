@@ -116,6 +116,54 @@
   // A landscape card (e.g. a horizontal patch auto) gets a landscape frame instead of a tall, mostly empty one.
   window.fitFrame = (im) => { im.classList.add("ok"); if (im.naturalWidth > im.naturalHeight * 1.1) im.parentNode.classList.add("land"); };
 
+  /* ---------- Addresses: real paths (/player/ricky-simmons/) instead of #/player/ricky-simmons ----------
+     The app still thinks in "#/…" routes (HASH() gives the current one); toURL() turns one into a real address under
+     the site's folder, and go() moves there. Links written as href="#/…" are rewritten to real addresses (so search
+     engines can follow them) and open in place. Old #/ links still work: they're turned into real addresses on arrival.
+     GitHub Pages serves a page for each main address (built by scripts/build_route_pages.py); any other address
+     reaches 404.html, which hands it back to the app. */
+  const BASE = location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/";
+  const ALIAS = { "nfl-huskers": "player-pages" };   // app route → address (nfl-huskers/ holds the plain list pages)
+  const UNALIAS = Object.fromEntries(Object.entries(ALIAS).map(([a, b]) => [b, a]));
+  function toURL(h) {
+    const [path, qs] = String(h || "").replace(/^#?\/?/, "").split("?");
+    const parts = path.split("/").filter(Boolean); if (parts.length && ALIAS[parts[0]]) parts[0] = ALIAS[parts[0]];
+    return BASE + parts.map((x) => encodeURIComponent(decodeURIComponent(x))).join("/") + (parts.length ? "/" : "") + (qs ? "?" + qs : "");
+  }
+  const absURL = (h) => location.origin + toURL(h);
+  // The route an href points to ("#/…" as written, or the real address it was turned into).
+  function hashOf(href) {
+    if (!href || href.startsWith("#/")) return href;
+    let u; try { u = new URL(href, location.href); } catch (e) { return href; }
+    const parts = u.pathname.slice(BASE.length).split("/").filter(Boolean); if (parts.length && UNALIAS[parts[0]]) parts[0] = UNALIAS[parts[0]];
+    return "#/" + parts.join("/") + u.search;
+  }
+  function HASH() {
+    const rel = location.pathname.slice(BASE.length).replace(/^\/+|\/+$/g, "").replace(/(^|\/)index\.html$/, "");
+    const parts = rel.split("/").filter(Boolean); if (parts.length && UNALIAS[parts[0]]) parts[0] = UNALIAS[parts[0]];
+    return "#/" + parts.join("/") + location.search;
+  }
+  let LAST_HASH = null;
+  const fireRoute = () => { const h = HASH(); if (h === LAST_HASH) return; LAST_HASH = h; window.dispatchEvent(new HashChangeEvent("hashchange")); };
+  function go(h, replace) { history[replace ? "replaceState" : "pushState"](null, "", toURL(h)); fireRoute(); }
+  // An old #/… address (shared links, bookmarks, 404.html's hand-off): show it at its real address.
+  if (/^#\//.test(location.hash)) history.replaceState(null, "", toURL(location.hash));
+  addEventListener("popstate", () => setTimeout(fireRoute, 0));
+  // Links: "#/…" → real address in the page (for crawlers and long-press "copy link"), opened in place.
+  const fixLinks = (root) => (root.querySelectorAll ? root.querySelectorAll('a[href^="#/"]') : []).forEach((a) => a.setAttribute("href", toURL(a.getAttribute("href"))));
+  new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1) { if (n.matches('a[href^="#/"]')) n.setAttribute("href", toURL(n.getAttribute("href"))); fixLinks(n); } }))).observe(document.documentElement, { childList: true, subtree: true });
+  fixLinks(document);
+  document.addEventListener("click", (e) => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest("a[href]"); if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+    const raw = a.getAttribute("href");
+    if (raw.startsWith("#/")) { e.preventDefault(); go(raw); return; }
+    let u; try { u = new URL(a.href); } catch (err) { return; }
+    if (u.origin !== location.origin || !u.pathname.startsWith(BASE)) return;
+    const rel = u.pathname.slice(BASE.length);
+    if (/^(assets|data|nfl-huskers|players)\//.test(rel) || /\.[a-z0-9]+$/i.test(rel)) return;   // files and the plain pages
+    e.preventDefault(); history.pushState(null, "", u.pathname + u.search); fireRoute();
+  });
   /* ---------- Data ---------- */
   let DUPES = []; const DUP0 = 1000000;
   const cardAt = (i) => (i >= DUP0 ? DUPES[i - DUP0] : CARDS[i]);
@@ -230,7 +278,7 @@
     savePicks();
     document.querySelectorAll(`[data-pick="${c.i}"]`).forEach((el) => { const on = isPicked(c); el.classList.toggle("on", on); el.setAttribute("aria-pressed", on);
       el.setAttribute("aria-label", `${on ? "Remove from" : "Add to"} my picks`); el.title = `${on ? "Remove from" : "Add to"} my picks`; });
-    if ((location.hash || "") === "#/picks") route();
+    if ((HASH() || "") === "#/picks") route();
     return true;
   }
   function pickCount() {
@@ -251,7 +299,7 @@
     const byId = new Map([...CARDS, ...DUPES].filter(canPick).map((c) => [pickId(c), c]));
     const list = ids.map((id) => byId.get(id)).filter(Boolean), missing = ids.length - list.length;
     setNav(""); setTitle(shared ? "Shared picks" : "My picks");
-    const url = location.href.split("#")[0] + "#/picks/" + list.map(pickId).join(".");
+    const url = absURL("#/picks/" + list.map(pickId).join("."));
     const body = `Hi Ian,\n\nI'm interested in these cards from your site:\n\n${list.map((c, k) => `${k + 1}. ${c.name}`).join("\n")}\n\nSee them all: ${url}\n\n`;
     $("#app").innerHTML = `<div class="wrap coll c-royal"><div style="grid-column:1/-1;min-width:0">
       <div class="c-head"><div class="kick">${shared ? "Shared with you" : "Saved on this device"}</div><h1>${shared ? "Shared picks" : "My picks"}</h1>
@@ -386,7 +434,7 @@
     $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
     // The autograph pages appear once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
-      if (!r.ok || $('#dd-menu a[href="#/checklist"]')) return;
+      if (!r.ok || $('#dd-menu a[data-s="checklist"]')) return;
       $("#dd-menu").insertAdjacentHTML("beforeend", `${CK_PAGES.map((x, k) => `<a href="#/checklist${x.path}" data-s="checklist${x.path}"${k === 0 ? ' class="sep"' : ""}>${x.label}</a>`).join("")}
         <a href="#/nfl-huskers" data-s="nfl-huskers" class="sep">NFL Huskers Player Pages</a>
         <a href="#/nfl-teams" data-s="nfl-teams">Huskers by NFL Team</a>`);
@@ -589,7 +637,7 @@
       kick = { pc: "Player collection", chase: "Autograph chase", team: "Team collection", want: "Still hunting" }[sec.kind] || "Collection";
       groups = sec.groups;
       gi = groups.findIndex((g) => g.slug === gslug);
-      if (gslug && gi < 0 && groups.length <= 1) { history.replaceState(history.state, "", "#/c/" + slug); gslug = ""; }   // a group that's gone (e.g. 2009-and-older)
+      if (gslug && gi < 0 && groups.length <= 1) { history.replaceState(history.state, "", toURL("#/c/" + slug)); gslug = ""; }   // a group that's gone (e.g. 2009-and-older)
       if (gi >= 0) base = base.filter((c) => c.gi === gi);
       if (sec.progress) prog = `<div class="prog"><b>${pctText(sec)}</b><div class="bar"><i style="width:${sec.progress}%"></i></div><small>${esc(sec.progressLabel || "complete")}</small></div>`;
       // Links to pages on this site open in place (→); outside links open a new tab (↗).
@@ -669,7 +717,7 @@
   // Share a collection: its c/<slug>/ link, which shows the collection's own picture and title in texts and on social media.
   document.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-share-c]"); if (!b) return;
-    const url = location.href.split("#")[0].replace(/index\.html$/, "") + "c/" + b.dataset.shareC + "/", title = document.title;
+    const url = absURL(b.dataset.shareC === "customs" ? "#/customs" : "#/c/" + b.dataset.shareC), title = document.title;
     if (navigator.share && matchMedia("(pointer: coarse)").matches) { try { await navigator.share({ title, url }); } catch (err) {} return; }
     try { await navigator.clipboard.writeText(url); b.textContent = "Link copied"; } catch (err) { prompt("Copy this link:", url); }
     setTimeout(() => (b.textContent = "Share"), 2000);
@@ -1690,15 +1738,15 @@
     items = items.filter((x) => x.empty || (fits(x.name || "") && !isWant(x)));   // Want List cards aren't in my binder
     const b = binderEl(); BINDER.items = items; BINDER.title = title;
     BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
-    if (shared) history.replaceState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
-    else if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", withBinder(location.hash, BINDER.k + 1));
+    if (shared) history.replaceState({ binder: 1 }, "", toURL(withBinder(HASH(), BINDER.k + 1)));
+    else if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", toURL(withBinder(HASH(), BINDER.k + 1)));
     b.hidden = false; document.body.style.overflow = "hidden"; drawBinder();
   }
-  const binderAddress = () => { if (!$("#binder").hidden) history.replaceState(history.state, "", withBinder(location.hash, BINDER.k + 1)); };
+  const binderAddress = () => { if (!$("#binder").hidden) history.replaceState(history.state, "", toURL(withBinder(HASH(), BINDER.k + 1))); };
   function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
   function closeBinder() {
     if (history.state && history.state.binder && !BINDER.shared) return history.back();
-    hideBinder(); history.replaceState(null, "", withBinder(location.hash, 0)); BINDER.shared = false;
+    hideBinder(); history.replaceState(null, "", toURL(withBinder(HASH(), 0))); BINDER.shared = false;
   }
   // Opening a shared binder address: wait for the page's cards, then open the binder on that page.
   function openSharedBinder(page) {
@@ -2219,8 +2267,9 @@
     });
   }
   function route() {
+    LAST_HASH = HASH();
     requestAnimationFrame(() => requestAnimationFrame(readyMarquees));
-    const bpage = +(new URLSearchParams(location.hash.split("?")[1] || "").get("binder") || 0), base = withBinder(location.hash, 0);
+    const bpage = +(new URLSearchParams(HASH().split("?")[1] || "").get("binder") || 0), base = withBinder(HASH(), 0);
     if (base === LAST_BASE && $("#app h1")) {   // only the binder part changed (e.g. Back out of the binder): keep the page as it is
       closeViewer(true);
       if (!bpage) hideBinder(); else if (!$("#binder") || $("#binder").hidden) openSharedBinder(bpage);
@@ -2229,7 +2278,7 @@
     LAST_BASE = base;
     if (bpage) openSharedBinder(bpage);
     closeViewer(true); hideBinder(); state.binderItems = null;
-    const [path, qs = ""] = location.hash.replace(/^#\/?/, "").split("?");
+    const [path, qs = ""] = HASH().replace(/^#\/?/, "").split("?");
     const h = decodeURIComponent(path).split("/");
     const [a, b, c] = h;
     const key = a === "c" ? "c/" + b : a;
@@ -2257,7 +2306,7 @@
     else if (a === "set") setPage(b);
     else if (a === "letters") (b ? lettersPage(b) : allLettersPage());
     else if (a === "word") wordPage(b);
-    else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
+    else if (a === "random") { home(); history.replaceState(null, "", toURL("#/")); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
     else if (a === "player-cards") playerCardsPage(b);
@@ -2265,7 +2314,7 @@
     else if (a === "card") {   // a shared card link opens the card over its own collection
       const k = CARDS.findIndex((x) => cid(x) === b); if (k < 0) return notFound();
       const card = CARDS[k], slug = SECTIONS[card.si].slug;
-      history.replaceState(null, "", "#/c/" + slug); state.where = "c/" + slug; state.filters.clear(); state.sort = "new";
+      history.replaceState(null, "", toURL("#/c/" + slug)); state.where = "c/" + slug; state.filters.clear(); state.sort = "new";
       collection(slug); window.scrollTo(0, 0);
       const j = state.list.findIndex((x) => x.i === card.i);
       return openViewer(j >= 0 ? j : 0, j >= 0 ? state.list : [card]);
@@ -2278,7 +2327,7 @@
   // Each #/ page counts as its own page, e.g. /cardcollection-site/#/player/ricky-simmons.
   function track() {
     const code = (DATA && DATA.site.analytics || {}).goatcounter; if (!code) return;
-    const path = location.pathname + (location.hash.split("?")[0] || "#/");
+    const path = location.pathname;
     if (window.goatcounter && window.goatcounter.count) return void setTimeout(() => window.goatcounter.count({ path, title: document.title }), 300);
     if (document.getElementById("gc-js")) return;
     window.goatcounter = { no_onload: true };
@@ -2294,7 +2343,7 @@
     if (state.sort !== "new") p.push("sort=" + state.sort);
     if (state.decade) p.push("y=" + state.decade);
     if (state.team) p.push("t=" + encodeURIComponent(state.team));
-    history.replaceState(history.state, "", location.hash.split("?")[0] + (p.length ? "?" + p.join("&") : ""));
+    history.replaceState(history.state, "", toURL(HASH().split("?")[0] + (p.length ? "?" + p.join("&") : "")));
   }
   window.addEventListener("hashchange", route);
 
@@ -2304,8 +2353,8 @@
     clearTimeout(t);
     t = setTimeout(() => {
       const q = e.target.value.trim();
-      if (q) history.replaceState(null, "", "#/search/" + encodeURIComponent(q)), (state.q = q), collection("search");
-      else location.hash = "#/";
+      if (q) history.replaceState(null, "", toURL("#/search/" + encodeURIComponent(q))), (state.q = q), collection("search");
+      else go("#/");
     }, 160);
   });
   $("#search-form").addEventListener("submit", (e) => e.preventDefault());
@@ -2318,7 +2367,7 @@
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".cd[data-i], .fd-item[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
-    if (b.closest(".mq")) { location.hash = "#/card/" + cid(cardAt(+b.dataset.i)); return; }
+    if (b.closest(".mq")) { go("#/card/" + cid(cardAt(+b.dataset.i))); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [cardAt(i)];
     openViewer(list.findIndex((c) => c.i === i), list);
   });
@@ -2340,7 +2389,7 @@
       V.list = saved.list; V.k = saved.k; V.back = false; V.zoom = false; V.random = saved.random;
       $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard();
     }
-    if (FROM_CARD !== location.hash) { FROM_CARD = null; return; }
+    if (FROM_CARD !== HASH()) { FROM_CARD = null; return; }
     // Reached from a card: a bar like the viewer's (round back button, page name), and the page slides in,
     // so it reads as a step forward, not as leaving.
     requestAnimationFrame(() => {
@@ -2351,10 +2400,10 @@
       $("#app").classList.remove("slide-in"); void $("#app").offsetWidth; $("#app").classList.add("slide-in");
     });
   });
-  $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href^='#/']"); if (a) FROM_CARD = a.getAttribute("href"); });
+  $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href]"); if (a && !a.target) FROM_CARD = hashOf(a.getAttribute("href")); });
   document.addEventListener("click", (e) => {
     const a = e.target.closest("#app a.back");
-    if (a && FROM_CARD && FROM_CARD === location.hash) { e.preventDefault(); history.back(); }
+    if (a && FROM_CARD && FROM_CARD === HASH()) { e.preventDefault(); history.back(); }
   });
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
@@ -2494,7 +2543,7 @@
     // Want List cards get a button that starts an email to me with the card already named.
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
-      `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${cid(c)}\n\n`, c.name);
+      `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${absURL("#/card/" + cid(c))}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
     prefetch();
     showBackText(c);
@@ -2579,7 +2628,7 @@
   $("#v-img2").onclick = () => imageClick("back");
   wide.addEventListener("change", () => { if (!$("#viewer").hidden) { V.zoom = false; showCard(); } });
   $("#v-copy").onclick = async () => {
-    const c = V.list[V.k], url = location.href.split("#")[0] + "#/card/" + cid(c);
+    const c = V.list[V.k], url = absURL("#/card/" + cid(c));
     try { await navigator.clipboard.writeText(url); $("#v-copy").dataset.tip = "Link copied"; }
     catch { $("#v-copy").dataset.tip = "Copy failed"; }
     setTimeout(() => delete $("#v-copy").dataset.tip, 1600);

@@ -9,6 +9,13 @@
   // Works at the site root (ianbadeer.com) and in the project folder (…github.io/cardcollection-site/).
   var BASE = location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/";
   document.write('<base href="' + BASE + '">');
+  // A page of the site without its own file (a search, a card, a rainbow…): hand it to the site, which shows it at
+  // this same address. Anything that looks like a file (or an old Google Sites address) gets the "not found" page.
+  (function () {
+    var rel = location.pathname.slice(BASE.length);
+    if (rel && !/\.[a-z0-9]+$/i.test(rel) && /^(c|player|player-cards|search|card|rainbow|set|letters|word|checklist|player-pages|nfl-teams|media|stats|rarest|duplicates|customs|all|picks|about|dye-career|random)(\/|$)/.test(rel))
+      location.replace(BASE + "#/" + rel.replace(/\/$/, "") + location.search);
+  })();
 </script>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box}
