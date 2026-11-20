@@ -341,7 +341,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · All scans © Ian Badeer. Please ask before reusing them.</span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · <a href="#/about">About &amp; sharing</a></span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -1701,6 +1701,14 @@
     fr.style.aspectRatio = land ? `${w} / ${h}` : ""; fr.style.setProperty("--ar", land ? (w / h).toFixed(3) : "");
   };
 
+  /* ---------- About & sharing (#/about): config "sharing" ---------- */
+  function aboutPage() {
+    setNav(""); setTitle("About & sharing");
+    const linkify = (t) => esc(t).replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (_, x, u) => `<a href="${u}" target="_blank" rel="noopener">${x}</a>`);
+    const secs = ((DATA.site.sharing || {}).sections || []);
+    $("#app").innerHTML = `<div class="wrap about"><div class="c-head"><h1>About &amp; sharing</h1></div>
+      ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}</div>`;
+  }
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
     setNav(""); setTitle("Scanned Collection Stats");
@@ -2020,6 +2028,7 @@
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
     else if (a === "media") media();
+    else if (a === "about") aboutPage();
     else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);

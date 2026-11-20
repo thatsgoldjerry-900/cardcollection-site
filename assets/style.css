@@ -900,3 +900,6 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .v-stage.pinched{overflow:visible}
 .v-stage.pinched img{transition:none;transform-origin:center center;z-index:3;position:relative}
 .v-stage.pinched ~ .v-aura,.v-stage.pinched .v-aura{opacity:0}
+
+/* About & sharing (#/about) */
+.about{max-width:760px}.about-sec{margin:22px 0}.about-sec h2{font-size:20px;margin:0 0 8px}.about-sec p{line-height:1.6;margin:0}.about-sec a{color:inherit;text-decoration:underline}

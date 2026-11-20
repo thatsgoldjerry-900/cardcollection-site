@@ -1201,5 +1201,22 @@
         "tagline": "Kansas City Royals"
       }
     ]
+  },
+  "sharing": {
+    "_help": "The About & sharing page (#/about), linked from every page's footer. [text](https://...) makes a link.",
+    "sections": [
+      {
+        "title": "About this site",
+        "text": "IanBadeer.com is a personal collection and research site, documenting players' careers through cards, autographs and memorabilia. It is not affiliated with or endorsed by any team, school, league or card manufacturer. Team names, logos and trademarks belong to their respective owners and are shown for identification and historical reference."
+      },
+      {
+        "title": "Research & written lists",
+        "text": "My player lists, research notes and card-back write-ups are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). You may share and adapt them for non-commercial purposes with credit to Ian Badeer and a link to IanBadeer.com. News and media use with credit is welcome. Biographies adapted from Wikipedia stay under their own license ([CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)), and stats are from the sources credited where they appear."
+      },
+      {
+        "title": "Card images & scans",
+        "text": "My custom card (ACEO) designs are © Ian Badeer; team logos and photos used in them belong to their owners. The card scans are images of cards in my collection; the original card designs belong to their manufacturers. Please don't reproduce, redistribute, hotlink, scrape or bulk-download these images, or use them in AI training datasets. Small thumbnails shown by search engines are fine."
+      }
+    ]
   }
 }

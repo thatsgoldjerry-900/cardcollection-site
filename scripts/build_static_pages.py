@@ -19,7 +19,13 @@ CATALOG = os.path.join(ROOT, "data", "catalog.json")
 CONFIG = os.path.join(ROOT, "config", "site.json")
 SITE = "IanBadeer.com"
 CREDIT = "Researched and verified by Ian Badeer"
-QUOTE = "You're welcome to quote these lists. Please credit Ian Badeer and link to IanBadeer.com."
+LICENSE = "https://creativecommons.org/licenses/by-nc/4.0/"
+QUOTE = ("My player lists and research are licensed under CC BY-NC 4.0: share and adapt them for non-commercial use with credit "
+         "to Ian Badeer and a link to IanBadeer.com. News and media use with credit is welcome.")
+# The same sentence with the license and the site's About & sharing page linked (card scans and custom designs are not covered).
+QUOTE_HTML = (f'My player lists and research are licensed under <a href="{LICENSE}">CC BY-NC 4.0</a>: share and adapt them for '
+              'non-commercial use with credit to Ian Badeer and a link to IanBadeer.com. News and media use with credit is welcome. '
+              '<a href="../#/about">About &amp; sharing</a>')
 
 # list slug -> (folder, tier page, short label, what the list means)
 LISTS_INFO = {
@@ -285,7 +291,7 @@ def player_page(p, row, info, l, idx, updated):
 {lists_html}
 {f'<h2>Biography</h2>{cb_story}' if cb_story and not bio else ""}
 {f'<h2>Biography</h2>{cb_story}{bio}<p class="mu" style="font-size:13px">Adapted from <a href="{esc(w["url"])}">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>' if bio else ""}
-<div class="credit"><p><strong>{esc(CREDIT)}.</strong> Part of Ian Badeer&#39;s {esc(label)} list.</p><p class="mu">{esc(QUOTE)}</p></div>"""
+<div class="credit"><p><strong>{esc(CREDIT)}.</strong> Part of Ian Badeer&#39;s {esc(label)} list.</p><p class="mu">{QUOTE_HTML}</p></div>"""
     desc = lead + (" " + re.sub(r"\s+", " ", note).strip()[:180] if note else "")
     ld = {"@context": "https://schema.org", "@type": "ProfilePage", "name": f"{name} · {label}", "dateModified": updated, "author": ian(),
           "mainEntity": {"@type": "Person", "name": name, "alumniOf": {"@type": "CollegeOrUniversity", "name": "University of Nebraska–Lincoln"},
@@ -316,12 +322,12 @@ def list_page(slug, info, l, slug_of, updated):
 <h1>{esc(name)}</h1>
 <p>{esc(meaning)} {len(rows)} players.</p>
 <div class="credit"><p><strong>{esc(CREDIT)}.</strong> Each player was checked by hand against rosters, transaction records,
-newspaper archives and media guides.</p><p class="mu">{esc(QUOTE)}</p></div>
+newspaper archives and media guides.</p><p class="mu">{QUOTE_HTML}</p></div>
 <table class="big"><thead>{head}</thead><tbody>
 {chr(10).join(trs)}
 </tbody></table>"""
     ld = {"@context": "https://schema.org", "@type": "Dataset", "name": name, "description": meaning, "creator": ian(),
-          "dateModified": updated, "isAccessibleForFree": True, "usageInfo": QUOTE,
+          "dateModified": updated, "isAccessibleForFree": True, "usageInfo": QUOTE, "license": LICENSE,
           "keywords": ["Nebraska Cornhuskers", "Huskers", "NFL", "football"]}
     return page(name, f"{len(rows)} {meaning}", body, updated, ld), len(rows)
 
@@ -354,11 +360,11 @@ def main():
     body = f"""<div class="kick"><a href="../">{SITE}</a></div>
 <h1>Nebraska Cornhuskers in the NFL</h1>
 <p class="lead">{esc(intro)}</p>
-<div class="credit"><p><strong>{esc(CREDIT)}.</strong></p><p class="mu">{esc(QUOTE)}</p></div>
+<div class="credit"><p><strong>{esc(CREDIT)}.</strong></p><p class="mu">{QUOTE_HTML}</p></div>
 <ul class="tiers">{''.join(items)}</ul>
 <p class="mu">Browse the lists with card scans at <a href="../#/checklist">{SITE}</a>.</p>"""
     ld = {"@context": "https://schema.org", "@type": "Dataset", "name": "Nebraska Cornhuskers in the NFL", "description": intro,
-          "creator": ian(), "dateModified": updated, "isAccessibleForFree": True, "usageInfo": QUOTE}
+          "creator": ian(), "dateModified": updated, "isAccessibleForFree": True, "usageInfo": QUOTE, "license": LICENSE}
     open(os.path.join(ROOT, "nfl-huskers", "index.html"), "w", encoding="utf-8").write(page("Nebraska Cornhuskers in the NFL", intro, body, updated, ld))
     # one page per player
     made = 0
