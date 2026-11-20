@@ -2216,6 +2216,21 @@
       "t": 30,
       "grow": 1,
       "minArea": 0.0003
+    },
+    "dave-rimington": {
+      "id": "1ZF1szbPy-9JpHS8Me_VHHVsJO1t2CjHA",
+      "src": "assets/signatures/dave-rimington.webp",
+      "box": [
+        0.01,
+        0.01,
+        0.98,
+        0.98
+      ],
+      "ar": 2.3806,
+      "ink": "black",
+      "t": 60,
+      "grow": 2,
+      "minArea": 0.0001
     }
   },
   "fanDay": {
