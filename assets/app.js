@@ -1235,6 +1235,18 @@
   }
   let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
+  // Signature showcase (pilot, config "signatures"): just the signature area of one autograph scan, cropped on screen
+  // only (the scan is untouched), on a dark panel with a soft red glow. Tap it to open the whole card.
+  function signatureHTML(slug, name) {
+    const g = (DATA.site.signatures || {})[slug]; if (!g || !g.box) return "";
+    const c = CARDS.find((x) => x.id === g.id); if (!c) return "";
+    const [x, y, w, h] = g.box, ar = g.ar || 0.7;
+    const pos = (v, s) => (s >= 1 ? 0 : (v / (1 - s)) * 100);
+    return `<button type="button" class="sig-panel" data-i="${c.i}" aria-label="${esc(name)}'s signature, from ${esc(c.name)}">
+      <span class="sig-k">Signature</span>
+      <span class="sig-crop" style="aspect-ratio:${((w * ar) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, 1200)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span>
+    </button>`;
+  }
   function player(slug) {
     setNav("nfl-huskers");
     loadHub(() => Promise.all([backText(), nflTeamData().then((t) => (NFLTEAMS_LIST = t))]).then(([CB]) => {
@@ -1324,7 +1336,7 @@
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
           <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
-            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${signatureHTML(slug, info.name)}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <h1>${esc(info.name)}</h1>
@@ -2100,7 +2112,7 @@
   /* ---------- Viewer ---------- */
   const V = { list: [], k: 0, back: false };
   document.addEventListener("click", (e) => {
-    const b = e.target.closest(".cd[data-i]"); if (!b) return;
+    const b = e.target.closest(".cd[data-i], .sig-panel[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
     if (b.closest(".mq")) { location.hash = "#/card/" + cid(CARDS[+b.dataset.i]); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];

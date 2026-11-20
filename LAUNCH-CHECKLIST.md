@@ -60,11 +60,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Next week (after the usage reset): signature showcase on player pages (pilot).** Cut just the signature out of each
-  player's autograph scan, on screen only (files untouched, like the binder's slab crop), and show it on his player page on a
-  dark panel with a soft red glow. Plan: Claude hand-picks the signature area for ~10 players as a pilot; Ian looks and decides
-  how to scale (hand-picked for favorites, automatic ink detection for the rest, or a mix). Add a CLAUDE.md note that this
-  display-only crop is Ian's request.
+- [ ] **Signature showcase pilot is live (2026-11-22): Ian to look and decide how to scale.** 10 player pages (Rodgers, Rozier,
+  Crouch, Frazier, Craig, Fryar, Ahman Green, Lavonte David, Will Shields, Ameer Abdullah) show just the signature from one
+  autograph scan on a dark panel with a red glow, under the main picture (config/site.json "signatures"; display-only crop).
+  Options: hand-picked for favorites, automatic ink detection for the rest, or a mix.
 - [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
   config/site.json: Tom Osborne, Bob Devaney, Larry Frost, Alonzo Whaley, Bill Bomberger, Randy Reeves, Ladas Hubka, Omar Manning,
   Maurice Washington, Mick Stoltenberg, Sam Foltz, Brewer Hicklen). Wikipedia was refusing requests on 2026-11-20. Plan: have

@@ -1218,5 +1218,108 @@
         "text": "My custom card (ACEO) designs are © Ian Badeer; team logos and photos used in them belong to their owners. The card scans are images of cards in my collection; the original card designs belong to their manufacturers. Please don't reproduce, redistribute, hotlink, scrape or bulk-download these images, or use them in AI training datasets. Small thumbnails shown by search engines are fine."
       }
     ]
+  },
+  "signatures": {
+    "_help": "Signature showcase (pilot, Ian's request): on these player pages, just the signature area of one autograph scan, cropped on screen only (the scan file is untouched), on a dark panel. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height.",
+    "johnny-rodgers": {
+      "id": "17wlVkPM9DX_oF7zcJ0HEdnX4y6ZE1I84",
+      "box": [
+        0.12,
+        0.61,
+        0.53,
+        0.29
+      ],
+      "ar": 1.3889
+    },
+    "mike-rozier": {
+      "id": "11akPCCcIQgFDw3XC0N9zeuH274jJkRiT",
+      "box": [
+        0.2,
+        0.71,
+        0.52,
+        0.14
+      ],
+      "ar": 0.6667
+    },
+    "eric-crouch": {
+      "id": "1azvxI2MVdt0dXXz0ZLrZ1Uu8A4q25yn6",
+      "box": [
+        0.03,
+        0.63,
+        0.94,
+        0.32
+      ],
+      "ar": 0.7151
+    },
+    "tommie-frazier": {
+      "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
+      "box": [
+        0.16,
+        0.69,
+        0.62,
+        0.17
+      ],
+      "ar": 0.7109
+    },
+    "roger-craig": {
+      "id": "183KFO9SXzKxXu3adHivWQnAuQVagWylw",
+      "box": [
+        0.09,
+        0.7,
+        0.68,
+        0.18
+      ],
+      "ar": 0.7092
+    },
+    "irving-fryar": {
+      "id": "1DspQx4CkedecFj0B_s7qbBpwa4N9WUG4",
+      "box": [
+        0.1,
+        0.69,
+        0.76,
+        0.15
+      ],
+      "ar": 0.6557
+    },
+    "ahman-green": {
+      "id": "158zWZ0j0ZYG84-FlTwXcFuL9GO9gRyL6",
+      "box": [
+        0.14,
+        0.68,
+        0.72,
+        0.17
+      ],
+      "ar": 0.7143
+    },
+    "lavonte-david": {
+      "id": "1kW3lmR2jw2H-kXP82zkipeZxrkmG5sIC",
+      "box": [
+        0.13,
+        0.57,
+        0.7,
+        0.15
+      ],
+      "ar": 0.7126
+    },
+    "will-shields": {
+      "id": "1urmpZXy1WrYy5-eptMJ4cRFOJt21J7-t",
+      "box": [
+        0.13,
+        0.7,
+        0.66,
+        0.18
+      ],
+      "ar": 0.7151
+    },
+    "ameer-abdullah": {
+      "id": "1reLDsnSnCjIsV_5NaUAAaG9a2lp6xGM3",
+      "box": [
+        0.38,
+        0.78,
+        0.24,
+        0.19
+      ],
+      "ar": 2.3438
+    }
   }
 }
