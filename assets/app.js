@@ -601,7 +601,8 @@
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
     } else if (slug === "duplicates") {
       base = DUPES.slice(); title = "Duplicates"; kick = "Whole collection";
-      blurb = "Cards/Items that I have more than one copy of. A duplicate doesn't guarantee that it's available for trade, but it doesn't hurt to ask.";
+      blurb = "Cards/Items that I have more than one copy of. A duplicate doesn't guarantee that it's available for trade, but it doesn't hurt to ask. "
+        + `This list isn't complete: my full, up-to-date list of cards for trade is on <a href="https://www.tcdb.com/Profile.cfm/DyeHardFan" target="_blank" rel="noopener" style="color:var(--acc)">TCDb ↗</a>, and each player page links to that player's cards for trade.`;
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
       base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
