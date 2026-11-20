@@ -377,6 +377,8 @@
     // Menu order: Nebraska Cornhuskers ▾, Alex Gordon, Jermaine Dye, Customs, the other collections, Detroit Lions last.
     const links = siteOrder().filter((s) => s === "customs" || !isNeb(s))
       .map((s) => s === "customs" ? `<a href="#/customs" data-s="customs">Customs</a>` : `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
+    // Duplicates goes right after the Want List (both are about trading), or at the end.
+    if (DUPES.length) { const w = links.findIndex((x) => x.includes('data-s="want-list"')); links.splice(w >= 0 ? w + 1 : links.length, 0, `<a href="#/duplicates" data-s="duplicates">Duplicates</a>`); }
     if ((DATA.site.media?.items || []).length) links.push(`<a href="#/media" data-s="media">Media</a>`);
     links.splice(0, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
     $("#nav").innerHTML = links.join("");
@@ -503,8 +505,8 @@
         <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
       <div class="go-card"><div class="go-logos"><img class="go-logo" alt="Nebraska Cornhuskers logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></div><h3>Husker fans</h3><p>Dig into the history of NFL Huskers, check out the autographs, and see an epic Husker card collection.</p>
         <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Player pages")}${col("husker-football", "Nebraska Football Cards &amp; Autos")}</div></div>
-      <div class="go-card"><div class="go-logos"><span class="go-logo tcdb-badge" aria-label="TCDb">TCDb</span><img class="go-logo" alt="YouTube logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/120px-YouTube_full-color_icon_%282017%29.svg.png" onerror="this.remove()"></div><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, and the cards I'm still hunting.</p>
-        <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("<a ", '<a class="go-tcdb" ').replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
+      <div class="go-card"><div class="go-logos"><span class="go-logo tcdb-badge" aria-label="TCDb">TCDb</span><img class="go-logo" alt="YouTube logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/120px-YouTube_full-color_icon_%282017%29.svg.png" onerror="this.remove()"></div><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, the cards I'm still hunting, and my duplicates.</p>
+        <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${DUPES.length ? go("#/duplicates", "Duplicates") : ""}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("<a ", '<a class="go-tcdb" ').replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
       ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <div><span class="kick">Featured story</span><h3>${esc(st.title)}</h3><p>Jermaine's career from the Braves to World Series MVP, told through the best cards in my collection.</p><span class="go-more">Read the story →</span></div></a>` : ""}
     </section>`;
