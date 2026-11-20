@@ -2302,9 +2302,9 @@
       ],
       "ar": 3.4444,
       "ink": "black",
-      "t": 140,
-      "grow": 1,
-      "minArea": 0.0005
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0002
     },
     "freedom-akinmoladun": {
       "id": "1lKm9PnuHkQcdQSh43sb5tn1sQkh1XiB5",
