@@ -31,7 +31,7 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   When assets/app.js or assets/style.css change, bump the `?v=` on their links in index.html so phones load fresh copies.
 - **Ian's tag codes in file names** (football, from Nov 2026): AU autograph, MEM memorabilia, MANU manufactured patch,
   SN25 / SN43 of 50 serial-numbered, PR25 print run (a known print run without a serial stamp; the site treats it the
-  same as SN, like "Print Run of 99" in older names; with both SN and PR, the PR number is shown, as the variation's smaller run), RC rookie, SP/SSP short print, "Inscription" for inscribed
+  same as SN, like "Print Run of 99" in older names; with both SN and PR, the PR number is shown, as the variation's smaller run; "1 of 1" beats both), RC rookie, SP/SSP short print, "Inscription" for inscribed
   autos. MANU is a manufactured patch and does NOT count under Relics & patches.
   When a name has AU/MEM/MANU/SN/PR they override the word-based guesses and are hidden from captions (assets/app.js
   readCodes); backs pair with fronts ignoring these codes and letter codes (scripts/build_catalog.py loose_key).

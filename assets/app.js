@@ -35,8 +35,9 @@
     const codes = m[1].split(/\s*,\s*|\s+(?=[A-Z]|1 of 1|1\/1)/).map((x) => x.trim()).filter((x) => CODE.test(x)); if (!codes.length) return null;
     const c = { text: m[1], au: codes.includes("AU"), mem: codes.includes("MEM"), manu: codes.includes("MANU"), rc: codes.includes("RC"),
       sp: codes.some((x) => x === "SP" || x === "SSP"), sn: 0, of: 0, pr: 0 };
-    if (codes.includes("1 of 1") || codes.includes("1/1")) c.sn = 1;
     codes.forEach((x) => { let k = x.match(/^SN(\d+)(?:\s+of\s+(\d+))?$/); if (k) { c.sn = +k[1]; c.of = +(k[2] || 0); } k = x.match(/^PR(\d+)$/); if (k) c.pr = +k[1]; });
+    // "1 of 1" wins over everything: e.g. the first card of an SN50 run made as a one-of-one holofoil.
+    if (codes.includes("1 of 1") || codes.includes("1/1")) { c.sn = 1; c.of = 0; c.pr = 0; }
     // Ian's new tag list has at least one of AU/MEM/MANU/SN/PR. A lone "SP" or "RC" is the older naming (e.g. "Alex Gordon SP"),
     // so it only adds those tags and changes nothing else.
     c.full = c.au || c.mem || c.manu || !!c.sn || !!c.pr;
