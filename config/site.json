@@ -2260,6 +2260,21 @@
       "t": 45,
       "grow": 2,
       "minArea": 0.0001
+    },
+    "jon-hesse": {
+      "id": "1p3hrR1y2kHc2LytVOWr20GY_SPjvRLbA",
+      "src": "assets/signatures/jon-hesse.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.4676,
+      "ink": "black",
+      "t": 40,
+      "grow": 2,
+      "minArea": 0.0003
     }
   },
   "fanDay": {
