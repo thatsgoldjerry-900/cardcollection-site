@@ -208,22 +208,11 @@
         {
           "slug": "2009-and-older",
           "label": "2009 and Older",
-          "folders": [
-            [
-              "11HRGoNvW_2rXJTNskM4-N9OvjEsyRqU5",
-              ""
-            ]
-          ]
+          "maxYear": 2009
         },
         {
           "slug": "2010-and-newer",
-          "label": "2010 and Newer",
-          "folders": [
-            [
-              "14IkGSLAPEDb6lkyuIG7Fldz8M30Hd_QJ",
-              ""
-            ]
-          ]
+          "label": "2010 and Newer"
         }
       ],
       "extraLinks": [
@@ -231,7 +220,23 @@
           "label": "Read the story and see the full list on the NFL Tier 1 Huskers Autograph List",
           "url": "#/checklist"
         }
-      ]
+      ],
+      "_oldFolders": {
+        "2009-and-older": [
+          [
+            "11HRGoNvW_2rXJTNskM4-N9OvjEsyRqU5",
+            ""
+          ]
+        ],
+        "2010-and-newer": [
+          [
+            "14IkGSLAPEDb6lkyuIG7Fldz8M30Hd_QJ",
+            ""
+          ]
+        ]
+      },
+      "driveFolderName": "Nebraska Football Cards & Autos",
+      "_help": "Read from the Drive folder named in driveFolderName (Sold/Pending/Cut/Extra subfolders skipped), split into groups by card year. _oldFolders: the two folders read before Nov 2026."
     },
     {
       "slug": "husker-baseball",
@@ -1133,5 +1138,6 @@
     ]
   },
   "freshUpload": true,
-  "_freshUploadHelp": "While true, a card the robot hasn't seen before is dated by its file (not today), so a big re-upload doesn't all show as NEW. Turn off after the football re-upload."
+  "_freshUploadHelp": "While freshUpload is true, a card the robot can't match to one it saw before is dated freshUploadDate (not today), so the big football re-upload doesn't all show as NEW. Turn off after the re-upload.",
+  "freshUploadDate": "2026-01-01"
 }

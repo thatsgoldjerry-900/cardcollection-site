@@ -155,11 +155,43 @@ def sections_from_root(cfg, root_id):
     return out
 
 
+# Subfolders inside a section's Drive folder that aren't part of the shown collection.
+SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
+
+def images_by_name(get, name):
+    """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
+    q = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and mimeType = '{FOLDER}' and trashed = false"
+    found = get({"q": q, "fields": "files(id, name)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
+    if not found:
+        print(f"Drive folder '{name}' not found (yet): its section stays empty.", file=sys.stderr); return []
+    def walk(fid, depth=0):
+        out = []
+        for f in drive_children(get, fid):
+            if f["mimeType"] == FOLDER:
+                if depth < 4 and not SKIP_FOLDER.search(f["name"]): out += walk(f["id"], depth + 1)
+            elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
+                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10]})
+        return out
+    return walk(found[0]["id"])
+
 def sections_from_config(cfg):
     for fid, rk in (cfg.get("customsPhotos") or {}).get("folders", []):
         _photos.extend(list_folder(fid, rk))
-    out = []
+    out, get = [], None
     for sec in cfg["sections"]:
+        if sec.get("driveFolderName"):
+            # One Drive folder, read by name; its groups are year ranges ("maxYear"), e.g. 2009 and older / 2010 and newer.
+            get = get or drive_session()
+            files = images_by_name(get, sec["driveFolderName"])
+            year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
+            groups, left = [], files
+            for grp in sec["groups"]:
+                mx = grp.get("maxYear")
+                mine = [f for f in left if mx is None or year(f) <= mx]
+                left = [f for f in left if f not in mine]
+                groups.append((grp["slug"], grp["label"], mine))
+            out.append(({k: v for k, v in sec.items() if k not in ("groups", "driveFolderName") and not k.startswith("_")}, groups))
+            continue
         groups = []
         for grp in sec["groups"]:
             files = []
@@ -223,7 +255,8 @@ def main():
                 # A fresh re-upload of renamed scans (new Drive IDs, tags added) keeps the date of the card it replaces;
                 # a card never seen before gets its file's own date, not today, so a big batch doesn't all show as NEW.
                 added = (prev.get(f["id"]) or prev_name.get(card_name.lower()) or prev_loose.get(loose_key(card_name))
-                         or (f["mod"] if not prev or cfg.get("freshUpload") else today))
+                         or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None)
+                         or (f["mod"] if not prev else today))
                 cards.append([f["id"], f["rk"], card_name, si, gi, added,
                               back["id"] if back else "", back["rk"] if back else ""])
                 n += 1
