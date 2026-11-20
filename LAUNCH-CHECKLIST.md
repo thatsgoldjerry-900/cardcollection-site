@@ -68,7 +68,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   Maurice Washington, Mick Stoltenberg, Sam Foltz, Brewer Hicklen). Wikipedia was refusing requests on 2026-11-20. Plan: have
   scripts/build_players.py also read `cardPlayers` (sports content only, same filters), and the page show the bio and stats under
   Ian's write-up. Coaches (Osborne, Devaney) keep their coaching years instead of a final playing season. Nothing for Ian to do but say go.
-- [ ] **More Fan Day sheets:** the 2022–2025 sheets are matched (34 players with pages show their box, config "fanDay"). The 2015
+- [ ] **Neon signatures for Tier 2/3 from the Fan Day sheets** (Ian's idea): the boxes are clean white with one signature each,
+  ideal for the neon showcase. config "fanDay" already has each player's box; most ink is red or purple marker, so the ink
+  finder needs a red/purple mode. Sheet to Ian before going live, as usual.
+- [ ] **More Fan Day sheets:** the 2022–2025 sheets are matched (the newest box is the main picture for players with no signed trading card scan; config "fanDay"). The 2015
   "Signed Page", the 2009/2010 Fan Day sheets and the 2023 roster card have no name boxes, so they aren't matched yet.
 - [ ] **Scan these certified autograph cards** (listed as "Certified Card" in my lists, but no autograph scan on the site yet; checked 2026-11-22):
   - NFL Tier 1: John Bullock, Omar Brown, Wan'Dale Robinson, Chris Payton-Jones, Eric Hagg, Zack Bowman

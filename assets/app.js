@@ -1258,11 +1258,6 @@
       <span class="fd-crop" style="aspect-ratio:${((w * (g.ar || 1.3)) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, 1600)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span></button>`;
   }
   const fdLabel = (c) => (c.name.match(/^\d{4}\s+Husker Fan Day/i) || [c.name])[0];
-  // Under the main picture, only when the main picture is another autograph (otherwise the Fan Day box IS the main picture).
-  function fanDayHTML(slug, name, hero) {
-    const f = hero ? fanDayOf(slug) : null; if (!f) return "";
-    return `<section class="fan-day"><h2>Fan Day autograph</h2>${fanDayCrop(f, name)}<small class="fd-cap">${esc(fdLabel(f.c))}</small></section>`;
-  }
   function signatureHTML(slug, name) {
     const g = (DATA.site.signatures || {})[slug]; if (!g || !g.box) return "";
     const c = CARDS.find((x) => x.id === g.id); if (!c) return "";
@@ -1412,7 +1407,7 @@
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
           <div class="pl-card">${!hero && fanDayOf(slug) ? `<div class="pl-ph fd-hero">${fanDayCrop(fanDayOf(slug), info.name)}</div><small>${esc(fdLabel(fanDayOf(slug).c))}</small>` : hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
-            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${fanDayHTML(slug, info.name, hero)}</div>
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
