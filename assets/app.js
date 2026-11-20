@@ -1247,7 +1247,7 @@
   // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
   // ink "blue" (blue marker), "red" (red Sharpie), "dark" (black marker: darker than the card around it),
   // "black" (very dark ink on white; t ~150), "purple" (purple Sharpie: ignores a gray box border) or "both",
-  // t (ink threshold), w (scan width to load; Fan Day sheets use 2000).
+  // t (ink threshold), w (scan width to load; Fan Day sheets use 2000), grow (thicken strokes, pixels).
   // Fan Day sheets (config "fanDay"): the player's own box from a multi-signed sheet, cropped on screen only (files
   // untouched). Tap to open the whole sheet.
   function fanDayOf(slug) {   // the newest Fan Day box for this player
@@ -1309,6 +1309,13 @@
       // Soft edges stay only next to kept ink.
       const near = (k) => { const kx = k % W; for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const xx = kx + dx, r = k + dy * W + dx; if (xx >= 0 && xx < W && r >= 0 && r < N && keep[lab[r]]) return true; } return false; };
       for (let k = 0; k < N; k++) if (m[k] > 0 && !(lab[k] && keep[lab[k]]) && !near(k)) m[k] = 0;
+      // grow: thicken the strokes by this many pixels (bold markers look thin at this size otherwise).
+      for (let n = 0; n < (g.grow || 0); n++) {
+        const src = m.slice();
+        for (let k = 0; k < N; k++) { const kx = k % W; let v = src[k];
+          if (kx > 0) v = Math.max(v, src[k - 1]); if (kx < W - 1) v = Math.max(v, src[k + 1]);
+          if (k >= W) v = Math.max(v, src[k - W]); if (k < N - W) v = Math.max(v, src[k + W]); m[k] = v; }
+      }
       // The tube: hot pinkish-white in the middle of each stroke, red toward its edges.
       const core = new Float32Array(N);
       for (let k = 0; k < N; k++) { if (m[k] < 0.5) continue; const kx = k % W; let lo = 1;
