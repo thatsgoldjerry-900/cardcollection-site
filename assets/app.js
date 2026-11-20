@@ -78,7 +78,8 @@
     // An inscribed autograph: Ian adds the word "inscription" to the file name. (Plural "Inscriptions" is a set name, e.g.
     // Score Inscriptions, so only the singular word counts.)
     if (/\binscription\b/i.test(name)) out.tags.add("inscr");
-    if (RX.rc.test(name)) out.tags.add("rc");
+    // "RC" inside a card number (#BTL-RC, #SS-RC = Roger Craig's initials) isn't a rookie card.
+    if (RX.rc.test(name.replace(/#\S+/g, " "))) out.tags.add("rc");
     if (codes && !codes.full) { if (codes.rc) out.tags.add("rc"); if (codes.sp) out.tags.add("sp"); }
     if (codes && codes.full) {   // Ian's codes override the guesses above
       out.tags.delete("auto"); out.tags.delete("relic");
