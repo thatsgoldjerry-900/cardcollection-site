@@ -2350,6 +2350,21 @@
       "t": 40,
       "grow": 1,
       "minArea": 0.001
+    },
+    "zaire-anderson": {
+      "id": "16P5v0rWLTkkLHGIfakltnw_D4BVjrMdT",
+      "src": "assets/signatures/zaire-anderson.webp",
+      "box": [
+        0.0,
+        0.1,
+        0.93,
+        0.86
+      ],
+      "ar": 1.5589,
+      "ink": "black",
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0008
     }
   },
   "fanDay": {
