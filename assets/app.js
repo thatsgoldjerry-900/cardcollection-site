@@ -87,8 +87,9 @@
       if (codes.sn) { out.serial = codes.of || codes.sn; out.one = out.serial === 1; }
       if (codes.pr) out.printRun = codes.pr;
     }
-    // A print run (PR25, "Print Run of 99") counts like a serial number when the card has none.
-    if (!out.serial && out.printRun) { out.serial = out.printRun; out.one = out.printRun === 1; }
+    // A print run (PR25, "Print Run of 99") counts like a serial number, and wins over one: with both ("SN255, PR85"),
+    // the print run is the smaller run of that variation, so it's the number shown and sorted by.
+    if (out.printRun) { out.serial = out.printRun; out.one = out.printRun === 1; }
     if (out.serial) out.tags.add("numbered");
     if (out.one) out.tags.add("one");
     if (out.grade) out.tags.add("graded");
