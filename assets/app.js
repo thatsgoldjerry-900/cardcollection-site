@@ -1243,7 +1243,7 @@
   let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
   // Signature showcase (config "signatures", Ian's request): the signature's ink lifted out of one autograph scan and shown
-  // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed.
+  // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed. Just a picture, not a link.
   // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
   // ink "blue" (blue marker), "red" (red Sharpie), "dark" (black marker: darker than the card around it),
   // "black" (very dark ink on white; t ~150), "purple" (purple Sharpie: ignores a gray box border),
@@ -1266,8 +1266,8 @@
     const c = CARDS.find((x) => x.id === g.id); if (!c) return "";
     const [, , w, h] = g.box, ar = g.ar || 0.7;
     requestAnimationFrame(() => drawNeon(slug, c, g));
-    return `<button type="button" class="sig-panel" data-i="${c.i}" aria-label="${esc(name)}'s signature, from ${esc(c.name)}. Opens the card.">
-      <canvas class="sig-neon" id="sig-${esc(slug)}" style="aspect-ratio:${((w * ar) / h).toFixed(3)}" aria-hidden="true"></canvas></button>`;
+    return `<div class="sig-panel" role="img" aria-label="${esc(name)}'s signature">
+      <canvas class="sig-neon" id="sig-${esc(slug)}" style="aspect-ratio:${((w * ar) / h).toFixed(3)}" aria-hidden="true"></canvas></div>`;
   }
   function drawNeon(slug, c, g) {
     const cv = document.getElementById("sig-" + slug); if (!cv) return;
@@ -2229,7 +2229,7 @@
   /* ---------- Viewer ---------- */
   const V = { list: [], k: 0, back: false };
   document.addEventListener("click", (e) => {
-    const b = e.target.closest(".cd[data-i], .sig-panel[data-i], .fd-item[data-i]"); if (!b) return;
+    const b = e.target.closest(".cd[data-i], .fd-item[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
     if (b.closest(".mq")) { location.hash = "#/card/" + cid(CARDS[+b.dataset.i]); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
