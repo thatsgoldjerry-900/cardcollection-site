@@ -1273,10 +1273,19 @@
         .filter(([, v]) => v && String(v).trim());
       // What Ian's custom card backs add (data/card-text.json, "player": this page): facts join the facts grid,
       // stats get a box next to the other stats, and his write-up leads the bio. Marked ★ so sources stay clear.
-      const mine = Object.values(CB || {}).filter((e) => e && e.player === slug);
-      mine.forEach((e) => (e.facts || []).filter((r) => r.length === 2).forEach(([k, v]) => facts.push([k, v, true])));
+      // A card about several players ("people") gives each his own part. Several cards often repeat the same write-up
+      // or facts: each is shown once, and a card's fact never repeats one the page already has (e.g. "Born").
+      // His own cards come before group cards. Per kind of fact (any "Statistics…" line counts as one kind) the fullest
+      // version is kept. Only write-ups go in the bio (a back with only an authenticity note adds nothing here).
+      const mine = Object.values(CB || {}).flatMap((e) => (!e ? [] : e.people ? e.people.map((q) => ({ ...q, group: true })) : [e]))
+        .filter((e) => e.player === slug).sort((a, b) => !!a.group - !!b.group);
+      const haveKey = new Set(facts.map(([k]) => k.toLowerCase())), kind = (k) => (/stat/i.test(k) ? "stats" : k.toLowerCase()), best = new Map();
+      mine.forEach((e) => (e.facts || []).filter((r) => r.length === 2).forEach(([k, v]) => {
+        if (haveKey.has(k.toLowerCase())) return;
+        const b = best.get(kind(k)); if (!b || String(v).length > String(b[1]).length) best.set(kind(k), [k, v, true]); }));
+      facts.push(...best.values());
       const cardStats = mine.map((e) => e.stats).filter((st) => st && (st.rows || []).length > 1);
-      const ianBio = mine.map((e) => e.story || e.text).filter(Boolean).join("\n\n");
+      const ianBio = [...new Set(mine.map((e) => e.story).filter(Boolean))].join("\n\n");
       const statKey = Object.keys(sec).find((k) => /statistics/i.test(k));
       // A list section, in whichever name this sport's infobox uses; "2022–2024 | Team" rows read as "Team (2022–2024)".
       const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc(r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0])}</li>`).join("") : ""; };
