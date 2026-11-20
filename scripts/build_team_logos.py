@@ -5,7 +5,8 @@ NFL Europe, early pro teams). Writes data/team-logos.json: {"byName": {"St. Loui
 
 Cached: names already found or already tried are skipped, so a run only looks up new names (the GitHub Action runs
 this every update; Wikipedia rate-limits busy addresses, so it goes slowly and stops early when told to wait).
-A logo is only accepted when the Wikipedia article is about a football team and the image file is a logo.
+A logo is only accepted when the Wikipedia article is about a football team: its infobox logo (Wikipedia's main API;
+the page-summary service leaves out non-free images, which most team logos are).
 """
 import json, os, re, sys, time, urllib.parse, urllib.request
 
@@ -34,35 +35,42 @@ for p in players:
             names.add(n)
 
 class Failed(Exception): pass
-def summary(title):
-    """The article summary; None when there's no such article; raises Failed on any other problem (not cached)."""
-    u = "https://en.wikipedia.org/api/rest_v1/page/summary/" + urllib.parse.quote(title.replace(" ", "_"))
+def api(params):
+    u = "https://en.wikipedia.org/w/api.php?" + urllib.parse.urlencode({**params, "format": "json", "formatversion": 2})
     try:
         return json.load(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=20))
-    except urllib.error.HTTPError as e:
-        if e.code == 404: return None
-        raise Failed(f"HTTP {e.code}")
     except Exception as e:
         raise Failed(str(e))
 
+LOGOISH = re.compile(r"logo|wordmark|emblem|crest|helmet", re.I)
+FOOTBALL = re.compile(r"\bfootball\b|\bnfl\b|\bcfl\b|\busfl\b|\bxfl\b|arena football|\baaf\b|\bufl\b")
 def logo_for(name):
+    """The team's logo from its Wikipedia article (Wikipedia's main API; one or two requests per article tried).
+    Team logos are usually non-free files, shown in the infobox: the article's non-free page image, or a free page
+    image named like a logo. Only football-team articles count."""
     # Football-specific articles first, so "St. Louis Cardinals" finds the NFL team, not the baseball team.
     base = re.sub(r"\s*\(NFL\)$", "", name)
     tries = ([f"{base} (NFL)", f"History of the {base}"] if name in nfl_names else []) + [f"{base} (American football)", f"{base} (Canadian football)", f"{base} (football)", base]
     for t in tries:
-        r = summary(t); time.sleep(1.2)
-        if not r or r.get("type") == "disambiguation": continue
-        img = (r.get("originalimage") or r.get("thumbnail") or {}).get("source", "")
-        about = (r.get("description", "") + " " + r.get("extract", "")).lower()
-        desc = r.get("description", "").lower()
+        d = api({"action": "query", "titles": t, "redirects": 1, "prop": "pageprops|description|extracts", "exintro": 1, "explaintext": 1, "exchars": 600}); time.sleep(1.2)
+        pg = (d.get("query", {}).get("pages") or [{}])[0]
+        if pg.get("missing") or not pg.get("title"): continue
+        pp = pg.get("pageprops") or {}
+        if "disambiguation" in pp: continue
+        desc = (pg.get("description") or "").lower(); about = desc + " " + (pg.get("extract") or "").lower()
         if re.search(r"baseball|hockey|basketball|soccer|association football|cricket|rugby", desc): continue   # another sport's team
-        if img and re.search(r"logo|wordmark|emblem|crest", img, re.I) and re.search(r"\bfootball\b|\bnfl\b|\bcfl\b|\busfl\b|\bxfl\b|arena football|\baaf\b|\bufl\b", about):
-            # A small, standard-size thumbnail on upload.wikimedia.org (thumb.* style addresses can be blocked).
-            img = img.split("?")[0].replace("https://thumb.wikimedia.org/", "https://upload.wikimedia.org/")
-            img = re.sub(r"/\d+px-", "/120px-", img)
-            return img
+        if not FOOTBALL.search(about): continue
+        f = pp.get("page_image") or (pp.get("page_image_free") if LOGOISH.search(pp.get("page_image_free", "")) else "")
+        if not f: continue
+        d = api({"action": "query", "titles": "File:" + f, "prop": "imageinfo", "iiprop": "url", "iiurlwidth": 120}); time.sleep(1.2)
+        ii = ((d.get("query", {}).get("pages") or [{}])[0].get("imageinfo") or [{}])[0]
+        img = ii.get("thumburl") or ii.get("url") or ""
+        if img: return img
     return ""
 
+# Names tried before the infobox-logo lookup existed get one more try.
+if cache.get("v", 1) < 2:
+    cache["tried"] = []; cache["v"] = 2
 todo = sorted(n for n in names if n not in cache["byName"] and n not in cache["tried"])
 print(f"{len(names)} team names; {len(todo)} to look up", file=sys.stderr)
 found = 0
