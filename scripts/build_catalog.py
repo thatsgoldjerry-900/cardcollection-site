@@ -155,6 +155,7 @@ def sections_from_root(cfg, root_id):
     return out
 
 
+NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|^misc|^other$|gift", re.I)
 # Subfolders inside a section's Drive folder that aren't part of the shown collection.
 SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
 
@@ -164,13 +165,17 @@ def images_by_name(get, name):
     found = get({"q": q, "fields": "files(id, name)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
     if not found:
         print(f"Drive folder '{name}' not found (yet): its section stays empty.", file=sys.stderr); return []
-    def walk(fid, depth=0):
+    # A card's team is the first folder on its path that names a team (e.g. "Kansas City Chiefs"); folders for a
+    # kind of item or an era ("Memorabilia", "1970s Football") don't count, so "Memorabilia\Detroit Lions" works too.
+    def walk(fid, depth=0, team=""):
         out = []
         for f in drive_children(get, fid):
             if f["mimeType"] == FOLDER:
-                if depth < 4 and not SKIP_FOLDER.search(f["name"]): out += walk(f["id"], depth + 1)
+                if depth < 4 and not SKIP_FOLDER.search(f["name"]):
+                    nm = f["name"].strip()
+                    out += walk(f["id"], depth + 1, team or ("" if NOT_TEAM.search(nm) else nm))
             elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
-                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10]})
+                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10], "team": team})
         return out
     return walk(found[0]["id"])
 
@@ -258,7 +263,7 @@ def main():
                          or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None)
                          or (f["mod"] if not prev else today))
                 cards.append([f["id"], f["rk"], card_name, si, gi, added,
-                              back["id"] if back else "", back["rk"] if back else ""])
+                              back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
                 n += 1
             groups.append({"slug": gslug, "label": glabel, "count": n})
         s = dict(sec); s["groups"] = groups
@@ -269,7 +274,7 @@ def main():
     photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
                      for f in _photos), key=lambda x: x[3], reverse=True)
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos,
-           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk"], "cards": cards}
+           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team"], "cards": cards}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
         # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
         # Keep the previous list so the site doesn't go blank and card dates aren't lost.

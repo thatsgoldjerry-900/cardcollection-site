@@ -122,7 +122,7 @@
     // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
     json.cards = json.cards.filter((c) => !/\bsold\b|\bgifted to\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
     CARDS = json.cards.map((c, i) => {
-      const [id, rk, name, si, gi, added, backId, backRk] = c;
+      const [id, rk, name, si, gi, added, backId, backRk, team = ""] = c;
       const p = parse(name);
       if (backId) p.tags.add("back");
       // Customs page filters: which kind of custom it is, from the collection it lives in (or "non-sport" in the name).
@@ -137,7 +137,7 @@
         if ((fix.add || []).includes(name)) p.tags.add(tag);
         if ((fix.remove || []).includes(name)) p.tags.delete(tag);
       }
-      return { i, id, rk, name, si, gi, added, backId, backRk, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
+      return { i, id, rk, name, si, gi, added, backId, backRk, team, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
     });
     // Photos of athletes with my custom cards. The file name is the caption; the part before the first
     // " - " or sentence break is the short label on the strip ("Jr." and similar don't count as a break).
@@ -169,7 +169,7 @@
   const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
   const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
-  const state = { filters: new Set(), sort: "new", decade: "", list: [], shown: 0, q: "", where: null };
+  const state = { filters: new Set(), sort: "new", decade: "", team: "", list: [], shown: 0, q: "", where: null };
 
   const SET_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
   const setOrder = (a, b) => SET_COLLATOR.compare(a.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""), b.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""));
@@ -559,7 +559,9 @@
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r">${binderBtn()}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
-            return ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""; })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
+            const teams = [...new Set(base.map((c) => c.team).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+            const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
+            return tm + (ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""); })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
       </div></div>`;
@@ -568,6 +570,8 @@
       state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
       if (state.decade && (!$("#yr") || $("#yr").value !== state.decade)) state.decade = "";   // a decade this page doesn't have
       if (state.decade) list = list.filter((c) => Math.floor(c.year / 10) * 10 === +state.decade);   // the Years menu
+      if (state.team && (!$("#tm") || $("#tm").value !== state.team)) state.team = "";
+      if (state.team) list = list.filter((c) => c.team === state.team);   // the Team menu (team subfolders in Drive)
       state.list = sortList(list, state.sort); state.shown = 0;
       $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${slug === "customs" && state.filters.has("nonsport") ? "Non-sport customs, like my Sonic the Hedgehog cards, are coming soon." : state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
       $("#count").textContent = `${fmt(state.list.length)} scan${state.list.length === 1 ? "" : "s"}`;
@@ -580,6 +584,7 @@
     });
     $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); syncURL(); });
     $("#yr")?.addEventListener("change", (e) => { state.decade = e.target.value; apply(); syncURL(); });
+    $("#tm")?.addEventListener("change", (e) => { state.team = e.target.value; apply(); syncURL(); });
     apply();
     if (state.filters.size || state.sort !== "new") syncURL();
     io.observe($("#sentinel"));
@@ -1982,7 +1987,7 @@
     // Moving between groups of the same collection keeps them.
     const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS, INSCR].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
-    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; }
+    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; state.team = prm.get("t") || ""; }
     state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     if (!a) home();
@@ -2035,6 +2040,7 @@
     if (state.filters.size) p.push("f=" + [...state.filters].join(","));
     if (state.sort !== "new") p.push("sort=" + state.sort);
     if (state.decade) p.push("y=" + state.decade);
+    if (state.team) p.push("t=" + encodeURIComponent(state.team));
     history.replaceState(history.state, "", location.hash.split("?")[0] + (p.length ? "?" + p.join("&") : ""));
   }
   window.addEventListener("hashchange", route);
