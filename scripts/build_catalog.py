@@ -60,6 +60,7 @@ def loose_key(name):
     """A name without tag codes, letter codes ("4N", "3 H"), copy marks, inscription notes and punctuation."""
     h = name.find("#"); head, tail = (name[:h], name[h:]) if h >= 0 else ("", name)
     tail = CODE_RE.sub(" ", tail)
+    tail = re.sub(r"#'?d\s*(?:to\s*)?\d+(?:\s*of\s*\d+)?|print run of\s*\d+|\b\d+\s+of\s+\d+\b|\b(?:autographs?|signatures?|signed|auto|memorabilia|jersey|relic)\b", " ", tail, flags=re.I)
     tail = re.sub(r"(?:^|\s)(?:Letter\s+)?0?\d{1,2}\s?[A-Z0-9](?=\s|$|,)", " ", tail)
     tail = re.sub(r"\([^()]*\)", " ", tail)        # notes like (Adidas Black), (7th), (Creased): one back serves them all
     tail = re.sub(r"\b[\w' -]*?\binsc(?:ription)?\b", " ", tail, flags=re.I)
@@ -172,13 +173,14 @@ def sections_from_config(cfg):
 def main():
     cfg = json.load(open(CONFIG))
     sync_first_screen(cfg)
-    prev, prev_name, prev_photo, old = {}, {}, {}, None
+    prev, prev_name, prev_photo, prev_loose, old = {}, {}, {}, {}, None
     if os.path.exists(OUT):
         try:
             old = json.load(open(OUT))
             for c in old["cards"]:
                 prev[c[0]] = c[5]
                 prev_name[c[2].lower()] = c[5]   # card name without extension
+                prev_loose.setdefault(loose_key(c[2]), c[5])   # the same card after a rename that only added tags
             for ph in old.get("photos", []): prev_photo[ph[0]] = ph[3]
         except Exception: pass
     today = date.today().isoformat()
@@ -218,7 +220,10 @@ def main():
                 if not_shown(card_name): continue                   # sold, or a second copy
                 # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date
                 # (and isn't marked NEW). The extension may change, e.g. .png to .jpg.
-                added = prev.get(f["id"]) or prev_name.get(card_name.lower()) or (f["mod"] if not prev else today)
+                # A fresh re-upload of renamed scans (new Drive IDs, tags added) keeps the date of the card it replaces;
+                # a card never seen before gets its file's own date, not today, so a big batch doesn't all show as NEW.
+                added = (prev.get(f["id"]) or prev_name.get(card_name.lower()) or prev_loose.get(loose_key(card_name))
+                         or (f["mod"] if not prev or cfg.get("freshUpload") else today))
                 cards.append([f["id"], f["rk"], card_name, si, gi, added,
                               back["id"] if back else "", back["rk"] if back else ""])
                 n += 1
