@@ -1220,40 +1220,7 @@
     ]
   },
   "signatures": {
-    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background).",
-    "johnny-rodgers": {
-      "id": "17wlVkPM9DX_oF7zcJ0HEdnX4y6ZE1I84",
-      "box": [
-        0.12,
-        0.61,
-        0.53,
-        0.29
-      ],
-      "ar": 1.3889
-    },
-    "mike-rozier": {
-      "id": "11akPCCcIQgFDw3XC0N9zeuH274jJkRiT",
-      "box": [
-        0.2,
-        0.71,
-        0.52,
-        0.14
-      ],
-      "ar": 0.6667,
-      "t": 60
-    },
-    "eric-crouch": {
-      "id": "1azvxI2MVdt0dXXz0ZLrZ1Uu8A4q25yn6",
-      "box": [
-        0.03,
-        0.675,
-        0.94,
-        0.25
-      ],
-      "ar": 0.7151,
-      "ink": "dark",
-      "t": 45
-    },
+    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number is fine.",
     "tommie-frazier": {
       "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
       "box": [
@@ -1273,16 +1240,6 @@
         0.17
       ],
       "ar": 0.7126
-    },
-    "irving-fryar": {
-      "id": "1DspQx4CkedecFj0B_s7qbBpwa4N9WUG4",
-      "box": [
-        0.1,
-        0.69,
-        0.76,
-        0.15
-      ],
-      "ar": 0.6557
     },
     "ahman-green": {
       "id": "158zWZ0j0ZYG84-FlTwXcFuL9GO9gRyL6",
