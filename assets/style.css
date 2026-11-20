@@ -938,3 +938,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (max-width:640px){.lt-word .pick{display:none}}
 .hub-stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;color:var(--mu);font-size:14px}.hub-stats b{color:var(--fg);font-size:18px;margin-right:4px}
+.fix-req{margin:32px 0 8px;padding:18px;border:1px solid var(--line,#2a2f3a);border-radius:14px}.fix-req h2{font-size:18px;margin:0 0 6px}.fix-req p{margin:0 0 12px;color:var(--mu)}

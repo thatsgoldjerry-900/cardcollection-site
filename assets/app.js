@@ -1612,6 +1612,8 @@
         ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See ${n === 1 ? "the 1 scan" : `all ${fmt(n)} scans`} of ${esc(info.name)} in my collection →</a></p>` : ""; })()}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
+        <section class="fix-req"><h2>See something wrong?</h2><p>If anything on this page is incorrect or missing, let me know. Please include what should change and a link or source that shows it.</p>
+          <button type="button" class="btn" data-mail data-subject="${esc(`Correction: ${info.name} (Husker Bios)`)}" data-body="${esc(`Hi Ian,\n\nI'd like to suggest a correction to this page:\n${absURL("#/player/" + slug)}\n\nWhat should change:\n\n\nSource or evidence (a link, book, newspaper article, media guide…):\n\n\nThanks!\n`)}">✉ Request a correction</button></section>
       </div>`;
       state.list = scans;
     }));
