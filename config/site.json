@@ -2201,6 +2201,21 @@
       "t": 60,
       "grow": 2,
       "minArea": 0.0001
+    },
+    "ron-mcdole": {
+      "id": "1iWX4SGncbICcix4XvCpBZsSWodOz7osd",
+      "src": "assets/signatures/ron-mcdole.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.7293,
+      "ink": "blue",
+      "t": 30,
+      "grow": 1,
+      "minArea": 0.0003
     }
   },
   "fanDay": {
