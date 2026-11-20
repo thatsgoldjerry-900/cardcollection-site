@@ -2275,6 +2275,21 @@
       "t": 40,
       "grow": 2,
       "minArea": 0.0003
+    },
+    "bob-martin": {
+      "id": "1UIGKYs8mGWyUTdjbm5GvJ7xV3htuvK2g",
+      "src": "assets/signatures/bob-martin.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.5527,
+      "ink": "red",
+      "t": 30,
+      "grow": 2,
+      "minArea": 0.0003
     }
   },
   "fanDay": {
