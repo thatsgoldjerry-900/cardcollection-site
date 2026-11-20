@@ -917,3 +917,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .lt-group{margin:26px 0}.lt-group>h2{font-size:22px;margin:0 0 6px}.lt-group>h2 small{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
 .lt-set h3{margin:0 0 2px;font-size:18px}.lt-set h3 a{color:var(--fg);text-decoration:none}.lt-set h3 a:hover{color:var(--acc)}.lt-need{color:#ff8a8a}
 .pm-ph.pm-ic{display:grid;place-items:center;font-size:26px}
+
+/* Fan Day autographs (player pages): his box from a multi-signed sheet */
+.fan-day{margin-top:14px}.fan-day h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin:0 0 8px}
+.fd-list{display:grid;gap:10px}.fd-item{display:flex;flex-direction:column;gap:4px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:zoom-in}
+.fd-crop{display:block;width:100%;background-repeat:no-repeat;border-radius:6px;background-color:#1a1d24}.fd-item small{color:var(--mu);font-size:12px}

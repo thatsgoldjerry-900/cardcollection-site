@@ -1681,5 +1681,526 @@
       ],
       "ar": 0.7143
     }
+  },
+  "fanDay": {
+    "_help": "Fan Day sheets (multi-signed, one box per player with his name printed under it): each player's box, cropped on screen only, on his page. id = the sheet's Drive image ID; box = [left, top, width, height] as fractions; ar = sheet width / height.",
+    "henry-lutovsky": [
+      {
+        "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+        "box": [
+          0.7375,
+          0.0964,
+          0.172,
+          0.1392
+        ],
+        "ar": 1.2945
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.4025,
+          0.0824,
+          0.172,
+          0.14
+        ],
+        "ar": 1.308
+      }
+    ],
+    "heinrich-haarberg": [
+      {
+        "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+        "box": [
+          0.24,
+          0.8078,
+          0.172,
+          0.1385
+        ],
+        "ar": 1.2945
+      },
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.2445,
+          0.3933,
+          0.17,
+          0.1394
+        ],
+        "ar": 1.3089
+      },
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.7335,
+          0.6654,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.568,
+          0.3846,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "dasan-mccullough": [
+      {
+        "id": "1DuMN6HiLGWxNgWrHUWQoCoBOwnvAXFPf",
+        "box": [
+          0.737,
+          0.3907,
+          0.1725,
+          0.1395
+        ],
+        "ar": 1.2979
+      }
+    ],
+    "deshon-singleton": [
+      {
+        "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+        "box": [
+          0.3995,
+          0.0921,
+          0.1725,
+          0.1385
+        ],
+        "ar": 1.2887
+      },
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.4245,
+          0.211,
+          0.173,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "ceyair-wright": [
+      {
+        "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+        "box": [
+          0.3995,
+          0.2455,
+          0.1725,
+          0.1385
+        ],
+        "ar": 1.2887
+      }
+    ],
+    "isaiah-neyor": [
+      {
+        "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+        "box": [
+          0.0725,
+          0.5284,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "jahmal-banks": [
+      {
+        "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+        "box": [
+          0.0725,
+          0.6697,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "emmett-johnson": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.734,
+          0.5288,
+          0.17,
+          0.1387
+        ],
+        "ar": 1.3089
+      }
+    ],
+    "brian-buschini": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.4075,
+          0.0942,
+          0.17,
+          0.1394
+        ],
+        "ar": 1.3089
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.4025,
+          0.6619,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "micah-mazzccua": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.083,
+          0.5288,
+          0.17,
+          0.1387
+        ],
+        "ar": 1.3089
+      }
+    ],
+    "john-bullock": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.405,
+          0.0918,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.0775,
+          0.3902,
+          0.1705,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "javin-wright": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.405,
+          0.2448,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.3902,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "mj-sherman": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.079,
+          0.6654,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      }
+    ],
+    "ty-robinson": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.073,
+          0.0895,
+          0.163,
+          0.1404
+        ],
+        "ar": 1.3765
+      }
+    ],
+    "nash-hutmacher": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.692,
+          0.3882,
+          0.163,
+          0.1411
+        ],
+        "ar": 1.3765
+      }
+    ],
+    "thomas-fidone": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.2265,
+          0.7963,
+          0.163,
+          0.1418
+        ],
+        "ar": 1.3765
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.5685,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "tommi-hill": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.4245,
+          0.076,
+          0.173,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "quinton-newsome": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.076,
+          0.1725,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "omar-brown": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.3513,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "tamon-lynum": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.0915,
+          0.4877,
+          0.173,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "phalen-sanford": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.258,
+          0.3513,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "isaac-gifford": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.0915,
+          0.7909,
+          0.173,
+          0.1403
+        ],
+        "ar": 1.2987
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.4035,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "marco-ortiz": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.6364,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "nate-boerkircher": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.7555,
+          0.7909,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.2431,
+          0.171,
+          0.1392
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "travis-vokolek": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.5685,
+          0.0895,
+          0.171,
+          0.1392
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "chris-kolarevic": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "eteva-mauga-clements": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.0775,
+          0.8007,
+          0.1705,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "oliver-martin": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.079,
+          0.0861,
+          0.1715,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "alex-bullock": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.5715,
+          0.0861,
+          0.1715,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "brant-banks": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.5715,
+          0.6667,
+          0.1715,
+          0.1414
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "trey-palmer": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.242,
+          0.5253,
+          0.171,
+          0.1414
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "omar-manning": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.736,
+          0.3892,
+          0.171,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "bryce-benhart": [
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.0745,
+          0.2368,
+          0.1715,
+          0.14
+        ],
+        "ar": 1.308
+      }
+    ],
+    "brady-weas": [
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.238,
+          0.6619,
+          0.1715,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ]
   }
 }

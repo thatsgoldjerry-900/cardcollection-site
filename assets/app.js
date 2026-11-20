@@ -1246,6 +1246,17 @@
   // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed.
   // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
   // ink "blue" (blue marker), "dark" (black marker: darker than the card around it) or "both", t (ink threshold).
+  // Fan Day sheets (config "fanDay"): the player's own box from a multi-signed sheet, cropped on screen only (files
+  // untouched). Tap to open the whole sheet.
+  function fanDayHTML(slug, name) {
+    const list = ((DATA.site.fanDay || {})[slug] || []).map((g) => ({ g, c: CARDS.find((x) => x.id === g.id) })).filter((x) => x.c);
+    if (!list.length) return "";
+    const pos = (v, s) => (s >= 1 ? 0 : (v / (1 - s)) * 100);
+    return `<section class="fan-day"><h2>Fan Day autograph${list.length > 1 ? "s" : ""}</h2><div class="fd-list">${list.map(({ g, c }) => { const [x, y, w, h] = g.box;
+      return `<button type="button" class="fd-item" data-i="${c.i}" aria-label="${esc(name)}'s autograph on ${esc(c.name)}. Opens the whole sheet.">
+        <span class="fd-crop" style="aspect-ratio:${((w * (g.ar || 1.3)) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, 1600)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span>
+        <small>${esc((c.name.match(/^\d{4}\s+Husker Fan Day/i) || [c.name])[0])}</small></button>`; }).join("")}</div></section>`;
+  }
   function signatureHTML(slug, name) {
     const g = (DATA.site.signatures || {})[slug]; if (!g || !g.box) return "";
     const c = CARDS.find((x) => x.id === g.id); if (!c) return "";
@@ -1395,7 +1406,7 @@
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top">
           <div class="pl-card">${hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
-            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
+            : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${fanDayHTML(slug, info.name)}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
@@ -2200,7 +2211,7 @@
   /* ---------- Viewer ---------- */
   const V = { list: [], k: 0, back: false };
   document.addEventListener("click", (e) => {
-    const b = e.target.closest(".cd[data-i], .sig-panel[data-i]"); if (!b) return;
+    const b = e.target.closest(".cd[data-i], .sig-panel[data-i], .fd-item[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
     if (b.closest(".mq")) { location.hash = "#/card/" + cid(CARDS[+b.dataset.i]); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
