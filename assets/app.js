@@ -1317,6 +1317,12 @@
           if (kx > 0) v = Math.max(v, src[k - 1]); if (kx < W - 1) v = Math.max(v, src[k + 1]);
           if (k >= W) v = Math.max(v, src[k - W]); if (k < N - W) v = Math.max(v, src[k + W]); m[k] = v; }
       }
+      // Anti-aliasing: soften each stroke's edge by one pixel (thickened strokes otherwise show stair steps).
+      { const src = m.slice();
+        for (let k = 0; k < N; k++) { const kx = k % W; let sum = 0, n = 0;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const xx = kx + dx, r = k + dy * W + dx;
+            if (xx >= 0 && xx < W && r >= 0 && r < N) { sum += src[r] * (dx || dy ? 1 : 2); n += dx || dy ? 1 : 2; } }
+          m[k] = sum / n; } }
       // The tube: hot pinkish-white in the middle of each stroke, red toward its edges.
       const core = new Float32Array(N);
       for (let k = 0; k < N; k++) { if (m[k] < 0.5) continue; const kx = k % W; let lo = 1;
