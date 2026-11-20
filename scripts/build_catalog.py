@@ -304,6 +304,17 @@ def main():
             groups.append({"slug": gslug, "label": glabel, "count": n})
         s = dict(sec); s["groups"] = groups
         sections.append(s)
+    # Same card twice where one is "SN50" and the other a documented copy "SN23 of 50": the documented one is an extra
+    # copy (Ian), so it goes to the Duplicates page.
+    OF = re.compile(r"\bSN\d+ of (\d+)\b")
+    skey = lambda c: (c[3], re.sub(r"\s+", " ", OF.sub(r"SN\1", c[2])).strip().lower())
+    plain = {skey(c) for c in cards if not OF.search(c[2])}
+    moved = [c for c in cards if OF.search(c[2]) and skey(c) in plain]
+    if moved:
+        ids = {id(c) for c in moved}
+        cards[:] = [c for c in cards if id(c) not in ids]
+        dupes.extend(c[:9] for c in moved)
+        print(f"{len(moved)} documented-serial copies moved to Duplicates", file=sys.stderr)
     site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot") and not k.startswith("_")}
     if "customsPhotos" in site: site["customsPhotos"] = {k: v for k, v in site["customsPhotos"].items() if k != "folders"}
     # Photo name without extension is its caption; newest first.
