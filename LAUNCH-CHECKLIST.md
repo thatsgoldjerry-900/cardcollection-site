@@ -68,7 +68,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   display-only crop is Ian's request.
 - [ ] **Scan the front of the 2008 TK Legacy All-American Autographs #AA4 Johnny Rodgers (AU, SN100)** and upload it;
   its back is already in the football folder and will pair with it automatically.
-- [ ] **After the football re-upload is live:** tell Claude, who checks the new names on the site and turns off
+- [x] **After the football re-upload is live:** (done 2026-11-20) tell Claude, who checks the new names on the site and turns off
   "freshUpload" in config/site.json (it keeps the big batch from all showing as NEW).
 
 ## Before the switch
