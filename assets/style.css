@@ -891,3 +891,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hub-ph.land img,.pm-ph.land img{object-fit:contain}
 .bd.pr{background:#3a4352;color:#d7dde6}
 .coll .tools-r{flex-wrap:wrap;row-gap:8px}#yr{max-width:9.5em}
+/* TCDb links in TCDb's orange */
+.pill.pill-tcdb{background:#c6491a;border-color:#c6491a;color:#fff;font-weight:600}
+.pill.pill-tcdb:hover{background:#dd5a27;border-color:#dd5a27}
+.go-links a.go-tcdb{color:#f07a45}
