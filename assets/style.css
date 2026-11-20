@@ -890,3 +890,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .pm-ph.land{width:auto;height:calc(40px * 7 / 5)}
 .hub-ph.land img,.pm-ph.land img{object-fit:contain}
 .bd.pr{background:#3a4352;color:#d7dde6}
+.coll .tools-r{flex-wrap:wrap;row-gap:8px}#yr{max-width:9.5em}
