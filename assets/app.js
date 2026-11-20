@@ -176,9 +176,10 @@
   function sortList(list, how) {
     const by = {
       new: (a, b) => (b.added > a.added ? 1 : b.added < a.added ? -1 : a.i - b.i),
-      // By year, then set name A–Z within the year (then card number, naturally: #2 before #10).
+      // Oldest first: by year, then set name A–Z (then card number, naturally: #2 before #10).
+      // Newest first is the exact reverse: newest year first, set names Z–A within each year.
       old: (a, b) => a.year - b.year || setOrder(a, b) || a.i - b.i,
-      recent: (a, b) => (b.year === 9999 ? 0 : b.year) - (a.year === 9999 ? 0 : a.year) || setOrder(a, b) || a.i - b.i,
+      recent: (a, b) => (b.year === 9999 ? 0 : b.year) - (a.year === 9999 ? 0 : a.year) || setOrder(b, a) || a.i - b.i,
       az: (a, b) => a.name.localeCompare(b.name),
       serial: (a, b) => rarity(a) - rarity(b) || a.i - b.i,
     }[how];
