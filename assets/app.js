@@ -1211,13 +1211,17 @@
   function hub() {
     setNav("nfl-huskers"); setTitle("Husker Bios");
     loadHub(() => {
-      const all = tier1(), have = all.filter((p) => p.have).length;
+      // Every bio: NFL Tier 1, 2 and 3, MLB, NBA, and the Huskers I've made custom cards of (config cardPlayers).
+      const wiki = new Set((PLAYERS.players || []).filter((p) => p.wiki).map((p) => p.slug)), sigs = DATA.site.signatures || {};
+      const GROUP = { "nfl-tier-1-huskers": "nfl", "nfl-tier-2-huskers": "pro", "pro-football-huskers": "pro", "baseball-mlb": "mlb", "basketball-nba": "nba" };
+      const all = allPlayers().map((p) => ({ ...p, page: wiki.has(p.slug), group: GROUP[p.listSlug] || "more", sig: !!sigs[p.slug] }));
+      const have = all.filter((p) => p.have).length, nsig = all.filter((p) => p.sig).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
-        <div class="c-head"><div class="kick">Autograph collection</div><h1>Husker Bios</h1>
-          <p>Every Nebraska Cornhusker who played in at least one NFL game. Pick a name for that player's page, with the autograph I have when I have one.</p>
-          <div class="prog"><b>${((have / all.length) * 100).toFixed(2)}%</b><div class="bar"><i style="width:${(have / all.length) * 100}%"></i></div><small>${fmt(have)} of ${fmt(all.length)} signed</small></div></div>
+        <div class="c-head"><div class="kick">Nebraska Cornhuskers</div><h1>Husker Bios</h1>
+          <p>A page for every Nebraska Cornhusker who made the pros, plus a few more I've made custom cards of. Each one tells his story: his Nebraska and pro careers, stats, Hall of Fame honors, a career timeline, my own write-ups from custom cards, and the cards and autographs I have of him.</p>
+          <div class="hub-stats"><span><b>${fmt(all.length)}</b> bios</span><span><b>${fmt(have)}</b> with an autograph in my collection</span><span><b>${fmt(nsig)}</b> neon signatures</span></div></div>
         <div class="tools">
-          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["have", "Have"], ["need", "Need"], ["pages", "Has a bio"]].map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["nfl", "NFL"], ["pro", "Other pro football"], ["mlb", "MLB"], ["nba", "NBA"], ["more", "More Huskers"], ["sig", "Neon signatures"]].filter(([k]) => k === "all" || k === "sig" || all.some((p) => p.group === k)).map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
           <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}">
             <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["most", "Most NFL games"], ["fewest", "Fewest NFL games"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
             <span class="count" id="hub-count"></span></div>
@@ -1225,16 +1229,16 @@
         <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
       const apply = () => {
         let q = HUB.q; HUB.fixed = null;
-        const shownBy = (p) => HUB.show === "all" || (HUB.show === "have" && p.have) || (HUB.show === "need" && !p.have) || (HUB.show === "pages" && p.page);
+        const shownBy = (p) => HUB.show === "all" || (HUB.show === "sig" ? p.sig : p.group === HUB.show);
         const hits = (qq) => all.filter((p) => shownBy(p) && (!qq || playerMatch(p.name, qq)));
         HUB.rows = hits(q);
         if (q && !HUB.rows.length) { const f = fixPlayerQuery(q, all.map((p) => p.name), (f) => hits(f).length > 0); if (f) { HUB.fixed = f; HUB.rows = hits(f); } }
         // The checklist is newest first; "with autographs first" keeps that order within each group.
-        const scanned = (p) => (p.have && bestScan(p.name) ? 0 : 1), yr = (p) => parseInt(p.year) || 0;
+        const scanned = (p) => (p.have && bestScan(p.name, p.sport) ? 0 : 1), yr = (p) => parseInt(p.year) || 0;
         // Games like "1*" count as 1; players with no games listed go last either way.
         const gm = (p) => { const n = parseInt(p.games); return isNaN(n) ? null : n; };
         const byGames = (dir) => (a, b) => (gm(a) === null) - (gm(b) === null) || dir * ((gm(a) || 0) - (gm(b) || 0));
-        const by = { scans: (a, b) => scanned(a) - scanned(b), new: () => 0, old: (a, b) => yr(a) - yr(b), most: byGames(-1), fewest: byGames(1), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
+        const by = { scans: (a, b) => scanned(a) - scanned(b), new: (a, b) => yr(b) - yr(a), old: (a, b) => yr(a) - yr(b), most: byGames(-1), fewest: byGames(1), az: (a, b) => a.name.localeCompare(b.name) }[HUB.sort];
         HUB.rows = HUB.rows.map((p, i) => [p, i]).sort((a, b) => by(a[0], b[0]) || a[1] - b[1]).map(([p]) => p);
         HUB.shown = 0; $("#hub-list").innerHTML = HUB.rows.length ? (HUB.fixed ? `<li class="fixnote">No one matched “${esc(HUB.q)}”, so these are results for <b>${esc(HUB.fixed)}</b>.</li>` : "") : `<li class="empty">Nobody matches.</li>`;
         $("#hub-count").textContent = `${fmt(HUB.rows.length)} player${HUB.rows.length === 1 ? "" : "s"}`; hubMore();
@@ -1249,13 +1253,13 @@
     const list = $("#hub-list"); if (!list) return;
     const next = HUB.rows.slice(HUB.shown, HUB.shown + 60); HUB.shown += next.length;
     list.insertAdjacentHTML("beforeend", next.map((p) => {
-      const sc = p.have ? bestScan(p.name) : null;
-      const nm = `<a class="hub-name${p.page ? "" : " nobio"}" href="#/player/${p.slug}">${hl(p.name, HUB.fixed || HUB.q)}${hofMarks(p)}</a>`;
+      const sc = p.have ? bestScan(p.name, p.sport) : null;
+      const nm = `<a class="hub-name" href="#/player/${p.slug}">${hl(p.name, HUB.fixed || HUB.q)}${hofMarks(p)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="thumbFit(this)"></button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
-        <div class="hub-info">${nm}<div class="hub-meta">Final Nebraska season ${esc(p.year)}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.notes ? ` · ${esc(p.notes)}` : ""}</div>
-          <div class="hub-meta2"><span class="st ${p.have ? "have" : "need"}">${p.have ? "Have" : "Need"}</span>${p.have && p.signed ? `<span>Signed ${esc(p.signed.toLowerCase())}</span>` : ""}</div></div></li>`;
+        <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
+          <div class="hub-meta2">${p.have ? `<span class="st have">Autograph</span>` : ""}${p.sig ? `<span class="pill">Neon signature</span>` : ""}</div></div></li>`;
     }).join(""));
   }
   const hubIO = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && HUB.shown < HUB.rows.length && hubMore()), { rootMargin: "1000px" });
