@@ -66,6 +66,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   dark panel with a soft red glow. Plan: Claude hand-picks the signature area for ~10 players as a pilot; Ian looks and decides
   how to scale (hand-picked for favorites, automatic ink detection for the rest, or a mix). Add a CLAUDE.md note that this
   display-only crop is Ian's request.
+- [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
+  config/site.json: Tom Osborne, Bob Devaney, Larry Frost, Alonzo Whaley, Bill Bomberger, Randy Reeves, Ladas Hubka, Omar Manning,
+  Maurice Washington, Mick Stoltenberg, Sam Foltz, Brewer Hicklen). Wikipedia was refusing requests on 2026-11-20. Plan: have
+  scripts/build_players.py also read `cardPlayers` (sports content only, same filters), and the page show the bio and stats under
+  Ian's write-up. Coaches (Osborne, Devaney) keep their coaching years instead of a final playing season. Nothing for Ian to do but say go.
 - [ ] **Scan the front of the 2008 TK Legacy All-American Autographs #AA4 Johnny Rodgers (AU, SN100)** and upload it;
   its back is already in the football folder and will pair with it automatically.
 - [x] **After the football re-upload is live:** (done 2026-11-20) tell Claude, who checks the new names on the site and turns off
@@ -111,6 +116,6 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [x] Kansas City Star article: dated June 2020 on the Media page, linked to the PDF in Drive (done). A summary page or asking the Star for permission is on hold.
 - [ ] Short huskers.com-sourced summaries for Tier 2 and Tier 3 players with no Wikipedia article (305 players).
 - [x] Delete the unused Apps Script files in `tools/` (done).
-- [ ] Transcribe the custom card backs (89 customs have a back scan) into `data/card-text.json`: the full text for
+- [x] (done 2026-11-20: 113 backs, reviewed by Ian) Transcribe the custom card backs (89 customs have a back scan) into `data/card-text.json`: the full text for
   "Read the back", plus the player, new facts and new stats for the player page's "From my custom card" section.
   Only facts/stats the player page doesn't already show. Ian checks them before they go live.
