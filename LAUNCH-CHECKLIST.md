@@ -60,14 +60,21 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Signature showcase: 108 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
-  light label, one player per card) has no more Tier 1 candidates. Next, if wanted: Tier 1 players with black ink or busier
-  labels (hand-picked), then Tier 2/3 and other collections. Each batch goes to Ian on a sheet before going live.
-- [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
-  config/site.json: Tom Osborne, Bob Devaney, Larry Frost, Alonzo Whaley, Bill Bomberger, Randy Reeves, Ladas Hubka, Omar Manning,
-  Maurice Washington, Mick Stoltenberg, Sam Foltz, Brewer Hicklen). Wikipedia was refusing requests on 2026-11-20. Plan: have
-  scripts/build_players.py also read `cardPlayers` (sports content only, same filters), and the page show the bio and stats under
-  Ian's write-up. Coaches (Osborne, Devaney) keep their coaching years instead of a final playing season. Nothing for Ian to do but say go.
+- [ ] **Neon signatures: 108 live.** Automatic searching costs too many tokens for what it finds (Ian, 2026-11-23): stopped after
+  168 of the 253 Tier 1 players without one (85 unchecked). Add more only from signatures Ian cleans up and sends, or cards he
+  names. Standard: clean version (fill holes/streaks, keep the pen's stroke width, no card design or extra words; jersey # or
+  nickname OK), saved in assets/signatures/ and set in config "signatures" with "src". Don't over-thicken (Adduci looked blobby).
+- [ ] **Wikipedia bios (and college stats) for the card-only bios** (`cardPlayers` in config/site.json: Osborne, Devaney,
+  Larry Frost, Whaley, Bomberger, Reeves, Hubka, Omar Manning, Maurice Washington, Stoltenberg, Foltz, Brewer Hicklen, and the
+  coaches added 2026-11-23: Ron Brown, Pete Elliot (card spelling; real name Pete Elliott), Dana X. Bible, Biff Jones,
+  Bo Pelini, Mike Riley). Wikipedia was refusing requests from Claude's machine on 2026-11-20 and 22, so run it in the GitHub
+  Action: have scripts/build_players.py also read `cardPlayers` (sports content only, same filters); the page shows the bio under
+  Ian's write-up. Coaches keep coaching years, not a final playing season. Nothing for Ian to do but say go.
+- [ ] **Team logos: hand-match the ~49 teams still without one** (USFL 1980s, NFL Europe, early NFL; data/team-logos.json "tried").
+  Give exact Wikipedia article names per team; ~9 "tried" entries aren't teams ("Los Angeles", "Oklahoma State"…). Runs in the Action.
+- [ ] **Card picks (stars) and the Duplicates page are live** (2026-11-22/23). Picks: up to 50, saved on the visitor's device,
+  shared as /picks/<ids>/ (ids = last 8 characters of the scan's Drive ID). Duplicates: 2nd/3rd… copies plus "SN23 of 50" copies
+  of a card also listed as "SN50" (scripts/build_catalog.py). Nothing pending; noted so a new chat knows they exist.
 - [x] **Neon signatures for Tier 2/3 from the Fan Day sheets** (done 2026-11-22: 23 players, Ian approved; red Sharpie ink mode added).
   Tier 2/3 card batch (10) and Tier 1 black/red-ink batch (9) done too. The rest of that batch came from signatures Ian
   cleaned up himself (assets/signatures/, config "src"); send more the same way anytime. The rest of Tier 2/3 (and Tier 1) need hand-picked cards (black ink, busy labels).
