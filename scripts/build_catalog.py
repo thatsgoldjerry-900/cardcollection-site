@@ -55,6 +55,15 @@ BACK = re.compile(r"\s*(\((?:back|back single|inside back)\)|\bback)\s*$", re.I)
 # "Back" before a trailing note also marks a back: "… Custom Back (Gifted to Austin Allen)" pairs with
 # "… Custom (Gifted to Austin Allen)".
 BACK_NOTE = re.compile(r"\s+back(?=\s*\([^()]*\)\s*$)", re.I)
+CODE_RE = re.compile(r"(?<![A-Za-z])(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+)(?![A-Za-z])")
+def loose_key(name):
+    """A name without tag codes, letter codes ("4N", "3 H"), copy marks, inscription notes and punctuation."""
+    h = name.find("#"); head, tail = (name[:h], name[h:]) if h >= 0 else ("", name)
+    tail = CODE_RE.sub(" ", tail)
+    tail = re.sub(r"(?:^|\s)(?:Letter\s+)?0?\d{1,2}\s?[A-Z](?=\s|$)", " ", tail)
+    tail = re.sub(r"\((?:\d+(?:st|nd|rd|th)|creased|damaged|tucked)\)", " ", tail, flags=re.I)
+    tail = re.sub(r"\b[\w' -]*?\binsc(?:ription)?\b", " ", tail, flags=re.I)
+    return re.sub(r"[^a-z0-9#]+", " ", (head + tail).lower()).strip()
 def base_name(name):
     stem = re.sub(r"\.[a-z0-9]+$", "", name, flags=re.I)
     if BACK.search(stem): return BACK.sub("", stem).strip(), True
@@ -180,16 +189,27 @@ def main():
         groups = []
         for gi, (gslug, glabel, files) in enumerate(group_files):
             print(f"{sec['slug']}/{gslug}: {len(files)} files", file=sys.stderr)
-            # pair backs with fronts
-            fronts, backs = {}, {}
+            # pair backs with fronts: by exact name, or failing that by the name without Ian's tag codes and
+            # letter codes (a back is often named "... SN199 Back" while its front is "... AU, MEM, SN199").
+            fronts, backs, loose_fronts = {}, {}, {}
             for f in files:
                 b, is_back = base_name(f["name"])
                 (backs if is_back else fronts).setdefault(b.lower(), f)
+                if not is_back: loose_fronts.setdefault(loose_key(b), []).append(b.lower())
+            back_of = {}                                             # front name -> its back file
+            for k, f in backs.items():
+                if k in fronts: back_of[k] = f
+            for k, f in backs.items():
+                if k in fronts: continue
+                # One back can serve several fronts, e.g. every letter of a letterman set shares the same back.
+                cands = [c for c in loose_fronts.get(loose_key(base_name(f["name"])[0]), []) if c not in back_of]
+                for c in cands: back_of[c] = f
+                if cands: f["_paired"] = True
             n = 0
             for f in files:
                 b, is_back = base_name(f["name"])
-                if is_back and b.lower() in fronts: continue        # shown with its front
-                back = backs.get(b.lower()) if not is_back else None
+                if is_back and (b.lower() in fronts or f.get("_paired")): continue        # shown with its front
+                back = back_of.get(b.lower()) if not is_back else None
                 card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
                 if not_shown(card_name): continue                   # sold, or a second copy
                 # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date

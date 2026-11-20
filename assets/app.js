@@ -21,8 +21,29 @@
     custom: /\bcustom\b/i,
     rc: /\b(RC|rookie)\b/i,
   };
+  /* Ian's tag codes at the end of a file name (from Nov 2026): AU autograph, MEM game-used memorabilia, MANU
+     manufactured patch, SN25 / SN43 of 50 serial-numbered, PR25 print run, RC rookie, SP/SSP short print.
+     When a name has them they're the authority (more accurate than guessing from words like "Signatures"),
+     and they're left out of the card's caption. They're read only after the card number, so brands like
+     "SP Authentic" never count. */
+  const CODE = /^(?:AU|MEM|MANU|RC|SP|SSP|SN\d+(?:\s+of\s+\d+)?|PR\d+)$/;
+  const CODE_RUN = /(?:^|\s)((?:(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+)(?:\s*,\s*|\s+(?=(?:AU|MEM|MANU|RC|SSP|SP|SN\d|PR\d)\b)))*(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+))(?=\s|$|\))/;
+  function readCodes(name) {
+    const h = name.indexOf("#"), tail = h >= 0 ? name.slice(h) : name.replace(/^.*?\b(?:custom|autograph|signed)\b/i, "");
+    const m = tail.match(CODE_RUN); if (!m) return null;
+    const codes = m[1].split(/\s*,\s*|\s+(?=[A-Z])/).map((x) => x.trim()).filter((x) => CODE.test(x)); if (!codes.length) return null;
+    const c = { text: m[1], au: codes.includes("AU"), mem: codes.includes("MEM"), manu: codes.includes("MANU"), rc: codes.includes("RC"),
+      sp: codes.some((x) => x === "SP" || x === "SSP"), sn: 0, of: 0, pr: 0 };
+    codes.forEach((x) => { let k = x.match(/^SN(\d+)(?:\s+of\s+(\d+))?$/); if (k) { c.sn = +k[1]; c.of = +(k[2] || 0); } k = x.match(/^PR(\d+)$/); if (k) c.pr = +k[1]; });
+    // Ian's new tag list has at least one of AU/MEM/MANU/SN/PR. A lone "SP" or "RC" is the older naming (e.g. "Alex Gordon SP"),
+    // so it only adds those tags and changes nothing else.
+    c.full = c.au || c.mem || c.manu || !!c.sn || !!c.pr;
+    if (!c.full && h < 0) return null;
+    return c;
+  }
   function parse(name) {
     const out = { title: name, sub: "", par: "", year: 9999, serial: 0, one: false, grade: "", tags: new Set() };
+    const codes = readCodes(name);
     const y = name.match(/^(\d{4})/); if (y) out.year = +y[1];
     const s = name.match(RX.serial);
     if (s) {
@@ -53,6 +74,17 @@
     // Score Inscriptions, so only the singular word counts.)
     if (/\binscription\b/i.test(name)) out.tags.add("inscr");
     if (RX.rc.test(name)) out.tags.add("rc");
+    if (codes && !codes.full) { if (codes.rc) out.tags.add("rc"); if (codes.sp) out.tags.add("sp"); }
+    if (codes && codes.full) {   // Ian's codes override the guesses above
+      out.tags.delete("auto"); out.tags.delete("relic");
+      if (codes.au) out.tags.add("auto");
+      if (codes.mem || codes.manu) out.tags.add("relic");
+      if (codes.manu) out.tags.add("manu");
+      if (codes.rc) out.tags.add("rc");
+      if (codes.sp) out.tags.add("sp");
+      if (codes.sn) { out.serial = codes.of || codes.sn; out.one = out.serial === 1; }
+      else if (codes.pr && !out.serial) { out.serial = codes.pr; out.one = codes.pr === 1; }
+    }
     if (out.serial) out.tags.add("numbered");
     if (out.one) out.tags.add("one");
     if (out.grade) out.tags.add("graded");
@@ -62,9 +94,10 @@
       let par = "";
       const dash = set.indexOf(" - ");
       if (dash > 0) { par = set.slice(dash + 3); set = set.slice(0, dash); }
+      if (codes && codes.full) rest = rest.replace(codes.text, " ");
       let player = rest.replace(RX.serial, "").replace(RX.grade, "").replace(/\((?:[^)]*)\)/g, "").replace(/\s+(Back|2nd|3rd|\d)$/i, "").replace(/\s{2,}/g, " ").trim();
       out.title = player || rest; out.sub = `${yr} ${set} #${num}`; out.par = par;
-    }
+    } else if (codes && codes.full) out.title = name.replace(codes.text, " ").replace(/\s*,\s*(?=\s|$)/g, " ").replace(/\s{2,}/g, " ").trim();
     return out;
   }
 
@@ -1556,7 +1589,7 @@
 
   /* Best of the Best: the standout cards (1/1s, bat knobs, laundry tags, nameplates, buttons, shields, SSPs, low-numbered
      prime patches and autographs), cycling in and out on the stats page. */
-  const BEST_RULES = [[/\bknob/i, 9], [/laundry|\btag\b|logo ?man/i, 8], [/nameplate|shield|button|barrel/i, 7], [/\bssp\b|super short|image variation|\bvariation\b/i, 6],
+  const BEST_RULES = [[/\bknob/i, 9], [/laundry|\btag\b|logo ?man/i, 8], [/nameplate|shield|button|barrel/i, 7], [/\bssp\b|\bSP\b(?! Authentic| Game| Legendary| Signature| Top| Chirography)|super short|image variation|\bvariation\b/i, 6],
     [/\bprime\b|jumbo/i, 4], [/booklet|dual auto|triple auto|quad auto|cut auto/i, 3]];
   function bestScore(c) {
     let n = BEST_RULES.reduce((t, [re, v]) => t + (re.test(c.name) ? v : 0), 0);
