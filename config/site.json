@@ -2290,6 +2290,21 @@
       "t": 30,
       "grow": 2,
       "minArea": 0.0003
+    },
+    "nick-adduci": {
+      "id": "1Yr0VJpdMidfq5ziln9qih8YpCmcSU1Kp",
+      "src": "assets/signatures/nick-adduci.webp",
+      "box": [
+        0.01,
+        0.02,
+        0.98,
+        0.96
+      ],
+      "ar": 3.4444,
+      "ink": "dark",
+      "t": 12,
+      "grow": 2,
+      "minArea": 0.0006
     }
   },
   "fanDay": {
