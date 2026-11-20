@@ -206,13 +206,8 @@
       "blurb": "One autograph of every Nebraska Cornhusker to play in the NFL started in the mid-2000s with $5 signed cards and grew into years of researching Husker history.",
       "groups": [
         {
-          "slug": "2009-and-older",
-          "label": "2009 and Older",
-          "maxYear": 2009
-        },
-        {
-          "slug": "2010-and-newer",
-          "label": "2010 and Newer"
+          "slug": "all",
+          "label": "Nebraska Football Cards & Autos"
         }
       ],
       "extraLinks": [
@@ -236,7 +231,7 @@
         ]
       },
       "driveFolderName": "Nebraska Football Cards & Autos",
-      "_help": "Read from the Drive folder named in driveFolderName (Sold/Pending/Cut/Extra subfolders skipped), split into groups by card year. _oldFolders: the two folders read before Nov 2026."
+      "_help": "Read from the Drive folder named in driveFolderName (one folder; Sold/Pending/Cut/Extra subfolders skipped). _oldFolders: the two folders read before Nov 2026."
     },
     {
       "slug": "husker-baseball",

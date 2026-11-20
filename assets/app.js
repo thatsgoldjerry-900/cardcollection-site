@@ -166,7 +166,7 @@
   const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
   const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
-  const state = { filters: new Set(), sort: "new", list: [], shown: 0, q: "", where: null };
+  const state = { filters: new Set(), sort: "new", decade: "", list: [], shown: 0, q: "", where: null };
 
   function sortList(list, how) {
     const by = {
@@ -510,6 +510,7 @@
       kick = { pc: "Player collection", chase: "Autograph chase", team: "Team collection", want: "Still hunting" }[sec.kind] || "Collection";
       groups = sec.groups;
       gi = groups.findIndex((g) => g.slug === gslug);
+      if (gslug && gi < 0 && groups.length <= 1) { history.replaceState(history.state, "", "#/c/" + slug); gslug = ""; }   // a group that's gone (e.g. 2009-and-older)
       if (gi >= 0) base = base.filter((c) => c.gi === gi);
       if (sec.progress) prog = `<div class="prog"><b>${pctText(sec)}</b><div class="bar"><i style="width:${sec.progress}%"></i></div><small>${esc(sec.progressLabel || "complete")}</small></div>`;
       // Links to pages on this site open in place (→); outside links open a new tab (↗).
@@ -550,13 +551,16 @@
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
           <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
-          <div class="tools-r">${binderBtn()}<span class="count" id="count"></span><label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
+          <div class="tools-r">${binderBtn()}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
+            return ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""; })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
       </div></div>`;
     const apply = () => {
       let list = search(base, q);
       state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
+      if (state.decade && (!$("#yr") || $("#yr").value !== state.decade)) state.decade = "";   // a decade this page doesn't have
+      if (state.decade) list = list.filter((c) => Math.floor(c.year / 10) * 10 === +state.decade);   // the Years menu
       state.list = sortList(list, state.sort); state.shown = 0;
       $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${slug === "customs" && state.filters.has("nonsport") ? "Non-sport customs, like my Sonic the Hedgehog cards, are coming soon." : state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
       $("#count").textContent = `${fmt(state.list.length)} scan${state.list.length === 1 ? "" : "s"}`;
@@ -568,6 +572,7 @@
       b.setAttribute("aria-pressed", state.filters.has(b.dataset.f)); apply(); syncURL();
     });
     $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); syncURL(); });
+    $("#yr")?.addEventListener("change", (e) => { state.decade = e.target.value; apply(); syncURL(); });
     apply();
     if (state.filters.size || state.sort !== "new") syncURL();
     io.observe($("#sentinel"));
@@ -1970,7 +1975,7 @@
     // Moving between groups of the same collection keeps them.
     const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS, INSCR].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
-    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); }
+    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; }
     state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     if (!a) home();
@@ -2022,6 +2027,7 @@
     const p = [];
     if (state.filters.size) p.push("f=" + [...state.filters].join(","));
     if (state.sort !== "new") p.push("sort=" + state.sort);
+    if (state.decade) p.push("y=" + state.decade);
     history.replaceState(history.state, "", location.hash.split("?")[0] + (p.length ? "?" + p.join("&") : ""));
   }
   window.addEventListener("hashchange", route);
