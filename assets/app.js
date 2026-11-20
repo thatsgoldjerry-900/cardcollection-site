@@ -1245,7 +1245,8 @@
   // Signature showcase (config "signatures", Ian's request): the signature's ink lifted out of one autograph scan and shown
   // as a glowing red neon sign on black. Done on screen only, in a canvas; the scan itself is never changed.
   // Per player: id (scan), box [left, top, width, height] as fractions, ar (scan width / height),
-  // ink "blue" (blue marker), "red" (red Sharpie), "dark" (black marker: darker than the card around it) or "both",
+  // ink "blue" (blue marker), "red" (red Sharpie), "dark" (black marker: darker than the card around it),
+  // "black" (very dark ink on white, e.g. past a gray box border; use with t ~150) or "both",
   // t (ink threshold), w (scan width to load; Fan Day sheets use 2000).
   // Fan Day sheets (config "fanDay"): the player's own box from a multi-signed sheet, cropped on screen only (files
   // untouched). Tap to open the whole sheet.
@@ -1293,7 +1294,7 @@
       for (let k = 0; k < N; k++) {
         const blue = (px[4 * k + 2] - (px[4 * k] + px[4 * k + 1]) / 2) * 1.6, dark = bg ? bg[k] - lum[k] : 0;
         const red = (px[4 * k] - (px[4 * k + 1] + px[4 * k + 2]) / 2) * 1.6;
-        const sc = g.ink === "dark" ? dark : g.ink === "red" ? red : g.ink === "both" ? Math.max(blue, dark) : blue;
+        const sc = g.ink === "dark" ? dark : g.ink === "black" ? 255 - lum[k] : g.ink === "red" ? red : g.ink === "both" ? Math.max(blue, dark) : blue;
         m[k] = Math.min(1, Math.max(0, (sc - th) / 30));
       }
       // Drop specks (foil sparkle, printed patterns): pieces of ink smaller than 0.15% of the area.

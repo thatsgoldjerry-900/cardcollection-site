@@ -1680,6 +1680,283 @@
         0.2455
       ],
       "ar": 0.7143
+    },
+    "henry-lutovsky": {
+      "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+      "box": [
+        0.7435,
+        0.0886,
+        0.16,
+        0.1276
+      ],
+      "ar": 1.2945,
+      "ink": "red",
+      "w": 2000
+    },
+    "heinrich-haarberg": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.2505,
+        0.3854,
+        0.158,
+        0.1276
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "dasan-mccullough": {
+      "id": "1DuMN6HiLGWxNgWrHUWQoCoBOwnvAXFPf",
+      "box": [
+        0.743,
+        0.3829,
+        0.1605,
+        0.1278
+      ],
+      "ar": 1.2979,
+      "ink": "red",
+      "w": 2000
+    },
+    "deshon-singleton": {
+      "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+      "box": [
+        0.4055,
+        0.0844,
+        0.1605,
+        0.1269
+      ],
+      "ar": 1.2887,
+      "ink": "red",
+      "w": 2000
+    },
+    "ceyair-wright": {
+      "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+      "box": [
+        0.4055,
+        0.2378,
+        0.1605,
+        0.1269
+      ],
+      "ar": 1.2887,
+      "ink": "red",
+      "w": 2000
+    },
+    "jahmal-banks": {
+      "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+      "box": [
+        0.0785,
+        0.6618,
+        0.16,
+        0.1288
+      ],
+      "ar": 1.308,
+      "ink": "red",
+      "w": 2000
+    },
+    "brian-buschini": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.4135,
+        0.0863,
+        0.158,
+        0.1276
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "micah-mazzccua": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.089,
+        0.5209,
+        0.158,
+        0.1269
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "javin-wright": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.247,
+        0.3843,
+        0.156,
+        0.1242
+      ],
+      "ar": 1.3072,
+      "ink": "black",
+      "w": 2000,
+      "t": 150
+    },
+    "mj-sherman": {
+      "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+      "box": [
+        0.085,
+        0.6576,
+        0.159,
+        0.1276
+      ],
+      "ar": 1.3021,
+      "ink": "red",
+      "w": 2000
+    },
+    "nash-hutmacher": {
+      "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+      "box": [
+        0.7055,
+        0.3902,
+        0.136,
+        0.1081
+      ],
+      "ar": 1.3765,
+      "ink": "red",
+      "w": 2000
+    },
+    "tommi-hill": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.4305,
+        0.0682,
+        0.161,
+        0.1279
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "quinton-newsome": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.597,
+        0.0682,
+        0.1605,
+        0.1279
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "tamon-lynum": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.0975,
+        0.4799,
+        0.161,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "phalen-sanford": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.264,
+        0.3435,
+        0.1605,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "isaac-gifford": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.0975,
+        0.7831,
+        0.161,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "marco-ortiz": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.6045,
+        0.6383,
+        0.1455,
+        0.1091
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "chris-kolarevic": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.259,
+        0.5353,
+        0.132,
+        0.0928
+      ],
+      "ar": 1.3072,
+      "ink": "dark",
+      "w": 2000
+    },
+    "eteva-mauga-clements": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.097,
+        0.8105,
+        0.1315,
+        0.0928
+      ],
+      "ar": 1.3072,
+      "ink": "dark",
+      "w": 2000
+    },
+    "oliver-martin": {
+      "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+      "box": [
+        0.0985,
+        0.096,
+        0.1325,
+        0.0934
+      ],
+      "ar": 1.3149,
+      "ink": "dark",
+      "w": 2000
+    },
+    "alex-bullock": {
+      "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+      "box": [
+        0.591,
+        0.096,
+        0.1325,
+        0.0934
+      ],
+      "ar": 1.3149,
+      "ink": "dark",
+      "w": 2000
+    },
+    "bryce-benhart": {
+      "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+      "box": [
+        0.0805,
+        0.2289,
+        0.1595,
+        0.1282
+      ],
+      "ar": 1.308,
+      "ink": "red",
+      "w": 2000
+    },
+    "brady-weas": {
+      "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+      "box": [
+        0.2575,
+        0.6717,
+        0.1325,
+        0.0935
+      ],
+      "ar": 1.308,
+      "ink": "dark",
+      "w": 2000
     }
   },
   "fanDay": {
