@@ -104,7 +104,7 @@ def page(title, desc, body, updated, ld, image=""):
 </head>
 <body><main>
 {body}
-<footer><p>{esc(CREDIT)} · <a href="../">{SITE}</a> · Updated {esc(updated)}</p><p>{esc(QUOTE)}</p></footer>
+<footer><p><a href="../">{SITE}</a> · Updated {esc(updated)}</p></footer>
 </main></body></html>
 """
 
