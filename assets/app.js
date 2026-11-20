@@ -725,7 +725,7 @@
     const sport = SPORT_OF_LIST[l.slug], showcase = [];
     {
       var pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
-        .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !/\(back\)/i.test(c.name))).filter((x) => x.length);
+        .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !isBackScan(c))).filter((x) => x.length);
       const rest = pool.slice();
       while (showcase.length < 3 && rest.length) { const k = Math.floor(Math.random() * rest.length), list = rest.splice(k, 1)[0]; showcase.push(list[Math.floor(Math.random() * list.length)]); }
     }
@@ -909,7 +909,7 @@
   const noPicture = (c, name) => !c.tags.has("custom") && !PICTURE.test(c.name.replace(/index card/i, "")) && (/\bcut\b|index card|\b(?:signed|autographed)\s+letter\b/i.test(c.name)
     || new RegExp(`^\\d{4}(?:-\\d{2})?\\s+${norm(name).split(" ").map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^#]*?")}[^#]*?\\b(?:signed\\s+)?(?:cut\\s+)?autograph`, "i").test(c.name));
   function bestScan(name, sport = "football") {
-    const all = scansFor(name, sport).filter((c) => !/\(back\)/i.test(c.name));
+    const all = scansFor(name, sport).filter((c) => !isBackScan(c));
     const pic = all.filter((c) => !noPicture(c, name));
     // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
     const solo = pic.filter((c) => !multiPlayer(c, name));
@@ -1152,7 +1152,7 @@
   // Every card I have of a player, from every collection on the site (not the Want List, not back scans).
   function playerCards(name) {
     const n = norm(name); if (n.split(" ").length < 2) return [];
-    return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && !/\((back|inside)\)/i.test(c.name) && (" " + norm(c.name) + " ").includes(" " + n + " "))
+    return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && !isBackScan(c) && (" " + norm(c.name) + " ").includes(" " + n + " "))
       .sort((p, q) => (p.year || 0) - (q.year || 0) || p.name.localeCompare(q.name));
   }
   function playerCardsPage(slug) {
@@ -1248,7 +1248,7 @@
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
       const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "NFL Huskers Player Pages";
       const sport = info.sport || "football";
-      const scans = scansFor(info.name, sport).filter((c) => !/\(back\)/i.test(c.name));
+      const scans = scansFor(info.name, sport).filter((c) => !isBackScan(c));
       // A Husker with his own collection on the site (Alex Gordon): show one of those autographs and link to it.
       const pcIdx = SECTIONS.findIndex((x) => norm(x.title) === norm(info.name));
       const pc = pcIdx >= 0 ? sectionCards(pcIdx) : [];
@@ -1411,7 +1411,7 @@
     const st = DATA.site.dyeStory, si = SECTIONS.findIndex((x) => x.slug === "jermaine-dye");
     if (!st || si < 0) return notFound();
     setNav("jermaine-dye"); setTitle(st.title);
-    const sec = SECTIONS[si], mine = sectionCards(si).filter((c) => !/\(back\)|\(inside\)/i.test(c.name));
+    const sec = SECTIONS[si], mine = sectionCards(si).filter((c) => !isBackScan(c));
     const find = (part) => mine.find((c) => c.name.toLowerCase().includes(part.toLowerCase()));
     const score = (c) => (c.one ? (c.tags.has("auto") || c.tags.has("relic") ? 60 : 15) : 0) + (c.tags.has("auto") ? 30 : 0) + (c.tags.has("relic") ? 25 : 0)
       + (/patch|knob|logoman|nameplate|button|laundry tag/i.test(c.name) ? 15 : 0)
@@ -1760,13 +1760,16 @@
     const kind = (c.tags.has("auto") ? "a" : "") + (c.tags.has("relic") ? "r" : "");
     return [m[1], m[2].replace(PARALLEL_WORDS, "").toLowerCase(), m[3].toLowerCase(), norm(c.title), kind].join("|");
   }
+  // A back scan shown as its own card (its front isn't uploaded, or it's a "(back)"/"(inside)" scan): never a player's
+  // main picture or a rainbow version. Names end "(back)", "Back" or "Back (note)", like the robot's pairing.
+  function isBackScan(x) { return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
   const isWant = (x) => !!(x && SECTIONS[x.si] && SECTIONS[x.si].kind === "want");
   function rainbowOf(c, withWants = false) {
     if (!RAINBOWS) {
       RAINBOWS = new Map();
       const seen = new Set();   // a card uploaded twice counts once
       CARDS.forEach((x) => {
-        if (/\((back|inside)\)/i.test(x.name) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
+        if (isBackScan(x) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
         const k = rainbowKey(x); if (k) RAINBOWS.set(k, [...(RAINBOWS.get(k) || []), x]);
       });
     }
@@ -1797,7 +1800,7 @@
     if (!SETS) {
       SETS = new Map(); const seen = new Set();
       CARDS.forEach((x) => {
-        if (/\((back|inside)\)/i.test(x.name) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
+        if (isBackScan(x) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
         const k = setKey(x); if (k) SETS.set(k, [...(SETS.get(k) || []), x]);
       });
     }
@@ -1841,7 +1844,7 @@
     if (!LETTERS) {
       LETTERS = new Map(); const seen = new Set();
       CARDS.forEach((x) => {
-        if (!isLetterSet(x) || !letterOf(x) || /\((back|inside)\)/i.test(x.name)) return;
+        if (!isLetterSet(x) || !letterOf(x) || isBackScan(x)) return;
         const k = letterGroupKey(x), l = letterOf(x); if (!k) return;
         const id = k + "|" + l.pos + l.letter + "|" + (x.par || "") + "|" + (x.serial || ""); if (seen.has(id)) return; seen.add(id);
         LETTERS.set(k, [...(LETTERS.get(k) || []), x]);
@@ -2274,7 +2277,7 @@
     $("#v-dice").hidden = !V.random;
     prefetch();
     showBackText(c);
-    const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !/\((back|inside)\)/i.test(x.name));
+    const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !isBackScan(x));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)} scan${bySet.length === 1 ? "" : "s"})</button>` : "")
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)} scan${byPlayer.length === 1 ? "" : "s"})</button>` : "");
@@ -2486,7 +2489,7 @@
   const calm = matchMedia("(prefers-reduced-motion: reduce)");
   function randomCard() {
     const here = /^(c\/|customs$|all$|search$)/.test(state.where || "") && state.list.length ? state.list : CARDS;
-    const pool = here.filter((c) => !/\((back|inside)\)/i.test(c.name));
+    const pool = here.filter((c) => !isBackScan(c));
     if (!pool.length) return null;
     let c;
     for (let n = 0; n < 6; n++) { c = pool[Math.floor(Math.random() * pool.length)]; if (c.i !== lastRandom || pool.length === 1) break; }
