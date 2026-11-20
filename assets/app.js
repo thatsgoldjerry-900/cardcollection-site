@@ -2177,6 +2177,7 @@
   const isPair = (c) => wide.matches && !!c.backId && !V.zoom;
   function showCard() {
     const c = V.list[V.k]; if (!c) return;
+    if (typeof pzReset === "function" && PZ) pzReset();
     $("#v-copy").hidden = !!c.photo;
     if (c.photo) {   // a photo with a player: caption instead of card details
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom && wide.matches);
@@ -2278,6 +2279,7 @@
   // Click an image: on desktop, zoom into that side (click again to go back);
   // on a phone, the page around the card hides so the whole card fills the screen (tap again to bring it back).
   function imageClick(side) {
+    if (PZ.s > 1.02 || PZ.moved) { PZ.moved = false; return; }   // a tap after pinching/panning doesn't toggle
     const c = V.list[V.k];
     if (V.zoom) V.zoom = false;
     else { V.zoom = true; if (c.backId) V.back = side === "back"; }
@@ -2298,8 +2300,42 @@
     else if (e.key.toLowerCase() === "f" && !$("#v-flip").hidden) $("#v-flip").click();
   });
   let tx = null;
-  $("#v-stage").addEventListener("touchstart", (e) => (tx = e.touches[0].clientX), { passive: true });
-  $("#v-stage").addEventListener("touchend", (e) => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx = null; });
+  $("#v-stage").addEventListener("touchstart", (e) => (tx = e.touches.length === 1 && PZ.s <= 1.02 ? e.touches[0].clientX : null), { passive: true });
+  $("#v-stage").addEventListener("touchend", (e) => { if (tx == null || PZ.s > 1.02 || PZ.pinched) { tx = null; PZ.pinched = false; return; } const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); tx = null; });
+  // Pinch to zoom on phones (great for decas and other big cards): two fingers zoom in up to 5x around the pinch,
+  // one finger then moves around the card; pinch back out (or change cards) to reset. The scan itself isn't changed.
+  var PZ = { s: 1, x: 0, y: 0, el: null, pts: new Map(), start: null, moved: false, pinched: false };
+  const pzApply = () => { if (!PZ.el) return; PZ.el.style.transform = PZ.s > 1.02 ? `translate(${PZ.x}px, ${PZ.y}px) scale(${PZ.s})` : "";
+    $("#v-stage").classList.toggle("pinched", PZ.s > 1.02); };
+  function pzReset() { PZ.s = 1; PZ.x = PZ.y = 0; PZ.start = null; PZ.pts.clear(); if (PZ.el) PZ.el.style.transform = ""; PZ.el = null; $("#v-stage").classList.remove("pinched"); }
+  const stg = $("#v-stage");
+  stg.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "touch") return;
+    const im = e.target.closest("#v-img, #v-img2"); if (!im && !PZ.el) return;
+    if (im && PZ.el && im !== PZ.el) pzReset();
+    if (im) PZ.el = im;
+    PZ.pts.set(e.pointerId, [e.clientX, e.clientY]); PZ.start = null;
+  });
+  stg.addEventListener("pointermove", (e) => {
+    if (!PZ.pts.has(e.pointerId) || !PZ.el) return;
+    const prev = PZ.pts.get(e.pointerId); PZ.pts.set(e.pointerId, [e.clientX, e.clientY]);
+    const P = [...PZ.pts.values()];
+    if (P.length >= 2) {
+      const d = Math.hypot(P[0][0] - P[1][0], P[0][1] - P[1][1]), mx = (P[0][0] + P[1][0]) / 2, my = (P[0][1] + P[1][1]) / 2;
+      if (!PZ.start) { PZ.start = { d, s: PZ.s, x: PZ.x, y: PZ.y, mx, my }; PZ.pinched = true; return; }
+      const r = PZ.el.getBoundingClientRect(), cx = r.left + r.width / 2 - PZ.x, cy = r.top + r.height / 2 - PZ.y;   // untransformed centre
+      const s = Math.min(5, Math.max(1, PZ.start.s * d / PZ.start.d)), k = s / PZ.start.s;
+      // keep the point between the fingers under the fingers
+      PZ.x = mx - cx - (PZ.start.mx - cx - PZ.start.x) * k; PZ.y = my - cy - (PZ.start.my - cy - PZ.start.y) * k; PZ.s = s;
+      if (s <= 1.02) { PZ.x = PZ.y = 0; }
+      pzApply(); PZ.moved = true;
+    } else if (PZ.s > 1.02) {
+      PZ.x += e.clientX - prev[0]; PZ.y += e.clientY - prev[1]; pzApply();
+      if (Math.abs(e.clientX - prev[0]) + Math.abs(e.clientY - prev[1]) > 2) PZ.moved = true;
+    }
+  });
+  const pzUp = (e) => { PZ.pts.delete(e.pointerId); if (PZ.pts.size < 2) PZ.start = null; if (PZ.s <= 1.02 && !PZ.pts.size) { const el = PZ.el; pzReset(); PZ.el = el; } };
+  stg.addEventListener("pointerup", pzUp); stg.addEventListener("pointercancel", pzUp);
   $("#viewer").addEventListener("click", (e) => { if (e.target.id === "v-stage" || e.target.id === "viewer") closeViewer(); });
 
   /* ---------- Card auras: effects around special cards in the viewer, never on the scan itself ---------- */

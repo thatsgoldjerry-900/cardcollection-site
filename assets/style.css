@@ -895,3 +895,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .pill.pill-tcdb{background:#c6491a;border-color:#c6491a;color:#fff;font-weight:600}
 .pill.pill-tcdb:hover{background:#dd5a27;border-color:#dd5a27}
 .go-links a.go-tcdb{color:#f07a45}
+/* Pinch to zoom in the card viewer (phones): the page doesn't zoom, the card does */
+@media (pointer:coarse){.v-stage{touch-action:none}}
+.v-stage.pinched{overflow:visible}
+.v-stage.pinched img{transition:none;transform-origin:center center;z-index:3;position:relative}
+.v-stage.pinched ~ .v-aura,.v-stage.pinched .v-aura{opacity:0}
