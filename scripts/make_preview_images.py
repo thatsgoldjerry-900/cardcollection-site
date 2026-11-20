@@ -21,7 +21,11 @@ def picks(slug, cards):
     cards = [x for x in cards if not re.search(r"\(back\)|\bback\s*$|\bsold\b", x[2], re.I)]
     chosen = [x for p in PICKS.get(slug, []) for x in cards if x[2].startswith(p)][:1]
     auto = lambda x: bool(re.search(r"\bAU\b|autograph|signature|signed", x[2], re.I))
-    ranked = sorted(cards, key=lambda x: (rarity(x[2]), not auto(x), x[2]))
+    # Ian's choice: rare patch cards first (prime patches, laundry tags, logos, nameplates, letters), rarest first.
+    PATCH = re.compile(r"patch|prime|laundry|\btag\b|logo ?man|logo|nameplate|shield|button|letter|jumbo|tag relic", re.I)
+    patch = lambda x: bool(PATCH.search(x[2])) and not re.search(r"\bMANU\b|manufactured|printing plate|plate\b", x[2], re.I)
+    ok = [x for x in cards if not re.search(r"printing plate|\bplate\b|custom", x[2], re.I) or slug == "customs"]
+    ranked = sorted(ok, key=lambda x: (not patch(x), rarity(x[2]), not auto(x), x[2]))
     seen = set()
     for x in chosen + ranked:
         who = re.sub(r"^.*#\S+\s+", "", x[2]).split(" AU")[0][:20]
