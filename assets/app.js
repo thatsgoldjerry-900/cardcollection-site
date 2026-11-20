@@ -1766,6 +1766,10 @@
     if (!all.includes(c)) all = all.map((x) => (copyKey(x) === copyKey(c) ? c : x));   // opened the duplicate copy
     // Want List cards aren't part of a rainbow (they're shown as "Need it" placeholders on the rainbow page instead).
     all = all.filter((x) => withWants || !isWant(x));
+    // Two copies of the same version (e.g. Prime 17/25 and 18/25) show once: the opened card, else the first copy.
+    const ver = (x) => [isWant(x) ? "w" : "", (x.par || "").toLowerCase(), x.serial || 0, x.one ? 1 : 0].join("|");
+    const pick = new Map(); all.forEach((x) => { const v = ver(x); if (!pick.has(v) || x === c) pick.set(v, x); });
+    all = [...pick.values()];
     // 1/1 first, then lowest print run to highest, then unnumbered versions.
     return all.slice().sort((a, b) => rarity(a) - rarity(b) || a.name.localeCompare(b.name));
   }
