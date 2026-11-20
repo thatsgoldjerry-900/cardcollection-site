@@ -56,11 +56,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Tampa Bay Buccaneers: Ben Scott, Daniel Davie, Jermarcus Hardrick, Keven Lightner (PFA: 1988), Matt Herian, Nash Hutmacher, Steve Kriewald, Tracey Wistrom (PFA: 2002)
   - [ ] Tennessee Titans: Jon Clanton, Mike Erickson
   - [ ] Washington Commanders: Ardell Johnson (PFA: 1975), Elmer Dohrmann (PFA: 1938), Jason Schwab, Jerald Foster, Jerry Minnick (PFA: 1954)
-- [ ] **Next week (after the usage reset): the rest of the team logos on career timelines.** 63 teams have logos
-  (scripts/build_team_logos.py, run by the GitHub Action). 93 still don't, e.g. BC Lions, Birmingham Stallions, Canton
-  Bulldogs, Frankford Yellow Jackets: the Wikipedia summary it reads only shows freely licensed pictures. Plan: have the
-  script read each article's infobox logo instead, keep the football-only checks, and retry the names in data/team-logos.json
-  "tried". (Lions-style redesigns within one city still use the current logo.) Nothing for Ian to do but say go.
+- [x] **More team logos on career timelines** (done 2026-11-22): the script now reads each team article's infobox logo, so
+  98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
+  Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
+  ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
 - [ ] **Next week (after the usage reset): signature showcase on player pages (pilot).** Cut just the signature out of each
   player's autograph scan, on screen only (files untouched, like the binder's slab crop), and show it on his player page on a
   dark panel with a soft red glow. Plan: Claude hand-picks the signature area for ~10 players as a pilot; Ian looks and decides
