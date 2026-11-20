@@ -171,11 +171,14 @@
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
   const state = { filters: new Set(), sort: "new", decade: "", list: [], shown: 0, q: "", where: null };
 
+  const SET_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
+  const setOrder = (a, b) => SET_COLLATOR.compare(a.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""), b.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""));
   function sortList(list, how) {
     const by = {
       new: (a, b) => (b.added > a.added ? 1 : b.added < a.added ? -1 : a.i - b.i),
-      old: (a, b) => a.year - b.year || a.i - b.i,
-      recent: (a, b) => (b.year === 9999 ? 0 : b.year) - (a.year === 9999 ? 0 : a.year) || a.i - b.i,
+      // By year, then set name A–Z within the year (then card number, naturally: #2 before #10).
+      old: (a, b) => a.year - b.year || setOrder(a, b) || a.i - b.i,
+      recent: (a, b) => (b.year === 9999 ? 0 : b.year) - (a.year === 9999 ? 0 : a.year) || setOrder(a, b) || a.i - b.i,
       az: (a, b) => a.name.localeCompare(b.name),
       serial: (a, b) => rarity(a) - rarity(b) || a.i - b.i,
     }[how];
