@@ -2320,6 +2320,21 @@
       "t": 150,
       "grow": 2,
       "minArea": 0.0003
+    },
+    "trev-alberts": {
+      "id": "1MrOfsHthl7fu8lRid0APhzdXl_tS7rIV",
+      "src": "assets/signatures/trev-alberts.webp",
+      "box": [
+        0.01,
+        0.01,
+        0.98,
+        0.98
+      ],
+      "ar": 1.8241,
+      "ink": "blue",
+      "t": 100,
+      "grow": 1,
+      "minArea": 0.002
     }
   },
   "fanDay": {
