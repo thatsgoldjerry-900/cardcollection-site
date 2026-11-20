@@ -2167,6 +2167,19 @@
   const ready = (id, rk) => marked(id, rk).then((u) => u.keep ? u : Promise.all((u.keep = [u.plain, u.marked].map((s) => { const i = new Image(); i.src = s; return i; })).map((i) => i.decode().catch(() => {}))).then(() => (READY.set(id, u), u)));
   // Show a card in one step: the old card (and its aura, via `done`) stays until the new picture is decoded,
   // then picture and effects change together. The large clean/marked pair replaces the preview when it's ready.
+  // The viewer image is sized to fill its space from the start: the quick small image shows at the size the sharp one
+  // will have (it used to show at its own small size, then jump bigger when the sharp one arrived).
+  function fitImg(el, w, h) {
+    if (w && h) el.dataset.ar = w / h;
+    const ar = +el.dataset.ar, st = $("#v-stage"); if (!ar || !st) return;
+    if (st.classList.contains("zoom")) { el.style.width = el.style.height = ""; return; }
+    const cs = getComputedStyle(st), pair = st.classList.contains("pair");
+    let W = st.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), H = st.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (pair) W = (W - 24) / 2;
+    if (W <= 0 || H <= 0) return;
+    const k = Math.min(W / ar, H);
+    el.style.height = Math.floor(k) + "px"; el.style.width = Math.floor(k * ar) + "px";
+  }
   function loadInto(el, c, id, rk, alt, done) {
     el.dataset.id = id; el.alt = alt;
     let big = false;
@@ -2176,7 +2189,7 @@
     const t = new Image(); t.src = img(id, rk, 400);
     t.decode().catch(() => {}).then(() => {
       if (!live() || big) return;
-      el.classList.remove("wm"); el.style.removeProperty("--plain"); el.src = t.src;
+      el.classList.remove("wm"); el.style.removeProperty("--plain"); fitImg(el, t.naturalWidth, t.naturalHeight); el.src = t.src;
       if (done) done();
     });
     ready(id, rk).then((u) => { if (live()) requestAnimationFrame(() => { if (live()) showBig(u); }); })
@@ -2220,6 +2233,7 @@
     if (pair) loadInto(im2, c, c.backId, c.backRk, c.name + " (back)");
     stage.classList.toggle("pair", pair);
     stage.classList.toggle("zoom", V.zoom && wide.matches);
+    [im, im2].forEach((e) => e.dataset.id && e.getAttribute("src") && fitImg(e));
     $("#v-title").innerHTML = `${esc(c.title)}<small>${esc(c.sub || "")}${c.par ? " · " + esc(c.par) : ""}</small>`;
     $("#v-flip").hidden = !c.backId || pair; $("#v-flip").textContent = V.back ? "Show front" : "Show back";
     delete $("#v-save").dataset.tip;
@@ -2432,8 +2446,9 @@
     requestAnimationFrame(placeAura);
   }
   // Keep the aura on the front card: it moves when either image loads or changes size (e.g. the back arriving).
-  ["#v-img", "#v-img2"].forEach((q) => $(q).addEventListener("load", () => requestAnimationFrame(placeAura)));
-  if (window.ResizeObserver) { const ro = new ResizeObserver(() => { if (!$("#viewer").hidden) placeAura(); }); ro.observe($("#v-img")); ro.observe($("#v-img2")); ro.observe($("#v-stage")); }
+  ["#v-img", "#v-img2"].forEach((q) => $(q).addEventListener("load", (e) => { fitImg(e.target, e.target.naturalWidth, e.target.naturalHeight); requestAnimationFrame(placeAura); }));
+  if (window.ResizeObserver) { const ro = new ResizeObserver(() => { if (!$("#viewer").hidden) placeAura(); }); ro.observe($("#v-img")); ro.observe($("#v-img2")); ro.observe($("#v-stage"));
+    new ResizeObserver(() => { if (!$("#viewer").hidden) { fitImg($("#v-img")); if (!$("#v-img2").hidden) fitImg($("#v-img2")); } }).observe($("#v-stage")); }
   window.addEventListener("resize", () => { if (!$("#viewer").hidden) placeAura(); });
 
   /* ---------- Random card: the dice in the header ---------- */
