@@ -14,7 +14,7 @@
   /* ---------- File-name parsing ---------- */
   const RX = {
     main: /^(\d{4}(?:-\d{2})?)\s+(.*?)\s+#(\S+)\s+(.*)$/,
-    // Serial-numbered (stamped) cards. A print run ("Print Run of 99", PR99) is not a serial number: see printRun.
+    // Serial-numbered cards. A print run ("Print Run of 99", PR99) is read separately (printRun) and counts the same.
     serial: /#'?d\s*(?:to\s*)?(\d+)\s*(?:of\s*(\d+))?|\b(\d+)\s+of\s+(\d+)\b/i,
     grade: /\b(PSA|BGS|SGC|CGC|BVG|HGA)\b(?:\s+(?:DNA|GEM MT|GEM MINT|MINT|NM-MT|AUTH(?:ENTIC)?))*(?:\s+(\d+(?:\.\d)?))?/i,
     auto: /\b(auto(?:graph)?s?|autographed|signed|signatures?|sigs?|ink)\b/i,
@@ -87,6 +87,8 @@
       if (codes.sn) { out.serial = codes.of || codes.sn; out.one = out.serial === 1; }
       if (codes.pr) out.printRun = codes.pr;
     }
+    // A print run (PR25, "Print Run of 99") counts like a serial number when the card has none.
+    if (!out.serial && out.printRun) { out.serial = out.printRun; out.one = out.printRun === 1; }
     if (out.serial) out.tags.add("numbered");
     if (out.one) out.tags.add("one");
     if (out.grade) out.tags.add("graded");
@@ -515,7 +517,7 @@
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
       base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
-      blurb = "Every serial-numbered or limited print run card I've scanned, rarest first: one-of-ones, then /2, /3 and up. PR marks a known print run without a serial number.";
+      blurb = "Every numbered card I've scanned, rarest first: one-of-ones, then /2, /3 and up.";
     } else {
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
