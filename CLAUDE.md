@@ -21,7 +21,7 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   only saved images get the IANBADEER.COM watermark.
   Signature showcase (player pages, config `signatures`): the signature's ink is lifted out on screen and shown as a red neon
   sign on black, Ian's request (display only, files untouched).
-  Only complete, clean signatures: nothing cut off, no broken loops or streaky ink, no word inscriptions (jersey # is fine).
+  Only complete, clean signatures: nothing cut off, no broken loops or streaky ink, no word inscriptions (a jersey # or nickname is fine).
   In binder view only, graded cards are cropped on screen to show the card without its slab (Ian's request; files untouched),
   and anything that doesn't fit a 9-pocket page (decas, booklets, 3x5/4x6/5x7/8x10 and other written sizes, oversized cards,
   box loaders/toppers, postcards, posters, Fatheads, photos, magazines, programs) is left out of the binder.

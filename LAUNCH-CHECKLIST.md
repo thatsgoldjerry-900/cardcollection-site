@@ -60,7 +60,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Signature showcase: 5 approved (Frazier, Ahman Green, Lavonte David, Will Shields, Ameer Abdullah).** Next: more players,
+- [ ] **Signature showcase: 24 approved** (pilot 5 + Tier 1 batch 1 of 19, 2026-11-22). Next: Tier 1 batch 2 (27 more candidates found
+  automatically: blue ink on a plain light label), then more players,
   shown to Ian on a sheet before going live (rules in CLAUDE.md). These pages show just the signature from one
   autograph scan as a glowing red neon sign on black, under the main picture (config/site.json "signatures"; the ink is
   lifted out on screen, scans untouched; per player: crop box, ink colour blue/dark/both, threshold).

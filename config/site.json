@@ -1220,7 +1220,7 @@
     ]
   },
   "signatures": {
-    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number is fine.",
+    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number or a nickname is fine.",
     "tommie-frazier": {
       "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
       "box": [
@@ -1270,6 +1270,196 @@
         0.19
       ],
       "ar": 2.3438
+    },
+    "tom-rathman": {
+      "id": "1LezOJy1ct8rXW0NN7jBiHDL7bd9Nw9qo",
+      "box": [
+        0.0352,
+        0.7879,
+        0.9117,
+        0.155
+      ],
+      "ar": 0.7236
+    },
+    "keith-neubert": {
+      "id": "12CnDDRAtQK1fJk2kh8K4GIGuXqBuLGmC",
+      "box": [
+        0.2289,
+        0.1339,
+        0.6922,
+        0.8622
+      ],
+      "ar": 1.6667
+    },
+    "mike-rozier": {
+      "id": "1KsDQSSDC2Fc0LD7hnfh4HFaZ_vG51CdD",
+      "box": [
+        0.1955,
+        0.3363,
+        0.495,
+        0.3077
+      ],
+      "ar": 1.4085
+    },
+    "reggie-cooper": {
+      "id": "15rMXwtF4R0uHy65f_VGXZkQa6h6LXnzq",
+      "box": [
+        0.1218,
+        0.1877,
+        0.6384,
+        0.4945
+      ],
+      "ar": 1.6667
+    },
+    "jamel-williams": {
+      "id": "1pYWd2l614LRTdIvQ5Y2AP6BAgI7EgV7k",
+      "box": [
+        0.1334,
+        0.2038,
+        0.8333,
+        0.5269
+      ],
+      "ar": 1.6393
+    },
+    "stanley-morgan": {
+      "id": "1VhNLmBVV3eyz8iN9LpFct7wHpoOK9_-g",
+      "box": [
+        0.1318,
+        0.7002,
+        0.7504,
+        0.1877
+      ],
+      "ar": 0.7102
+    },
+    "tim-jackson": {
+      "id": "1w9xIt3WMw7-oNnDeSKguBNcmZlZBBM1D",
+      "box": [
+        0.0856,
+        0.2945,
+        0.7907,
+        0.3174
+      ],
+      "ar": 1.6722
+    },
+    "i-m-hipp": {
+      "id": "1tHqLSutTmxxcug5nQichWZxAQ3bA3yBj",
+      "box": [
+        0.3914,
+        0.3909,
+        0.4973,
+        0.2738
+      ],
+      "ar": 1.3928
+    },
+    "maliek-collins": {
+      "id": "1_S1znUp4qmme2HaxubiEqn6ovB8G6RTw",
+      "box": [
+        0.1492,
+        0.7798,
+        0.5757,
+        0.1422
+      ],
+      "ar": 0.7133
+    },
+    "cam-jurgens": {
+      "id": "15aatX__7wI4bZor40rm8ub9kPIwQAr5K",
+      "box": [
+        0.1973,
+        0.7979,
+        0.5354,
+        0.1413
+      ],
+      "ar": 0.7143
+    },
+    "samori-toure": {
+      "id": "1NXmxbBzd5CBbBnW5vORrsiv4Xmchvd7q",
+      "box": [
+        0.2012,
+        0.8435,
+        0.5757,
+        0.0946
+      ],
+      "ar": 0.7092
+    },
+    "roy-helu": {
+      "id": "11f-SHD502UfzNggI6iyrvgQv6mttJNY5",
+      "box": [
+        0.5052,
+        0.6971,
+        0.3517,
+        0.2171
+      ],
+      "ar": 1.4085
+    },
+    "brandon-jackson": {
+      "id": "15wZmn_gHwbMbqoObUyZvdnuG13IkP9Ao",
+      "box": [
+        0.3749,
+        0.4257,
+        0.4682,
+        0.2019
+      ],
+      "ar": 1.4006
+    },
+    "quincy-enunwa": {
+      "id": "1ClSo1o0H5mbUBX-15mx-ONfPORHnTYKn",
+      "box": [
+        0.4234,
+        0.5791,
+        0.5331,
+        0.2728
+      ],
+      "ar": 1.4085
+    },
+    "randy-gregory": {
+      "id": "1yKvXJSmeUjcHEvDNxkMetMGX-xzc5zto",
+      "box": [
+        0.1639,
+        0.7584,
+        0.6362,
+        0.1723
+      ],
+      "ar": 0.7163
+    },
+    "neil-smith": {
+      "id": "12mXwIlUg5erVR56dXErQw7xI5_LF3qdt",
+      "box": [
+        0.1375,
+        0.6072,
+        0.719,
+        0.1563
+      ],
+      "ar": 0.7184
+    },
+    "irving-fryar": {
+      "id": "1xbe2jKY9MRYF0rIhnzigt9uVQzrqf96_",
+      "box": [
+        0.1302,
+        0.6939,
+        0.6675,
+        0.1852
+      ],
+      "ar": 0.7143
+    },
+    "alfonzo-dennard": {
+      "id": "1SPuwc-IxRcn06nJLM0rbL8DYxrxALPkP",
+      "box": [
+        0.3619,
+        0.7668,
+        0.3382,
+        0.0793
+      ],
+      "ar": 0.7143
+    },
+    "jeff-lee": {
+      "id": "1PQ-IW6Igr1IKxZGHbbZ4plEp6nOinocc",
+      "box": [
+        0.1251,
+        0.2668,
+        0.6518,
+        0.5065
+      ],
+      "ar": 1.6667
     }
   }
 }
