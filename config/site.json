@@ -2245,6 +2245,21 @@
       "ink": "gray",
       "t": 110,
       "grow": 2
+    },
+    "junior-miller": {
+      "id": "1wSPn0h5QgKwDkl_q1stfLTxOCkmOVUNQ",
+      "src": "assets/signatures/junior-miller.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 2.635,
+      "ink": "dark",
+      "t": 45,
+      "grow": 2,
+      "minArea": 0.0001
     }
   },
   "fanDay": {
