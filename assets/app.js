@@ -1219,7 +1219,7 @@
       $("#app").innerHTML = `<div class="wrap hub c-husker">
         <div class="c-head"><div class="kick">Nebraska Cornhuskers</div><h1>Husker Bios</h1>
           <p>A page for every Nebraska Cornhusker who made the pros, plus a few more I've made custom cards of. Each one tells his story: his Nebraska and pro careers, stats, Hall of Fame honors, a career timeline, my own write-ups from custom cards, and the cards and autographs I have of him.</p>
-          <div class="hub-stats"><span><b>${fmt(all.length)}</b> bios</span><span><b>${fmt(have)}</b> with an autograph in my collection</span><span><b>${fmt(nsig)}</b> neon signatures</span></div></div>
+          <div class="hub-stats"><span><b>${fmt(all.length)}</b> bios</span><span><b>${fmt(nsig)}</b> neon signatures</span></div></div>
         <div class="tools">
           <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["nfl", "NFL"], ["pro", "Other pro football"], ["mlb", "MLB"], ["nba", "NBA"], ["more", "More Huskers"], ["sig", "Neon signatures"]].filter(([k]) => k === "all" || k === "sig" || all.some((p) => p.group === k)).map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
           <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}">
