@@ -912,3 +912,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .sig-neon{display:block;width:100%;opacity:0;transition:opacity .6s;filter:drop-shadow(0 0 2px #ff5a3c) drop-shadow(0 0 7px #ff2a12) drop-shadow(0 0 18px rgba(255,20,0,.75)) drop-shadow(0 0 36px rgba(230,0,0,.45))}
 .sig-neon.on{opacity:1}
 .sig-panel:hover .sig-neon,.sig-panel:focus-visible .sig-neon{filter:drop-shadow(0 0 3px #ff7a5c) drop-shadow(0 0 9px #ff3a1a) drop-shadow(0 0 24px rgba(255,30,0,.85)) drop-shadow(0 0 48px rgba(240,0,0,.55))}
+
+/* All letterman sets (#/letters) */
+.lt-group{margin:26px 0}.lt-group>h2{font-size:22px;margin:0 0 6px}.lt-group>h2 small{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
+.lt-set h3{margin:0 0 2px;font-size:18px}.lt-set h3 a{color:var(--fg);text-decoration:none}.lt-set h3 a:hover{color:var(--acc)}.lt-need{color:#ff8a8a}

@@ -482,6 +482,7 @@
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
+        <a class="stat link" href="#/letters"><b>🔤</b><span>Letterman Sets →</span></a>
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
       ${startHere()}
@@ -1949,6 +1950,35 @@
     (LETTERS ? [...LETTERS.values()] : []).forEach((cards) => { const L = lettersOf(cards[0]); if (L && L.word === word) out.push({ L, c: cards[0] }); });
     return out.sort((p, q) => (p.c.year || 0) - (q.c.year || 0) || p.L.who.localeCompare(q.L.who));
   }
+  // Every letterman set on one page (#/letters), grouped by the word it spells, with the letters I still need.
+  function allLettersPage() {
+    const first = CARDS.find((x) => isLetterSet(x) && letterOf(x)); if (!first) return notFound();
+    lettersOf(first);   // builds LETTERS
+    const sets = [...LETTERS.values()].map((cards) => ({ L: lettersOf(cards[0]), c: cards[0] })).filter((x) => x.L);
+    setNav(SECTIONS[first.si].slug); setTitle("All letterman sets");
+    const byWord = new Map();
+    sets.forEach((x) => { const w = x.L.word ? (x.L.shown || x.L.word) : ""; byWord.set(w, [...(byWord.get(w) || []), x]); });
+    // Words with the most sets first; sets whose full word isn't known last.
+    const words = [...byWord.keys()].sort((p, q) => (!p - !q) || byWord.get(q).length - byWord.get(p).length || p.localeCompare(q));
+    const done = sets.filter((x) => x.L.word && x.L.count === x.L.slots.length).length;
+    const need = sets.reduce((n, x) => n + (x.L.word ? x.L.slots.length - x.L.count : 0), 0);
+    const shown = [], binder = [];
+    const body = words.map((w) => {
+      const list = byWord.get(w).sort((p, q) => (p.c.year || 0) - (q.c.year || 0) || p.L.who.localeCompare(q.L.who));
+      return `<section class="lt-group"><h2>${w ? esc(w) : "Other sets"} <small>${fmt(list.length)} set${list.length === 1 ? "" : "s"}</small></h2>${list.map(({ L, c }) => {
+        const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
+        const miss = L.word ? L.slots.filter((x) => !x.cards.length).map((x) => x.letter) : [];
+        binder.push(...L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }])));
+        return `<section class="lt-set"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a></h3>
+          <p>${esc(title)} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
+          <div class="lt-word" style="--n:${L.slots.length}">${L.slots.map((x) => letterSlot(x, shown)).join("")}</div></section>`; }).join("")}</section>`;
+    }).join("");
+    $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
+      <div class="c-head"><div class="kick">Letterman sets</div><h1>All letterman sets</h1>
+      <p>${fmt(sets.length)} sets, ${fmt(done)} complete, ${fmt(need)} letter${need === 1 ? "" : "s"} still needed. Grouped by the word each set spells; tap a name for that set's page.</p></div>
+      <div class="b-row">${binderBtn()}</div><div class="lt-words">${body}</div><p class="lt-tip">Tap a card for its details. "Need" boxes are letters I'm still looking for.</p></div></div>`;
+    state.list = shown; state.binderItems = binder;
+  }
   function wordPage(word) {
     word = (word || "").toUpperCase().replace(/[^A-Z]/g, "");
     const sets = letterSets(word); if (!sets.length) return notFound();
@@ -1964,7 +1994,7 @@
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman sets</div><h1>All my ${esc(word)} sets</h1>
       <p>${fmt(sets.length)} sets, ${fmt(have)} of ${fmt(sets.length * word.length)} letters scanned${done ? `, ${fmt(done)} complete` : ""}. Tap a name for that set's page.</p></div>
-      <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details.</p></div></div>`;
+      <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details. <a href="#/letters">All letterman sets →</a></p></div></div>`;
     state.list = shown;
   }
   function lettersPage(id) {
@@ -2103,7 +2133,7 @@
     else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
-    else if (a === "letters") lettersPage(b);
+    else if (a === "letters") (b ? lettersPage(b) : allLettersPage());
     else if (a === "word") wordPage(b);
     else if (a === "random") { home(); history.replaceState(null, "", "#/"); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
