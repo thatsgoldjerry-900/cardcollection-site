@@ -1131,5 +1131,7 @@
       "2021 Damian Jackson Red Ink Autograph Custom",
       "2021 Damian Jackson Red Ink Autograph Custom 2nd"
     ]
-  }
+  },
+  "freshUpload": true,
+  "_freshUploadHelp": "While true, a card the robot hasn't seen before is dated by its file (not today), so a big re-upload doesn't all show as NEW. Turn off after the football re-upload."
 }
