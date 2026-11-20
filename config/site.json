@@ -1220,7 +1220,7 @@
     ]
   },
   "signatures": {
-    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number or a nickname is fine.",
+    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; src = a signature image Ian cleaned up himself (assets/signatures/), used instead of the scan; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number or a nickname is fine.",
     "tommie-frazier": {
       "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
       "box": [
@@ -2160,6 +2160,18 @@
       "ar": 1.6447,
       "ink": "black",
       "t": 105
+    },
+    "lloyd-voss": {
+      "id": "1AJdZ9YfoK-V9EZhpvxJZOcKqR_TjKRPE",
+      "src": "assets/signatures/lloyd-voss.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 2.5056,
+      "t": 18
     }
   },
   "fanDay": {

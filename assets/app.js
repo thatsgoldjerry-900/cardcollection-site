@@ -1319,7 +1319,7 @@
         o[4 * k] = 255; o[4 * k + 1] = Math.round(40 + 190 * cc); o[4 * k + 2] = Math.round(30 + 180 * cc); o[4 * k + 3] = Math.round(255 * a); }
       cv.width = W; cv.height = H; cv.getContext("2d").putImageData(out, 0, 0); cv.classList.add("on");
     };
-    im.src = img(c.id, c.rk, g.w || 1200);   // Fan Day sheets: w 2000, since each box is a small part of the sheet
+    im.src = g.src || img(c.id, c.rk, g.w || 1200);   // src: a signature image Ian cleaned up himself   // Fan Day sheets: w 2000, since each box is a small part of the sheet
   }
   function player(slug) {
     setNav("nfl-huskers");
