@@ -889,3 +889,4 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .hub-ph.land{width:auto;height:calc(72px * 7 / 5)}
 .pm-ph.land{width:auto;height:calc(40px * 7 / 5)}
 .hub-ph.land img,.pm-ph.land img{object-fit:contain}
+.bd.pr{background:#3a4352;color:#d7dde6}

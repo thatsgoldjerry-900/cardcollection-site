@@ -14,7 +14,8 @@
   /* ---------- File-name parsing ---------- */
   const RX = {
     main: /^(\d{4}(?:-\d{2})?)\s+(.*?)\s+#(\S+)\s+(.*)$/,
-    serial: /#'?d\s*(?:to\s*)?(\d+)\s*(?:of\s*(\d+))?|print run of\s*(\d+)|\b(\d+)\s+of\s+(\d+)\b/i,
+    // Serial-numbered (stamped) cards. A print run ("Print Run of 99", PR99) is not a serial number: see printRun.
+    serial: /#'?d\s*(?:to\s*)?(\d+)\s*(?:of\s*(\d+))?|\b(\d+)\s+of\s+(\d+)\b/i,
     grade: /\b(PSA|BGS|SGC|CGC|BVG|HGA)\b(?:\s+(?:DNA|GEM MT|GEM MINT|MINT|NM-MT|AUTH(?:ENTIC)?))*(?:\s+(\d+(?:\.\d)?))?/i,
     auto: /\b(auto(?:graph)?s?|autographed|signed|signatures?|sigs?|ink)\b/i,
     relic: /\b(fabrics?|ball hoggs|souvenirs|leather and laces|piece of action|threads|swatch(?:es)?|towels?|laces|socks?|cleats?|relics?|patch(?:es)?|jerseys?|bat|materials?|buttons?|nameplates?|dirt|game[- ]used|glove|logoman|laundry|tag|letter|memorabilia|rpm|footballs)\b/i,
@@ -42,12 +43,13 @@
     return c;
   }
   function parse(name) {
-    const out = { title: name, sub: "", par: "", year: 9999, serial: 0, one: false, grade: "", tags: new Set() };
+    const out = { title: name, sub: "", par: "", year: 9999, serial: 0, printRun: 0, one: false, grade: "", tags: new Set() };
     const codes = readCodes(name);
+    const pr = name.match(/print run of\s*(\d+)/i); if (pr) out.printRun = +pr[1];
     const y = name.match(/^(\d{4})/); if (y) out.year = +y[1];
     const s = name.match(RX.serial);
     if (s) {
-      const a = +(s[1] || s[3] || s[4] || 0), b = +(s[2] || s[5] || 0);
+      const a = +(s[1] || s[3] || 0), b = +(s[2] || s[4] || 0);
       out.serial = b || a; out.one = (b ? b === 1 : a === 1) || /\b1\s*of\s*1\b|1\/1/i.test(name);
     }
     const g = name.match(RX.grade); if (g) out.grade = (g[1].toUpperCase() + (g[2] ? " " + g[2] : "")).trim();
@@ -78,12 +80,12 @@
     if (codes && codes.full) {   // Ian's codes override the guesses above
       out.tags.delete("auto"); out.tags.delete("relic");
       if (codes.au) out.tags.add("auto");
-      if (codes.mem || codes.manu) out.tags.add("relic");
+      if (codes.mem) out.tags.add("relic");   // MANU (manufactured patch) is not a relic
       if (codes.manu) out.tags.add("manu");
       if (codes.rc) out.tags.add("rc");
       if (codes.sp) out.tags.add("sp");
       if (codes.sn) { out.serial = codes.of || codes.sn; out.one = out.serial === 1; }
-      else if (codes.pr && !out.serial) { out.serial = codes.pr; out.one = codes.pr === 1; }
+      if (codes.pr) out.printRun = codes.pr;
     }
     if (out.serial) out.tags.add("numbered");
     if (out.one) out.tags.add("one");
@@ -95,7 +97,7 @@
       const dash = set.indexOf(" - ");
       if (dash > 0) { par = set.slice(dash + 3); set = set.slice(0, dash); }
       if (codes && codes.full) rest = rest.replace(codes.text, " ");
-      let player = rest.replace(RX.serial, "").replace(RX.grade, "").replace(/\((?:[^)]*)\)/g, "").replace(/\s+(Back|2nd|3rd|\d)$/i, "").replace(/\s{2,}/g, " ").trim();
+      let player = rest.replace(RX.serial, "").replace(/print run of\s*\d+/i, "").replace(RX.grade, "").replace(/\((?:[^)]*)\)/g, "").replace(/\s+(Back|2nd|3rd|\d)$/i, "").replace(/\s{2,}/g, " ").trim();
       out.title = player || rest; out.sub = `${yr} ${set} #${num}`; out.par = par;
     } else if (codes && codes.full) out.title = name.replace(codes.text, " ").replace(/\s*,\s*(?=\s|$)/g, " ").replace(/\s{2,}/g, " ").trim();
     return out;
@@ -165,7 +167,7 @@
       old: (a, b) => a.year - b.year || a.i - b.i,
       recent: (a, b) => (b.year === 9999 ? 0 : b.year) - (a.year === 9999 ? 0 : a.year) || a.i - b.i,
       az: (a, b) => a.name.localeCompare(b.name),
-      serial: (a, b) => (a.serial || 1e9) - (b.serial || 1e9) || a.i - b.i,
+      serial: (a, b) => rarity(a) - rarity(b) || a.i - b.i,
     }[how];
     return list.slice().sort(by);
   }
@@ -174,10 +176,13 @@
     const words = q.split(/\s+/).filter((w) => w.length > 1).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     return words.length ? t.replace(new RegExp(`(${words.map(esc).join("|")})`, "gi"), "<mark>$1</mark>") : t;
   }
+  // How rare a card is, for sorting: its serial number, else its print run (unnumbered cards last).
+  const rarity = (c) => c.serial || c.printRun || 1e9;
   function badges(c) {
     let b = "";
     if (c.added >= NEW_CUTOFF) b += `<span class="bd new">NEW</span>`;
     if (c.one) b += `<span class="bd one">1/1</span>`; else if (c.serial) b += `<span class="bd">/${c.serial}</span>`;
+    else if (c.printRun) b += `<span class="bd pr" title="Print run of ${c.printRun} (not serial-numbered)">PR ${c.printRun}</span>`;
     if (c.tags.has("auto")) b += `<span class="bd auto">AUTO</span>`;
     if (c.grade) b += `<span class="bd">${esc(c.grade)}</span>`;
     if (c.backId) b += `<span class="bd back" title="Front and back">⇆</span>`;
@@ -509,8 +514,8 @@
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
-      base = CARDS.filter((c) => c.one || c.serial); title = "Rarest Cards"; kick = "Whole collection";
-      blurb = "Every numbered card I've scanned, rarest first: one-of-ones, then /2, /3 and up.";
+      base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
+      blurb = "Every serial-numbered or limited print run card I've scanned, rarest first: one-of-ones, then /2, /3 and up. PR marks a known print run without a serial number.";
     } else {
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
@@ -1719,7 +1724,7 @@
     // Want List cards aren't part of a rainbow (they're shown as "Need it" placeholders on the rainbow page instead).
     all = all.filter((x) => withWants || !isWant(x));
     // 1/1 first, then lowest print run to highest, then unnumbered versions.
-    return all.slice().sort((a, b) => (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
+    return all.slice().sort((a, b) => rarity(a) - rarity(b) || a.name.localeCompare(b.name));
   }
   /* Set rainbows: one set or insert across players (e.g. 2008 TK Legacy Signature Series). Cards with a letter prefix
      in their number (#C1, #QB4) group by year, brand and prefix, so differently written set names still match;
@@ -1876,7 +1881,7 @@
     // Want List versions of this rainbow I don't have yet: "Need it" placeholders in their rarity spot.
     const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
     const needs = rainbowOf(c, true).filter((x) => isWant(x) && !all.some((y) => haveKey(y) === haveKey(x)));
-    const both = [...all, ...needs].sort((a, b) => (b.one - a.one) || (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name));
+    const both = [...all, ...needs].sort((a, b) => (b.one - a.one) || rarity(a) - rarity(b) || a.name.localeCompare(b.name));
     const needHTML = (x) => `<div class="cd need-cd" data-need="${x.i}" aria-label="Need: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>Need it</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
       <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}</div></div>`;
     // The rainbow's name: the set, plus its insert name with the colors taken off ("Five Star - Golden Graphs").
