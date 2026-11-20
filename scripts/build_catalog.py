@@ -55,7 +55,7 @@ BACK = re.compile(r"\s*(\((?:back|back single|inside back)\)|\bback)\s*$", re.I)
 # "Back" before a trailing note also marks a back: "… Custom Back (Gifted to Austin Allen)" pairs with
 # "… Custom (Gifted to Austin Allen)".
 BACK_NOTE = re.compile(r"\s+back(?=\s*\([^()]*\)\s*$)", re.I)
-CODE_RE = re.compile(r"(?<![A-Za-z])(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+)(?![A-Za-z])")
+CODE_RE = re.compile(r"(?<![A-Za-z])(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+|1 of 1|1/1)(?![A-Za-z])")
 def loose_key(name):
     """A name without tag codes, letter codes ("4N", "3 H"), copy marks, inscription notes and punctuation."""
     h = name.find("#"); head, tail = (name[:h], name[h:]) if h >= 0 else ("", name)

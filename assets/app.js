@@ -27,14 +27,15 @@
      When a name has them they're the authority (more accurate than guessing from words like "Signatures"),
      and they're left out of the card's caption. They're read only after the card number, so brands like
      "SP Authentic" never count. */
-  const CODE = /^(?:AU|MEM|MANU|RC|SP|SSP|SN\d+(?:\s+of\s+\d+)?|PR\d+)$/;
-  const CODE_RUN = /(?:^|\s)((?:(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+)(?:\s*,\s*|\s+(?=(?:AU|MEM|MANU|RC|SSP|SP|SN\d|PR\d)\b)))*(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+))(?=\s|$|\))/;
+  const CODE = /^(?:AU|MEM|MANU|RC|SP|SSP|SN\d+(?:\s+of\s+\d+)?|PR\d+|1 of 1|1\/1)$/;
+  const CODE_RUN = /(?:^|\s)((?:(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+|1 of 1|1\/1)(?:\s*,\s*|\s+(?=(?:AU|MEM|MANU|RC|SSP|SP)\b|SN\d|PR\d|1 of 1|1\/1)))*(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+|1 of 1|1\/1))(?=\s|$|\(|\)|,)/;
   function readCodes(name) {
     const h = name.indexOf("#"), tail = h >= 0 ? name.slice(h) : name.replace(/^.*?\b(?:custom|autograph|signed)\b/i, "");
     const m = tail.match(CODE_RUN); if (!m) return null;
-    const codes = m[1].split(/\s*,\s*|\s+(?=[A-Z])/).map((x) => x.trim()).filter((x) => CODE.test(x)); if (!codes.length) return null;
+    const codes = m[1].split(/\s*,\s*|\s+(?=[A-Z]|1 of 1|1\/1)/).map((x) => x.trim()).filter((x) => CODE.test(x)); if (!codes.length) return null;
     const c = { text: m[1], au: codes.includes("AU"), mem: codes.includes("MEM"), manu: codes.includes("MANU"), rc: codes.includes("RC"),
       sp: codes.some((x) => x === "SP" || x === "SSP"), sn: 0, of: 0, pr: 0 };
+    if (codes.includes("1 of 1") || codes.includes("1/1")) c.sn = 1;
     codes.forEach((x) => { let k = x.match(/^SN(\d+)(?:\s+of\s+(\d+))?$/); if (k) { c.sn = +k[1]; c.of = +(k[2] || 0); } k = x.match(/^PR(\d+)$/); if (k) c.pr = +k[1]; });
     // Ian's new tag list has at least one of AU/MEM/MANU/SN/PR. A lone "SP" or "RC" is the older naming (e.g. "Alex Gordon SP"),
     // so it only adds those tags and changes nothing else.
