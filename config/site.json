@@ -2365,6 +2365,21 @@
       "t": 120,
       "grow": 0,
       "minArea": 0.0008
+    },
+    "george-andrews": {
+      "id": "1mHX44lRzUcpSfPhusSrQ3AMtoGn99d2N",
+      "src": "assets/signatures/george-andrews.webp",
+      "box": [
+        0.03,
+        0.1,
+        0.88,
+        0.86
+      ],
+      "ar": 1.7307,
+      "ink": "black",
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0005
     }
   },
   "fanDay": {
