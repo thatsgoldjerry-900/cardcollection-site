@@ -122,7 +122,7 @@
     // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
     json.cards = json.cards.filter((c) => !/\bsold\b|\bgifted to\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
     CARDS = json.cards.map((c, i) => {
-      const [id, rk, name, si, gi, added, backId, backRk, team = ""] = c;
+      const [id, rk, name, si, gi, added, backId, backRk, team = "", fromBase = 0] = c;
       const p = parse(name);
       if (backId) p.tags.add("back");
       // Customs page filters: which kind of custom it is, from the collection it lives in (or "non-sport" in the name).
@@ -137,7 +137,7 @@
         if ((fix.add || []).includes(name)) p.tags.add(tag);
         if ((fix.remove || []).includes(name)) p.tags.delete(tag);
       }
-      return { i, id, rk, name, si, gi, added, backId, backRk, team, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
+      return { i, id, rk, name, si, gi, added, backId, backRk, team, fb: !!fromBase, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
     });
     // Photos of athletes with my custom cards. The file name is the caption; the part before the first
     // " - " or sentence break is the short label on the strip ("Jr." and similar don't count as a break).
@@ -1750,7 +1750,7 @@
         <section class="st-box"><h2>Most scans of one player <a class="st-more" href="#/stats/players">All ${fmt(players.size)} →</a></h2><ul class="st-bars">${top.map(([n, k]) => bar(n, k, pmax, "#/search/" + encodeURIComponent("=" + n))).join("")}</ul></section>
       </div>
       <section class="st-box best"><h2>🔥 Best of the Best</h2><p class="best-sub">1/1s, bat knobs, laundry tags, nameplates, buttons, SSPs and the best patches, rotating through.</p><div class="grid small best-grid" id="best"></div></section>
-      <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(l[0].id)}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions scanned</em></a></li>`).join("")}</ol></section>
+      <section class="st-box"><h2>Biggest rainbows</h2><ol class="st-rb">${rainbows.map((l) => `<li><a href="#/rainbow/${encodeURIComponent(cid(l[0]))}"><b>${esc(l[0].title)}</b><span>${esc(l[0].sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())}</span><em>${l.length} versions scanned</em></a></li>`).join("")}</ol></section>
     </div>`;
     bestShow(cards);
   }
@@ -1762,6 +1762,10 @@
   }
   // A back scan shown as its own card (its front isn't uploaded, or it's a "(back)"/"(inside)" scan): never a player's
   // main picture or a rainbow version. Names end "(back)", "Back" or "Back (note)", like the robot's pairing.
+  // A card's address on the site. A back-only variation (Allen & Ginter "A and G Back", Topps 206 "Piedmont") shows its
+  // base card's front scan, so its own back scan's ID tells it apart.
+  function cid(x) { return x.fb ? x.backId : x.id; }
+  function byCid(id) { return CARDS.find((x) => cid(x) === id); }
   function isBackScan(x) { return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
   const isWant = (x) => !!(x && SECTIONS[x.si] && SECTIONS[x.si].kind === "want");
   function rainbowOf(c, withWants = false) {
@@ -1810,7 +1814,7 @@
     return all.slice().sort((a, b) => { const [p, n] = num(a), [q, m] = num(b); return p.localeCompare(q) || n - m || (a.serial || 1e9) - (b.serial || 1e9) || a.name.localeCompare(b.name); });
   }
   function setPage(id) {
-    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const c = byCid(id); if (!c) return notFound();
     const all = setOf(c); if (!all.length) return notFound();
     const sec = SECTIONS[c.si], players = new Set(all.map((x) => norm(x.title))).size;
     const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par.replace(PARALLEL_WORDS, "")}` : "");
@@ -1888,7 +1892,7 @@
     const shown = [], have = sets.reduce((n, x) => n + x.L.count, 0), done = sets.filter((x) => x.L.count === x.L.slots.length).length;
     const rows = sets.map(({ L, c }) => {
       const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
-      return `<section class="lt-set"><h2><a href="#/letters/${encodeURIComponent(c.id)}">${esc(L.who)}</a></h2>
+      return `<section class="lt-set"><h2><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a></h2>
         <p>${esc(title)} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.count === L.slots.length ? " · complete ✓" : ""}</p>
         <div class="lt-word" style="--n:${word.length}">${L.slots.map((x) => letterSlot(x, shown)).join("")}</div></section>`;
     }).join("");
@@ -1900,7 +1904,7 @@
     state.list = shown;
   }
   function lettersPage(id) {
-    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const c = byCid(id); if (!c) return notFound();
     const L = lettersOf(c); if (!L) return notFound();
     const sec = SECTIONS[c.si], title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
     setNav(sec.slug); setTitle(`${c.title} letters`);
@@ -1935,7 +1939,7 @@
     [/\bwhite\b/i, "#eef1f5"], [/\bsilver\b|\bchrome\b|refractor|prizm|holo|foil/i, "#c3cad4"]];
   const parColor = (c) => { const t = (c.par || "") + " " + c.name; const hit = PAR_COLORS.find(([re]) => re.test(t)); return hit ? hit[1] : ""; };
   function rainbow(id) {
-    const c = CARDS.find((x) => x.id === id); if (!c) return notFound();
+    const c = byCid(id); if (!c) return notFound();
     const all = rainbowOf(c); if (all.length < 2) return notFound();
     // Want List versions of this rainbow I don't have yet: "Need it" placeholders in their rarity spot.
     const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
@@ -2043,7 +2047,7 @@
     else if (a === "player-cards") playerCardsPage(b);
     else if (a === "search") { state.q = h.slice(1).join("/"); $("#q").value = state.q; collection("search"); }
     else if (a === "card") {   // a shared card link opens the card over its own collection
-      const k = CARDS.findIndex((x) => x.id === b); if (k < 0) return notFound();
+      const k = CARDS.findIndex((x) => cid(x) === b); if (k < 0) return notFound();
       const card = CARDS[k], slug = SECTIONS[card.si].slug;
       history.replaceState(null, "", "#/c/" + slug); state.where = "c/" + slug; state.filters.clear(); state.sort = "new";
       collection(slug); window.scrollTo(0, 0);
@@ -2098,7 +2102,7 @@
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".cd[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
-    if (b.closest(".mq")) { location.hash = "#/card/" + CARDS[+b.dataset.i].id; return; }
+    if (b.closest(".mq")) { location.hash = "#/card/" + cid(CARDS[+b.dataset.i]); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
     openViewer(list.findIndex((c) => c.i === i), list);
   });
@@ -2273,7 +2277,7 @@
     // Want List cards get a button that starts an email to me with the card already named.
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
-      `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${c.id}\n\n`, c.name);
+      `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${location.href.split("#")[0]}#/card/${cid(c)}\n\n`, c.name);
     $("#v-dice").hidden = !V.random;
     prefetch();
     showBackText(c);
@@ -2284,10 +2288,10 @@
     V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
     const rb = rainbowOf(c);
     const lt = lettersOf(c);
-    if (lt && lt.count >= 1 && (lt.word || lt.count > 1)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/letters/${encodeURIComponent(c.id)}">🔤 View letters (${lt.count} of ${lt.slots.length})</a>`);
+    if (lt && lt.count >= 1 && (lt.word || lt.count > 1)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/letters/${encodeURIComponent(cid(c))}">🔤 View letters (${lt.count} of ${lt.slots.length})</a>`);
     const st = setOf(c);
-    if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(c.id)}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
-    if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(c.id)}">🌈 View rainbow (${rb.length})</a>`);
+    if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(cid(c))}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
+    if (rb.length > 1) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(cid(c))}">🌈 View rainbow (${rb.length})</a>`);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     navState();
   }
@@ -2358,7 +2362,7 @@
   $("#v-img2").onclick = () => imageClick("back");
   wide.addEventListener("change", () => { if (!$("#viewer").hidden) { V.zoom = false; showCard(); } });
   $("#v-copy").onclick = async () => {
-    const c = V.list[V.k], url = location.href.split("#")[0] + "#/card/" + c.id;
+    const c = V.list[V.k], url = location.href.split("#")[0] + "#/card/" + cid(c);
     try { await navigator.clipboard.writeText(url); $("#v-copy").dataset.tip = "Link copied"; }
     catch { $("#v-copy").dataset.tip = "Copy failed"; }
     setTimeout(() => delete $("#v-copy").dataset.tip, 1600);

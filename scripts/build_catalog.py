@@ -248,9 +248,41 @@ def main():
                 cands = [c for c in loose_fronts.get(loose_key(base_name(f["name"])[0]), []) if c not in back_of]
                 for c in cands: back_of[c] = f
                 if cands: f["_paired"] = True
+            # Back-only variations (Allen & Ginter "Mini A and G Back", Topps 206 "Piedmont", Goudey "Red Backs"...): the
+            # variation is in the back, so Ian scans only the back and the front is the base card's. Such a back becomes
+            # its own card (the variation) showing the base card's front scan with this back.
+            def card_parts(name):   # (year, set words, number, player) of "2010 Topps 206 - Mini Piedmont #202 Alex Gordon"
+                m = re.match(r"^(\S+)\s+(.*?)\s+#(\S+)\s+(.*)$", name)
+                if not m: return None
+                who = re.sub(r"\s*(#'d\b.*|print run\b.*|\bSN\d.*|\(.*|\b(AU|MEM|MANU|RC|SSP|SP)\b.*)$", "", m.group(4), flags=re.I).strip().lower()
+                return m.group(1), re.sub(r"[^a-z0-9&]+", " ", m.group(2).lower()).split(), m.group(3).lower(), re.sub(r"\s+", " ", who)
+            borrowed = {}
+            for k, f in backs.items():
+                if k in fronts or f.get("_paired"): continue
+                me = card_parts(base_name(f["name"])[0])
+                if not me: continue
+                # The front to borrow: same year, number and player, from the set this variation is named after
+                # ("Topps 206" or "Topps 206 Mini" for "Topps 206 Mini Piedmont"). Never the same set name (that would be
+                # a different card of the same kind, e.g. a non-auto version).
+                cands = []
+                for c in fronts:
+                    pt = card_parts(c)
+                    if pt and (pt[0], pt[2], pt[3]) == (me[0], me[2], me[3]) and len(pt[1]) < len(me[1]) and me[1][:len(pt[1])] == pt[1]:
+                        cands.append((fronts[c], pt))
+                if not cands: continue
+                mini = "mini" in me[1]
+                cands.sort(key=lambda x: (("mini" in x[1][1]) != mini, -len(x[1][1])))
+                borrowed[f["id"]] = cands[0][0]
             n = 0
             for f in files:
                 b, is_back = base_name(f["name"])
+                if f["id"] in borrowed:
+                    fr = borrowed[f["id"]]
+                    if not_shown(b): continue
+                    added = (prev_name.get(b.lower()) or prev.get(f["id"]) or prev_loose.get(loose_key(b))
+                             or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or (f["mod"] if not prev else today))
+                    cards.append([fr["id"], fr["rk"], b, si, gi, added, f["id"], f["rk"], f.get("team", ""), 1])
+                    n += 1; continue
                 if is_back and (b.lower() in fronts or f.get("_paired")): continue        # shown with its front
                 back = back_of.get(b.lower()) if not is_back else None
                 card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
@@ -274,7 +306,7 @@ def main():
     photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
                      for f in _photos), key=lambda x: x[3], reverse=True)
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos,
-           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team"], "cards": cards}
+           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team", "frontFromBase"], "cards": cards}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
         # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
         # Keep the previous list so the site doesn't go blank and card dates aren't lost.
