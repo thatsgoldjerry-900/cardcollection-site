@@ -60,7 +60,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   98 of 156 team names have one (was 63). Still none for ~49 teams, mostly early NFL clubs (Canton Bulldogs, Frankford Yellow
   Jackets), NFL Europe and 1980s USFL teams whose Wikipedia names are shared by later teams; ~9 entries aren't team names
   ("Los Angeles", "Oklahoma State"). Could be finished later with hand-picked Wikipedia pages per team.
-- [ ] **Signature showcase: 97 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
+- [ ] **Signature showcase: 108 approved** (pilot 5 + Tier 1 batches 1–2, 2026-11-22). The automatic finder (blue ink on a plain
   light label, one player per card) has no more Tier 1 candidates. Next, if wanted: Tier 1 players with black ink or busier
   labels (hand-picked), then Tier 2/3 and other collections. Each batch goes to Ian on a sheet before going live.
 - [ ] **Next week: Wikipedia bios (and college stats) for the 12 card-only player pages** (`cardPlayers` in
