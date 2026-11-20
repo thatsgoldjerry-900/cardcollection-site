@@ -2305,6 +2305,21 @@
       "t": 140,
       "grow": 1,
       "minArea": 0.0005
+    },
+    "freedom-akinmoladun": {
+      "id": "1lKm9PnuHkQcdQSh43sb5tn1sQkh1XiB5",
+      "src": "assets/signatures/freedom-akinmoladun.webp",
+      "box": [
+        0.055,
+        0.01,
+        0.935,
+        0.94
+      ],
+      "ar": 3.0774,
+      "ink": "black",
+      "t": 150,
+      "grow": 2,
+      "minArea": 0.0003
     }
   },
   "fanDay": {
