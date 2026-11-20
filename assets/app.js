@@ -202,9 +202,71 @@
     if (c.backId) b += `<span class="bd back" title="Front and back">⇆</span>`;
     return b;
   }
+  /* ---------- My picks: visitors star cards they like (owned cards only, not the Want List), up to 50. Saved in their
+     own browser; #/picks shows them, and a shared link (#/picks/<ids>) shows the same cards to anyone. ---------- */
+  const PICK_MAX = 50, PICK_KEY = "ian-picks";
+  const pickId = (c) => cid(c).slice(-8);   // the end of the scan's Drive ID: short and unique across the collection
+  const canPick = (c) => c && !c.photo && SECTIONS[c.si] && SECTIONS[c.si].kind !== "want";
+  let PICKS = (() => { try { return JSON.parse(localStorage.getItem(PICK_KEY) || "[]").filter((x) => typeof x === "string").slice(0, PICK_MAX); } catch (e) { return []; } })();
+  const isPicked = (c) => PICKS.includes(pickId(c));
+  function savePicks() { try { localStorage.setItem(PICK_KEY, JSON.stringify(PICKS)); } catch (e) {} pickCount(); }
+  const STAR = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></svg>`;
+  function pickStar(c) {
+    if (!canPick(c)) return "";
+    const on = isPicked(c);
+    return `<span class="pick${on ? " on" : ""}" role="button" tabindex="0" data-pick="${c.i}" aria-pressed="${on}" aria-label="${on ? "Remove from" : "Add to"} my picks" title="${on ? "Remove from" : "Add to"} my picks">${STAR}</span>`;
+  }
+  function togglePick(c) {
+    const id = pickId(c);
+    if (PICKS.includes(id)) PICKS = PICKS.filter((x) => x !== id);
+    else if (PICKS.length >= PICK_MAX) { toast(`You've picked ${PICK_MAX} cards, the most a list can hold. Remove one to add another.`); return false; }
+    else PICKS.push(id);
+    savePicks();
+    document.querySelectorAll(`[data-pick="${c.i}"]`).forEach((el) => { const on = isPicked(c); el.classList.toggle("on", on); el.setAttribute("aria-pressed", on);
+      el.setAttribute("aria-label", `${on ? "Remove from" : "Add to"} my picks`); el.title = `${on ? "Remove from" : "Add to"} my picks`; });
+    if ((location.hash || "") === "#/picks") route();
+    return true;
+  }
+  function pickCount() {
+    const b = $("#picks-link"); if (!b) return;
+    b.hidden = !PICKS.length; b.querySelector("b").textContent = PICKS.length;
+    b.setAttribute("aria-label", `My picks: ${PICKS.length} card${PICKS.length === 1 ? "" : "s"}`);
+  }
+  function toast(msg) {
+    let t = $("#toast"); if (!t) { document.body.insertAdjacentHTML("beforeend", `<div id="toast" class="toast" role="status"></div>`); t = $("#toast"); }
+    t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 3200);
+  }
+  // A star sits inside the card button, so it handles the tap itself (and keeps the card from opening).
+  const onStar = (e) => { const s = e.target.closest("[data-pick]"); if (!s) return false; e.preventDefault(); e.stopPropagation(); togglePick(CARDS[+s.dataset.pick]); return true; };
+  document.addEventListener("click", onStar, true);
+  document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-pick]")) onStar(e); }, true);
+  function picksPage(shared) {
+    const ids = shared ? shared.split(".").filter(Boolean).slice(0, PICK_MAX) : PICKS;
+    const byId = new Map(CARDS.filter(canPick).map((c) => [pickId(c), c]));
+    const list = ids.map((id) => byId.get(id)).filter(Boolean), missing = ids.length - list.length;
+    setNav(""); setTitle(shared ? "Shared picks" : "My picks");
+    const url = location.href.split("#")[0] + "#/picks/" + list.map(pickId).join(".");
+    const body = `Hi Ian,\n\nI'm interested in these cards from your site:\n\n${list.map((c, k) => `${k + 1}. ${c.name}`).join("\n")}\n\nSee them all: ${url}\n\n`;
+    $("#app").innerHTML = `<div class="wrap coll c-royal"><div style="grid-column:1/-1;min-width:0">
+      <div class="c-head"><div class="kick">${shared ? "Shared with you" : "Saved on this device"}</div><h1>${shared ? "Shared picks" : "My picks"}</h1>
+      <p>${list.length ? `${fmt(list.length)} card${list.length === 1 ? "" : "s"}${shared ? " someone picked from my collection" : ` (up to ${PICK_MAX}). Tap the star on any card to add or remove it`}.` : `No picks yet. Tap the ☆ on any card in my collection to add it here (up to ${PICK_MAX}).`}${missing ? ` ${missing} card${missing === 1 ? " is" : "s are"} no longer on the site.` : ""}</p></div>
+      ${list.length ? `<div class="b-row picks-tools">${binderBtn()}
+        <button type="button" class="btn" id="pk-share">Share these picks</button>
+        ${shared ? (list.some((c) => !isPicked(c)) && PICKS.length < PICK_MAX ? `<button type="button" class="btn" id="pk-add">Add these to my picks</button>` : "") : `<button type="button" class="btn" id="pk-clear">Clear all</button>`}</div>
+        ${shared ? "" : contactHTML("Send these to Ian", `Cards I'm interested in (${list.length})`, body, `${list.length} picked cards`)}` : ""}
+      <div class="grid" id="grid">${list.map((c) => cardHTML(c)).join("")}</div></div></div>`;
+    state.list = list; state.binderItems = list;
+    $("#pk-share")?.addEventListener("click", async (e) => {
+      if (navigator.share && matchMedia("(pointer: coarse)").matches) { try { await navigator.share({ title: "Card picks from IanBadeer.com", url }); } catch (err) {} return; }
+      try { await navigator.clipboard.writeText(url); e.target.textContent = "Link copied"; } catch (err) { prompt("Copy this link:", url); }
+      setTimeout(() => (e.target.textContent = "Share these picks"), 2000);
+    });
+    $("#pk-clear")?.addEventListener("click", () => { if (confirm(`Remove all ${list.length} picks?`)) { PICKS = []; savePicks(); picksPage(); } });
+    $("#pk-add")?.addEventListener("click", () => { list.forEach((c) => { if (!isPicked(c) && PICKS.length < PICK_MAX) PICKS.push(pickId(c)); }); savePicks(); picksPage(shared); toast("Added to your picks."); });
+  }
   function cardHTML(c, q) {
     return `<button class="cd" type="button" data-i="${c.i}" aria-label="${esc(c.name)}">
-      <div class="ph"><img loading="lazy" decoding="async" alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><div class="badges">${badges(c)}</div></div>
+      <div class="ph"><img loading="lazy" decoding="async" alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><div class="badges">${badges(c)}</div>${pickStar(c)}</div>
       <div class="cap"><b>${hl(c.title, q)}</b>${hl(c.sub, q)}${c.par ? `<br><span class="par">${hl(c.par, q)}</span>` : ""}</div></button>`;
   }
   const pctText = (sec) => sec.progressText || sec.progress + "%";
@@ -2173,6 +2235,7 @@
     else if (a === "nfl-teams") nflTeams(b);
     else if (a === "media") media();
     else if (a === "about") aboutPage();
+    else if (a === "picks") picksPage(b || "");
     else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
     else if (a === "set") setPage(b);
@@ -2384,6 +2447,7 @@
     const c = V.list[V.k]; if (!c) return;
     if (typeof pzReset === "function" && PZ) pzReset();
     $("#v-copy").hidden = !!c.photo;
+    { const vp = $("#v-pick"), on = isPicked(c); vp.hidden = !canPick(c); vp.classList.toggle("on", on); vp.setAttribute("aria-pressed", on); vp.setAttribute("aria-label", on ? "Remove from my picks" : "Add to my picks"); vp.dataset.tip = on ? "In my picks" : "Add to my picks"; }
     if (c.photo) {   // a photo with a player: caption instead of card details
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom && wide.matches);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption, () => aura(c)); $("#v-img2").hidden = true;
@@ -2637,6 +2701,8 @@
     lastRandom = c.i; return c;
   }
   function roll(el) { if (!el || calm.matches) return; el.classList.remove("roll"); void el.offsetWidth; el.classList.add("roll"); }
+  $("#v-pick").addEventListener("click", () => { const c = V.list[V.k]; if (c && togglePick(c)) showCard(); });
+  pickCount();
   $("#dice").addEventListener("click", () => {
     if (!CARDS || !CARDS.length) return;
     const c = randomCard(); if (!c) return;
