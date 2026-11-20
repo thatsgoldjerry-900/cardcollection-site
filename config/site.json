@@ -2335,6 +2335,21 @@
       "t": 100,
       "grow": 1,
       "minArea": 0.002
+    },
+    "tom-alward": {
+      "id": "149wBJt_sxBhaNZA5OvlLQS7AuWFElDiQ",
+      "src": "assets/signatures/tom-alward.webp",
+      "box": [
+        0.08,
+        0.06,
+        0.88,
+        0.92
+      ],
+      "ar": 1.2786,
+      "ink": "blue",
+      "t": 40,
+      "grow": 1,
+      "minArea": 0.001
     }
   },
   "fanDay": {
