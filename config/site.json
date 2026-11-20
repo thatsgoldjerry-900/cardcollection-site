@@ -2380,6 +2380,76 @@
       "t": 120,
       "grow": 0,
       "minArea": 0.0005
+    },
+    "troy-dumas": {
+      "id": "1Pfwv7FdKRVQisku89ataxkCuRftxQ1V4",
+      "src": "assets/signatures/troy-dumas.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.4579,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "rodney-lewis": {
+      "id": "1ggQrCTSSzSaRkJCdPDQWRjXxXOaVQFJa",
+      "src": "assets/signatures/rodney-lewis.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.9169,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "marc-munford": {
+      "id": "1jUw4UEIld3gXzp181lrjE16ZmhS5j4qI",
+      "src": "assets/signatures/marc-munford.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 1.5033,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "russ-hochstein": {
+      "id": "1GH024eHrWfX7sEQ2UIVWXbW7-VqNIaTl",
+      "src": "assets/signatures/russ-hochstein.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 1.8722,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "jack-stoll": {
+      "id": "1pFvFCVFwRq2EBcKTdVw6zIO2fOZtl1d1",
+      "src": "assets/signatures/jack-stoll.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.2471,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
     }
   },
   "fanDay": {
