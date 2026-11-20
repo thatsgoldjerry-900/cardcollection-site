@@ -117,11 +117,13 @@
   window.fitFrame = (im) => { im.classList.add("ok"); if (im.naturalWidth > im.naturalHeight * 1.1) im.parentNode.classList.add("land"); };
 
   /* ---------- Data ---------- */
+  let DUPES = []; const DUP0 = 1000000;
+  const cardAt = (i) => (i >= DUP0 ? DUPES[i - DUP0] : CARDS[i]);
   function load(json) {
     DATA = json; SECTIONS = json.sections;
     // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
     json.cards = json.cards.filter((c) => !/\bsold\b|\bgifted to\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
-    CARDS = json.cards.map((c, i) => {
+    const mk = (c, i) => {
       const [id, rk, name, si, gi, added, backId, backRk, team = "", fromBase = 0] = c;
       const p = parse(name);
       if (backId) p.tags.add("back");
@@ -138,7 +140,11 @@
         if ((fix.remove || []).includes(name)) p.tags.delete(tag);
       }
       return { i, id, rk, name, si, gi, added, backId, backRk, team, fb: !!fromBase, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
-    });
+    };
+    CARDS = json.cards.map(mk);
+    // Extra copies (names ending "2nd", "3rd", "4th"...): only on the Duplicates page, never in collections, search or counts.
+    // Numbered from DUP0 so a card's number still finds it (cardAt).
+    DUPES = (json.dupes || []).filter((c) => SECTIONS[c[3]]).map((c, k) => ({ ...mk(c, DUP0 + k), dup: true }));
     // Photos of athletes with my custom cards. The file name is the caption; the part before the first
     // " - " or sentence break is the short label on the strip ("Jr." and similar don't count as a break).
     const caps = (json.site.customsPhotos || {}).captions || {};
@@ -237,12 +243,12 @@
     t.textContent = msg; t.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 3200);
   }
   // A star sits inside the card button, so it handles the tap itself (and keeps the card from opening).
-  const onStar = (e) => { const s = e.target.closest("[data-pick]"); if (!s) return false; e.preventDefault(); e.stopPropagation(); togglePick(CARDS[+s.dataset.pick]); return true; };
+  const onStar = (e) => { const s = e.target.closest("[data-pick]"); if (!s) return false; e.preventDefault(); e.stopPropagation(); togglePick(cardAt(+s.dataset.pick)); return true; };
   document.addEventListener("click", onStar, true);
   document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-pick]")) onStar(e); }, true);
   function picksPage(shared) {
     const ids = shared ? shared.split(".").filter(Boolean).slice(0, PICK_MAX) : PICKS;
-    const byId = new Map(CARDS.filter(canPick).map((c) => [pickId(c), c]));
+    const byId = new Map([...CARDS, ...DUPES].filter(canPick).map((c) => [pickId(c), c]));
     const list = ids.map((id) => byId.get(id)).filter(Boolean), missing = ids.length - list.length;
     setNav(""); setTitle(shared ? "Shared picks" : "My picks");
     const url = location.href.split("#")[0] + "#/picks/" + list.map(pickId).join(".");
@@ -545,6 +551,7 @@
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
         <a class="stat link" href="#/letters"><b>🔤</b><span>Letterman Sets →</span></a>
+        ${DUPES.length ? `<a class="stat link" href="#/duplicates"><b>${fmt(DUPES.length)}</b><span>Duplicates →</span></a>` : ""}
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
       ${startHere()}
@@ -569,7 +576,7 @@
   }
 
   function collection(slug, gslug) {
-    const virtual = slug === "customs" || slug === "all" || slug === "search" || slug === "rarest";
+    const virtual = slug === "customs" || slug === "all" || slug === "search" || slug === "rarest" || slug === "duplicates";
     const si = SECTIONS.findIndex((x) => x.slug === slug);
     const sec = virtual ? null : SECTIONS[si];
     if (!virtual && !sec) return notFound();
@@ -590,6 +597,9 @@
     } else if (slug === "customs") {
       base = CARDS.filter((c) => c.tags.has("custom")); title = "Custom Cards"; kick = "Made by hand"; color = "gold";
       blurb = "Custom cards are a labor of love. I make mini cardboard treasures for myself, for friends, and as keepsakes for the athletes themselves.";
+    } else if (slug === "duplicates") {
+      base = DUPES.slice(); title = "Duplicates"; kick = "Whole collection";
+      blurb = "Cards/Items that I have more than one copy of. A duplicate doesn't guarantee that it's available for trade, but it doesn't hurt to ask.";
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
       base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
@@ -597,7 +607,7 @@
     } else {
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
-    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
+    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : slug === "duplicates" ? "Duplicates" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
         <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
         ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
@@ -663,6 +673,8 @@
   });
   // Searching for a page by what it's about puts that page first ("letter", "letterman", "lettermen" → all letterman sets).
   function pageShortcut(q) {
+    if (/^\s*(duplicates?|dupes?|doubles|extras?)\s*$/i.test(q || "") && DUPES.length) return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/duplicates"><span class="pm-ph pm-ic" aria-hidden="true">⧉</span>
+      <span class="pm-t"><b>Duplicates</b><small>Cards I have more than one copy of</small></span><span class="pm-go">→</span></a></div></div>`;
     if (!/^\s*(letter|letters|letterman|lettermans|lettermen)(\s+sets?)?\s*$/i.test(q || "")) return "";
     return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/letters"><span class="pm-ph pm-ic" aria-hidden="true">🔤</span>
       <span class="pm-t"><b>All letterman sets</b><small>Every set by the word it spells, with the letters I still need</small></span><span class="pm-go">→</span></a></div></div>`;
@@ -2230,6 +2242,7 @@
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
     else if (a === "rarest") collection("rarest");
+    else if (a === "duplicates") collection("duplicates");
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
@@ -2302,8 +2315,8 @@
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".cd[data-i], .fd-item[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
-    if (b.closest(".mq")) { location.hash = "#/card/" + cid(CARDS[+b.dataset.i]); return; }
-    const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [CARDS[i]];
+    if (b.closest(".mq")) { location.hash = "#/card/" + cid(cardAt(+b.dataset.i)); return; }
+    const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [cardAt(i)];
     openViewer(list.findIndex((c) => c.i === i), list);
   });
   // Desktop shows a card's front and back side by side; phones flip between them with a tap.

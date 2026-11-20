@@ -221,7 +221,7 @@ def main():
             for ph in old.get("photos", []): prev_photo[ph[0]] = ph[3]
         except Exception: pass
     today = date.today().isoformat()
-    cards, sections = [], []
+    cards, sections, dupes = [], [], []
     root = cfg.get("driveRoot") or {}
     source = sections_from_root(cfg, root["id"]) if root.get("enabled") else sections_from_config(cfg)
     for si, (sec, group_files) in enumerate(source):
@@ -286,6 +286,10 @@ def main():
                 if is_back and (b.lower() in fronts or f.get("_paired")): continue        # shown with its front
                 back = back_of.get(b.lower()) if not is_back else None
                 card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                if COPY.search(card_name) and not SOLD.search(card_name) and not re.search(r"\bcustom\b", card_name, re.I):
+                    # 2nd/3rd/4th... copies: not in the collections, but listed on the Duplicates page.
+                    dupes.append([f["id"], f["rk"], card_name, si, gi, prev.get(f["id"]) or prev_name.get(card_name.lower()) or f["mod"], back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
+                    continue
                 if not_shown(card_name): continue                   # sold, or a second copy
                 # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date
                 # (and isn't marked NEW). The extension may change, e.g. .png to .jpg.
@@ -306,7 +310,7 @@ def main():
     photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
                      for f in _photos), key=lambda x: x[3], reverse=True)
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos,
-           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team", "frontFromBase"], "cards": cards}
+           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team", "frontFromBase"], "cards": cards, "dupes": dupes}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
         # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
         # Keep the previous list so the site doesn't go blank and card dates aren't lost.
