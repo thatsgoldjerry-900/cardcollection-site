@@ -60,8 +60,8 @@ def loose_key(name):
     """A name without tag codes, letter codes ("4N", "3 H"), copy marks, inscription notes and punctuation."""
     h = name.find("#"); head, tail = (name[:h], name[h:]) if h >= 0 else ("", name)
     tail = CODE_RE.sub(" ", tail)
-    tail = re.sub(r"(?:^|\s)(?:Letter\s+)?0?\d{1,2}\s?[A-Z](?=\s|$)", " ", tail)
-    tail = re.sub(r"\((?:\d+(?:st|nd|rd|th)|creased|damaged|tucked)\)", " ", tail, flags=re.I)
+    tail = re.sub(r"(?:^|\s)(?:Letter\s+)?0?\d{1,2}\s?[A-Z0-9](?=\s|$|,)", " ", tail)
+    tail = re.sub(r"\([^()]*\)", " ", tail)        # notes like (Adidas Black), (7th), (Creased): one back serves them all
     tail = re.sub(r"\b[\w' -]*?\binsc(?:ription)?\b", " ", tail, flags=re.I)
     return re.sub(r"[^a-z0-9#]+", " ", (head + tail).lower()).strip()
 def base_name(name):

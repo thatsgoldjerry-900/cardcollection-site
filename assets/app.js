@@ -1418,7 +1418,7 @@
   // Same year, set, card number and player = one rainbow, whatever the color. A color or parallel word at the end of
   // the set name ("Signature Materials Black") is ignored; "Set - Parallel" names already keep the parallel apart.
   // A card's player without a letterman code ("Brandon Jackson 2A" → "Brandon Jackson").
-  const plainTitle = (x) => (x.title || "").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
+  const plainTitle = (x) => (x.title || "").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)|(?:^|\s)\d\s\d(?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
   const PARALLEL_WORDS = /(?:\s+(?:gold(?:en)?|silver|black|red|blue|green|orange|purple|pink|platinum|bronze|copper|emerald|sapphire|ruby|white|yellow|aqua|teal|magenta|holo(?:foil)?|refractors?|prizms?|parallel|foil|rainbow|mojo|wave|shimmer|atomic|x-?fractors?|superfractors?|printing plates?|press proofs?|proofs?|framed|vintage stock|independence day|camo|tie-?dye|cracked ice|mirror|spectrum|chrome|prime|limited))+$/i;
   // A second or third copy of a card ("... 2nd (Sold to ...)") is the same card for rainbows and sets.
   const copyKey = (x) => x.name.toLowerCase().replace(/\s+(?:2nd|3rd|\d+th)\b(?:\s*\([^)]*\))?\s*$/, "").trim();
@@ -1771,7 +1771,8 @@
      last or full name, CORNHUSKERS, HUSKERS or NEBRASKA, or one set in config/site.json "letterWords". */
   const letterOf = (c) => {
     const n = c.name.replace(/#'d.*$|\b1 of 1\b.*$/i, " ");
-    const m = n.match(/\bLetter\s+0?(\d{1,2})\s+([A-Z])\b/) || n.match(/(?:^|\s)0?(\d{1,2})\s?([A-Z])(?=\s|$|\))/);
+    // "4N", "Letter 03 R", "3 E", and digits in a word like 49ERS written with a space: "1 4", "2 9".
+    const m = n.match(/\bLetter\s+0?(\d{1,2})\s+([A-Z0-9])\b/) || n.match(/(?:^|\s)0?(\d{1,2})\s?([A-Z])(?=\s|$|\)|,)/) || n.match(/(?:^|\s)(\d)\s(\d)(?=\s|$|,)/);
     return m && +m[1] > 0 ? { pos: +m[1], letter: m[2] } : null;
   };
   const isLetterSet = (c) => /\blett(?:er|erman|ermen)\b|by the letter/i.test(c.name) && !/(?:signed|autographed)\s+letter\b/i.test(c.name);
@@ -1779,7 +1780,7 @@
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m) return null;
     const pre = m[3].replace(/[^A-Za-z]/g, "").toLowerCase();
     // The player, without the letter code that sits in the name ("Niles Paul 4N", "1P Aaron Pribanic", "Letter 03 R").
-    const who = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
+    const who = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)|(?:^|\s)\d\s\d(?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
     return [m[1], norm(who), pre || norm(m[2])].join("|");
   };
   let LETTERS = null;
@@ -1796,13 +1797,13 @@
     }
     const k = letterGroupKey(c), cards = (k && LETTERS.get(k)) || [];
     const have = cards.map((x) => ({ x, ...letterOf(x) }));
-    const custom = ((DATA.site.letterWords || {})[k] || "").toUpperCase().replace(/[^A-Z]/g, "");
-    const name = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)/g, " ")
+    const custom = ((DATA.site.letterWords || {})[k] || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const name = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)|(?:^|\s)\d\s\d(?=\s|$)/g, " ")
       .replace(/\b(jr|sr|ii|iii|iv)\.?\s*$/i, "").replace(/\s+/g, " ").trim().toUpperCase();
     const last = name.split(/\s+/).pop().replace(/[^A-Z]/g, "");
     // Words as shown (with spaces); matching ignores the spaces.
-    const shows = [custom, last, name.replace(/[^A-Z ]/g, ""), "CORNHUSKERS", "HUSKERS", "NEBRASKA", "ROOKIE " + last, last + " KANSAS CITY ROYALS", last + " ROYALS"].filter(Boolean);
-    const tries = shows.map((w) => w.replace(/[^A-Z]/g, ""));
+    const shows = [custom, last, name.replace(/[^A-Z ]/g, ""), "CORNHUSKERS", "HUSKERS", "NEBRASKA", "49ERS", "ROOKIE " + last, last + " KANSAS CITY ROYALS", last + " ROYALS"].filter(Boolean);
+    const tries = shows.map((w) => w.replace(/[^A-Z0-9]/g, ""));
     // The word that fits the most letters I have (a mistyped letter in a file name shouldn't hide the whole word),
     // as long as at most two don't fit. A word set in config always wins.
     const fit = (w) => have.filter((h) => w[h.pos - 1] === h.letter).length;
@@ -1851,7 +1852,7 @@
     const shown = [];
     const slot = (x) => letterSlot(x, shown);
     // Each word on its own line ("GORDON" / "KANSAS" / "CITY" / "ROYALS"), its letters side by side.
-    const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z]/g, "").length).filter(Boolean) : [L.slots.length];
+    const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z0-9]/g, "").length).filter(Boolean) : [L.slots.length];
     // Every word uses the longest word's column size, so all the cards are the same size.
     let at = 0; const cols = Math.max(...lens);
     const rows = lens.map((n) => { const part = L.slots.slice(at, at + n); at += n;
