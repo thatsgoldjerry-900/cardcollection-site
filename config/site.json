@@ -1134,5 +1134,5 @@
   },
   "freshUpload": false,
   "_freshUploadHelp": "While freshUpload is true, a card the robot can't match to one it saw before is dated freshUploadDate (not today), so the big football re-upload doesn't all show as NEW. Turn off after the re-upload.",
-  "freshUploadDate": "2026-01-01"
+  "freshUploadDate": "2022-11-28"
 }
