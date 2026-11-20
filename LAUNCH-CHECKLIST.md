@@ -66,6 +66,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   dark panel with a soft red glow. Plan: Claude hand-picks the signature area for ~10 players as a pilot; Ian looks and decides
   how to scale (hand-picked for favorites, automatic ink detection for the rest, or a mix). Add a CLAUDE.md note that this
   display-only crop is Ian's request.
+- [ ] **Scan the front of the 2008 TK Legacy All-American Autographs #AA4 Johnny Rodgers (AU, SN100)** and upload it;
+  its back is already in the football folder and will pair with it automatically.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.

@@ -199,8 +199,12 @@ def main():
             back_of = {}                                             # front name -> its back file
             for k, f in backs.items():
                 if k in fronts: back_of[k] = f
+            # Backs Ian maps by hand (config "backFor": back name -> the fronts it belongs to).
             for k, f in backs.items():
-                if k in fronts: continue
+                for fr in cfg.get("backFor", {}).get(f["name"].rsplit(".", 1)[0], []):
+                    if fr.lower() in fronts: back_of[fr.lower()] = f; f["_paired"] = True
+            for k, f in backs.items():
+                if k in fronts or f.get("_paired"): continue
                 # One back can serve several fronts, e.g. every letter of a letterman set shares the same back.
                 cands = [c for c in loose_fronts.get(loose_key(base_name(f["name"])[0]), []) if c not in back_of]
                 for c in cands: back_of[c] = f

@@ -42,6 +42,7 @@
     if (!c.full && h < 0) return null;
     return c;
   }
+  const DUAL_GRADE = /\b(PSA|BGS|SGC|CGC)(?:[- ]DNA)?\b[^#]*?(?:\b[A-Z]{1,4}(?:-[A-Z]{1,4})?\s+)?(\d+(?:\.\d)?)\s+Auto\s+(\d+(?:\.\d)?)\b/i;
   function parse(name) {
     const out = { title: name, sub: "", par: "", year: 9999, serial: 0, printRun: 0, one: false, grade: "", tags: new Set() };
     const codes = readCodes(name);
@@ -53,6 +54,8 @@
       out.serial = b || a; out.one = (b ? b === 1 : a === 1) || /\b1\s*of\s*1\b|1\/1/i.test(name);
     }
     const g = name.match(RX.grade); if (g) out.grade = (g[1].toUpperCase() + (g[2] ? " " + g[2] : "")).trim();
+    // Card and autograph graded separately: "PSA-DNA Certified VG 3 Auto 8" → "PSA 3 · Auto 8".
+    const dual = name.match(DUAL_GRADE); if (dual) out.grade = `${dual[1].toUpperCase()} ${dual[2]} · Auto ${dual[3]}`;
     // Names that look like autographs but aren't: the "Signature Rookies" brand (its real autos also say
     // "Autographs" or "Signatures"), "Auto Phonex" phone cards, and Choice Gold/Silver Signature parallels.
     // Collector's Choice (and other "Choice") Gold/Silver Signature parallels carry a printed facsimile, not an autograph.
@@ -100,6 +103,7 @@
       const dash = set.indexOf(" - ");
       if (dash > 0) { par = set.slice(dash + 3); set = set.slice(0, dash); }
       if (codes && codes.full) rest = rest.replace(codes.text, " ");
+      if (DUAL_GRADE.test(rest)) rest = rest.replace(DUAL_GRADE, " ");
       let player = rest.replace(RX.serial, "").replace(/print run of\s*\d+/i, "").replace(RX.grade, "").replace(/\((?:[^)]*)\)/g, "").replace(/\s+(Back|2nd|3rd|\d)$/i, "").replace(/\s{2,}/g, " ").trim();
       out.title = player || rest; out.sub = `${yr} ${set} #${num}`; out.par = par;
     } else if (codes && codes.full) out.title = name.replace(codes.text, " ").replace(/\s*,\s*(?=\s|$)/g, " ").replace(/\s{2,}/g, " ").trim();
@@ -630,7 +634,9 @@
   function scansFor(name, sport = "football") {
     if (!scanIndex[sport]) {
       const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport);
-      scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si).map((c) => [" " + norm(c.name) + " ", c]);
+      // "(Hand Signed by Tyrone Fahie)": the autograph is his, so the card goes on his page only, not the pictured player's.
+      const who = (c) => { const m = c.name.match(/\(\s*hand signed by ([^)]+)\)/i); return m ? m[1] : c.name; };
+      scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si).map((c) => [" " + norm(who(c)) + " ", c]);
     }
     const n = norm(name); if (n.split(" ").length < 2) return [];
     return scanIndex[sport].filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);

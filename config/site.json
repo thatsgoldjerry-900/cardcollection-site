@@ -1122,5 +1122,14 @@
     "JoJo Domann": [
       "Johansen Domann"
     ]
+  },
+  "backFor": {
+    "_help": "Back scans that belong to fronts with different names (back file name without extension: [front names]).",
+    "2021 Damian Jackson Autograph Custom Back": [
+      "2021 Damian Jackson Black Ink Autograph Custom",
+      "2021 Damian Jackson Black Ink Autograph Custom 2nd",
+      "2021 Damian Jackson Red Ink Autograph Custom",
+      "2021 Damian Jackson Red Ink Autograph Custom 2nd"
+    ]
   }
 }
