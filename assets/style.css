@@ -1,5 +1,5 @@
 /* The Vault: a dark gallery that lets the scans carry the color. */
-:root{
+:root{--z:1;
   /* Three layers, each a step lighter: page background, bands and title bar, panels. */
   --bg:#090c11; --band:#0f141c; --head:#131a25; --panel:#161e2a; --panel-2:#1e2836; --line:#29354a; --fg:#eef1f5; --mu:#8f99aa;
   --acc:#7fb2ff; --acc-ink:#0b1220; --royal:#2f6fd6; --husker:#e0283f; --lions:#2b8fd0; --gold:#d4b05a; --good:#5cc98a;
@@ -43,13 +43,13 @@ h1,h2,h3{font-family:var(--f-d);text-transform:uppercase;letter-spacing:.01em;li
 }
 @media (max-width:860px){.top{position:static}.tools{position:static}}
 
-main{min-height:70vh;outline:none}
+main{min-height:calc(70vh / var(--z));outline:none}
 .loading,.empty{color:var(--mu);text-align:center;padding:80px 16px}
 
 /* Home */
 .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;align-items:center;padding-block:44px 36px}
 .hero .kick{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
-.hero h1{font-size:clamp(32px,5vw,62px);font-weight:800;margin:10px 0 16px}
+.hero h1{font-size:clamp(32px,calc(5vw / var(--z)),62px);font-weight:800;margin:10px 0 16px}
 .hero h1 em{font-style:normal;color:var(--acc)}
 .hero p{color:#c3cad6;max-width:62ch;margin:0 0 18px}
 .pills{display:flex;flex-wrap:wrap;gap:8px}
@@ -84,7 +84,7 @@ main{min-height:70vh;outline:none}
 
 /* Collection */
 .coll{display:grid;grid-template-columns:230px minmax(0,1fr);gap:32px;padding-block:28px 60px}
-.side{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:22px;max-height:calc(100vh - 100px);overflow:auto}
+.side{position:sticky;top:84px;align-self:start;display:flex;flex-direction:column;gap:22px;max-height:calc(calc(100vh / var(--z)) - 100px);overflow:auto}
 .side h4{margin:0 0 8px;font:600 11px var(--f-b);letter-spacing:.09em;text-transform:uppercase;color:var(--mu)}
 .side ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
 .side a{display:flex;justify-content:space-between;gap:8px;text-decoration:none;font-size:14px;color:var(--mu);padding:6px 10px;border-radius:6px}
@@ -93,7 +93,7 @@ main{min-height:70vh;outline:none}
 .side a span{font:12px var(--f-m)}
 .c-head{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
 .c-head .kick{font:12px var(--f-m);color:var(--mu);letter-spacing:.06em;text-transform:uppercase}
-.c-head h1{font-size:clamp(36px,5vw,56px);font-weight:800}
+.c-head h1{font-size:clamp(36px,calc(5vw / var(--z)),56px);font-weight:800}
 .c-head p{color:#c3cad6;max-width:70ch;margin:0}
 .c-head .prog{display:flex;align-items:center;gap:14px;max-width:520px}
 .c-head .prog b{font:800 34px/1 var(--f-d);color:var(--tc,var(--acc))}
@@ -242,7 +242,7 @@ mark{background:rgba(127,178,255,.25);color:inherit;border-radius:2px}
 .pl-ph.none{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;border:1px dashed var(--line);box-shadow:none;cursor:default;color:var(--mu)}
 .pl-main{min-width:0;display:flex;flex-direction:column;gap:14px}
 .pl-main .kick{font:12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--husker)}
-.pl-main h1{font-size:clamp(40px,6vw,68px);font-weight:800}
+.pl-main h1{font-size:clamp(40px,calc(6vw / var(--z)),68px);font-weight:800}
 .pl-badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .statlink{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:var(--husker);color:#fff;font-weight:600;font-size:14px;text-decoration:none}
 .statlink:hover{filter:brightness(1.12)}
@@ -326,7 +326,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Landscape cards get a landscape frame */
 .pl-ph.land,.feat .ph.land{aspect-ratio:7/5}
 .feat .ph.land{transform:rotate(1.5deg)}
-@media (max-width:760px){.pl-card{max-width:100%}.pl-ph{max-height:62vh}.pl-ph:not(.land){max-width:300px}}
+@media (max-width:760px){.pl-card{max-width:100%}.pl-ph{max-height:calc(62vh / var(--z))}.pl-ph:not(.land){max-width:300px}}
 /* The NFL list story shows its first paragraph on phones until "Read the full story" */
 .story-more{display:none;align-self:flex-start;background:none;border:0;padding:0;color:var(--acc);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
 @media (max-width:760px){.story.short p:not(:first-child){display:none}.story.short .story-more{display:block}}
@@ -355,7 +355,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 
 /* A full-width band behind a home page section, so sections don't run together */
 .band{position:relative;padding:26px 0 6px;margin:0 0 30px}
-.band::before{content:"";position:absolute;inset:0 calc(50% - 50vw);background:var(--band);border-block:1px solid var(--line);z-index:-1}
+.band::before{content:"";position:absolute;inset:0 calc(50% - calc(50vw / var(--z)));background:var(--band);border-block:1px solid var(--line);z-index:-1}
 .band .mq{margin-bottom:22px}
 /* Collection sidebar sits on its own panel */
 .side{background:var(--band);border:1px solid var(--line);border-radius:12px;padding:14px 8px}
@@ -394,7 +394,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ck-fan .cd:hover{transform:translateY(-14px) rotate(0);z-index:2}
 .ck-fan img{width:100%;aspect-ratio:5/7;object-fit:contain;opacity:0;transition:opacity .3s}
 .ck-fan img.ok{opacity:1}
-@media (max-width:900px){.ck-top{grid-template-columns:1fr}.ck-fan{justify-content:center;padding:0 0 0 34px}.ck-fan .cd{width:min(27vw,112px)}}
+@media (max-width:900px){.ck-top{grid-template-columns:1fr}.ck-fan{justify-content:center;padding:0 0 0 34px}.ck-fan .cd{width:min(calc(27vw / var(--z)),112px)}}
 .ck-fan .cd{transition:transform .25s,opacity .45s}
 .ck-fan .cd.swap{opacity:0}
 /* Card preview when the mouse rests on a name or Scan button in an autograph list */
@@ -482,7 +482,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .v-have{margin:2px 0 10px}
 .pl-ph.none .cta{margin-top:14px;align-items:center}
 /* Contact form (posts to my Google Form) */
-.cform{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--fg);padding:0;width:min(460px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+.cform{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--fg);padding:0;width:min(460px,calc(calc(100vw / var(--z)) - 32px));max-height:calc(calc(100vh / var(--z)) - 32px)}
 .cform::backdrop{background:rgba(5,8,12,.75)}
 .cform form,.cf-done{display:flex;flex-direction:column;gap:12px;padding:18px 20px 20px}
 .cform form[hidden],.cf-done[hidden]{display:none}
@@ -574,10 +574,10 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .lt-miss .lt-l{color:var(--mu)}
 .lt-word .cd .cap{display:none}
 .lt-blank{aspect-ratio:5/7;border:2px dashed var(--line);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--mu);background:var(--panel);min-width:0;overflow:hidden}
-.lt-blank b{font:800 clamp(18px,7vw,64px)/1 var(--f-d);opacity:.35}.lt-blank small{font-size:12px}
+.lt-blank b{font:800 clamp(18px,calc(7vw / var(--z)),64px)/1 var(--f-d);opacity:.35}.lt-blank small{font-size:12px}
 .lt-set h2{font-size:20px;margin:0}.lt-set h2 a{color:var(--fg);text-decoration:none}.lt-set h2 a:hover{color:var(--acc)}.lt-set p{margin:2px 0 10px;color:var(--mu);font-size:13px}
 .lt-tip{color:var(--mu);font-size:13px;margin:0 0 50px}
-@media (max-width:640px){.lt-words{gap:16px}.lt-word{gap:4px}.lt-l{font-size:clamp(13px,4.5vw,22px)}.lt-word .cd .badges{display:none}.lt-blank small{display:none}.lt-blank{border-width:1px;border-radius:5px}.lt-word .cd .ph{border-radius:4px}}
+@media (max-width:640px){.lt-words{gap:16px}.lt-word{gap:4px}.lt-l{font-size:clamp(13px,calc(4.5vw / var(--z)),22px)}.lt-word .cd .badges{display:none}.lt-blank small{display:none}.lt-blank{border-width:1px;border-radius:5px}.lt-word .cd .ph{border-radius:4px}}
 /* Huskers by NFL Team */
 .tm{padding-block:24px 60px}.tm .back{display:inline-block;margin-bottom:12px;color:var(--acc);text-decoration:none;font-size:14px}
 .tm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
@@ -726,7 +726,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (prefers-reduced-motion:reduce){.b-spread .b-page{animation:none!important}}
 .b-pk.need{cursor:default}
 .b-need{display:grid;place-items:center;width:78%;aspect-ratio:2.5/3.5;border:2px dashed #b9b2a3;border-radius:4px;color:#8c8475;text-align:center}
-.b-need b{font:700 clamp(18px,4vw,34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+.b-need b{font:700 clamp(18px,calc(4vw / var(--z)),34px)/1 var(--f-d,inherit)}.b-need small{font-size:11px;text-transform:uppercase;letter-spacing:.1em}
 .b-num{position:absolute;bottom:1.5%;left:0;right:0;text-align:center;font:600 11px var(--f-m);color:#8c8475}
 .hero h1 .nw{white-space:nowrap}
 /* Rainbow pages: each card sits on a soft glow of its parallel's color (around the card; the scan is untouched) */
@@ -784,11 +784,11 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .b-spread.two::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:40px;transform:translateX(-50%);
   background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 40%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.10) 60%,rgba(0,0,0,0))}
 .b-page{position:relative;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:.7%;padding:2% 2% 4% 7.5%;
-  width:min(calc(100vw - 24px - 74px),calc((100dvh - 110px - 32px) * .74));aspect-ratio:.74;border-radius:3px;
+  width:min(calc(calc(100vw / var(--z)) - 24px - 74px),calc((calc(100dvh / var(--z)) - 110px - 32px) * .74));aspect-ratio:.74;border-radius:3px;
   background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(228,232,237,.55) 45%,rgba(240,243,246,.7));
   box-shadow:0 1px 4px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.85)}
 .b-spread.two{column-gap:34px}
-.b-spread.two .b-page{width:min(calc(50vw - 24px - 16px - 17px),calc((100dvh - 110px - 32px) * .74));padding:2% 2% 4% 7.5%}
+.b-spread.two .b-page{width:min(calc(calc(50vw / var(--z)) - 24px - 16px - 17px),calc((calc(100dvh / var(--z)) - 110px - 32px) * .74));padding:2% 2% 4% 7.5%}
 .b-spread.two .b-page:first-child{padding:2% 7.5% 4% 2%}
 /* The punched strip on the ring side; the three holes are real elements (.b-hole) so the rings can find them */
 .b-page::before{content:"";position:absolute;top:0;bottom:0;left:0;width:6.5%;border-right:1px solid rgba(150,160,170,.35);background:linear-gradient(90deg,rgba(255,255,255,.35),rgba(255,255,255,.1))}
@@ -843,7 +843,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .ck-fan .cd{position:relative;aspect-ratio:5/7}
 .ck-fan .cd img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .ck-fan .cd.land{width:min(270px,calc(165px * var(--ar,1.4)))}
-@media (max-width:900px){.ck-fan .cd.land{width:min(44vw,calc(min(27vw,112px) * 1.1 * var(--ar,1.4)))}}
+@media (max-width:900px){.ck-fan .cd.land{width:min(calc(44vw / var(--z)),calc(min(calc(27vw / var(--z)),112px) * 1.1 * var(--ar,1.4)))}}
 /* Autograph lists: sortable column headings */
 .th-sort{all:unset;cursor:pointer;white-space:nowrap}
 .th-sort:hover,.th-sort.on{color:var(--acc)}
@@ -861,11 +861,12 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Nebraska "N" on the college bar and the final-season mark */
 .tl-m i.tl-n{width:20px;height:20px;margin-top:0;background:#fff;border-radius:4px;display:grid;place-items:center}
 .tl-m i.tl-n .tl-logo{width:18px;height:18px;padding:1px}
-/* Home stats: Nebraska N on the right of the NFL Husker Chase tile */
-.stat.has-logo{position:relative;padding-right:60px}
-@media (min-width:701px){.stat.has-logo span{white-space:nowrap}}
-.stat-logo{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:40px;height:40px;object-fit:contain}
-@media (max-width:700px){.stat.has-logo{padding-right:48px}.stat-logo{right:10px;width:32px;height:32px}}
+/* Home stats: team logo right after the percentage (NFL Husker, Gordon and Dye chases). The number shrinks a little
+   in narrow tiles so number and logo always fit side by side; the label wraps like the other tiles. */
+.stat.has-logo{container-type:inline-size}
+.stat.has-logo b{display:flex;align-items:center;gap:6px;font-size:min(34px,21cqi);white-space:nowrap}
+.stat.has-logo .sn{font-style:normal}
+.stat-logo{flex:none;width:1em;height:1em;object-fit:contain}
 
 /* Performance: long card grids only draw the cards near the screen; the sticky bars no longer blur what scrolls under
    them (the costliest thing to redraw while scrolling on phones); sideways-scrolling rows keep their scroll to themselves. */
@@ -883,7 +884,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .need-cd{cursor:default}
 .need-cd .ph{display:grid;place-items:center;border:2px dashed rgba(255,255,255,.18)}
 .need-stamp{display:grid;place-items:center;gap:2px;padding:10px 14px;border:3px solid #e2453a;border-radius:8px;color:#ff5a4e;transform:rotate(-12deg);
-  font:800 clamp(18px,4.5vw,26px)/1 var(--f-d,inherit);text-transform:uppercase;letter-spacing:.04em;background:rgba(10,12,16,.35);box-shadow:0 0 0 2px rgba(226,69,58,.25) inset}
+  font:800 clamp(18px,calc(4.5vw / var(--z)),26px)/1 var(--f-d,inherit);text-transform:uppercase;letter-spacing:.04em;background:rgba(10,12,16,.35);box-shadow:0 0 0 2px rgba(226,69,58,.25) inset}
 .need-stamp small{font:700 14px/1 var(--f-m);letter-spacing:0;color:#ffd1cc}
 /* Player lists: horizontal cards keep their full shape in a wider frame */
 .hub-ph.land{width:auto;height:calc(72px * 7 / 5)}
@@ -934,8 +935,15 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .picks-link svg{width:18px;height:18px;fill:#ffc531;stroke:#ffc531;stroke-width:1.5}
 .picks-link[hidden]{display:none}
 .picks-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);max-width:min(92vw,520px);padding:12px 16px;border-radius:12px;background:#1d222c;color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:1000;font-size:14px;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);max-width:min(calc(92vw / var(--z)),520px);padding:12px 16px;border-radius:12px;background:#1d222c;color:#fff;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:1000;font-size:14px;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 @media (max-width:640px){.lt-word .pick{display:none}}
 .hub-stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;color:var(--mu);font-size:14px}.hub-stats b{color:var(--fg);font-size:18px;margin-right:4px}
 .fix-req{margin:32px 0 8px;padding:18px;border:1px solid var(--line,#2a2f3a);border-radius:14px}.fix-req h2{font-size:18px;margin:0 0 6px}.fix-req p{margin:0 0 12px;color:var(--mu)}
+
+/* Big screens (1440p, 4K): scale the whole site up and let it run wider, so it fills the screen instead of sitting in
+   a narrow column. Phones and laptops are unchanged. */
+@media (min-width:1800px){:root{zoom:1.15;--z:1.15}.wrap,.top-in{max-width:1520px}}
+@media (min-width:2200px){:root{zoom:1.3;--z:1.3}}
+@media (min-width:2700px){:root{zoom:1.5;--z:1.5}}
+@media (min-width:3400px){:root{zoom:1.8;--z:1.8}}

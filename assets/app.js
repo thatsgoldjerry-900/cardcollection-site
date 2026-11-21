@@ -444,9 +444,9 @@
   function openDD() {
     const b = $("#dd-btn").getBoundingClientRect(), m = $("#dd-menu");
     m.hidden = false;
-    const w = m.offsetWidth;
-    m.style.top = b.bottom + 6 + "px";
-    m.style.left = Math.max(12, Math.min(b.left, innerWidth - w - 12)) + "px";
+    const w = m.offsetWidth, z = pageZoom();
+    m.style.top = b.bottom / z + 6 + "px";
+    m.style.left = Math.max(12, Math.min(b.left / z, innerWidth / z - w - 12)) + "px";
     $("#dd-btn").setAttribute("aria-expanded", "true");
   }
   function closeDD() {
@@ -596,8 +596,8 @@
         ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 600)}" srcset="${img(feat.id, feat.rk, 400)} 400w, ${img(feat.id, feat.rk, 600)} 600w, ${img(feat.id, feat.rk, 800)} 800w" sizes="(max-width: 800px) 200px, 320px" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
       </section>
       <section class="stats" aria-label="Collection stats">
-        <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b></b><span>NFL Husker Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></a>
-        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo" href="#/c/${x.slug}"><b>${pctText(x)}</b><span>${esc(x.title)} Chase →</span><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></a>`).join("")}
+        <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b><i class="sn"></i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></b><span>NFL Husker Chase →</span></a>
+        ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo" href="#/c/${x.slug}"><b><i class="sn">${pctText(x)}</i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
         <a class="stat link" href="#/letters"><b>🔤</b><span>Letterman Sets →</span></a>
@@ -621,7 +621,7 @@
     loadCheckQuiet().then(() => {
       const t = allPlayers().filter((p) => p.listSlug === "nfl-tier-1-huskers"), el = $("#stat-nfl");
       if (!el || !t.length) return;
-      el.querySelector("b").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.hidden = false;
+      el.querySelector(".sn").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.hidden = false;
     }).catch(() => {});
   }
 
@@ -990,9 +990,9 @@
       peekTimer = setTimeout(() => {
         const c = bestScan(row.dataset.peek, row.dataset.sport); if (!c || peekRow !== row) return;
         peek.innerHTML = `<img alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><small>${esc(c.title || c.name)}</small>`;
-        const r = t.getBoundingClientRect(), w = 190, h = 300;
-        peek.style.left = Math.max(8, Math.min(r.right + 14, innerWidth - w - 8)) + "px";
-        peek.style.top = Math.max(8, Math.min(r.top + r.height / 2 - h / 2, innerHeight - h - 8)) + "px";
+        const z = pageZoom(), r = t.getBoundingClientRect(), w = 190, h = 300;
+        peek.style.left = Math.max(8, Math.min(r.right / z + 14, innerWidth / z - w - 8)) + "px";
+        peek.style.top = Math.max(8, Math.min((r.top + r.height / 2) / z - h / 2, innerHeight / z - h - 8)) + "px";
         peek.hidden = false;
       }, 350);
     });
@@ -2007,6 +2007,8 @@
   function cid(x) { return x.fb ? x.backId : x.id; }
   function byCid(id) { return CARDS.find((x) => cid(x) === id); }
   function isBackScan(x) { return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
+  // Big screens scale the whole page up (style.css, html zoom); window sizes and on-screen positions are divided by it to match CSS pixels.
+  function pageZoom() { return parseFloat(getComputedStyle(document.documentElement).zoom) || 1; }
   const isWant = (x) => !!(x && SECTIONS[x.si] && SECTIONS[x.si].kind === "want");
   function rainbowOf(c, withWants = false) {
     if (!RAINBOWS) {
