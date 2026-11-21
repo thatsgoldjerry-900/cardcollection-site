@@ -90,6 +90,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [x] **After the football re-upload is live:** (done 2026-11-20) tell Claude, who checks the new names on the site and turns off
   "freshUpload" in config/site.json (it keeps the big batch from all showing as NEW).
 
+- [ ] **TCDb want list on rainbow pages is live** (2026-11-21, football export of 50,294 cards). To refresh: export the want
+  list from TCDb as CSV and send it to Claude (scripts/tcdb_wantlist.py makes data/tcdb/football-wantlist.json: card names
+  and TCDb links only). Each Drive update matches it to the scans (scripts/build_rainbow_wants.py); a card shows as a
+  "Need it" placeholder only on its rainbow page and drops off once its scan is in. Baseball works the same way (send that export).
+
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
