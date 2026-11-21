@@ -2155,7 +2155,9 @@
         const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
         const miss = L.word ? L.slots.filter((x) => !x.cards.length).map((x) => x.letter) : [];
         binder.push(...L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }])));
-        return `<section class="lt-set"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a></h3>
+        // A complete set gets a celebration frame and badge (around the cards, never on them).
+        const full = L.word && !miss.length;
+        return `<section class="lt-set${full ? " lt-done" : ""}"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a>${full ? `<span class="lt-badge"><i aria-hidden="true">★</i>Complete set<b>${fmt(L.slots.length)}/${fmt(L.slots.length)}</b></span>` : ""}</h3>
           <p>${esc(title)} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
           <div class="lt-word" style="--n:${L.slots.length}">${L.slots.map((x) => letterSlot(x, shown)).join("")}</div></section>`; }).join("")}</section>`;
     }).join("");
