@@ -915,8 +915,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .sig-neon-hover-unused{filter:drop-shadow(0 0 3px #ff7a5c) drop-shadow(0 0 9px #ff3a1a) drop-shadow(0 0 24px rgba(255,30,0,.85)) drop-shadow(0 0 48px rgba(240,0,0,.55))}
 
 /* All letterman sets (#/letters) */
-.lt-group{margin:26px 0}.lt-group>h2{font-size:22px;margin:0 0 6px}.lt-group>h2 small{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
-.lt-set h3{margin:0 0 2px;font-size:18px}.lt-set h3 a{color:var(--fg);text-decoration:none}.lt-set h3 a:hover{color:var(--acc)}.lt-need{color:#ff8a8a}
+.lt-group{margin:26px 0}.lt-group>h2{font-size:30px;margin:0 0 6px}.lt-group>h2 small{font-size:13px;color:var(--mu);font-weight:400;margin-left:6px}
+.lt-set h3{margin:0 0 4px;font-size:24px}.lt-set h3 a{color:var(--fg);text-decoration:none}.lt-set h3 a:hover{color:var(--acc)}.lt-need{color:#ff8a8a}
 .pm-ph.pm-ic{display:grid;place-items:center;font-size:26px}
 
 /* Fan Day autographs (player pages): his box from a multi-signed sheet */
