@@ -216,22 +216,8 @@
           "url": "#/checklist"
         }
       ],
-      "_oldFolders": {
-        "2009-and-older": [
-          [
-            "11HRGoNvW_2rXJTNskM4-N9OvjEsyRqU5",
-            ""
-          ]
-        ],
-        "2010-and-newer": [
-          [
-            "14IkGSLAPEDb6lkyuIG7Fldz8M30Hd_QJ",
-            ""
-          ]
-        ]
-      },
       "driveFolderName": "Nebraska Football Cards & Autos",
-      "_help": "Read from the Drive folder named in driveFolderName (one folder; Sold/Pending/Cut/Extra subfolders skipped). _oldFolders: the two folders read before Nov 2026."
+      "_help": "Read from the Drive folder named in driveFolderName (one folder; Sold/Pending/Cut/Extra subfolders skipped)."
     },
     {
       "slug": "husker-baseball",
