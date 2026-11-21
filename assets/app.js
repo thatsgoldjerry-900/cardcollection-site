@@ -1887,7 +1887,8 @@
   let BEST_TIMER = 0;
   function bestShow(cards) {
     clearInterval(BEST_TIMER);
-    const pool = cards.map((c) => [bestScore(c), c]).filter(([n]) => n >= 9).sort((a, b) => b[0] - a[0]).map((x) => x[1])
+    const pool = cards.filter((c) => !isWant(c))   // only cards I own, not the Want List
+      .map((c) => [bestScore(c), c]).filter(([n]) => n >= 9).sort((a, b) => b[0] - a[0]).map((x) => x[1])
       .filter((c, k, a) => a.findIndex((x) => x.name === c.name) === k).slice(0, 80);   // a card filed in two collections counts once
     for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
     // As many cards as fit: two full rows on wide screens (three on phones), from the grid's column count.
