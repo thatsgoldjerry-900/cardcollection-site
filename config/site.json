@@ -337,18 +337,9 @@
       "kind": "team",
       "color": "lions",
       "blurb": "Some are PC and some are available for trade.",
-      "groups": [
-        {
-          "slug": "all",
-          "label": "All",
-          "folders": [
-            [
-              "13OgiSScSkoa6K-UyuGb7jyfaEaA201Re",
-              ""
-            ]
-          ]
-        }
-      ]
+      "groups": [],
+      "teamTag": "Detroit Lions",
+      "_help": "No Drive folder of its own: shows every card tagged with this team (cards in a \"Detroit Lions\" subfolder in Drive, e.g. in Nebraska Football Cards & Autos). Each card is still one card, filed in its home collection."
     },
     {
       "slug": "want-list",

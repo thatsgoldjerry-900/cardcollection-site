@@ -68,8 +68,11 @@ def make(slug, title, kicker, cards, count):
     d.text((72, 545), "IANBADEER.COM", font=F("Inter-Bold", 26), fill=(255, 90, 90))
     img.save(os.path.join(ROOT, "assets", "previews", slug + ".jpg"), quality=86)
 only = sys.argv[1:]
+# A section with a teamTag (Detroit Lions) shows every card tagged with that team (card field 8), not cards filed in it.
+_want = {k for k, x in enumerate(cat["sections"]) if x.get("kind") == "want"}
+in_section = lambda x, i, s: (x[8] == s["teamTag"] and x[3] not in _want) if s.get("teamTag") else x[3] == i
 for i, s in enumerate(cat["sections"]):
-    cards = [x for x in cat["cards"] if x[3] == i]
+    cards = [x for x in cat["cards"] if in_section(x, i, s)]
     if not cards or (only and s["slug"] not in only): continue
     kicker = {"pc": "Super Collection", "team": "Team collection", "want": "Still hunting"}.get(s.get("kind"), "Collection")
     make(s["slug"], s["title"], kicker, picks(s["slug"], cards), len(cards)); print(s["slug"])

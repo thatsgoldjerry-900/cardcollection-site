@@ -95,7 +95,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
     "2nd (Sold to … for $15 on 4-22)": file names show on the site as captions and in search.
 - [ ] **Read straight from the main Drive folder** (`driveRoot` in `config/site.json`, parent folder `18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV`).
-  - [ ] Make the Drive folder names match the site section titles, or map them. Today "Lions", "Royals" and "Nebraska Baseball & Softball" differ.
+  - [ ] Make the Drive folder names match the site section titles, or map them. Today "Royals" and "Nebraska Baseball & Softball" differ. (The Lions page has no folder of its own since 2026-11-21: it shows every card tagged "Detroit Lions", i.e. in a Detroit Lions subfolder.)
   - [ ] Check the new card names: count, auto and relic tags, and that every section still fills.
   - [ ] **Don't double uploads.** A scan copied into two folders counts as two cards (today ~147 names appear twice,
     mostly Gordon cards also in the Royals Button Relics / Nameplates / Dirt Relics groups).

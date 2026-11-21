@@ -34,8 +34,11 @@ prev = lambda slug: base + f"assets/previews/{slug}.jpg" if os.path.exists(os.pa
 first = lambda t: re.split(r"(?<=[.!?])\s", (t or "").strip())[0] if t else ""
 cards = cat["cards"]
 # Collections
+# A section with a teamTag (Detroit Lions) shows every card tagged with that team (card field 8), not cards filed in it.
+_want = {k for k, x in enumerate(cat["sections"]) if x.get("kind") == "want"}
+in_section = lambda x, i, s: (x[8] == s["teamTag"] and x[3] not in _want) if s.get("teamTag") else x[3] == i
 for i, s in enumerate(cat["sections"]):
-    n = sum(1 for x in cards if x[3] == i)
+    n = sum(1 for x in cards if in_section(x, i, s))
     if not n: continue
     write(f"c/{s['slug']}/", s["title"], f"{first(s.get('blurb'))} {n:,} high-resolution scans.".strip(), prev(s["slug"]))
 nc = sum(1 for x in cards if re.search(r"\bcustom\b", x[2], re.I))

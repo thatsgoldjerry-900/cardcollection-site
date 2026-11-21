@@ -334,9 +334,12 @@
       <thead><tr><th>${esc(head[0])}</th><th>${esc(head[1] || "")}</th></tr></thead>
       ${part(cut < 0 ? body : body.slice(0, cut), "got")}${cut < 0 ? "" : part(body.slice(cut), "left")}</table></aside>`;
   }
-  function sectionCards(si) { return CARDS.filter((c) => c.si === si); }
+  // A section with a teamTag (Detroit Lions) has no folder of its own: it shows every card tagged with that team,
+  // wherever the card is filed, so each card is still one card.
+  function sectionCards(si) { const t = SECTIONS[si] && SECTIONS[si].teamTag;
+    return CARDS.filter((c) => (t ? c.team === t && SECTIONS[c.si].kind !== "want" : c.si === si)); }
   // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
-  function shown(s) { const si = SECTIONS.indexOf(s); return CARDS.some((c) => c.si === si); }
+  function shown(s) { return sectionCards(SECTIONS.indexOf(s)).length > 0; }
   /* Fuzzy search: when a word matches nothing, swap in the closest known word (one typo, or two in long words). */
   let VOCAB = null;
   function cardVocab() {
