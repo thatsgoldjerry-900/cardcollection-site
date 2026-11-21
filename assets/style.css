@@ -956,3 +956,8 @@ a.need-cd:hover .ph{border-color:rgba(255,90,78,.55)}
 .have-cd .need-stamp{border-color:#2ea85a;color:#5fd98d}
 .have-cd .need-stamp small{color:#c9f2d6}
 a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
+/* Letterman pages: space and a thin line between sets, so each name clearly starts a new set (not the end of the one above). */
+.lt-set+.lt-set{margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.lt-words>.lt-set+.lt-set{margin-top:8px}
+.lt-group>h2{margin-bottom:14px}
+@media (max-width:640px){.lt-set+.lt-set{margin-top:22px;padding-top:16px}.lt-words>.lt-set+.lt-set{margin-top:4px}}
