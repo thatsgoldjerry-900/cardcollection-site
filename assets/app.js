@@ -2096,7 +2096,10 @@
     const pre = m[3].replace(/[^A-Za-z]/g, "").toLowerCase();
     // The player, without the letter code that sits in the name ("Niles Paul 4N", "1P Aaron Pribanic", "Letter 03 R").
     const who = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)|(?:^|\s)\d\s\d(?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
-    return [m[1], norm(who), pre || norm(m[2])].join("|");
+    // An autographed version of a letter set is its own set (e.g. Roger Craig's 2009 Icons Immortal Lettermen /105 and
+    // the /20 Autographs share a card number). Goes by the set's name, so one file missing its AU code stays in its set.
+    const au = /autograph|signature|signed/i.test(c.name.split("#")[0]) || c.tags.has("auto");
+    return [m[1], norm(who), pre || norm(m[2])].join("|") + (au ? "|au" : "");
   };
   let LETTERS = null;
   function lettersOf(c) {
