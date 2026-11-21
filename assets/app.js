@@ -2252,10 +2252,15 @@
     const pars = all.map((x) => (x.par || "").replace(PARALLEL_WORDS, "").trim());
     const common = pars.every(Boolean) ? pars.slice().sort((p, q) => p.length - q.length).find((p) => pars.every((q) => q.toLowerCase().startsWith(p.toLowerCase()))) : "";
     const sec = SECTIONS[(isWant(c) ? all[0] : c).si], base = c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "") + (common ? ` - ${common}` : "");
+    // Progress tracker (like the collection pages): versions I have (scanned or not) out of every version I know of.
+    // Shown only for rainbows on TCDb (a card on my want list or in my TCDb collection), where the full count is known.
+    const owned = all.length + have.length, total = owned + needs.length, rbPct = total ? (owned / total) * 100 : 0;
+    const tracked = rainbowOf(c, true).some((x) => x.th || isWant(x));
+    const prog = tracked ? `<div class="prog"><b>${needs.length ? Math.floor(rbPct) : 100}%</b><div class="bar"><i style="width:${rbPct}%"></i></div><small>${needs.length ? `${fmt(owned)} of ${fmt(total)} versions` : `All ${fmt(total)} versions`}${have.length ? ` (${fmt(all.length)} scanned)` : ""}</small></div>` : "";
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} version${all.length === 1 ? "" : "s"} scanned${have.length ? `, ${fmt(have.length)} more I have but haven't scanned yet` : ""}${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} version${all.length === 1 ? "" : "s"} scanned${have.length ? `, ${fmt(have.length)} more I have but haven't scanned yet` : ""}${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p>${prog}</div><div class="b-row">${binderBtn()}</div>
       <div class="grid rb-grid" id="grid">${both.map((x) => (isWant(x) || x.th ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
     document.querySelectorAll("#grid .cd[data-i], #grid .cd[data-need]").forEach((el) => { const col = parColor(el.dataset.i != null ? CARDS[+el.dataset.i] : extra[+el.dataset.need]);
       if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
