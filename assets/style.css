@@ -951,3 +951,8 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 a.need-cd{text-decoration:none;color:inherit;cursor:pointer}
 a.need-cd:hover .ph{border-color:rgba(255,90,78,.55)}
 .need-link{font-size:12px;color:var(--acc)}
+/* "Have it": a card in my TCDb collection that isn't scanned yet (green stamp instead of the red "Need it") */
+.have-cd .ph{border-color:rgba(70,200,120,.3)}
+.have-cd .need-stamp{border-color:#2ea85a;color:#5fd98d}
+.have-cd .need-stamp small{color:#c9f2d6}
+a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}

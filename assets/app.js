@@ -2019,8 +2019,10 @@
      A version I have a scan of drops off by itself (rainbow()). Loaded once; rainbows are rebuilt when it arrives. */
   let TW = null, TWLOAD = null;
   const tcdbWants = () => TWLOAD || (TWLOAD = fetch("data/rainbow-wants.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({}))
-    .then((d) => { TW = (d.cards || []).map(([name, ids], k) => { const n = name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim();
-      return { ...parse(n), name: n, tw: true, tcdb: ids, i: -1 - k }; }); RAINBOWS = null; return TW; }));
+    .then((d) => { const mkT = (flag) => ([name, ids]) => { const n = name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim();
+        return { ...parse(n), name: n, [flag]: true, tcdb: ids, i: -1 }; };
+      // cards: my TCDb want list; have: my TCDb collection (cards I have; without a scan they show as "Have it").
+      TW = [...(d.cards || []).map(mkT("tw")), ...(d.have || []).map(mkT("th"))]; RAINBOWS = null; return TW; }));
   function rainbowOf(c, withWants = false) {
     if (!RAINBOWS) {
       RAINBOWS = new Map();
@@ -2034,7 +2036,7 @@
     const k = rainbowKey(c); let all = (k && RAINBOWS.get(k)) || [];
     if (!all.includes(c)) all = all.map((x) => (copyKey(x) === copyKey(c) ? c : x));   // opened the duplicate copy
     // Want List cards aren't part of a rainbow (they're shown as "Need it" placeholders on the rainbow page instead).
-    all = all.filter((x) => withWants || !isWant(x));
+    all = all.filter((x) => withWants || !(isWant(x) || x.th));
     // Two copies of the same version (e.g. Prime 17/25 and 18/25) show once: the opened card, else the first copy.
     const ver = (x) => [isWant(x) ? "w" : "", (x.par || "").toLowerCase(), x.serial || 0, x.one ? 1 : 0].join("|");
     const pick = new Map(); all.forEach((x) => { const v = ver(x); if (!pick.has(v) || x === c) pick.set(v, x); });
@@ -2223,21 +2225,28 @@
   const parColor = (c) => { const t = (c.par || "") + " " + c.name; const hit = PAR_COLORS.find(([re]) => re.test(t)); return hit ? hit[1] : ""; };
   // Want List / TCDb want list versions of a rainbow that I don't have a scan of yet (same parallel and print run).
   // 1/1s (printing plates, Superfractors…) are never listed as needed: Ian doesn't chase them.
-  function rainbowNeeds(c, all = rainbowOf(c)) {
-    const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
-    return rainbowOf(c, true).filter((x) => isWant(x) && !x.one && !all.some((y) => haveKey(y) === haveKey(x)));
+  // TCDb collection versions I have but haven't scanned ("Have it"). A scan of the same version always wins.
+  const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
+  function rainbowHave(c, all = rainbowOf(c)) {
+    const seen = new Set(all.map(haveKey));
+    return rainbowOf(c, true).filter((x) => x.th && !seen.has(haveKey(x)) && seen.add(haveKey(x)));
+  }
+  function rainbowNeeds(c, all = rainbowOf(c), have = rainbowHave(c, all)) {
+    const mine = new Set([...all, ...have].map(haveKey));
+    return rainbowOf(c, true).filter((x) => isWant(x) && !x.one && !mine.has(haveKey(x)));
   }
   function rainbow(id) {
     if (!TW) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void tcdbWants().then(() => HASH().startsWith("#/rainbow/") && rainbow(id)); }
     const c = byCid(id); if (!c) return notFound();
     const all = rainbowOf(c);
     // Want List versions of this rainbow I don't have yet: "Need it" placeholders in their rarity spot.
-    const needs = rainbowNeeds(c, all);
-    if (!all.length || all.length + needs.length < 2) return notFound();
-    const both = [...all, ...needs].sort((a, b) => (b.one - a.one) || rarity(a) - rarity(b) || a.name.localeCompare(b.name));
+    const have = rainbowHave(c, all), needs = rainbowNeeds(c, all, have), extra = [...have, ...needs];
+    if (!all.length || all.length + extra.length < 2) return notFound();
+    const both = [...all, ...extra].sort((a, b) => (b.one - a.one) || rarity(a) - rarity(b) || a.name.localeCompare(b.name));
     // A TCDb want list card links to its TCDb page (opens in a new tab).
-    const needHTML = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}" data-need="${needs.indexOf(x)}" aria-label="Need: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>Need it</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
-      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}${x.tcdb ? '<br><span class="need-link">On my TCDb want list ↗</span>' : ""}</div></${x.tcdb ? "a" : "div"}>`;
+    // "Have it": a TCDb collection card I have but haven't scanned yet.
+    const needHTML = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" data-need="${extra.indexOf(x)}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
+      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}${x.tcdb ? `<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span>` : ""}</div></${x.tcdb ? "a" : "div"}>`;
     // The rainbow's name: the set, plus its insert name with the colors taken off ("Five Star - Golden Graphs").
     // Only when every version shares it (no plain base card among them).
     const pars = all.map((x) => (x.par || "").replace(PARALLEL_WORDS, "").trim());
@@ -2246,12 +2255,12 @@
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
-      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} version${all.length === 1 ? "" : "s"} scanned${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
-      <div class="grid rb-grid" id="grid">${both.map((x) => (isWant(x) ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
-    document.querySelectorAll("#grid .cd[data-i], #grid .cd[data-need]").forEach((el) => { const col = parColor(el.dataset.i != null ? CARDS[+el.dataset.i] : needs[+el.dataset.need]);
+      <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} version${all.length === 1 ? "" : "s"} scanned${have.length ? `, ${fmt(have.length)} more I have but haven't scanned yet` : ""}${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p></div><div class="b-row">${binderBtn()}</div>
+      <div class="grid rb-grid" id="grid">${both.map((x) => (isWant(x) || x.th ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
+    document.querySelectorAll("#grid .cd[data-i], #grid .cd[data-need]").forEach((el) => { const col = parColor(el.dataset.i != null ? CARDS[+el.dataset.i] : extra[+el.dataset.need]);
       if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
     state.list = all;
-    state.binderItems = both.map((x) => (isWant(x) ? { empty: true, label: x.one ? "1/1" : x.serial ? "/" + x.serial : "Need" } : x));
+    state.binderItems = both.map((x) => (isWant(x) || x.th ? { empty: true, label: x.th ? "Have" : x.one ? "1/1" : x.serial ? "/" + x.serial : "Need" } : x));
   }
   function notFound() {
     setTitle("Page not found");
@@ -2587,8 +2596,10 @@
     const st = setOf(c);
     if (st.length) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/set/${encodeURIComponent(cid(c))}">📚 View set (${new Set(st.map((x) => norm(x.title))).size} players)</a>`);
     // With TCDb want list cards: "View rainbow (2 of 7)", and a rainbow of one scan plus cards I need counts too.
-    const rbNeed = !isWant(c) && rb.length ? rainbowNeeds(c, rb).length : 0;
-    if (rb.length > 1 || (rb.length && rbNeed)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(cid(c))}">🌈 View rainbow (${rbNeed ? `${rb.length} of ${rb.length + rbNeed}` : rb.length})</a>`);
+    // Owned = scanned + TCDb collection; "(5 of 8)" when TCDb want list cards are still needed.
+    const rbHave = !isWant(c) && rb.length ? rainbowHave(c, rb) : [], rbNeed = !isWant(c) && rb.length ? rainbowNeeds(c, rb, rbHave).length : 0;
+    const rbOwn = rb.length + rbHave.length;
+    if (rbOwn > 1 || (rb.length && rbNeed)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/rainbow/${encodeURIComponent(cid(c))}">🌈 View rainbow (${rbNeed ? `${rbOwn} of ${rbOwn + rbNeed}` : rbOwn})</a>`);
     $("#v-meta").innerHTML = `${badges(c)}<span>${esc(sec.title)} · ${esc(sec.groups[c.gi].label)}</span><span>·</span><span>${V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`}</span><span>·</span><span style="font-family:var(--f-m)">${esc(c.name)}</span>`;
     navState();
   }
