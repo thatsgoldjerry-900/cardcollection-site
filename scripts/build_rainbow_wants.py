@@ -24,13 +24,16 @@ def main():
     cat = json.load(open(os.path.join(ROOT, "data", "catalog.json")))
     want = {i for i, s in enumerate(cat["sections"]) if s.get("kind") == "want"}
     have = {key(c[2]) for c in cat["cards"] if c[3] not in want} - {None}
-    keep, owned = [], []
-    for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-wantlist.json"))):
-        # 1/1s are left out: Ian doesn't chase them (the site skips them too).
-        keep += [r for r in json.load(open(f))["cards"] if key(r[0]) in have and not ONE.search(r[0])]
+    keep, owned, mine = [], [], set()
     # TCDb collection: cards I have. Ones without a scan show as "Have it" on their rainbow page (a scan replaces them).
     for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-collection.json"))):
-        owned += [r for r in json.load(open(f))["cards"] if key(r[0]) in have]
+        rows = json.load(open(f))["cards"]
+        mine |= {r[1] for r in rows if r[1]}
+        owned += [r for r in rows if key(r[0]) in have]
+    for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-wantlist.json"))):
+        # A card I have is never wanted (TCDb's want list export can include the whole collection, matched by TCDb card ID).
+        # 1/1s are left out: Ian doesn't chase them (the site skips them too).
+        keep += [r for r in json.load(open(f))["cards"] if r[1] not in mine and key(r[0]) in have and not ONE.search(r[0])]
     out = os.path.join(ROOT, "data", "rainbow-wants.json")
     with open(out, "w", encoding="utf-8") as f:
         json.dump({"_help": "TCDb want list (cards) and collection (have) cards that may belong to a rainbow I have scans of "

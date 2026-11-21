@@ -7,7 +7,7 @@ kind: "wantlist" (cards I still need) or "collection" (cards I have, scanned or 
 Only the card name and TCDb's set/card IDs are kept (no notes, grades or prices). Names keep Ian's own codes (AU, MEM,
 MANU, SN25, PR25, SP, SSP, 1 of 1, VAR notes) and name suffixes (Jr., II, III); TCDb's other tags at the end of a name
 (RC, ROO, CO, DPOY, SR, UER, CL, LGD, ...) are dropped, so names read like Ian's file names. Run it again with a fresh
-export to replace a list. The site never loads these files directly: scripts/build_rainbow_wants.py picks out the cards
+export to replace a list (import the collection first: the want list then leaves out every card in it). The site never loads these files directly: scripts/build_rainbow_wants.py picks out the cards
 that belong to a rainbow I have, after each Drive update.
 """
 import csv, json, os, re, sys
@@ -52,6 +52,12 @@ def main(src, sport, kind):
             seen.add((card, cid))
             rows.append([card, f"{sid}/{cid}" if sid and cid else ""])
     os.makedirs(os.path.join(ROOT, "data", "tcdb"), exist_ok=True)
+    # TCDb's want list export can include the whole collection: take out every card already in my collection file.
+    col = os.path.join(ROOT, "data", "tcdb", f"{sport}-collection.json")
+    if kind == "wantlist" and os.path.exists(col):
+        mine = {r[1] for r in json.load(open(col))["cards"] if r[1]}
+        n = len(rows); rows = [r for r in rows if r[1] not in mine]
+        if n > len(rows): print(f"{n - len(rows):,} cards from my collection taken out of the want list")
     out = os.path.join(ROOT, "data", "tcdb", f"{sport}-{kind}.json")
     with open(out, "w", encoding="utf-8") as f:
         f.write('{"_help":"TCDb ' + kind + ': [card name, TCDb setID/cardID]. Made by scripts/tcdb_import.py.","cards":[\n')

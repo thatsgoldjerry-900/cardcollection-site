@@ -90,9 +90,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [x] **After the football re-upload is live:** (done 2026-11-20) tell Claude, who checks the new names on the site and turns off
   "freshUpload" in config/site.json (it keeps the big batch from all showing as NEW).
 
-- [ ] **TCDb want list and collection on rainbow pages are live** (2026-11-21, football: want list 50,294 cards,
+- [ ] **TCDb want list and collection on rainbow pages are live** (2026-11-21, football: want list 28,357 cards (TCDb's want list export included the collection; taken out),
   collection 21,937). To refresh: export from TCDb as CSV and send it to Claude, who runs
-  `scripts/tcdb_import.py <csv> football wantlist` (or `... collection`) to make data/tcdb/football-<kind>.json: card names
+  `scripts/tcdb_import.py <csv> football collection`, then `... wantlist` (it leaves out cards in the collection) to make data/tcdb/football-<kind>.json: card names
   and TCDb links only, with TCDb's extra tags (RC, ROO, CO, SR, UER…) dropped so names read like Ian's file names. Each Drive
   update matches them to the scans (scripts/build_rainbow_wants.py). On a rainbow page, a want list card is a red "Need it"
   (never 1/1s: Ian doesn't chase them), a collection card without a scan is a green "Have it"; a scan replaces either.
