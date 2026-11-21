@@ -8,6 +8,7 @@ The site then does the exact rainbow match (same set and insert, autograph/relic
 import glob, json, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ONE = re.compile(r"\bSN1\b|\b1\s*/\s*1\b|\b1 of 1\b|\bone of one\b", re.I)
 MAIN = re.compile(r"^(\d{4})(?:-\d{2})?\s.*?#(\S+)\s+(.*)$")
 
 
@@ -24,7 +25,8 @@ def main():
     have = {key(c[2]) for c in cat["cards"] if c[3] not in want} - {None}
     keep = []
     for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-wantlist.json"))):
-        keep += [r for r in json.load(open(f))["cards"] if key(r[0]) in have]
+        # 1/1s are left out: Ian doesn't chase them (the site skips them too).
+        keep += [r for r in json.load(open(f))["cards"] if key(r[0]) in have and not ONE.search(r[0])]
     out = os.path.join(ROOT, "data", "rainbow-wants.json")
     with open(out, "w", encoding="utf-8") as f:
         json.dump({"_help": "TCDb want list cards that may belong to a rainbow I have (scripts/build_rainbow_wants.py).", "cards": keep},

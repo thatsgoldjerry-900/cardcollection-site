@@ -2222,9 +2222,10 @@
     [/\bwhite\b/i, "#eef1f5"], [/\bsilver\b|\bchrome\b|refractor|prizm|holo|foil/i, "#c3cad4"]];
   const parColor = (c) => { const t = (c.par || "") + " " + c.name; const hit = PAR_COLORS.find(([re]) => re.test(t)); return hit ? hit[1] : ""; };
   // Want List / TCDb want list versions of a rainbow that I don't have a scan of yet (same parallel and print run).
+  // 1/1s (printing plates, Superfractors…) are never listed as needed: Ian doesn't chase them.
   function rainbowNeeds(c, all = rainbowOf(c)) {
     const haveKey = (x) => (x.par || "").toLowerCase() + "|" + (x.serial || 0);
-    return rainbowOf(c, true).filter((x) => isWant(x) && !all.some((y) => haveKey(y) === haveKey(x)));
+    return rainbowOf(c, true).filter((x) => isWant(x) && !x.one && !all.some((y) => haveKey(y) === haveKey(x)));
   }
   function rainbow(id) {
     if (!TW) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void tcdbWants().then(() => HASH().startsWith("#/rainbow/") && rainbow(id)); }
