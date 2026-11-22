@@ -9,7 +9,7 @@
   const img = window.IMG_SRC || ((id, rk, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}${rk ? `?resourcekey=${rk}` : ""}`);
 
   let DATA, CARDS, SECTIONS, NEW_CUTOFF;
-  let PHOTOS = [], INV = {};
+  let PHOTOS = [], INV = {}, REFS = [];
 
   /* ---------- File-name parsing ---------- */
   const RX = {
@@ -199,6 +199,8 @@
     // Photos of athletes with my custom cards. The file name is the caption; the part before the first
     // " - " or sentence break is the short label on the strip ("Jr." and similar don't count as a break).
     const caps = (json.site.customsPhotos || {}).captions || {};
+    // Player reference images (Drive "Nebraska Player Reference Images"): open in the viewer like photos, caption = file name.
+    REFS = (json.refs || []).map(([id, rk, name, added]) => ({ photo: true, ref: true, id, rk, name, added, caption: name, short: name }));
     PHOTOS = (json.photos || []).map(([id, rk, name, added]) => {
       const caption = (caps[name] || name).trim();
       const short = caption.split(/\s+[-–—]\s+|(?<!\b(?:Jr|Sr|St|Dr|Mr|Mrs|No|vs|Jan|Feb|Aug|Sept|Oct|Nov|Dec))[.!?]\s+/)[0].replace(/[.!?]$/, "");
@@ -776,6 +778,20 @@
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-photo]"); if (!b) return;
     openViewer(+b.dataset.photo, PHOTOS);
+  });
+  // A player's reference images: the file name names the player ("Rex Burkhead Compilation"). Each image goes to the
+  // player with the longest name found in it, so "Rex Burkhead" never also lands on a shorter name it contains.
+  let REF_OWNER = null;
+  function refsFor(name) {
+    if (!REF_OWNER) {
+      const names = [...new Set(allPlayers().map((x) => norm(x.name)))].filter(Boolean).sort((a, b) => b.length - a.length);
+      REF_OWNER = new Map(REFS.map((r) => [r, names.find((n) => ` ${norm(r.name)} `.includes(` ${n} `)) || ""]));
+    }
+    return REFS.filter((r) => REF_OWNER.get(r) === norm(name));
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ref]"); if (!b) return;
+    const list = refsFor(b.dataset.refName); openViewer(Math.max(0, list.findIndex((r) => r.id === b.dataset.ref)), list);
   });
   function more() {
     const grid = $("#grid"); if (!grid) return;
@@ -1570,9 +1586,13 @@
         // With two heading rows, single-column headings in the first row (Season, Team) span both rows.
         return `<div class="ct-wrap"><table class="ct"><thead>${head.map((r, i) => `<tr>${r.map(cell("th", head.length === 2 && i === 0 ? 2 : 0)).join("")}</tr>`).join("")}</thead><tbody>${body.map((r) => `<tr class="${/^(career|total)/i.test(r[0][0]) ? "tot" : ""}">${r.map(cell("td")).join("")}</tr>`).join("")}</tbody></table></div>`;
       }).join("");
+      // Reference images (e.g. a photo compilation) in a column on the right of the profile; tap to open larger.
+      const refs = refsFor(info.name);
+      const refHTML = refs.length ? `<aside class="pl-refs" aria-label="Reference images">${refs.map((r) => `<button type="button" class="pl-ref" data-ref="${esc(r.id)}" data-ref-name="${esc(info.name)}" aria-label="Open ${esc(r.name)}">
+        <img alt="${esc(r.name)}" loading="lazy" src="${img(r.id, r.rk, 900)}"></button>`).join("")}</aside>` : "";
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
-        <div class="pl-top">
+        <div class="pl-top${refs.length ? " has-refs" : ""}">
           <div class="pl-card">${!hero && fanDayOf(slug) ? `<div class="pl-ph fd-hero">${fanDayCrop(fanDayOf(slug), info.name)}</div><small>${esc(fdLabel(fanDayOf(slug).c))}</small>` : hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
           <div class="pl-main">
@@ -1597,6 +1617,7 @@
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : info.card ? "" : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
+          ${refHTML}
         </div>
         ${football && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
@@ -2551,7 +2572,7 @@
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
       $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
       $("#v-flip").hidden = true;
-      $("#v-meta").innerHTML = `<span>With the players</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
+      $("#v-meta").innerHTML = `<span>${c.ref ? "Reference image" : "With the players"}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       navState();
       return;
     }

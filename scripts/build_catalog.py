@@ -126,6 +126,10 @@ def drive_images(get, folder_id, depth=0):
 # Photos of athletes with the custom cards Ian made for them. Not cards, so they live in their own list.
 PHOTOS_FOLDER = "customs - with the players"
 _photos = []
+# Reference images of Nebraska players (e.g. a compilation of photos), shown on that player's page. The file name
+# names the player; assets/app.js matches it to his page. Not cards, so they live in their own list ("refs").
+REFS_FOLDER = "Nebraska Player Reference Images"
+_refs = []
 
 
 def sections_from_root(cfg, root_id):
@@ -136,6 +140,8 @@ def sections_from_root(cfg, root_id):
     tops = [f for f in drive_children(get, root_id) if f["mimeType"] == FOLDER]
     for f in [t for t in tops if t["name"].strip().lower() == PHOTOS_FOLDER]:
         _photos.extend(drive_images(get, f["id"])); tops.remove(f)
+    for f in [t for t in tops if t["name"].strip().lower() == REFS_FOLDER.lower()]:
+        _refs.extend(drive_images(get, f["id"])); tops.remove(f)
     tops.sort(key=lambda f: (order.get(f["name"].strip().lower(), 999), natural(f["name"])))
     out = []
     for top in tops:
@@ -182,7 +188,8 @@ def images_by_name(get, name):
 def sections_from_config(cfg):
     for fid, rk in (cfg.get("customsPhotos") or {}).get("folders", []):
         _photos.extend(list_folder(fid, rk))
-    out, get = [], None
+    out, get = [], drive_session()
+    _refs.extend(images_by_name(get, REFS_FOLDER))
     for sec in cfg["sections"]:
         if sec.get("driveFolderName"):
             # One Drive folder, read by name; its groups are year ranges ("maxYear"), e.g. 2009 and older / 2010 and newer.
@@ -218,7 +225,7 @@ def main():
                 prev[c[0]] = c[5]
                 prev_name[c[2].lower()] = c[5]   # card name without extension
                 prev_loose.setdefault(loose_key(c[2]), c[5])   # the same card after a rename that only added tags
-            for ph in old.get("photos", []): prev_photo[ph[0]] = ph[3]
+            for ph in old.get("photos", []) + old.get("refs", []): prev_photo[ph[0]] = ph[3]
         except Exception: pass
     today = date.today().isoformat()
     cards, sections, dupes = [], [], []
@@ -320,7 +327,9 @@ def main():
     # Photo name without extension is its caption; newest first.
     photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
                      for f in _photos), key=lambda x: x[3], reverse=True)
-    out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos,
+    refs = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
+                   for f in _refs), key=lambda x: x[2].lower())
+    out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos, "refs": refs,
            "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team", "frontFromBase"], "cards": cards, "dupes": dupes}
     if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
         # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
