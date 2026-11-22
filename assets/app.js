@@ -1206,12 +1206,17 @@
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
         return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
           <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}${e.pfa ? ` <span class="src" title="Year from Pro Football Archives">· Pro Football Archives</span>` : ""}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
+      // My cards of this team: scans filed in a Drive folder named for the team (any of its names, e.g. St. Louis Rams), oldest first.
+      const names = new Set(t.names.map((n) => n.toLowerCase()));
+      const mine = sortList(CARDS.filter((c) => c.team && names.has(c.team.toLowerCase()) && SECTIONS[c.si].kind !== "want" && !isBackScan(c)), "old");
+      state.list = mine; state.binderItems = null;
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
       $("#app").innerHTML = `<div class="wrap tm tm-team" style="${teamVars(t)}"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
         <div class="tm-banner">${teamLogo(t, "tm-blogo")}<div class="c-head"><div class="kick">Huskers by NFL Team</div><h1>Huskers on the ${esc(t.name)}</h1>
         <p>${fmt(list.length)} Nebraska Cornhuskers from my NFL lists spent time with the ${esc(t.name)}.${t.names.length > 1 ? ` Past team names count too: ${esc(t.names.slice(1).join(", "))}.` : ""}</p></div></div>
         ${[1, 2, 3].map((n) => { const g = list.filter((e) => e.tier === n); return g.length ? `<h2 class="more-h">${TIER[n]} · ${g.length}</h2><div class="pm-list">${g.map(card).join("")}</div>` : ""; }).join("")}
         ${list.length ? "" : `<p class="empty">No Huskers from my lists yet.</p>`}
+        ${mine.length ? `<h2 class="more-h tm-cards-h">My ${esc(t.name)} cards · ${fmt(mine.length)}</h2><div class="b-row">${binderBtn()}</div><div class="grid" id="grid">${mine.map((c) => cardHTML(c)).join("")}</div>` : ""}
         ${t.logoPage ? `<p class="tm-credit">Logo: <a href="${esc(t.logoPage)}" target="_blank" rel="noopener">Wikipedia</a>. Team names and logos are trademarks of their teams.</p>` : ""}</div>`;
     }));
   }
