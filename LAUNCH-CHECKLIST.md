@@ -99,6 +99,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   (never 1/1s: Ian doesn't chase them), a collection card without a scan is a green "Have it"; a scan replaces either.
   Baseball works the same way (send those exports).
 
+- [ ] **Player reference images are live** (2026-11-22): Drive folder "Nebraska Player Reference Images" (read by name each update,
+  scripts/build_catalog.py "refs"). The file name names the player (e.g. "John Howell"); the image shows in a column on the right of
+  his page (below the bio on phones) and opens in the viewer. Extra words are fine ("John Howell Compilation"). Nothing pending.
+
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
