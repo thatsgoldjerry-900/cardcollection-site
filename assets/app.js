@@ -176,6 +176,8 @@
       const p = parse(name);
       if (backId) p.tags.add("back");
       // Customs page filters: which kind of custom it is, from the collection it lives in (or "non-sport" in the name).
+      // A customs-only Drive folder (config "customs": true, e.g. "Customs - Non-Sport"): every scan in it is a custom.
+      if (SECTIONS[si].customs) p.tags.add("custom");
       if (p.tags.has("custom")) {
         const sl = SECTIONS[si].slug;
         if (/non[- ]?sport/i.test(name + " " + sl)) p.tags.add("nonsport");
@@ -340,7 +342,8 @@
   function sectionCards(si) { const t = SECTIONS[si] && SECTIONS[si].teamTag;
     return CARDS.filter((c) => (t ? c.team === t && SECTIONS[c.si].kind !== "want" : c.si === si)); }
   // A section with no scans yet (e.g. a new folder still being filled) stays out of menus and tiles.
-  function shown(s) { return sectionCards(SECTIONS.indexOf(s)).length > 0; }
+  // A hidden section (config "hidden": true, e.g. Customs - Non-Sport) shows only through the Customs page.
+  function shown(s) { return !s.hidden && sectionCards(SECTIONS.indexOf(s)).length > 0; }
   /* Fuzzy search: when a word matches nothing, swap in the closest known word (one typo, or two in long words). */
   let VOCAB = null;
   function cardVocab() {
@@ -634,6 +637,7 @@
     const si = SECTIONS.findIndex((x) => x.slug === slug);
     const sec = virtual ? null : SECTIONS[si];
     if (!virtual && !sec) return notFound();
+    if (sec && sec.hidden) return go("#/c/customs", true);
     setNav(slug);
     let base, title, kick, blurb = "", groups = [], gi = -1, color = "royal", prog = "";
     if (sec) {

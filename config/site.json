@@ -342,6 +342,17 @@
       "_help": "No Drive folder of its own: shows every card tagged with this team (cards in a \"Detroit Lions\" subfolder in Drive, e.g. in Nebraska Football Cards & Autos). Each card is still one card, filed in its home collection."
     },
     {
+      "slug": "customs-non-sport",
+      "title": "Customs - Non-Sport",
+      "kind": "team",
+      "color": "gold",
+      "customs": true,
+      "hidden": true,
+      "driveFolderName": "Customs - Non-Sport",
+      "groups": [{"slug": "all", "label": "Non-Sport Customs"}],
+      "_help": "Ian's non-sport custom cards (e.g. Sonic the Hedgehog), read from the Drive folder named in driveFolderName. Hidden: no menu, tile or page of its own; the cards show under the Customs page's Non-Sport filter (customs: true marks every scan in it as a custom)."
+    },
+    {
       "slug": "want-list",
       "title": "Want List",
       "kind": "want",
