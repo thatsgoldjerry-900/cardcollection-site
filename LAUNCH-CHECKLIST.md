@@ -12,8 +12,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [x] 2012 Upper Deck Rookie Lettermen Signatures #RLAD Alfonzo Dennard **8S** → likely **7S** (8 is the K)
   - [x] Check for a double upload: Jared Crick **2O** appears twice ("#'d 8 of 25" and "#'d to 25"), and
     Rex Burkhead **11S** appears twice ("#'d 24 of 50" and "#'d to 50"). If each is one card, keep one file.
-- [ ] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Make a folder "Customs - Non-Sport" in the main
-  shared Drive folder and put the scans in it, then tell Claude, who connects it to the Customs page's Non-Sport filter.
+- [x] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Ian made the "Customs - Non-Sport" Drive folder (2026-11-22);
+  connected as a hidden section in config/site.json ("customs": true, "hidden": true): its scans show only under the Customs
+  page's Non-Sport filter.
 - [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
   "Viewers and commenters can see the option to download, print, and copy", then open one card file to check
   the download option is gone there too. The site keeps working; this removes Drive's "Download all" zip.
