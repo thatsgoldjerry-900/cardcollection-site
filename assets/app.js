@@ -868,7 +868,7 @@
   function checklist(which) {
     const page = CK_PAGES.find((x) => x.path === (which ? "/" + which : "")) || CK_PAGES[0];
     setNav("checklist" + page.path); setTitle(page.label);
-    if (!PLAYERS) fetch("data/players.json").then((r) => (r.ok ? r.json() : null)).then((d) => { if (!d || PLAYERS) return; PLAYERS = d; ALIAS_CACHE.clear(); if (CK.q && $("#ck-table")) table(); }).catch(() => {});
+    if (!PLAYERS) fetch("data/players.json").then((r) => (r.ok ? r.json() : null)).then((d) => { if (!d || PLAYERS) return; PLAYERS = withCardBios(d); ALIAS_CACHE.clear(); if (CK.q && $("#ck-table")) table(); }).catch(() => {});
     if (!CHECK) {
       $("#app").innerHTML = `<p class="loading">Loading the checklist…</p>`;
       fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); })
@@ -1031,6 +1031,8 @@
 
   /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
   let PLAYERS = null;
+  // Bios for the custom-card pages (config cardPlayers) are kept in their own list in players.json; the pages use both.
+  const withCardBios = (d) => ({ ...d, players: [...(d.players || []), ...(d.cardPlayers || [])] });
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
   // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
@@ -1057,7 +1059,7 @@
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
     if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (PROHOF = d.pro || {}))));
-    if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = d)));
+    if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = withCardBios(d))));
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
     Promise.all(need).then(then).catch(() => ($("#app").innerHTML = `<p class="empty">This page isn't available yet.</p>`));
@@ -1537,7 +1539,7 @@
       const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", useWiki ? "" : myFinal],
         ["Nebraska years", useWiki ? wikiNeb : ""],
-        ["Also played at", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
+        [useWiki || myFinal ? "Also played at" : "College", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
         [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
         ["NFL games", football ? info.games || info.nflGames : ""], ["Born", (pick("Born") || [])[1] || line(/^Born:\s*/)],
@@ -1562,8 +1564,10 @@
       const ianBio = [...new Set(mine.map((e) => e.story).filter(Boolean))].join("\n\n");
       const statKey = Object.keys(sec).find((k) => /statistics/i.test(k));
       // A list section, in whichever name this sport's infobox uses; "2022–2024 | Team" rows read as "Team (2022–2024)".
-      const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc(r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0])}</li>`).join("") : ""; };
+      const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc((r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0]).replace(/\s*\n\s*/g, " · "))}</li>`).join("") : ""; };
       const teams = list("Career history", "Playing", "Teams"), awards = list("Awards and highlights", "Career highlights and awards", "Career highlights");
+      // Coaches (custom-card pages such as Tom Osborne): their coaching career, as Wikipedia lists it.
+      const coaching = list("Coaching", "Coaching career", "Coaching career (HC unless noted)");
       const statsLink = football && /^https?:\/\//i.test(info.link || "") ? info.link : w && w.statsLink ? w.statsLink.url : "";
       const college = p && p.college;
       const DEF = /defensive|linebacker|cornerback|safety|end\b|tackle/i;
@@ -1633,10 +1637,11 @@
               ? `<table class="kv"><tbody>${h.map((k, n) => (n === 0 && h.length > 2 ? "" : `<tr><th>${esc(k)}</th><td>${esc(rows[0][n] ?? "")}</td></tr>`)).join("")}</tbody></table>`
               : `<div class="vt-tbl"><table><thead><tr>${h.map((k) => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
             return `<section><h2>${esc(st.title || "Stats")} <span class="star" title="From my custom card">★</span></h2>${body}<p class="note">From my custom card.</p></section>`; }).join("")}
-          ${(!football || info.card) && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
+          ${(!football || (info.card && !collegeHTML)) && !wtables ? "" : `<section class="wide-sec"><h2>College stats</h2>${wtables ? `${wtables}<p class="note">From <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, CC BY-SA 4.0.</p>` : collegeHTML ? `${collegeHTML}<p class="note">${p.collegeSource === "recordbook"
               ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
               : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
             : `<p class="muted">Not available yet.</p>`}</section>`}
+          ${coaching ? `<section><h2>Coaching career</h2><ul class="plain">${coaching}</ul></section>` : ""}
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>

@@ -264,12 +264,15 @@ def college_stats(name, final_year, position=""):
 
 _rest = []   # saved entries not processed yet in this run, so every save writes the complete list
 
+_card = []   # bios for the people in config/site.json "cardPlayers" (custom-card pages), kept apart from the lists
+
+
 def save(players):
     done = {p["slug"] for p in players}
     players = players + [p for p in _rest if p["slug"] not in done]
     out = {"source": {"wikipedia": "Text and facts from Wikipedia, CC BY-SA 4.0",
                       "cfbd": "College stats from CollegeFootballData.com"},
-           "players": players}
+           "players": players, "cardPlayers": _card}
     json.dump(out, open(OUT, "w"), ensure_ascii=False, separators=(",", ":"))
 
 
@@ -279,8 +282,12 @@ def main():
     cfg = json.load(open(CONFIG))
     lists = {l["slug"]: l for l in json.load(open(lists_path))["lists"]}
     old = {}
+    old_card = {}
     if os.path.exists(OUT):
-        old = {p["slug"]: p for p in json.load(open(OUT)).get("players", [])}
+        prev_out = json.load(open(OUT))
+        old = {p["slug"]: p for p in prev_out.get("players", [])}
+        old_card = {p["slug"]: p for p in prev_out.get("cardPlayers", [])}
+        _card[:] = list(old_card.values())
     # Overrides are keyed by name, or "baseball:Name" / "basketball:Name" when a name is on two lists.
     ov = cfg.get("overrides", {})
     only = next((a.split("=")[1] for a in sys.argv if a.startswith("--sport=")), None)
@@ -338,8 +345,49 @@ def main():
                 save(players)  # save after every player so a stopped run keeps its progress
                 print(f"  {name} ({sport['sport']}): wiki={'yes' if p.get('wiki') else 'no'}", file=sys.stderr)
     _rest[:] = []   # every listed player is in this run; drop anyone no longer on a list
+    card_players(used, ov, old_card)
     save(players)
     print(f"Wrote {len(players)} players to {OUT}", file=sys.stderr)
+
+
+def card_players(used, ov, old_card):
+    """Wikipedia bios (and CFBD college stats with a final season) for config "cardPlayers": people Ian made custom cards
+    of who aren't on his lists. Slugs follow assets/app.js allPlayers(); overrides use the key "card:Name"."""
+    site = json.load(open(os.path.join(ROOT, "config", "site.json")))
+    out = []
+    for where, people in (site.get("cardPlayers") or {}).items():
+        if where.startswith("_"): continue
+        sport = next(s for s in SPORTS if s["sport"] == ("football" if where == "football" else "baseball"))
+        for x in people:
+            name = x["name"].strip()
+            slug = slugify(name)
+            if slug in used: slug += "-card"
+            used.add(slug)
+            prev = old_card.get(slug)
+            if prev and prev.get("checked") and "--refresh" not in sys.argv:
+                out.append(prev); continue
+            override = ov.get(f"card:{name}")
+            p = {"slug": slug, "name": name, "card": True, "checked": time.strftime("%Y-%m-%d")}
+            try:
+                art = None if override == "none" else find_article(name, override, sport)
+                if art:
+                    title, html = art
+                    p["wiki"] = {"title": title, "url": "https://en.wikipedia.org/wiki/" + title.replace(" ", "_"),
+                                 "intro": off_field_out(intro_from_html(html)), **parse_infobox(html)}
+                    p["wiki"]["sections"] = off_field_facts(p["wiki"].get("sections"))
+                    ct = college_tables(html)
+                    if ct: p["collegeTables"] = ct
+                else:
+                    print(f"  ! {name} (custom card page): no Wikipedia article found", file=sys.stderr)
+                year = str(x.get("year") or "")
+                if where == "football" and year.isdigit():
+                    p["college"] = college_stats(name, int(year), x.get("position", ""))
+            except Exception as e:  # keep the last good data rather than losing a bio
+                print(f"  ! {name}: {e}; keeping previous data", file=sys.stderr)
+                if prev: p = prev
+            out.append(p)
+            print(f"  {name} (custom card page): wiki={'yes' if p.get('wiki') else 'no'}", file=sys.stderr)
+    _card[:] = out
 
 
 if __name__ == "__main__":
