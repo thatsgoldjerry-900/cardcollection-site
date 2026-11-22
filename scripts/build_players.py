@@ -315,7 +315,7 @@ def main():
                 prev = old.get(slug)
                 skip = (only and only not in (sport["sport"], key)) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
                 if skip and prev:
-                    p.update({k: prev[k] for k in ("wiki", "college", "position", "collegeTables", "checked") if k in prev})
+                    p.update({k: prev[k] for k in ("wiki", "college", "collegeSource", "position", "collegeTables", "checked") if k in prev})
                     if override == "none":                # wrong person matched before: drop the article
                         for k in ("wiki", "collegeTables"): p.pop(k, None)
                     players.append(p); continue

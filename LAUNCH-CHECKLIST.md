@@ -65,12 +65,12 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   168 of the 253 Tier 1 players without one (85 unchecked). Add more only from signatures Ian cleans up and sends, or cards he
   names. Standard: clean version (fill holes/streaks, keep the pen's stroke width, no card design or extra words; jersey # or
   nickname OK), saved in assets/signatures/ and set in config "signatures" with "src". Don't over-thicken (Adduci looked blobby).
-- [ ] **Wikipedia bios (and college stats) for the card-only bios** (`cardPlayers` in config/site.json: Osborne, Devaney,
-  Larry Frost, Whaley, Bomberger, Reeves, Hubka, Omar Manning, Maurice Washington, Stoltenberg, Foltz, Brewer Hicklen, and the
-  coaches added 2026-11-23: Ron Brown, Pete Elliot (card spelling; real name Pete Elliott), Dana X. Bible, Biff Jones,
-  Bo Pelini, Mike Riley). Wikipedia was refusing requests from Claude's machine on 2026-11-20 and 22, so run it in the GitHub
-  Action: have scripts/build_players.py also read `cardPlayers` (sports content only, same filters); the page shows the bio under
-  Ian's write-up. Coaches keep coaching years, not a final playing season. Nothing for Ian to do but say go.
+- [x] **Wikipedia bios (and college stats) for the card-only bios** (done 2026-11-22, run from Claude's machine; Wikipedia
+  answered again). scripts/build_players.py now also reads config/site.json `cardPlayers` (same sports filters) and saves them as
+  `cardPlayers` in data/players.json; the page shows the bio under Ian's write-up, plus a Coaching career list for coaches.
+  Found: Osborne, Devaney, Pete Elliott (override "card:Pete Elliot"), Dana X. Bible, Biff Jones, Pelini, Mike Riley, Brewer Hicklen
+  (override; he didn't play at Nebraska). No Wikipedia article: Larry Frost, Whaley, Bomberger, Reeves, Hubka, Omar Manning,
+  Maurice Washington, Stoltenberg, Foltz, Ron Brown (coach). College stats (CFBD) added for Whaley, Washington, Stoltenberg, Foltz.
 - [ ] **Team logos: hand-match the ~49 teams still without one** (USFL 1980s, NFL Europe, early NFL; data/team-logos.json "tried").
   Give exact Wikipedia article names per team; ~9 "tried" entries aren't teams ("Los Angeles", "Oklahoma State"…). Runs in the Action.
 - [ ] **Card picks (stars) and the Duplicates page are live** (2026-11-22/23). Picks: up to 50, saved on the visitor's device,

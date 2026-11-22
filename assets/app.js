@@ -1566,8 +1566,12 @@
       // A list section, in whichever name this sport's infobox uses; "2022–2024 | Team" rows read as "Team (2022–2024)".
       const list = (...ks) => { const k = ks.find((x) => sec[x] && sec[x].length); return k ? sec[k].map((r) => `<li>${esc((r.length === 2 ? `${r[1].replace(/^→\s*/, "↳ ")} (${r[0]})` : r[0]).replace(/\s*\n\s*/g, " · "))}</li>`).join("") : ""; };
       const teams = list("Career history", "Playing", "Teams"), awards = list("Awards and highlights", "Career highlights and awards", "Career highlights");
-      // Coaches (custom-card pages such as Tom Osborne): their coaching career, as Wikipedia lists it.
-      const coaching = list("Coaching", "Coaching career", "Coaching career (HC unless noted)");
+      // Coaches (custom-card pages such as Tom Osborne): their coaching career, as Wikipedia lists it. Older infoboxes put
+      // playing and coaching years together under "Football", with the "Position" row between them: coaching is what follows it.
+      const fb = sec["Football"] || [], posAt = fb.findIndex((r) => r[0] === "Position");
+      const coachRows = [sec["Coaching"], sec["Coaching career (HC unless noted)"], sec["Coaching career"], fb.length ? fb.slice(posAt + 1) : null]
+        .find((r) => r && r.length) || [];
+      const coaching = info.card ? coachRows.filter((r) => r[0] !== "Position").map((r) => `<li>${esc((r.length === 2 ? `${r[1]} (${r[0]})` : r[0]).replace(/\s*\n\s*/g, " · "))}</li>`).join("") : "";
       const statsLink = football && /^https?:\/\//i.test(info.link || "") ? info.link : w && w.statsLink ? w.statsLink.url : "";
       const college = p && p.college;
       const DEF = /defensive|linebacker|cornerback|safety|end\b|tackle/i;
