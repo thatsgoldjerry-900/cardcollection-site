@@ -2129,7 +2129,8 @@
     // An autographed version of a letter set is its own set (e.g. Roger Craig's 2009 Icons Immortal Lettermen /105 and
     // the /20 Autographs share a card number). Goes by the set's name, so one file missing its AU code stays in its set.
     const au = /autograph|signature|signed/i.test(c.name.split("#")[0]) || c.tags.has("auto");
-    return [m[1], norm(who), pre || norm(m[2])].join("|") + (au ? "|au" : "");
+    // Each parallel is its own set too (Brandon Jackson's 2007 SP Rookie Threads Lettermen: base /250, Silver /199, Black /25).
+    return [m[1], norm(who), pre || norm(m[2])].join("|") + (au ? "|au" : "") + (c.par ? "|" + norm(c.par) : "");
   };
   let LETTERS = null;
   function lettersOf(c) {
