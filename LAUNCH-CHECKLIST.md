@@ -106,6 +106,8 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [ ] **Jermaine Dye re-upload** (2026-11-23): the section now reads the Drive folder "Jermaine Dye" by name (team subfolders =
   groups); the old per-team folder IDs are gone from config. ~900 renamed scans the robot couldn't match got "freshUploadDate":
   "2025-01-01" (section setting) instead of showing as NEW. Remove that setting once the re-upload is finished.
+  Same for Nebraska Baseball ("Nebraska Baseball Cards & Autos") and the Royals ("Kansas City Royals", now one list, no groups),
+  switched 2026-11-23. The Royals' old "Dirt Relics" group is gone: the dirt glow now goes only to cards with "Dirt" in the name.
 
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
