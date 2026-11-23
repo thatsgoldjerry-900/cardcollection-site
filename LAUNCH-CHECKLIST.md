@@ -103,6 +103,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   scripts/build_catalog.py "refs"). The file name names the player (e.g. "John Howell"); the image shows in a column on the right of
   his page (below the bio on phones) and opens in the viewer. Extra words are fine ("John Howell Compilation"). Nothing pending.
 
+- [ ] **Jermaine Dye re-upload** (2026-11-23): the section now reads the Drive folder "Jermaine Dye" by name (team subfolders =
+  groups); the old per-team folder IDs are gone from config. ~900 renamed scans the robot couldn't match got "freshUploadDate":
+  "2025-01-01" (section setting) instead of showing as NEW. Remove that setting once the re-upload is finished.
+
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
