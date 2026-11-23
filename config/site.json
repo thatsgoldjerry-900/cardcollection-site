@@ -2929,13 +2929,14 @@
   "dirtRelics": [
     "2022 Topps Triple Threads - Touch 'Em All Three-Player Triple Relics #TEARC-BRM Andrew Benintendi Whit Merrifield Salvador Perez MEM, SN18"
   ],
-  "_chasesHelp": "Chase pages (#/chase/<slug>, in the Nebraska Cornhuskers menu): every Husker card whose name matches \"match\" (scans in the Nebraska collections and Alex Gordon's), plus TCDb collection cards not scanned yet (Have it) and TCDb want list cards (Need it, never 1/1s), with a progress bar. TCDb lists come from data/tcdb via scripts/build_chases.py.",
+  "_chasesHelp": "Chase pages (#/chase/<slug>, in the Nebraska Cornhuskers menu): every Husker card whose name matches \"match\" (scans in the Nebraska collections and Alex Gordon's), plus TCDb collection cards not scanned yet (Have it) and TCDb want list cards (Need it, never 1/1s), with a progress bar. TCDb lists come from data/tcdb via scripts/build_chases.py. \"exclude\" leaves out names that also match it (e.g. colored Cracked Ice). The page filters by sport: Nebraska collection for scans, TCDb list (or the player) for the rest.",
   "chases": [
     {
       "slug": "cracked-ice",
       "title": "Nebraska Cracked Ice",
       "match": "cracked ice",
-      "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need."
+      "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need.",
+      "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b"
     },
     {
       "slug": "precious-metal-gems",

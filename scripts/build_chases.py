@@ -23,22 +23,30 @@ def main():
     rows = {"collection": [], "wantlist": []}
     for kind in rows:
         for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", f"*-{kind}.json"))):
-            rows[kind] += json.load(open(f))["cards"]
+            sport = os.path.basename(f).rsplit("-", 1)[0]          # football, baseball, multi-sport, misc-sports...
+            rows[kind] += [r[:2] + [sport] for r in json.load(open(f))["cards"]]
     mine = {r[1] for r in rows["collection"] if r[1]}
     # Huskers only: a TCDb card counts when I have scans of that player in the Nebraska collections or Alex Gordon's
     # (TCDb's baseball list also holds the Royals, e.g. Mike Moustakas). Players match on the first two words of the name.
     cat = json.load(open(os.path.join(ROOT, "data", "catalog.json")))
     husk = {i for i, s in enumerate(cat["sections"]) if s["slug"].startswith("husker-")}
     huskers = ({who(c[2]) for c in cat["cards"] if c[3] in husk} | {"alex gordon"}) - {None}
+    # Each Husker's sport, for the page's sport filter: from the Nebraska collection his scans are in, else my lists.
+    sport_of = {who(c[2]): cat["sections"][c[3]]["slug"][7:] for c in cat["cards"] if c[3] in husk}
+    sport_of["alex gordon"] = "baseball"
     # Plus every Husker on my lists (data/players.json), so one I have no scan of yet (Wan'Dale Robinson) still counts.
     pl = json.load(open(os.path.join(ROOT, "data", "players.json")))
     huskers |= {who("#0 " + p["name"]) for p in pl.get("players", [])} - {None}
+    for p in pl.get("players", []): sport_of.setdefault(who("#0 " + p["name"]), p.get("sport") or "football")
+    # TCDb's football/baseball/basketball lists name the sport; multi-sport and misc lists go by the player.
+    sport = lambda r: r[2] if r[2] in ("football", "baseball", "basketball") else sport_of.get(who(r[0]), "other")
     out = {"_help": "TCDb collection (have) and want list (need) cards for each chase page in config/site.json \"chases\" "
                     "(scripts/build_chases.py). 1/1s are never listed as needed.", "chases": {}}
     for ch in chases:
-        rx = re.compile(ch["match"], re.I)
-        have = [r for r in rows["collection"] if rx.search(r[0]) and who(r[0]) in huskers]
-        need = [r for r in rows["wantlist"] if rx.search(r[0]) and who(r[0]) in huskers and r[1] not in mine and not ONE.search(r[0])]
+        rx, ex = re.compile(ch["match"], re.I), re.compile(ch["exclude"], re.I) if ch.get("exclude") else None
+        ok = lambda r: rx.search(r[0]) and not (ex and ex.search(r[0])) and who(r[0]) in huskers
+        have = [[r[0], r[1], sport(r)] for r in rows["collection"] if ok(r)]
+        need = [[r[0], r[1], sport(r)] for r in rows["wantlist"] if ok(r) and r[1] not in mine and not ONE.search(r[0])]
         out["chases"][ch["slug"]] = {"have": have, "need": need}
         print(f"{ch['slug']}: {len(have)} in the TCDb collection, {len(need)} on the want list")
     with open(os.path.join(ROOT, "data", "chases.json"), "w", encoding="utf-8") as f:
