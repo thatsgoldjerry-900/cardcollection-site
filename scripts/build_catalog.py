@@ -165,12 +165,20 @@ NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|
 # Subfolders inside a section's Drive folder that aren't part of the shown collection.
 SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
 
-def images_by_name(get, name):
+def images_by_name(get, name, prefer=None):
     """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
     q = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and mimeType = '{FOLDER}' and trashed = false"
     found = get({"q": q, "fields": "files(id, name)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
     if not found:
         print(f"Drive folder '{name}' not found (yet): its section stays empty.", file=sys.stderr); return []
+    if len(found) > 1 and prefer:
+        # Several folders share the name (e.g. a "Jermaine Dye" folder inside another collection): use the one whose
+        # own subfolders match the section's groups.
+        def fit(f):
+            kids = [k["name"] for k in drive_children(get, f["id"]) if k["mimeType"] == FOLDER]
+            return sum(1 for k in kids for pat in prefer if re.search(pat, k, re.I))
+        found.sort(key=fit, reverse=True)
+        print(f"{len(found)} Drive folders named '{name}': using the one with the matching subfolders.", file=sys.stderr)
     # A card's team is the first folder on its path that names a team (e.g. "Kansas City Chiefs"); folders for a
     # kind of item or an era ("Memorabilia", "1970s Football") don't count, so "Memorabilia\Detroit Lions" works too.
     def walk(fid, depth=0, team=""):
@@ -197,16 +205,24 @@ def sections_from_config(cfg):
             # One name, or a few spellings to try in order (the first folder found is used).
             names = sec["driveFolderName"] if isinstance(sec["driveFolderName"], list) else [sec["driveFolderName"]]
             files = []
+            pats = [g["match"] for g in sec["groups"] if g.get("match")]
             for nm in names:
-                files = images_by_name(get, nm)
+                files = images_by_name(get, nm, pats)
                 if files: break
             year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
             groups, left = [], files
             for grp in sec["groups"]:
-                mx = grp.get("maxYear")
-                mine = [f for f in left if mx is None or year(f) <= mx]
+                # A group takes the scans in a team subfolder ("match", e.g. Jermaine Dye / Braves) or up to a year ("maxYear").
+                if grp.get("match"):
+                    mine = [f for f in left if re.search(grp["match"], f.get("team", ""), re.I)]
+                else:
+                    mx = grp.get("maxYear")
+                    mine = [f for f in left if mx is None or year(f) <= mx]
                 left = [f for f in left if f not in mine]
                 groups.append((grp["slug"], grp["label"], mine))
+            if left and pats:
+                print(f"{len(left)} scans in '{names[0]}' aren't in a team subfolder; shown under 'Other'.", file=sys.stderr)
+                groups.append(("other", "Other", left))
             out.append(({k: v for k, v in sec.items() if k not in ("groups", "driveFolderName") and not k.startswith("_")}, groups))
             continue
         groups = []
@@ -292,7 +308,8 @@ def main():
                     fr = borrowed[f["id"]]
                     if not_shown(b): continue
                     added = (prev_name.get(b.lower()) or prev.get(f["id"]) or prev_loose.get(loose_key(b))
-                             or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or (f["mod"] if not prev else today))
+                             or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or sec.get("freshUploadDate")
+                             or (f["mod"] if not prev else today))
                     cards.append([fr["id"], fr["rk"], b, si, gi, added, f["id"], f["rk"], f.get("team", ""), 1])
                     n += 1; continue
                 if is_back and (b.lower() in fronts or f.get("_paired")): continue        # shown with its front
@@ -308,7 +325,7 @@ def main():
                 # A fresh re-upload of renamed scans (new Drive IDs, tags added) keeps the date of the card it replaces;
                 # a card never seen before gets its file's own date, not today, so a big batch doesn't all show as NEW.
                 added = (prev.get(f["id"]) or prev_name.get(card_name.lower()) or prev_loose.get(loose_key(card_name))
-                         or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None)
+                         or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or sec.get("freshUploadDate")
                          or (f["mod"] if not prev else today))
                 cards.append([f["id"], f["rk"], card_name, si, gi, added,
                               back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])

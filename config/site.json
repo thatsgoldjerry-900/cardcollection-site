@@ -149,46 +149,22 @@
         {
           "slug": "braves",
           "label": "Braves",
-          "folders": [
-            [
-              "1MAfv9Tqr1zrlzAoWA7eFktRxJEcjq_x5",
-              ""
-            ]
-          ]
+          "match": "braves"
         },
         {
           "slug": "royals",
           "label": "Royals",
-          "folders": [
-            [
-              "1xJ4ITQnUEqvC45d4upwTYOWUaqouoxc6",
-              ""
-            ]
-          ]
+          "match": "royals"
         },
         {
           "slug": "athletics",
           "label": "Athletics",
-          "folders": [
-            [
-              "1Lwu3fYce_RA-QvCfwhFMi0MoxEiwWrcH",
-              ""
-            ]
-          ]
+          "match": "athletics|\\boakland\\b|\\ba's\\b"
         },
         {
           "slug": "white-sox",
           "label": "White Sox",
-          "folders": [
-            [
-              "1bZBa2Ai_aNeTcfC6QbwXm1jIAgiPBvws",
-              ""
-            ],
-            [
-              "19ctVSIHlF2R_kFJG7pLtOtt2QG_nhoyw",
-              ""
-            ]
-          ]
+          "match": "white sox"
         }
       ],
       "extraLinks": [
@@ -196,7 +172,10 @@
           "label": "Read his career story, told through my cards",
           "url": "#/dye-career"
         }
-      ]
+      ],
+      "driveFolderName": "Jermaine Dye",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Jermaine Dye' (found by name); each group is a team subfolder (\"match\"). Re-uploaded scans keep their old date when the name still matches; others get freshUploadDate so the re-upload doesn't all show as NEW (remove it once the re-upload is done)."
     },
     {
       "slug": "husker-football",
