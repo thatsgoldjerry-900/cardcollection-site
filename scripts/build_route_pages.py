@@ -48,6 +48,8 @@ write("rarest/", "Rarest Cards", "Every numbered card I've scanned, rarest first
 write("stats/", "Scanned Collection Stats", "The collection by the numbers: years, kinds of cards, print runs and players.")
 write("media/", "Media", "Interviews, podcasts and videos about the collection.")
 write("letters/", "All letterman sets", "Every letterman set in the collection, by the word it spells, with the letters still needed.")
+for ch in site.get("chases", []):   # chase pages (config "chases"), e.g. Nebraska Cracked Ice
+    write(f"chase/{ch['slug']}/", ch["title"], ch.get("blurb", ""))
 write("about/", "About & sharing", "About IanBadeer.com, sharing the research, and using the images.")
 write("nfl-teams/", "Huskers by NFL Team", "Every Nebraska Cornhusker on each NFL team, with their years.")
 for rel in ("husker-bios/", "player-pages/"):   # player-pages/ was the first address; kept so early links work

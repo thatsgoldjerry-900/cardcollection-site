@@ -447,7 +447,8 @@
     if ((DATA.site.media?.items || []).length) links.push(`<a href="#/media" data-s="media">Media</a>`);
     links.splice(0, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
     $("#nav").innerHTML = links.join("");
-    document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}</div>`);
+    const chases = (DATA.site.chases || []).map((x, k) => `<a href="#/chase/${x.slug}" data-s="chase-${x.slug}"${k === 0 ? ' class="sep"' : ""}>${esc(x.title)}</a>`).join("");
+    document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}${chases}</div>`);
     $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
     // The autograph pages appear once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
@@ -2307,6 +2308,37 @@
     state.list = all;
     state.binderItems = both.map((x) => (isWant(x) || x.th ? { empty: true, label: x.th ? "Have" : x.one ? "1/1" : x.serial ? "/" + x.serial : "Need" } : x));
   }
+  /* Chase pages (config "chases", e.g. Nebraska Cracked Ice): every Husker card of one kind, with progress. Scans in the
+     Nebraska collections and Alex Gordon's, plus TCDb collection cards not scanned yet ("Have it") and TCDb want list cards
+     ("Need it", never 1/1s) from data/chases.json (scripts/build_chases.py). A TCDb card I have a scan of drops off. */
+  let CHASES = null, CHLOAD = null;
+  const chaseData = () => CHLOAD || (CHLOAD = fetch("data/chases.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => (CHASES = d.chases || {})));
+  // Same card whatever the tags: year, set and insert, card number, player's first two words.
+  const chaseKey = (name) => { const m = name.replace(/\s+VAR(?:VAR)?:.*$/, "").match(/^(\d{4})(?:-\d{2})?\s+(.*?)\s+#(\S+)\s+(.*)$/); if (!m) return name.toLowerCase();
+    return [m[1], norm(m[2]), m[3].toLowerCase().replace(/[^a-z0-9]/g, ""), norm(m[4].replace(/\([^)]*\)/g, " ")).split(" ").slice(0, 2).join(" ")].join("|"); };
+  function chasePage(slug) {
+    const ch = (DATA.site.chases || []).find((x) => x.slug === slug); if (!ch) return notFound();
+    if (!CHASES) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void chaseData().then(() => HASH().startsWith("#/chase/") && chasePage(slug)); }
+    const rx = new RegExp(ch.match, "i"), d = CHASES[slug] || {};
+    const scans = CARDS.filter((c) => rx.test(c.name) && /^husker-|^alex-gordon$/.test(SECTIONS[c.si].slug) && !isBackScan(c));
+    const seen = new Set(scans.map((c) => chaseKey(c.name)));
+    const mk = (flag) => ([name, ids]) => { const n = name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim(); return { ...parse(n), name: n, [flag]: true, tcdb: ids, i: -1 }; };
+    const keep = (x) => { const k = chaseKey(x.name); if (seen.has(k)) return false; seen.add(k); return true; };
+    const have = (d.have || []).map(mk("th")).filter(keep), need = (d.need || []).map(mk("tw")).filter(keep), extra = [...have, ...need];
+    const all = [...scans, ...extra].sort((a, b) => (b.year || 0) - (a.year || 0) || setOrder(a, b) || a.name.localeCompare(b.name));
+    const owned = scans.length + have.length, total = owned + need.length, pct = total ? (owned / total) * 100 : 0;
+    const tile = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
+      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span></div></${x.tcdb ? "a" : "div"}>`;
+    setNav("chase-" + slug); setTitle(ch.title);
+    $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
+      <div class="c-head"><div class="kick">Nebraska chase</div><h1>${esc(ch.title)}</h1><p>${esc(ch.blurb || "")} ${fmt(scans.length)} scanned${have.length ? `, ${fmt(have.length)} more I have but haven't scanned yet` : ""}${need.length ? `, ${fmt(need.length)} still needed` : ""}, newest first.</p>
+      <div class="prog"><b>${need.length ? Math.floor(pct) : 100}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(owned)} of ${fmt(total)} cards</small></div></div>
+      <div class="b-row">${binderBtn()}</div>
+      <div class="grid" id="grid">${all.map((x) => (x.tw || x.th ? tile(x) : cardHTML(x))).join("")}</div>
+      <p class="lt-tip">The want list and the cards I haven't scanned come from my TCDb lists (football so far). Tap a card for its details.</p></div></div>`;
+    state.list = scans;
+    state.binderItems = all.map((x) => (x.tw || x.th ? { empty: true, label: x.th ? "Have" : x.serial ? "/" + x.serial : "Need" } : x));
+  }
   function notFound() {
     setTitle("Page not found");
     $("#app").innerHTML = `<div class="wrap nf"><h1>That page isn't here</h1><p>It may have moved when the site was rebuilt. Try searching above, or:</p>
@@ -2386,6 +2418,7 @@
     else if (a === "picks") picksPage(b || "");
     else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
+    else if (a === "chase") chasePage(b);
     else if (a === "set") setPage(b);
     else if (a === "letters") (b ? lettersPage(b) : allLettersPage());
     else if (a === "word") go("#/letters", true);   // the old one-word letterman pages are gone; their links go to all letterman sets

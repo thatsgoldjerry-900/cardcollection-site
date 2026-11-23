@@ -25,7 +25,7 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: python3 scripts/build_catalog.py
       - name: TCDb want list cards for rainbow pages (from data/tcdb/, matched to the new card list)
-        run: python3 scripts/build_rainbow_wants.py
+        run: python3 scripts/build_rainbow_wants.py && python3 scripts/build_chases.py
       - name: Read private lists (only the chosen columns)
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
