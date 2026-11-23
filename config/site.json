@@ -2924,5 +2924,9 @@
         "ar": 1.308
       }
     ]
-  }
+  },
+  "_dirtRelicsHelp": "Dirt relics whose file name has no room for \"(Dirty Relic)\": exact card names (file name without extension). They get the dirt glow in the viewer.",
+  "dirtRelics": [
+    "2022 Topps Triple Threads - Touch 'Em All Three-Player Triple Relics #TEARC-BRM Andrew Benintendi Whit Merrifield Salvador Perez MEM, SN18"
+  ]
 }
