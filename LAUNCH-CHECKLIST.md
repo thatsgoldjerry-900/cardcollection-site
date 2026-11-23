@@ -97,7 +97,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   and TCDb links only, with TCDb's extra tags (RC, ROO, CO, SR, UER…) dropped so names read like Ian's file names. Each Drive
   update matches them to the scans (scripts/build_rainbow_wants.py). On a rainbow page, a want list card is a red "Need it"
   (never 1/1s: Ian doesn't chase them), a collection card without a scan is a green "Have it"; a scan replaces either.
-  Baseball works the same way (send those exports).
+  Collection exports for baseball (43,186), basketball (1,329), multi-sport (1,407) and misc sports (187) imported 2026-11-23
+  (`... baseball collection` etc.); want lists next, imported with the same sport names (combined exports are fine: the
+  collection is taken out). Collection cards that match a scan exactly are left out of data/rainbow-wants.json (smaller file).
 
 - [ ] **Player reference images are live** (2026-11-22): Drive folder "Nebraska Player Reference Images" (read by name each update,
   scripts/build_catalog.py "refs"). The file name names the player (e.g. "John Howell"); the image shows in a column on the right of

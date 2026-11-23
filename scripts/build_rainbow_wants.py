@@ -20,16 +20,26 @@ def key(name):
     return (m[1], m[2].lower(), " ".join(words[:2]))
 
 
+def exact(name):
+    m = re.match(r"^(\d{4})(?:-\d{2})?\s+(.*?)\s+#(\S+)\s+(.*)$", re.sub(r"\s+VAR(?:VAR)?:.*$", "", name))
+    if not m: return None
+    w = lambda t: " ".join(re.findall(r"[a-z0-9]+", t.lower().replace("'", "")))
+    return (m[1], w(m[2]), re.sub(r"[^a-z0-9]", "", m[3].lower()), " ".join(w(re.sub(r"\([^)]*\)", " ", m[4])).split()[:2]))
+
+
 def main():
     cat = json.load(open(os.path.join(ROOT, "data", "catalog.json")))
     want = {i for i, s in enumerate(cat["sections"]) if s.get("kind") == "want"}
     have = {key(c[2]) for c in cat["cards"] if c[3] not in want} - {None}
+    # A collection card I already have a scan of adds nothing (the scan wins on the page), so it's left out:
+    # same year, set and insert, card number and player.
+    scanned = {exact(c[2]) for c in cat["cards"] if c[3] not in want} - {None}
     keep, owned, mine = [], [], set()
     # TCDb collection: cards I have. Ones without a scan show as "Have it" on their rainbow page (a scan replaces them).
     for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-collection.json"))):
         rows = json.load(open(f))["cards"]
         mine |= {r[1] for r in rows if r[1]}
-        owned += [r for r in rows if key(r[0]) in have]
+        owned += [r for r in rows if key(r[0]) in have and exact(r[0]) not in scanned]
     for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", "*-wantlist.json"))):
         # A card I have is never wanted (TCDb's want list export can include the whole collection, matched by TCDb card ID).
         # 1/1s are left out: Ian doesn't chase them (the site skips them too).
