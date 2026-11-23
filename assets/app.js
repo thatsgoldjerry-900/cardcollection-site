@@ -2159,12 +2159,15 @@
     return [m[1], norm(who), pre || norm(noLetterCode(m[2]))].join("|") + (au ? "|au" : "") + (par ? "|" + norm(par) : "");
   };
   let LETTERS = null;
+  // Ian only chases letter sets of former Huskers: cards in the Nebraska collections and Alex Gordon's (a Husker).
+  // Letter cards of other Royals (Billy Butler, Kila Ka'aihue, Daniel Cortes) aren't letter sets here.
+  const huskerLetters = (c) => /^husker-|^alex-gordon$/.test(SECTIONS[c.si].slug);
   function lettersOf(c) {
-    if (!isLetterSet(c) || !letterOf(c)) return null;
+    if (!isLetterSet(c) || !letterOf(c) || !huskerLetters(c)) return null;
     if (!LETTERS) {
       LETTERS = new Map(); const seen = new Set();
       CARDS.forEach((x) => {
-        if (!isLetterSet(x) || !letterOf(x) || isBackScan(x)) return;
+        if (!isLetterSet(x) || !letterOf(x) || isBackScan(x) || !huskerLetters(x)) return;
         const k = letterGroupKey(x), l = letterOf(x); if (!k) return;
         const id = k + "|" + l.pos + l.letter + "|" + (x.par || "") + "|" + (x.serial || ""); if (seen.has(id)) return; seen.add(id);
         LETTERS.set(k, [...(LETTERS.get(k) || []), x]);
