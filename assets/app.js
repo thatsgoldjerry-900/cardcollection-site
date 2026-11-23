@@ -2316,7 +2316,7 @@
   // Same card whatever the tags: year, set and insert, card number, player's first two words.
   const chaseKey = (name) => { const m = name.replace(/\s+VAR(?:VAR)?:.*$/, "").match(/^(\d{4})(?:-\d{2})?\s+(.*?)\s+#(\S+)\s+(.*)$/); if (!m) return name.toLowerCase();
     return [m[1], norm(m[2]), m[3].toLowerCase().replace(/[^a-z0-9]/g, ""), norm(m[4].replace(/\([^)]*\)/g, " ")).split(" ").slice(0, 2).join(" ")].join("|"); };
-  function chasePage(slug, sport = "") {
+  function chasePage(slug) {
     const ch = (DATA.site.chases || []).find((x) => x.slug === slug); if (!ch) return notFound();
     if (!CHASES) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void chaseData().then(() => HASH().startsWith("#/chase/") && chasePage(slug)); }
     const rx = new RegExp(ch.match, "i"), ex = ch.exclude ? new RegExp(ch.exclude, "i") : null, d = CHASES[slug] || {};
@@ -2328,31 +2328,42 @@
     const mk = (flag) => ([name, ids, sp]) => { const n = name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim(); return { ...parse(n), name: n, [flag]: true, tcdb: ids, i: -1, chaseSport: sp || "other" }; };
     const keep = (x) => { if (!fits(x.name)) return false; const k = chaseKey(x.name); if (seen.has(k)) return false; seen.add(k); return true; };
     const have = (d.have || []).map(mk("th")).filter(keep), need = (d.need || []).map(mk("tw")).filter(keep);
-    const every = [...scans, ...have, ...need].sort((a, b) => (b.year || 0) - (a.year || 0) || setOrder(a, b) || a.name.localeCompare(b.name));
+    // Oldest at the top, newest at the bottom.
+    const every = [...scans, ...have, ...need].sort((a, b) => (a.year || 0) - (b.year || 0) || setOrder(a, b) || a.name.localeCompare(b.name));
+    // College or pro card, from the set's name (config "chaseCollege": Contenders Draft Picks, Metal Universe Champions...).
+    const colRx = new RegExp(DATA.site.chaseCollege || "draft picks|collegiate|\\bcollege\\b", "i");
+    every.forEach((x) => { x.chaseLevel = colRx.test(x.name.replace(/\s+#.*$/, "")) ? "college" : "pro"; });
     const SPORTS = [["football", "Football"], ["baseball", "Baseball"], ["basketball", "Basketball"], ["other", "Other"]].filter(([k]) => every.some((x) => x.chaseSport === k));
     const tile = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
       <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span></div></${x.tcdb ? "a" : "div"}>`;
     setNav("chase-" + slug); setTitle(ch.title);
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
       <div class="c-head"><div class="kick">Nebraska chase</div><h1>${esc(ch.title)}</h1><p id="ch-sum"></p><div class="prog" id="ch-prog"></div></div>
-      ${SPORTS.length > 1 ? `<div class="chips" role="group" aria-label="Sport">${[["", "All sports"], ...SPORTS].map(([k, l]) => `<button type="button" class="chip" data-sport="${k}" aria-pressed="${k === sport}">${l}</button>`).join("")}</div>` : ""}
+      <div class="chips ch-chips">${SPORTS.length > 1 ? `<span class="ch-grp" role="group" aria-label="Sport">${[["", "All sports"], ...SPORTS].map(([k, l]) => `<button type="button" class="chip" data-g="sport" data-v="${k}" aria-pressed="${!k}">${l}</button>`).join("")}</span>` : ""}
+        <span class="ch-grp" role="group" aria-label="College or pro">${[["", "College & pro"], ["college", "College"], ["pro", "Pro"]].map(([k, l]) => `<button type="button" class="chip" data-g="level" data-v="${k}" aria-pressed="${!k}">${l}</button>`).join("")}</span>
+        <span class="ch-grp"><button type="button" class="chip" data-g="auto" data-v="1" aria-pressed="false">Autographs</button></span></div>
       <div class="b-row">${binderBtn()}</div><div class="grid" id="grid"></div>
       <p class="lt-tip">The want list and the cards I haven't scanned come from my TCDb lists. Tap a card for its details.</p></div></div>`;
-    // Progress, counts and cards for the chosen sport ("" = all), redrawn when a sport chip is tapped.
-    const draw = (sp) => {
-      const pick = (l) => (sp ? l.filter((x) => x.chaseSport === sp) : l);
+    // Progress, counts and cards for the chosen filters (sport, college or pro, autographs), redrawn on every tap.
+    const f = { sport: "", level: "", auto: "" };
+    const draw = () => {
+      const sp = f.sport;
+      const pick = (l) => l.filter((x) => (!sp || x.chaseSport === sp) && (!f.level || x.chaseLevel === f.level) && (!f.auto || x.tags.has("auto")));
       const sc = pick(scans), hv = pick(have), nd = pick(need), all = pick(every);
       const owned = sc.length + hv.length, total = owned + nd.length, pct = total ? (owned / total) * 100 : 0;
-      $("#ch-sum").textContent = `${ch.blurb || ""} ${fmt(sc.length)} scanned${hv.length ? `, ${fmt(hv.length)} more I have but haven't scanned yet` : ""}${nd.length ? `, ${fmt(nd.length)} still needed` : ""}, newest first.`;
-      $("#ch-prog").innerHTML = `<b>${nd.length ? Math.floor(pct) : 100}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(owned)} of ${fmt(total)} cards${sp ? ` · ${esc((SPORTS.find(([k]) => k === sp) || [, ""])[1])}` : ""}</small>`;
+      $("#ch-sum").textContent = `${ch.blurb || ""} ${fmt(sc.length)} scanned${hv.length ? `, ${fmt(hv.length)} more I have but haven't scanned yet` : ""}${nd.length ? `, ${fmt(nd.length)} still needed` : ""}, oldest first.`;
+      const label = [sp && (SPORTS.find(([k]) => k === sp) || [, ""])[1], f.level && { college: "College", pro: "Pro" }[f.level], f.auto && "Autographs"].filter(Boolean).join(" · ");
+      $("#ch-prog").innerHTML = total ? `<b>${nd.length ? Math.floor(pct) : 100}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(owned)} of ${fmt(total)} cards${label ? ` · ${esc(label)}` : ""}</small>` : `<small>No cards match these filters.</small>`;
       $("#grid").innerHTML = all.map((x) => (x.tw || x.th ? tile(x) : cardHTML(x))).join("");
       state.list = sc;
       state.binderItems = all.map((x) => (x.tw || x.th ? { empty: true, label: x.th ? "Have" : x.serial ? "/" + x.serial : "Need" } : x));
     };
-    draw(sport);
-    const chips = document.querySelector('.chips[aria-label="Sport"]');
-    if (chips) chips.addEventListener("click", (e) => { const b = e.target.closest("[data-sport]"); if (!b) return;
-      chips.querySelectorAll("[data-sport]").forEach((x) => x.setAttribute("aria-pressed", x === b)); draw(b.dataset.sport); });
+    draw();
+    $(".ch-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-g]"); if (!b) return;
+      const g = b.dataset.g;
+      if (g === "auto") { f.auto = f.auto ? "" : "1"; b.setAttribute("aria-pressed", !!f.auto); }
+      else { f[g] = b.dataset.v; b.parentNode.querySelectorAll("[data-g]").forEach((x) => x.setAttribute("aria-pressed", x === b)); }
+      draw(); });
   }
   function notFound() {
     setTitle("Page not found");

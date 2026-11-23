@@ -2936,7 +2936,7 @@
       "title": "Nebraska Cracked Ice",
       "match": "cracked ice",
       "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need.",
-      "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b"
+      "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b|\\bgreen crystals\\b"
     },
     {
       "slug": "precious-metal-gems",
@@ -2944,5 +2944,7 @@
       "match": "precious metal gems|\\bpmg\\b",
       "blurb": "Every Husker Precious Metal Gems card I'm chasing: the ones in my collection and the ones I still need."
     }
-  ]
+  ],
+  "chaseCollege": "draft picks|collegiate|\\bcollege\\b|\\bncaa\\b|cornhuskers|nebraska|\\bhuskers?\\b|\\bsage\\b|bowman u\\b|bowman university|\\bonit\\b|\\bu now\\b|metal universe champions|legends of college",
+  "_chaseCollegeHelp": "Chase pages' College / Pro filter: a card whose set name matches this is College (Contenders Draft Picks, Metal Universe Champions, SAGE...); every other card is Pro."
 }
