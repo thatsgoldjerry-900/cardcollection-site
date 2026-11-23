@@ -207,13 +207,7 @@
       "groups": [
         {
           "slug": "all",
-          "label": "All",
-          "folders": [
-            [
-              "0B9zOOzkfqijNbW1uT3pyRGxFalk",
-              "0-8k8we8ea1EivCqbcZsXhtA"
-            ]
-          ]
+          "label": "Nebraska Baseball Cards & Autos"
         }
       ],
       "extraLinks": [
@@ -221,7 +215,10 @@
           "label": "MLB Huskers Autograph List",
           "url": "#/checklist/mlb"
         }
-      ]
+      ],
+      "driveFolderName": "Nebraska Baseball Cards & Autos",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Nebraska Baseball Cards & Autos'. freshUploadDate: as for the Royals (remove once the re-upload is done)."
     },
     {
       "slug": "husker-basketball",
@@ -255,76 +252,13 @@
       "blurb": "Some are PC and some are available for trade, but I'll always listen if you have a card I need.",
       "groups": [
         {
-          "slug": "buttons",
-          "label": "Button Relics",
-          "folders": [
-            [
-              "1Umnc6Rb8XWefReUtTeUEnuErf5YUGkU2",
-              ""
-            ]
-          ]
-        },
-        {
-          "slug": "dirt",
-          "label": "Dirt Relics",
-          "folders": [
-            [
-              "1-e4q3BVwpBsZEhjTgVqhoJEGf8i7NnkV",
-              ""
-            ]
-          ]
-        },
-        {
-          "slug": "nameplates",
-          "label": "Nameplates",
-          "folders": [
-            [
-              "1y3uOcWTr3fi2vaQQ94Lw_5-9NovU3rdu",
-              ""
-            ]
-          ]
-        },
-        {
-          "slug": "hits",
-          "label": "Hits",
-          "folders": [
-            [
-              "1XbQylwULzoNpGPT3vvXi0YGJgi_SEL00",
-              ""
-            ],
-            [
-              "1HuO3kr4dzKXHAfyY7vfPYJ-3SztneFJE",
-              ""
-            ],
-            [
-              "1jzLPgIaDNMz8dx9-lZMxpqOS1Zl6vHDi",
-              ""
-            ]
-          ]
-        },
-        {
-          "slug": "base-numbered",
-          "label": "Base & Numbered",
-          "folders": [
-            [
-              "0B9zOOzkfqijNS2xXckdmc1cxazQ",
-              "0-xZE9jT9hFm7mVkvT7lnRSw"
-            ],
-            [
-              "14BbS173D0eSxhyxV5dTN5AhrPixj7Tzr",
-              ""
-            ],
-            [
-              "1cXpSeoP5tl4aMlXjwiEGY60xb9hZ6THL",
-              ""
-            ],
-            [
-              "1xlr_VVmw1FlAGR4IkAbofyxd0-qe2I3H",
-              ""
-            ]
-          ]
+          "slug": "all",
+          "label": "Kansas City Royals"
         }
-      ]
+      ],
+      "driveFolderName": "Kansas City Royals",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Kansas City Royals' (one folder; a same-named subfolder inside another collection, e.g. Jermaine Dye, is skipped). freshUploadDate: renamed re-uploads the robot can't match aren't shown as NEW (remove once the re-upload is done)."
     },
     {
       "slug": "lions",

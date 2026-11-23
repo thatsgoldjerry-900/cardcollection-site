@@ -89,10 +89,13 @@ def drive_session():
     creds = service_account.Credentials.from_service_account_info(
         json.loads(key), scopes=["https://www.googleapis.com/auth/drive.readonly"])
     sess = requests.Session()
-    def get(params):
+    def get(params, path=""):
+        # path: one file's id, to read that file (e.g. a folder's parent) instead of searching. A parent the robot can't
+        # see just comes back empty.
         if not creds.valid: creds.refresh(Request())
-        r = sess.get("https://www.googleapis.com/drive/v3/files", params=params,
+        r = sess.get("https://www.googleapis.com/drive/v3/files" + ("/" + path if path else ""), params=params,
                      headers={"Authorization": f"Bearer {creds.token}"}, timeout=60)
+        if path and r.status_code in (403, 404): return {}
         if r.status_code in (403, 404):
             raise SystemExit(f"Drive said HTTP {r.status_code}. Is the parent folder shared (Viewer) with the robot?")
         r.raise_for_status()
@@ -165,10 +168,20 @@ NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|
 # Subfolders inside a section's Drive folder that aren't part of the shown collection.
 SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
 
-def images_by_name(get, name, prefer=None):
+def images_by_name(get, name, prefer=None, avoid=()):
     """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
     q = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and mimeType = '{FOLDER}' and trashed = false"
-    found = get({"q": q, "fields": "files(id, name)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
+    found = get({"q": q, "fields": "files(id, name, parents)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
+    if len(found) > 1 and avoid:
+        # A subfolder of another collection with the same name (e.g. "Kansas City Royals" inside "Jermaine Dye") isn't
+        # this collection's folder: drop folders whose parent is another collection's folder.
+        def parent_name(f):
+            pid = (f.get("parents") or [""])[0]
+            return get({"fileId": pid, "fields": "name", "supportsAllDrives": "true"}, path=pid).get("name", "") if pid else ""
+        keep = [f for f in found if parent_name(f).strip().lower() not in avoid]
+        if keep and len(keep) < len(found):
+            print(f"{len(found) - len(keep)} other folder(s) named '{name}' inside another collection skipped.", file=sys.stderr)
+            found = keep
     if not found:
         print(f"Drive folder '{name}' not found (yet): its section stays empty.", file=sys.stderr); return []
     if len(found) > 1 and prefer:
@@ -197,6 +210,8 @@ def sections_from_config(cfg):
     for fid, rk in (cfg.get("customsPhotos") or {}).get("folders", []):
         _photos.extend(list_folder(fid, rk))
     out, get = [], drive_session()
+    # Every collection's folder name, so a same-named subfolder inside another collection is never mistaken for it.
+    others = {n.strip().lower() for x in cfg["sections"] for n in ([x["driveFolderName"]] if isinstance(x.get("driveFolderName"), str) else x.get("driveFolderName") or [])}
     _refs.extend(images_by_name(get, REFS_FOLDER))
     for sec in cfg["sections"]:
         if sec.get("driveFolderName"):
@@ -207,7 +222,7 @@ def sections_from_config(cfg):
             files = []
             pats = [g["match"] for g in sec["groups"] if g.get("match")]
             for nm in names:
-                files = images_by_name(get, nm, pats)
+                files = images_by_name(get, nm, pats, others)
                 if files: break
             year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
             groups, left = [], files
