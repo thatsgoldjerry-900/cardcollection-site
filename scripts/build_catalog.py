@@ -194,7 +194,12 @@ def sections_from_config(cfg):
         if sec.get("driveFolderName"):
             # One Drive folder, read by name; its groups are year ranges ("maxYear"), e.g. 2009 and older / 2010 and newer.
             get = get or drive_session()
-            files = images_by_name(get, sec["driveFolderName"])
+            # One name, or a few spellings to try in order (the first folder found is used).
+            names = sec["driveFolderName"] if isinstance(sec["driveFolderName"], list) else [sec["driveFolderName"]]
+            files = []
+            for nm in names:
+                files = images_by_name(get, nm)
+                if files: break
             year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
             groups, left = [], files
             for grp in sec["groups"]:

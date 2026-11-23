@@ -246,11 +246,27 @@
     },
     {
       "slug": "husker-basketball",
-      "title": "Nebraska Basketball",
+      "title": "Nebraska Basketball Cards & Autos",
       "kind": "team",
       "color": "husker",
-      "blurb": "Cornhusker basketball cards from my collection.",
-      "groups": []
+      "blurb": "The Huskers who made the NBA, plus more Cornhusker basketball cards and autographs from my collection.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Basketball Cards & Autos"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "NBA Huskers Autograph List",
+          "url": "#/checklist/nba"
+        }
+      ],
+      "driveFolderName": [
+        "Nebraska Basketball Cards & Autos",
+        "Nebraska Basketball"
+      ],
+      "_help": "Read from the Drive folder named in driveFolderName (the first of these names that exists; Sold/Pending/Cut/Extra subfolders skipped)."
     },
     {
       "slug": "royals",
@@ -349,7 +365,12 @@
       "customs": true,
       "hidden": true,
       "driveFolderName": "Customs - Non-Sport",
-      "groups": [{"slug": "all", "label": "Non-Sport Customs"}],
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Non-Sport Customs"
+        }
+      ],
       "_help": "Ian's non-sport custom cards (e.g. Sonic the Hedgehog), read from the Drive folder named in driveFolderName. Hidden: no menu, tile or page of its own; the cards show under the Customs page's Non-Sport filter (customs: true marks every scan in it as a custom)."
     },
     {
