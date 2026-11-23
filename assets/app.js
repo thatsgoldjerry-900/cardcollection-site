@@ -188,7 +188,7 @@
       // "(Dirty Relic)" where the set name doesn't say it), or config "dirtRelics". Topps "Hot Button" and Gypsy Queen
       // "Missing Nameplate" aren't relics.
       if (/\bbuttons?\b/i.test(name) && !/\bhot button\b/i.test(name)) p.tags.add("button");
-      if (/\bnameplates?\b/i.test(name) && !/\bmissing nameplate\b/i.test(name)) p.tags.add("nameplate");
+      if ((/\bnameplates?\b/i.test(name) || /\bown the name\b/i.test(name)) && !/\bmissing nameplate\b/i.test(name)) p.tags.add("nameplate");
       if (/\bdirt\b|\(dirty\b/i.test(name) || (json.site.dirtRelics || []).includes(name)) p.tags.add("dirt");
       // Hand corrections from config/site.json "tagFixes", e.g. {"auto": {"add": [card names], "remove": [card names]}}.
       for (const [tag, fix] of Object.entries(json.site.tagFixes || {})) {
@@ -2137,17 +2137,26 @@
     const m = n.match(/\bLetter\s+0?(\d{1,2})\s+([A-Z0-9])\b/) || n.match(/(?:^|\s)0?(\d{1,2})\s?([A-Z])(?=\s|$|\)|,)/) || n.match(/(?:^|\s)(\d)\s(\d)(?=\s|$|,)/);
     return m && +m[1] > 0 ? { pos: +m[1], letter: m[2] } : null;
   };
-  const isLetterSet = (c) => /\blett(?:er|erman|ermen)\b|by the letter/i.test(c.name) && !/(?:signed|autographed)\s+letter\b/i.test(c.name);
+  // Own The Name / nameplate letters are real jersey nameplate relics, not letterman cards (Ian files them under Nameplate).
+  const isLetterSet = (c) => /\blett(?:er|erman|ermen)\b|by the letter/i.test(c.name) && !/(?:signed|autographed)\s+letter\b/i.test(c.name)
+    && !/\bown the name\b|\bnameplates?\b/i.test(c.name);
+  // A letter code written into the set or parallel name ("2008 Razor Letterman 1P", "Letterman 20 7I") isn't part of the set.
+  const noLetterCode = (t) => (t || "").replace(/\s+(?:Letter\s+)?0?\d{1,2}\s?[A-Z](?=\s|$)/g, "").trim();
+  // A letter set's name on the page: set and parallel, without the letter code.
+  const letterSetTitle = (c) => noLetterCode(c.sub.replace(/\s+#\S+$/, "")) + (c.par && noLetterCode(c.par) ? ` - ${noLetterCode(c.par)}` : "");
   const letterGroupKey = (c) => {
     const m = (c.sub || "").match(/^(\S+)\s+(.*?)\s+#(\S+)$/); if (!m) return null;
-    const pre = m[3].replace(/[^A-Za-z]/g, "").toLowerCase();
+    // A card number ending in the card's own letter ("#AP-P", "#AP-I2") is the set's number plus that letter.
+    const l = letterOf(c), num = l ? m[3].replace(new RegExp(`-${l.letter}\\d?$`, "i"), "") : m[3];
+    const pre = num.replace(/[^A-Za-z]/g, "").toLowerCase();
     // The player, without the letter code that sits in the name ("Niles Paul 4N", "1P Aaron Pribanic", "Letter 03 R").
     const who = c.title.replace(/\b(?:creased|damaged|miscut|off-?center|dirty)\b/gi, " ").replace(/\bLetter\s+0?\d{1,2}\s+[A-Z]\b/g, " ").replace(/(?:^|\s)0?\d{1,2}\s?[A-Z](?=\s|$)|(?:^|\s)\d\s\d(?=\s|$)/g, " ").replace(/\s+/g, " ").trim();
     // An autographed version of a letter set is its own set (e.g. Roger Craig's 2009 Icons Immortal Lettermen /105 and
     // the /20 Autographs share a card number). Goes by the set's name, so one file missing its AU code stays in its set.
     const au = /autograph|signature|signed/i.test(c.name.split("#")[0]) || c.tags.has("auto");
     // Each parallel is its own set too (Brandon Jackson's 2007 SP Rookie Threads Lettermen: base /250, Silver /199, Black /25).
-    return [m[1], norm(who), pre || norm(m[2])].join("|") + (au ? "|au" : "") + (c.par ? "|" + norm(c.par) : "");
+    const par = noLetterCode(c.par);
+    return [m[1], norm(who), pre || norm(noLetterCode(m[2]))].join("|") + (au ? "|au" : "") + (par ? "|" + norm(par) : "");
   };
   let LETTERS = null;
   function lettersOf(c) {
@@ -2200,7 +2209,7 @@
     const body = words.map((w) => {
       const list = byWord.get(w).sort((p, q) => (p.c.year || 0) - (q.c.year || 0) || p.L.who.localeCompare(q.L.who));
       return `<section class="lt-group"><h2>${w ? esc(w) : "Other sets"} <small>${fmt(list.length)} set${list.length === 1 ? "" : "s"}</small></h2>${list.map(({ L, c }) => {
-        const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
+        const title = letterSetTitle(c);
         const miss = L.word ? L.slots.filter((x) => !x.cards.length).map((x) => x.letter) : [];
         binder.push(...L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }])));
         // A complete set gets a celebration frame and badge (around the cards, never on them).
@@ -2219,7 +2228,7 @@
   function lettersPage(id) {
     const c = byCid(id); if (!c) return notFound();
     const L = lettersOf(c); if (!L) return notFound();
-    const sec = SECTIONS[c.si], title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par}` : "");
+    const sec = SECTIONS[c.si], title = letterSetTitle(c);
     setNav(sec.slug); setTitle(`${c.title} letters`);
     const shown = [];
     const slot = (x) => letterSlot(x, shown);
