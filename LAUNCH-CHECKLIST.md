@@ -111,6 +111,19 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   Same for Nebraska Baseball ("Nebraska Baseball Cards & Autos") and the Royals ("Kansas City Royals", now one list, no groups),
   switched 2026-11-23. The Royals' old "Dirt Relics" group is gone: the dirt glow now goes only to cards with "Dirt" in the name.
 
+- [ ] **Chase pages are live** (2026-11-23): Nebraska Cracked Ice and Nebraska Precious Metal Gems (#/chase/<slug>, config
+  "chases": match / exclude; scripts/build_chases.py makes data/chases.json from data/tcdb). Huskers only (scans in the Nebraska
+  collections or Alex Gordon's, or on Ian's lists). Oldest first; filters for sport, College/Pro (config "chaseCollege", by set
+  name) and Autographs, all updating the progress. Cracked Ice leaves out colored versions (incl. Prizm Green Crystals).
+  Jordan Burroughs (wrestling) isn't counted: not on a list, no scans. Add more chases with a name and a match phrase.
+- [ ] **Still waiting on Ian:** the Alex Gordon re-upload (renamed scans into a new folder; then switch the section to read it by
+  name like Dye/Royals/Baseball, check button/nameplate tags and run a proper missing-card check by player + set). After all
+  re-uploads: remove "freshUploadDate" from the jermaine-dye, royals and husker-baseball sections in config/site.json.
+- Session notes 2026-11-23 (also live): Huskers by NFL Team pages end with Ian's cards of that team (Drive team folders);
+  Nebraska Basketball Cards & Autos page; letterman pages are Huskers only, split by parallel and autograph, ignore letter codes
+  in set names / card numbers, and Own The Name cards count as nameplate relics; filters Button / Nameplate / Dirt relics (config
+  "dirtRelics" for names with no room); TCDb collections + want lists for all five sports imported.
+
 ## Before the switch
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
