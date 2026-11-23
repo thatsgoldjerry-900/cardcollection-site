@@ -2320,7 +2320,9 @@
     const ch = (DATA.site.chases || []).find((x) => x.slug === slug); if (!ch) return notFound();
     if (!CHASES) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void chaseData().then(() => HASH().startsWith("#/chase/") && chasePage(slug)); }
     const rx = new RegExp(ch.match, "i"), ex = ch.exclude ? new RegExp(ch.exclude, "i") : null, d = CHASES[slug] || {};
-    const fits = (n) => rx.test(n) && !(ex && ex.test(n));
+    // "skip": cards left off this page by name (e.g. someone else's custom card), matched whatever the tags.
+    const skip = new Set((ch.skip || []).map(chaseKey));
+    const fits = (n) => rx.test(n) && !(ex && ex.test(n)) && !skip.has(chaseKey(n));
     // A scan's sport is its Nebraska collection (Alex Gordon: baseball); a TCDb card's comes with it (data/chases.json).
     const sportOf = (c) => (SECTIONS[c.si].slug === "alex-gordon" ? "baseball" : SECTIONS[c.si].slug.replace(/^husker-/, ""));
     const scans = CARDS.filter((c) => fits(c.name) && /^husker-|^alex-gordon$/.test(SECTIONS[c.si].slug) && !isBackScan(c)).map((c) => Object.assign(c, { chaseSport: sportOf(c) }));
@@ -2330,9 +2332,10 @@
     const have = (d.have || []).map(mk("th")).filter(keep), need = (d.need || []).map(mk("tw")).filter(keep);
     // Oldest at the top, newest at the bottom.
     const every = [...scans, ...have, ...need].sort((a, b) => (a.year || 0) - (b.year || 0) || setOrder(a, b) || a.name.localeCompare(b.name));
-    // College or pro card, from the set's name (config "chaseCollege": Contenders Draft Picks, Metal Universe Champions...).
-    const colRx = new RegExp(DATA.site.chaseCollege || "draft picks|collegiate|\\bcollege\\b", "i");
-    every.forEach((x) => { x.chaseLevel = colRx.test(x.name.replace(/\s+#.*$/, "")) ? "college" : "pro"; });
+    // College or pro card, from the set's name (config "chaseCollege": Contenders Draft Picks, Metal Universe Champions...),
+    // or listed by name in "chaseCollegeCards" (college cards in mostly pro sets, e.g. Father's Day).
+    const colRx = new RegExp(DATA.site.chaseCollege || "draft picks|collegiate|\\bcollege\\b", "i"), colCards = new Set((DATA.site.chaseCollegeCards || []).map(chaseKey));
+    every.forEach((x) => { x.chaseLevel = colRx.test(x.name.replace(/\s+#.*$/, "")) || colCards.has(chaseKey(x.name)) ? "college" : "pro"; });
     const SPORTS = [["football", "Football"], ["baseball", "Baseball"], ["basketball", "Basketball"], ["other", "Other"]].filter(([k]) => every.some((x) => x.chaseSport === k));
     const tile = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
       <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span></div></${x.tcdb ? "a" : "div"}>`;

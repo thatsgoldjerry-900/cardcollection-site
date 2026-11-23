@@ -2936,6 +2936,7 @@
       "title": "Nebraska Cracked Ice",
       "match": "cracked ice",
       "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need.",
+      "skip": ["2016 David Lee Limited Edition Cracked Ice #NNO Johnny Rodgers 1 of 1"],
       "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b|\\bgreen crystals\\b"
     },
     {
@@ -2946,5 +2947,13 @@
     }
   ],
   "chaseCollege": "draft picks|collegiate|\\bcollege\\b|\\bncaa\\b|cornhuskers|nebraska|\\bhuskers?\\b|\\bsage\\b|bowman u\\b|bowman university|\\bonit\\b|\\bu now\\b|metal universe champions|legends of college",
-  "_chaseCollegeHelp": "Chase pages' College / Pro filter: a card whose set name matches this is College (Contenders Draft Picks, Metal Universe Champions, SAGE...); every other card is Pro."
+  "chaseCollegeCards": [
+    "2016 Panini Black Friday Multi-Sport - Cracked Ice #26 Alex Gordon",
+    "2016 Panini Contenders - Cracked Ice Ticket #158 Aaron Green",
+    "2017 Panini Father's Day - Cracked Ice #78 Jordan Westerkamp",
+    "2018 Panini Father's Day - NFL Rookies Cracked Ice #FB20 Tanner Lee",
+    "2019 Panini Father's Day - Football Prospects Cracked Ice #FB12 Stanley Morgan Jr.",
+    "2019 Panini Father's Day - Football Prospects Cracked Ice #FB15 Devine Ozigbo"
+  ],
+  "_chaseCollegeHelp": "Chase pages' College / Pro filter: a card whose set name matches this is College (Contenders Draft Picks, Metal Universe Champions, SAGE...); every other card is Pro. \"chaseCollegeCards\" lists college cards by name (any tags) in sets that are mostly pro, e.g. Father's Day. A chase's \"skip\" leaves cards off that page by name (e.g. Johnny Rodgers' David Lee custom, not one of Ian's commissions)."
 }
