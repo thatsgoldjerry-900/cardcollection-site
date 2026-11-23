@@ -184,6 +184,12 @@
         else if (/^husker-/.test(sl)) p.tags.add("huskers");
         else if (["royals", "alex-gordon", "jermaine-dye"].includes(sl)) p.tags.add("royals");
       }
+      // Relic kinds for the Button / Nameplate / Dirt filters: from the name (Ian adds "(Button)", "(Nameplate)",
+      // "(Dirty Relic)" where the set name doesn't say it), or config "dirtRelics". Topps "Hot Button" and Gypsy Queen
+      // "Missing Nameplate" aren't relics.
+      if (/\bbuttons?\b/i.test(name) && !/\bhot button\b/i.test(name)) p.tags.add("button");
+      if (/\bnameplates?\b/i.test(name) && !/\bmissing nameplate\b/i.test(name)) p.tags.add("nameplate");
+      if (/\bdirt\b|\(dirty\b/i.test(name) || (json.site.dirtRelics || []).includes(name)) p.tags.add("dirt");
       // Hand corrections from config/site.json "tagFixes", e.g. {"auto": {"add": [card names], "remove": [card names]}}.
       for (const [tag, fix] of Object.entries(json.site.tagFixes || {})) {
         if ((fix.add || []).includes(name)) p.tags.add(tag);
@@ -226,7 +232,9 @@
   // Extra filter chips for particular pages.
   const INSCR = ["inscr", "Inscriptions"], PAGE_FILTERS = { "husker-football": [INSCR], customs: [INSCR] };
   const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
-  const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
+  // Kinds only some collections have: their chip shows only where the page has at least one such card.
+  const RARE_FILTERS = new Set(["button", "nameplate", "dirt"]);
+  const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["button", "Button relics"], ["nameplate", "Nameplate relics"], ["dirt", "Dirt relics"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
   const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
   const state = { filters: new Set(), sort: "new", decade: "", team: "", list: [], shown: 0, q: "", where: null };
 
@@ -691,7 +699,7 @@
         ${slug === "search" ? `${pageShortcut(state.q)}<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].filter(([k]) => !RARE_FILTERS.has(k) || state.filters.has(k) || base.some((c) => c.tags.has(k))).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r">${binderBtn()}${(sec || slug === "customs") && gi < 0 ? `<button type="button" class="btn" data-share-c="${slug}" aria-label="Share this collection">Share</button>` : ""}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
             const teams = [...new Set(base.map((c) => c.team).filter(Boolean))].sort((a, b) => a.localeCompare(b));
             const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
