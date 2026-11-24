@@ -610,7 +610,7 @@
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill${/tcdb\.com/i.test(l.url) ? " pill-tcdb" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
-        <figure class="hero-ph"><img alt="Two Husker fans in Nebraska red in front of a big N" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
+        <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
       </section>
       <section class="stats" aria-label="Collection stats">
         <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b><i class="sn"></i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></b><span>NFL Husker Chase →</span></a>
