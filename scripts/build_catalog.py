@@ -167,6 +167,7 @@ def sections_from_root(cfg, root_id):
 NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|^misc|^other$|gift", re.I)
 # Subfolders inside a section's Drive folder that aren't part of the shown collection.
 SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
+DUP_FOLDER = re.compile(r"^duplicates?$", re.I)
 
 def images_by_name(get, name, prefer=None, avoid=()):
     """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
@@ -194,15 +195,18 @@ def images_by_name(get, name, prefer=None, avoid=()):
         print(f"{len(found)} Drive folders named '{name}': using the one with the matching subfolders.", file=sys.stderr)
     # A card's team is the first folder on its path that names a team (e.g. "Kansas City Chiefs"); folders for a
     # kind of item or an era ("Memorabilia", "1970s Football") don't count, so "Memorabilia\Detroit Lions" works too.
-    def walk(fid, depth=0, team=""):
+    # A "Duplicates" subfolder (e.g. Alex Gordon / Duplicates) holds Ian's extra copies: they go to the Duplicates page.
+    def walk(fid, depth=0, team="", dup=False):
         out = []
         for f in drive_children(get, fid):
             if f["mimeType"] == FOLDER:
                 if depth < 4 and not SKIP_FOLDER.search(f["name"]):
                     nm = f["name"].strip()
-                    out += walk(f["id"], depth + 1, team or ("" if NOT_TEAM.search(nm) else nm))
+                    if DUP_FOLDER.search(nm): out += walk(f["id"], depth + 1, team, True); continue
+                    out += walk(f["id"], depth + 1, team or ("" if NOT_TEAM.search(nm) else nm), dup)
             elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
-                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10], "team": team})
+                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10], "team": team,
+                            **({"dup": True} if dup else {})})
         return out
     return walk(found[0]["id"])
 
@@ -271,6 +275,26 @@ def main():
         groups = []
         for gi, (gslug, glabel, files) in enumerate(group_files):
             print(f"{sec['slug']}/{gslug}: {len(files)} files", file=sys.stderr)
+            # Scans in a "Duplicates" subfolder: every front (with its back, paired the same way) goes to the Duplicates page.
+            extra = [f for f in files if f.get("dup")]
+            if extra:
+                files = [f for f in files if not f.get("dup")]
+                xf = {base_name(f["name"])[0].lower(): f for f in extra if not base_name(f["name"])[1]}
+                xloose = {loose_key(k): k for k in xf}
+                xback, paired = {}, set()
+                for f in extra:
+                    b, is_back = base_name(f["name"])
+                    k = b.lower() if b.lower() in xf else xloose.get(loose_key(b))
+                    if is_back and k: xback.setdefault(k, f); paired.add(f["id"])
+                for f in extra:
+                    if f["id"] in paired: continue                  # shown with its front
+                    b, is_back = base_name(f["name"])
+                    card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                    if SOLD.search(card_name): continue
+                    back = xback.get(b.lower()) if not is_back else None
+                    dupes.append([f["id"], f["rk"], card_name, si, gi, prev.get(f["id"]) or prev_name.get(card_name.lower()) or f["mod"],
+                                  back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
+                print(f"{sec['slug']}/{gslug}: {len(extra)} files in Duplicates", file=sys.stderr)
             # pair backs with fronts: by exact name, or failing that by the name without Ian's tag codes and
             # letter codes (a back is often named "... SN199 Back" while its front is "... AU, MEM, SN199").
             fronts, backs, loose_fronts = {}, {}, {}
