@@ -1163,15 +1163,16 @@
     fetch("data/team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMLOGOS = d.byName || {})).catch(() => {})]).then(([t]) => t));
   // The year a research note gives for a team: the nearest date after the team's name in that sentence
   // ("Released by the Broncos on 8/24/94", "the Raiders in '92"), else the nearest one before it
-  // ("Released 8/17/88 after the Bears"), stopping at another team's name. Two-digit years are 19xx or 20xx.
-  const YEAR_RE = /\b\d{1,2}[/.-]\d{1,2}[/.-](\d{4}|\d{2})\b|['’](\d{2})\b|\b((?:19|20)\d{2})\b/g;
+  // ("Released 8/17/88 after the Bears"), stopping at another team's name. A line can also start with the year
+  // ("04 - Chiefs (Preseason)"). Two-digit years are 19xx or 20xx.
+  const YEAR_RE = /\b\d{1,2}[/.-]\d{1,2}[/.-](\d{4}|\d{2})\b|['’](\d{2})\b|\b((?:19|20)\d{2})\b|^[ \t]*(\d{2})[ \t]*[-–—][ \t]/gm;
   function noteYear(note, i, e, nick) {
     const cut = (str) => { const k = str.search(/[.!?](\s|$)|\n/); return k < 0 ? str.length : k; };
     const startS = Math.max(note.lastIndexOf("\n", i) + 1, ...[...note.slice(0, i).matchAll(/[.!?]\s/g)].map((x) => x.index + 2));
     const endS = e + cut(note.slice(e));
     const others = [...note.slice(startS, endS).matchAll(new RegExp(nick.source, "g"))].map((x) => [startS + x.index, startS + x.index + x[0].length]).filter(([a]) => a !== i);
     const fwdEnd = Math.min(endS, ...others.filter(([a]) => a > i).map(([a]) => a)), backStart = Math.max(startS, ...others.filter(([a]) => a < i).map(([, z]) => z));
-    const yearsIn = (str) => [...str.matchAll(YEAR_RE)].map((x) => { const y = x[1] || x[2] || x[3]; if (y.length === 4) return +y;
+    const yearsIn = (str) => [...str.matchAll(YEAR_RE)].map((x) => { const y = x[1] || x[2] || x[3] || x[4]; if (y.length === 4) return +y;
       const n = +y, cy = new Date().getFullYear() % 100; return n <= cy ? 2000 + n : 1900 + n; });
     const f = yearsIn(note.slice(e, fwdEnd)), bk = yearsIn(note.slice(backStart, i));
     return String(f.length ? f[0] : bk.length ? bk[bk.length - 1] : "");

@@ -23,11 +23,11 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   2. Pick a site code, e.g. "ianbadeer" (the dashboard becomes ianbadeer.goatcounter.com).
   3. Send Claude the code. Claude puts it in `analytics.goatcounter` in `config/site.json`; every page then
      counts on its own (e.g. `#/player/ricky-simmons`), and visits show up in the GoatCounter dashboard.
-- [ ] **Add years for Huskers by NFL Team** (110 players; 40 now show a year from Pro Football Archives, marked "PFA").
+- [ ] **Add years for Huskers by NFL Team** (108 players; 40 now show a year from Pro Football Archives, marked "PFA").
   For those, the site already shows PFA's year; copy it into your research note when convenient. For the rest, put a date
-  or year in the same sentence as the team in the note, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92".
+  or year in the same sentence as the team in the note, e.g. "Released by the Broncos on 8/24/94" or "the Raiders in '92", or a line per stint like "04 - Chiefs (Preseason)" (Aaron Golliday's note, done 2026-11-24).
   Team pages and career timelines pick it up after the next data update. Cross a player off once his year is in your note.
-  - [ ] Arizona Cardinals: Aaron Golliday, Chris Spachman, Jeff Lake, Jon Zatechka
+  - [ ] Arizona Cardinals: Chris Spachman, Jeff Lake, Jon Zatechka
   - [ ] Atlanta Falcons: Corey Dixon (PFA: 1994–1995), Pat Ricketts
   - [ ] Baltimore Ravens: Terrence Moore (PFA: 2012)
   - [ ] Carolina Panthers: Adi Kunalic, Brian Schuster
@@ -41,7 +41,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Houston Texans: Damion Daniels, Pheldarious Payne
   - [ ] Indianapolis Colts: Ron Kirkland (PFA: 1967), Van Brownson (PFA: 1972)
   - [ ] Jacksonville Jaguars: Benard Thomas, Kevin Maurice, Kyler Reed, Oliver Martin, Todd Peterson
-  - [ ] Kansas City Chiefs: Aaron Golliday, Brandon Kinnie, Guy Ingles, Jake Andersen, Ray Novak
+  - [ ] Kansas City Chiefs: Brandon Kinnie, Guy Ingles, Jake Andersen, Ray Novak
   - [ ] Las Vegas Raiders: Phalen Sanford
   - [ ] Los Angeles Chargers: Barry Cryer, Ben Cotton, Mike Green (PFA: 1970)
   - [ ] Los Angeles Rams: Bobby Reynolds, Clarence Cook (PFA: 1957), Cortney Grixby, Dave Theisen (PFA: 1963–1964), Pat Tyrance (PFA: 1991), Walter "Butch" Luther (PFA: 1941)
