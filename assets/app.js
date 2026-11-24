@@ -170,7 +170,7 @@
   function load(json) {
     DATA = json; SECTIONS = json.sections;
     // Not on the site: sold cards and second/third copies. Customs always stay (numbered customs are separate commissions). scripts/build_catalog.py leaves them out too.
-    json.cards = json.cards.filter((c) => !/\bsold\b|\bgifted to\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
+    json.cards = json.cards.filter((c) => !/\bsold\b|\bgifted to\b/i.test(c[2]) && !(/\s\(?(?:2nd|3rd|\d+th)\)?(?:\s+back)?\s*(?:\([^)]*\))?\s*$/i.test(c[2]) && !/\bcustom\b/i.test(c[2])));
     const mk = (c, i) => {
       const [id, rk, name, si, gi, added, backId, backRk, team = "", fromBase = 0] = c;
       const p = parse(name);
@@ -898,7 +898,7 @@
     const sport = SPORT_OF_LIST[l.slug], showcase = [];
     {
       var pool = l.groups.flatMap((g) => g.rows).filter((r) => r[ai] === "Yes")
-        .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto") && !isBackScan(c))).filter((x) => x.length);
+        .map((r) => scansFor(r[0], sport).filter((c) => c.tags.has("auto"))).filter((x) => x.length);
       const rest = pool.slice();
       while (showcase.length < 3 && rest.length) { const k = Math.floor(Math.random() * rest.length), list = rest.splice(k, 1)[0]; showcase.push(list[Math.floor(Math.random() * list.length)]); }
     }
@@ -1084,7 +1084,7 @@
   const noPicture = (c, name) => !c.tags.has("custom") && !PICTURE.test(c.name.replace(/index card/i, "")) && (/\bcut\b|index card|\b(?:signed|autographed)\s+letter\b/i.test(c.name)
     || new RegExp(`^\\d{4}(?:-\\d{2})?\\s+${norm(name).split(" ").map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^#]*?")}[^#]*?\\b(?:signed\\s+)?(?:cut\\s+)?autograph`, "i").test(c.name));
   function bestScan(name, sport = "football") {
-    const all = scansFor(name, sport).filter((c) => !isBackScan(c));
+    const all = scansFor(name, sport);
     const pic = all.filter((c) => !noPicture(c, name));
     // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
     const solo = pic.filter((c) => !multiPlayer(c, name));
@@ -1236,7 +1236,7 @@
           <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}${e.pfa ? ` <span class="src" title="Year from Pro Football Archives">· Pro Football Archives</span>` : ""}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       // My cards of this team: scans filed in a Drive folder named for the team (any of its names, e.g. St. Louis Rams), oldest first.
       const names = new Set(t.names.map((n) => n.toLowerCase()));
-      const mine = sortList(CARDS.filter((c) => c.team && names.has(c.team.toLowerCase()) && SECTIONS[c.si].kind !== "want" && !isBackScan(c)), "old");
+      const mine = sortList(CARDS.filter((c) => c.team && names.has(c.team.toLowerCase()) && SECTIONS[c.si].kind !== "want"), "old");
       state.list = mine; state.binderItems = null;
       const TIER = { 1: "Played in games (Tier 1)", 2: "Active roster, preseason, injured reserve or practice squad (Tier 2)", 3: "Camp, tryout or draft (Tier 3)" };
       $("#app").innerHTML = `<div class="wrap tm tm-team" style="${teamVars(t)}"><a class="back" href="#/nfl-teams">← Huskers by NFL Team</a>
@@ -1337,7 +1337,7 @@
   // Every card I have of a player, from every collection on the site (not the Want List, not back scans).
   function playerCards(name) {
     const n = norm(name); if (n.split(" ").length < 2) return [];
-    return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && !isBackScan(c) && (" " + norm(c.name) + " ").includes(" " + n + " "))
+    return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && (" " + norm(c.name) + " ").includes(" " + n + " "))
       .sort((p, q) => (p.year || 0) - (q.year || 0) || p.name.localeCompare(q.name));
   }
   function playerCardsPage(slug) {
@@ -1526,7 +1526,7 @@
       if (info.back && info.back.startsWith("#/checklist/")) setNav(info.back.slice(2));
       const back = info.back || "#/nfl-huskers", backLabel = info.backLabel || "Husker Bios";
       const sport = info.sport || "football";
-      const scans = scansFor(info.name, sport).filter((c) => !isBackScan(c));
+      const scans = scansFor(info.name, sport);
       // A Husker with his own collection on the site (Alex Gordon): show one of those autographs and link to it.
       const pcIdx = SECTIONS.findIndex((x) => norm(x.title) === norm(info.name));
       const pc = pcIdx >= 0 ? sectionCards(pcIdx) : [];
@@ -1703,7 +1703,7 @@
     const st = DATA.site.dyeStory, si = SECTIONS.findIndex((x) => x.slug === "jermaine-dye");
     if (!st || si < 0) return notFound();
     setNav("jermaine-dye"); setTitle(st.title);
-    const sec = SECTIONS[si], mine = sectionCards(si).filter((c) => !isBackScan(c));
+    const sec = SECTIONS[si], mine = sectionCards(si);
     const find = (part) => mine.find((c) => c.name.toLowerCase().includes(part.toLowerCase()));
     const score = (c) => (c.one ? (c.tags.has("auto") || c.tags.has("relic") ? 60 : 15) : 0) + (c.tags.has("auto") ? 30 : 0) + (c.tags.has("relic") ? 25 : 0)
       + (/patch|knob|logoman|nameplate|button|laundry tag/i.test(c.name) ? 15 : 0)
@@ -2059,10 +2059,7 @@
   // base card's front scan, so its own back scan's ID tells it apart.
   function cid(x) { return x.fb ? x.backId : x.id; }
   function byCid(id) { return CARDS.find((x) => cid(x) === id); }
-  // Config "signedBacks": back scans that stand as the card (signed on the back, no front scan), e.g. Star Pics autographs.
-  let SIGNED_BACKS = null;
-  function isBackScan(x) { if (!SIGNED_BACKS) SIGNED_BACKS = new Set(DATA.site.signedBacks || []); if (SIGNED_BACKS.has(x.name)) return false;
-    return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
+
   // Big screens scale the whole page up (style.css, html zoom); window sizes and on-screen positions are divided by it to match CSS pixels.
   function pageZoom() { return parseFloat(getComputedStyle(document.documentElement).zoom) || 1; }
   const isWant = (x) => !!(x && (x.tw || (SECTIONS[x.si] && SECTIONS[x.si].kind === "want")));
@@ -2080,7 +2077,7 @@
       RAINBOWS = new Map();
       const seen = new Set();   // a card uploaded twice counts once
       CARDS.forEach((x) => {
-        if (isBackScan(x) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
+        if (seen.has(copyKey(x))) return; seen.add(copyKey(x));
         const k = rainbowKey(x); if (k) RAINBOWS.set(k, [...(RAINBOWS.get(k) || []), x]);
       });
       (TW || []).forEach((x) => { const k = rainbowKey(x); if (k && RAINBOWS.has(k)) RAINBOWS.get(k).push(x); });
@@ -2112,7 +2109,7 @@
     if (!SETS) {
       SETS = new Map(); const seen = new Set();
       CARDS.forEach((x) => {
-        if (isBackScan(x) || seen.has(copyKey(x))) return; seen.add(copyKey(x));
+        if (seen.has(copyKey(x))) return; seen.add(copyKey(x));
         const k = setKey(x); if (k) SETS.set(k, [...(SETS.get(k) || []), x]);
       });
     }
@@ -2172,7 +2169,7 @@
     if (!LETTERS) {
       LETTERS = new Map(); const seen = new Set();
       CARDS.forEach((x) => {
-        if (!isLetterSet(x) || !letterOf(x) || isBackScan(x) || !huskerLetters(x)) return;
+        if (!isLetterSet(x) || !letterOf(x) || !huskerLetters(x)) return;
         const k = letterGroupKey(x), l = letterOf(x); if (!k) return;
         const id = k + "|" + l.pos + l.letter + "|" + (x.par || "") + "|" + (x.serial || ""); if (seen.has(id)) return; seen.add(id);
         LETTERS.set(k, [...(LETTERS.get(k) || []), x]);
@@ -2329,7 +2326,7 @@
     const fits = (n) => rx.test(n) && !(ex && ex.test(n)) && !skip.has(chaseKey(n));
     // A scan's sport is its Nebraska collection (Alex Gordon: baseball); a TCDb card's comes with it (data/chases.json).
     const sportOf = (c) => (SECTIONS[c.si].slug === "alex-gordon" ? "baseball" : SECTIONS[c.si].slug.replace(/^husker-/, ""));
-    const scans = CARDS.filter((c) => fits(c.name) && /^husker-|^alex-gordon$/.test(SECTIONS[c.si].slug) && !isBackScan(c)).map((c) => Object.assign(c, { chaseSport: sportOf(c) }));
+    const scans = CARDS.filter((c) => fits(c.name) && /^husker-|^alex-gordon$/.test(SECTIONS[c.si].slug)).map((c) => Object.assign(c, { chaseSport: sportOf(c) }));
     const seen = new Set(scans.map((c) => chaseKey(c.name)));
     const mk = (flag) => ([name, ids, sp]) => { const n = name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim(); return { ...parse(n), name: n, [flag]: true, tcdb: ids, i: -1, chaseSport: sp || "other" }; };
     const keep = (x) => { if (!fits(x.name)) return false; const k = chaseKey(x.name); if (seen.has(k)) return false; seen.add(k); return true; };
@@ -2696,7 +2693,7 @@
     $("#v-dice").hidden = !V.random;
     prefetch();
     showBackText(c);
-    const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x) && !isBackScan(x));
+    const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x));
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)} scan${bySet.length === 1 ? "" : "s"})</button>` : "")
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)} scan${byPlayer.length === 1 ? "" : "s"})</button>` : "");
@@ -2912,7 +2909,7 @@
   const calm = matchMedia("(prefers-reduced-motion: reduce)");
   function randomCard() {
     const here = /^(c\/|customs$|all$|search$)/.test(state.where || "") && state.list.length ? state.list : CARDS;
-    const pool = here.filter((c) => !isBackScan(c));
+    const pool = here;
     if (!pool.length) return null;
     let c;
     for (let n = 0; n < 6; n++) { c = pool[Math.floor(Math.random() * pool.length)]; if (c.i !== lastRandom || pool.length === 1) break; }
