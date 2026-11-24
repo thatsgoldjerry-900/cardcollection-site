@@ -118,9 +118,9 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   Jordan Burroughs (wrestling) isn't counted: not on a list, no scans. Add more chases with a name and a match phrase.
 - [x] **Alex Gordon re-upload done** (Ian, 2026-11-24): the section reads the Drive folder "Alex Gordon" by name; the 8 old
   per-year folder IDs are gone from config. Groups are year ranges from the year at the start of each file name ("maxYear",
-  same groups as before). Its "Duplicates" subfolder goes to the Duplicates page (scripts/build_catalog.py DUP_FOLDER; works in
+  same groups as before; 845 renamed scans the robot could not match were back-dated to 2025-01-01, not NEW). Its "Duplicates" subfolder goes to the Duplicates page (scripts/build_catalog.py DUP_FOLDER; works in
   any collection's folder). Still to do (Claude): check button/nameplate tags and run a missing-card check by player + set.
-  After all re-uploads: remove "freshUploadDate" from the jermaine-dye, royals and husker-baseball sections in config/site.json.
+  After all re-uploads: remove "freshUploadDate" from the alex-gordon, jermaine-dye, royals and husker-baseball sections in config/site.json.
 - Session notes 2026-11-23 (also live): Huskers by NFL Team pages end with Ian's cards of that team (Drive team folders);
   Nebraska Basketball Cards & Autos page; letterman pages are Huskers only, split by parallel and autograph, ignore letter codes
   in set names / card numbers, and Own The Name cards count as nameplate relics; filters Button / Nameplate / Dirt relics (config

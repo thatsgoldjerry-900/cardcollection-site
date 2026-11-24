@@ -92,7 +92,8 @@
         }
       ],
       "driveFolderName": "Alex Gordon",
-      "_help": "Read from the Drive folder named 'Alex Gordon' (found by name); groups are year ranges from the year at the start of each file name (\"maxYear\"). Scans in its 'Duplicates' subfolder go to the Duplicates page."
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Alex Gordon' (found by name); groups are year ranges from the year at the start of each file name (\"maxYear\"). Scans in its 'Duplicates' subfolder go to the Duplicates page. freshUploadDate: renamed re-uploads the robot can't match aren't shown as NEW (remove once the re-upload is done)."
     },
     {
       "slug": "jermaine-dye",
