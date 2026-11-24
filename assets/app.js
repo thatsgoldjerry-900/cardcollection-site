@@ -581,7 +581,6 @@
   function home() {
     setNav(null); setTitle("");
     const s = DATA.site;
-    const feat = CARDS.find((c) => s.featured && c.name.includes(s.featured.match)) || CARDS.find((c) => c.one);
     const newest = sortList(CARDS, "new").slice(0, 40);
     const ones = CARDS.filter((c) => c.one).length;
     const tiles = siteOrder().map((sec) => {
@@ -611,7 +610,7 @@
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill${/tcdb\.com/i.test(l.url) ? " pill-tcdb" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
-        ${feat ? `<button class="feat cd" type="button" data-i="${feat.i}"><div class="ph"><img alt="${esc(feat.name)}" src="${img(feat.id, feat.rk, 600)}" srcset="${img(feat.id, feat.rk, 400)} 400w, ${img(feat.id, feat.rk, 600)} 600w, ${img(feat.id, feat.rk, 800)} 800w" sizes="(max-width: 800px) 200px, 320px" onload="fitFrame(this)"></div><small>${esc(s.featured?.caption || feat.name)}</small></button>` : ""}
+        <figure class="hero-ph"><img alt="Two Husker fans in Nebraska red in front of a big N" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
       </section>
       <section class="stats" aria-label="Collection stats">
         <a class="stat link has-logo" id="stat-nfl" href="#/checklist" hidden><b><i class="sn"></i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></b><span>NFL Husker Chase →</span></a>

@@ -21,10 +21,6 @@
     "goatcounter": ""
   },
   "_analyticsHelp": "\"analytics.goatcounter\" is the site code from goatcounter.com (the part before .goatcounter.com). Empty means no analytics.",
-  "featured": {
-    "match": "All-Star Jumbo Sleeve Team Patch",
-    "caption": "Alex Gordon's 2013 All-Star Game jersey sleeve patch, 1 of 1"
-  },
   "links": [
     {
       "label": "Trade with me on TCDb",
