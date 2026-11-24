@@ -2059,7 +2059,10 @@
   // base card's front scan, so its own back scan's ID tells it apart.
   function cid(x) { return x.fb ? x.backId : x.id; }
   function byCid(id) { return CARDS.find((x) => cid(x) === id); }
-  function isBackScan(x) { return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
+  // Config "signedBacks": back scans that stand as the card (signed on the back, no front scan), e.g. Star Pics autographs.
+  let SIGNED_BACKS = null;
+  function isBackScan(x) { if (!SIGNED_BACKS) SIGNED_BACKS = new Set(DATA.site.signedBacks || []); if (SIGNED_BACKS.has(x.name)) return false;
+    return /\((back|inside)\)/i.test(x.name) || /\bback\s*(\([^()]*\))?\s*$/i.test(x.name); }
   // Big screens scale the whole page up (style.css, html zoom); window sizes and on-screen positions are divided by it to match CSS pixels.
   function pageZoom() { return parseFloat(getComputedStyle(document.documentElement).zoom) || 1; }
   const isWant = (x) => !!(x && (x.tw || (SECTIONS[x.si] && SECTIONS[x.si].kind === "want")));

@@ -2925,6 +2925,11 @@
       }
     ]
   },
+  "_signedBacksHelp": "Back scans that stand as the card: signed on the back with no front scan (exact card names, file name without extension). They show on player pages and in collections like a front.",
+  "signedBacks": [
+    "1991 Star Pics - Autographs #4 Rich King AU Back",
+    "1991 Star Pics - Autographs #36 Tony Farmer AU Back"
+  ],
   "_dirtRelicsHelp": "Dirt relics whose file name has no room for \"(Dirty Relic)\": exact card names (file name without extension). They get the dirt glow in the viewer.",
   "dirtRelics": [
     "2022 Topps Triple Threads - Touch 'Em All Three-Player Triple Relics #TEARC-BRM Andrew Benintendi Whit Merrifield Salvador Perez MEM, SN18"
