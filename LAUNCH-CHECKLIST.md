@@ -140,6 +140,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   "dirtRelics" for names with no room); TCDb collections + want lists for all five sports imported.
 
 ## Before the switch
+- [ ] **Decide: watermark built into the grid pictures?** (Ian, 2026-11-25: review before the site goes live.) The card
+  grids show IANBADEER.COM on top of each picture, but "Open image in new tab" on a grid card gives the clean scan. The bio
+  photo and the viewer's Save already use a copy with the mark built in. Doing that for every grid picture means extra work
+  on each page load and could slow big collections on phones.
 - [ ] **Image renames finished.** Ian is renaming card images in his database and Drive.
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
     "2nd (Sold to … for $15 on 4-22)": file names show on the site as captions and in search.
