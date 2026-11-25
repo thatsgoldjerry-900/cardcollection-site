@@ -630,11 +630,13 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (prefers-reduced-motion:reduce){.v-aura,.v-aura::before,.v-aura::after{animation:none!important}}
 
 /* Pages opened from a card (rainbow, set, letters): viewer-style bar and a slide-in */
-.fc-bar{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin:0 -16px 12px;padding:8px 10px;background:rgba(11,15,21,.98);border-bottom:1px solid var(--line);}
+.fc-bar{position:sticky;top:var(--site-bar,0px);z-index:20;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin:0 -16px 12px;padding:8px 10px;background:rgba(11,15,21,.98);border-bottom:1px solid var(--line);}
 .fc-bar .back{display:grid;margin:0;color:var(--fg)}
 #app.slide-in{animation:slide-in .28s ease-out}
+.viewer.back-in{animation:back-in .2s ease-out}
+@keyframes back-in{from{opacity:0}to{opacity:1}}
 @keyframes slide-in{from{transform:translateX(28px);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){#app.slide-in{animation:none}}
+@media (prefers-reduced-motion:reduce){#app.slide-in,.viewer.back-in{animation:none}}
 
 /* Huskers by NFL Team: each team's logo and colors */
 .tm-tile{border-top:4px solid var(--tc1);position:relative}
