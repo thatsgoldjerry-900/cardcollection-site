@@ -1266,9 +1266,9 @@
     setNav("nfl-teams");
     loadHub(() => nflTeamData().then((teams) => {
       const idx = teamIndex(teams);
+      const rows = teams.map((t) => ({ t, n: idx[t.slug].length, t1: idx[t.slug].filter((e) => e.tier === 1).length })).sort((a, b) => b.n - a.n || a.t.name.localeCompare(b.t.name));
       if (!slug) {
         setTitle("Huskers by NFL Team");
-        const rows = teams.map((t) => ({ t, n: idx[t.slug].length, t1: idx[t.slug].filter((e) => e.tier === 1).length })).sort((a, b) => b.n - a.n || a.t.name.localeCompare(b.t.name));
         $("#app").innerHTML = `<div class="wrap tm"><div class="c-head"><div class="kick">NFL Huskers</div><h1>Huskers by NFL Team</h1>
           <p>Every Nebraska Cornhusker on my NFL lists, by the franchise he was with. Past team names count toward today's franchise (St. Louis Rams → Los Angeles Rams).</p></div>
           <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" style="${teamVars(t)}" href="#/nfl-teams/${t.slug}">${teamLogo(t, "tm-logo")}<b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div></div>`;
@@ -1291,6 +1291,8 @@
         ${[1, 2, 3].map((n) => { const g = list.filter((e) => e.tier === n); return g.length ? `<h2 class="more-h">${TIER[n]} · ${g.length}</h2><div class="pm-list">${g.map(card).join("")}</div>` : ""; }).join("")}
         ${list.length ? "" : `<p class="empty">No Huskers from my lists yet.</p>`}
         ${mine.length ? `<h2 class="more-h tm-cards-h">My ${esc(t.name)} cards · ${fmt(mine.length)}</h2><div class="b-row">${binderBtn()}</div><div class="grid" id="grid">${mine.map((c) => cardHTML(c)).join("")}</div>` : ""}
+        ${(() => { const k = rows.findIndex((r) => r.t.slug === slug), tm = (r) => r && { href: "#/nfl-teams/" + r.t.slug, name: r.t.name };
+          return navLinks(tm(rows[k - 1]), tm(rows[k + 1]), "Previous and next team", "team"); })()}
         ${t.logoPage ? `<p class="tm-credit">Logo: <a href="${esc(t.logoPage)}" target="_blank" rel="noopener">Wikipedia</a>. Team names and logos are trademarks of their teams.</p>` : ""}</div>`;
     }));
   }
@@ -1375,10 +1377,32 @@
     const card = (x) => { const sc = x.have ? bestScan(x.name, x.sport) : null;
       return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
         <span class="pm-t"><b>${esc(x.name)}${hofMarks(x)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
-    const prev = list[at - 1], next = list[at + 1];
-    return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>
-      <nav class="pl-nav" aria-label="Previous and next player">${prev ? `<a href="#/player/${prev.slug}">← ${esc(prev.name)}</a>` : "<span></span>"}${next ? `<a href="#/player/${next.slug}">${esc(next.name)} →</a>` : ""}</nav></section>`;
+    return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>${playerNav(slug, info)}</section>`;
   }
+  // Previous / next player, in the order of the list you opened him from (as sorted and filtered there:
+  // a checklist, Husker Bios or a team page); otherwise his own list's order. The ← and → keys follow it too.
+  const navLinks = (prev, next, label, what) => `<nav class="pl-nav" aria-label="${label}">${prev ? `<a data-dir="prev" href="${prev.href}" title="Previous ${what} (← key)">← ${esc(prev.name)}</a>` : "<span></span>"}${next ? `<a data-dir="next" href="${next.href}" title="Next ${what} (→ key)">${esc(next.name)} →</a>` : ""}</nav>`;
+  function playerNav(slug, info) {
+    const seq = PSEQ && PSEQ.includes(slug) ? PSEQ : allPlayers().filter((x) => x.listSlug === info.listSlug).map((x) => x.slug);
+    const at = seq.indexOf(slug); if (at < 0) return "";
+    const who = (s) => { if (!s) return null; const x = allPlayers().find((q) => q.slug === s) || (PLAYERS.players || []).find((q) => q.slug === s); return x ? { href: "#/player/" + s, name: x.name } : null; };
+    return navLinks(who(seq[at - 1]), who(seq[at + 1]), "Previous and next player", "player");
+  }
+  // The list order a player was opened from: kept for the visit (sessionStorage), so a reload keeps it.
+  let PSEQ = null; try { PSEQ = JSON.parse(sessionStorage.getItem("pseq") || "null"); } catch (e) {}
+  const setPSEQ = (v) => { PSEQ = v; try { v ? sessionStorage.setItem("pseq", JSON.stringify(v)) : sessionStorage.removeItem("pseq"); } catch (e) {} };
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a[href]"); if (!a) return;
+    const h = hashOf(a.getAttribute("href")) || ""; if (!h.startsWith("#/player/")) return;
+    const here = HASH();
+    if (here.startsWith("#/player/")) return;   // from a player page (← →, Huskers like him): keep the list you came from
+    const slugOf = (x) => decodeURIComponent((hashOf(x.getAttribute("href")) || "").replace(/^#\/player\//, "").split(/[/?]/)[0]);
+    if (a.closest("#hub-list")) setPSEQ(HUB.rows.map((p) => p.slug));   // all of them, also the rows not loaded yet
+    else if (/^#\/(checklist|nfl-teams\/)/.test(here) && a.closest("#app") && a.classList.length) {
+      const sel = "a." + [...a.classList].join(".");
+      setPSEQ([...new Set([...$("#app").querySelectorAll(sel)].map(slugOf))]);
+    } else setPSEQ(null);
+  }, true);
 
   // Every card I have of a player, from every collection on the site (not the Want List, not back scans).
   function playerCards(name) {
@@ -1436,7 +1460,7 @@
     if (note && TEAMIDX_NICK) {
       note.split(/(?<=[.!?])\s+|\n+/).forEach((sent) => {
         const ym = [...sent.matchAll(YEAR_RE)][0]; if (!ym) return;
-        const yv = ym[1] || ym[2] || ym[3], y = yv.length === 4 ? +yv : (+yv <= NOW % 100 ? 2000 : 1900) + +yv;
+        const yv = ym[1] || ym[2] || ym[3] || ym[4], y = yv.length === 4 ? +yv : (+yv <= NOW % 100 ? 2000 : 1900) + +yv;
         const w = EVENT_WORDS.find(([re]) => re.test(sent)); if (!w) return;
         const team = (sent.match(TEAMIDX_NICK) || [])[0] || "";
         marks.push({ y, label: w[1], sub: team, full: sent.trim(), kind: "n" });
@@ -1705,7 +1729,7 @@
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>
-        ${moreHuskers(slug, info, p)}
+        ${moreHuskers(slug, info, p) || playerNav(slug, info)}
         ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} scans in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${sortList(scans, "old").map((c) => cardHTML(c)).join("")}</div>` : ""}
         ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See ${n === 1 ? "the 1 scan" : `all ${fmt(n)} scans`} of ${esc(info.name)} in my collection →</a></p>` : ""; })()}
@@ -2586,6 +2610,16 @@
   $("#search-form").addEventListener("submit", (e) => e.preventDefault());
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && document.activeElement !== $("#q") && $("#viewer").hidden) { e.preventDefault(); $("#q").focus(); }
+  });
+
+  // ← / → on a player or team page: the previous / next one (the page's pl-nav links).
+  document.addEventListener("keydown", (e) => {
+    if ((e.key !== "ArrowLeft" && e.key !== "ArrowRight") || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.defaultPrevented) return;
+    if (!$("#viewer").hidden || ($("#binder") && !$("#binder").hidden)) return;
+    const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (!/^#\/(player|nfl-teams)\/[^/?]/.test(HASH())) return;
+    const a = $(`#app .pl-nav a[data-dir="${e.key === "ArrowLeft" ? "prev" : "next"}"]`); if (!a) return;
+    e.preventDefault(); a.click();
   });
 
   /* ---------- Viewer ---------- */
