@@ -1411,11 +1411,13 @@
     return CARDS.filter((c) => SECTIONS[c.si].kind !== "want" && (" " + norm(c.name) + " ").includes(" " + n + " "))
       .sort((p, q) => (p.year || 0) - (q.year || 0) || p.name.localeCompare(q.name));
   }
+  // Have/Need and "Signed" come from the spreadsheet list rebuilt on every update, never the saved bios in players.json.
+  const live = (row) => (row ? { have: row.have, signed: row.signed } : {});
   function playerCardsPage(slug) {
     loadHub(() => {
       const p = (PLAYERS.players || []).find((x) => x.slug === slug), row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
-      const info = { ...(row || {}), ...(p || {}) }, all = playerCards(info.name); if (!all.length) return notFound();
+      const info = { ...(row || {}), ...(p || {}), ...live(row) }, all = playerCards(info.name); if (!all.length) return notFound();
       setNav(info.back && info.back.startsWith("#/checklist/") ? info.back.slice(2) : "nfl-huskers"); setTitle(`${info.name} cards`);
       const where = [...new Set(all.map((c) => SECTIONS[c.si].title))];
       $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
@@ -1598,7 +1600,7 @@
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
-      const info = { ...(row || {}), ...(p || {}) }, w = (p && p.wiki) || null, hof = hofFor(info), pro = PROHOF[slug];
+      const info = { ...(row || {}), ...(p || {}), ...live(row) }, w = (p && p.wiki) || null, hof = hofFor(info), pro = PROHOF[slug];
       if (!TEAMIDX_NICK && NFLTEAMS_LIST) TEAMIDX_NICK = new RegExp(`\\b(${NFLTEAMS_LIST.flatMap((t) => t.nick).join("|")})\\b`);
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
