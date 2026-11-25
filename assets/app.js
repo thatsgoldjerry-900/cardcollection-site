@@ -227,7 +227,7 @@
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
     const d30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
     if (NEW_CUTOFF < d30) NEW_CUTOFF = dates[0];
-    $("#q").placeholder = `Search ${fmt(CARDS.length)} scans… try “Triple Threads”`;
+    $("#q").placeholder = phoneBar.matches ? "Search cards" : `Search ${fmt(CARDS.length)} scans… try “Triple Threads”`;
     renderNav(); renderFoot(); route();
   }
 
@@ -521,7 +521,14 @@
     e.preventDefault(); e.stopPropagation();
     $("#dd-menu") && ($("#dd-menu").hidden ? openDD(e.currentTarget) : closeDD());
   });
-  $("#mb-search").addEventListener("click", () => { scrollTo(0, 0); $("#q").focus(); });
+  // Phones: the whole search box lives in the slim top bar (on every page); wider screens keep it in the header.
+  const phoneBar = window.matchMedia("(max-width: 860px)"), searchForm = $("#search-form"), headDice = $("#dice");
+  function placeSearch() {
+    if (phoneBar.matches) $("#mbar").insertBefore(searchForm, $("#mb-dice"));
+    else headDice.parentNode.insertBefore(searchForm, $("#picks-link"));
+    $("#q").placeholder = phoneBar.matches ? "Search cards" : typeof CARDS !== "undefined" && CARDS && CARDS.length ? `Search ${fmt(CARDS.length)} scans… try “Triple Threads”` : "Search 9,000+ cards… try “Triple Threads”";
+  }
+  phoneBar.addEventListener("change", placeSearch); placeSearch();
   $("#mb-dice").addEventListener("click", () => $("#dice").click());
   if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { $("#mbar").classList.toggle("on", !en.isIntersecting); closeDD(); }).observe($(".top"));
 

@@ -1096,9 +1096,14 @@ body[data-bg="lions"] .page-bg{--t1:#0a86cc;--t2:#055a8f;--t3:rgba(5,70,112,.55)
   .mb-b:active,.mb-b:focus-visible{background:var(--panel)}
   .mb-b svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .mb-dice svg{stroke-width:1.8}.mb-dice circle{fill:currentColor;stroke:none}
-  .mb-cat{flex:1 1 auto;min-width:0;display:block;margin-right:auto;font-family:var(--f-d);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.02em;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+  .mb-cat{flex:0 1 auto;max-width:34%;min-width:0;display:block;padding:0 4px;font-family:var(--f-d);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.02em;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
   .mb-cat[hidden]{display:block;visibility:hidden}
-  .mb-cat.dd::after{content:" \25BE";font-size:13px;color:var(--mu)}
+  .mb-cat.dd::after{content:" \25BE";font-size:12px;color:var(--mu)}
+  /* The search box, smaller, fills the rest of the bar. */
+  .mbar .search{order:0;flex:1 1 0;min-width:0;height:34px;gap:6px;padding:0 8px;margin:0 2px}
+  .mbar .search svg{width:15px;height:15px}
+  .mbar .search input{font-size:16px;padding:0;height:100%} /* 16px keeps iPhones from zooming in on focus */
+  .mbar .search kbd{display:none}
 }
 
 /* Fan Day crops as list thumbnails (team pages, Husker Bios, the Huskers list) */
