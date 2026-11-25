@@ -489,7 +489,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · <a href="#/about">About &amp; sharing</a></span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · <a href="#/about">About &amp; sharing</a></span><span class="bg-credit" id="bg-credit" hidden></span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -2471,6 +2471,7 @@
     if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || defaultSort(key); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; state.team = prm.get("t") || ""; }
     state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
+    NAV_NOW = null;   // each page sets its own (the background below goes by it)
     if (!a) home();
     else if (a === "c") collection(b, c);
     else if (a === "customs") collection("customs");
@@ -2503,8 +2504,29 @@
       return openViewer(j >= 0 ? j : 0, j >= 0 ? state.list : [card]);
     }
     else notFound();
+    pageBg(a);
     window.scrollTo(0, 0);
     track();
+  }
+  /* ---------- Page backgrounds (Ian, 2026-11-25): stadium lights on every page; the home page adds a wall of ghosted
+     neon signatures; football pages (Huskers football, NFL Huskers, Lions) add a real photo of a field, baseball pages
+     (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Photos from Wikimedia
+     Commons, credited in the footer. Never on the card scans themselves. ---------- */
+  const BG_PHOTOS = {
+    football: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Leavitt_Park_td_(2022-04-22)_29a_-_Leavitt_Field.jpg"],
+    baseball: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Central_Park_North_Meadow_td_(2019-04-18)_084_-_Baseball_Field_5.jpg"],
+    basketball: ["Linda Banks", "https://commons.wikimedia.org/wiki/File:1958_Redfield,_Arkansas_Gymnasium_Interior.jpg"],
+  };
+  function pageBg(a) {
+    const n = (NAV_NOW || "").replace(/^c\//, "");
+    const bg = !a ? "home"
+      : /^(checklist\/mlb|husker-baseball|alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "baseball"
+      : /^(checklist\/nba|husker-basketball)/.test(n) ? "basketball"
+      : /^(checklist|husker-football|lions|nfl-)/.test(n) ? "football" : "";
+    document.body.dataset.bg = bg;
+    const cr = $("#bg-credit"), ph = BG_PHOTOS[bg]; if (!cr) return;
+    cr.hidden = !ph;
+    if (ph) cr.innerHTML = `Background photo: <a href="${ph[1]}" target="_blank" rel="noopener">${esc(ph[0])}, Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> (cropped and darkened).`;
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
   // Each #/ page counts as its own page, e.g. /cardcollection-site/#/player/ricky-simmons.
