@@ -994,11 +994,11 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
 @media (max-width:800px){.hero{grid-template-columns:1fr;align-items:start}.hero-ph{min-height:0;justify-self:center;width:min(320px,85%)}
   .hero-ph img{position:static;display:block;width:100%;height:auto}}
 
-/* Watermark on every card picture (display only; the scans aren't changed): IANBADEER.COM, centered about 80% down,
+/* Watermark on every card picture (display only; the scans aren't changed): IANBADEER.COM, centered about 69% down (Ian 2026-11-25: moved up, ~2 pt smaller),
    like the viewer's marked copy. */
 .cd .ph{container-type:inline-size}
-.cd .ph::after{content:"IANBADEER.COM";position:absolute;left:0;right:0;top:80%;transform:translateY(-50%);text-align:center;pointer-events:none;
-  font:800 9.5cqi/1 "Barlow Condensed","Arial Narrow",Arial,sans-serif;color:rgba(60,60,60,.40);-webkit-text-stroke:.35px rgba(255,255,255,.42);letter-spacing:.01em;z-index:1}
+.cd .ph::after{content:"IANBADEER.COM";position:absolute;left:0;right:0;top:69%;transform:translateY(-50%);text-align:center;pointer-events:none;
+  font:800 8.95cqi/1 "Barlow Condensed","Arial Narrow",Arial,sans-serif;color:rgba(60,60,60,.40);-webkit-text-stroke:.35px rgba(255,255,255,.42);letter-spacing:.01em;z-index:1}
 /* MEM (memorabilia) corner tag, next to AUTO */
 .bd.mem{background:#8a4fd1}
 /* Home stats bar: everything centered in its box */

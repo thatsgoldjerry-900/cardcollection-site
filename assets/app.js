@@ -2651,15 +2651,16 @@
           const g = cv.getContext("2d"); g.drawImage(im, 0, 0);
           // Small blob URLs (not huge data: URLs): phones redraw them without a blink.
           const plainP = new Promise((r) => cv.toBlob((b) => r(b && URL.createObjectURL(b)), "image/jpeg", 0.92));
-          // Like COMC: centered, about 80% of the way down the card, spanning ~60% of its width;
+          // Centered, about 69% of the way down the card (Ian, 2026-11-25: moved up from 80% and about 2 pt smaller),
+          // spanning ~56% of its width;
           // see-through gray letters with a light edge so it reads on light and dark cards.
           const word = "IANBADEER.COM";
           g.textAlign = "center"; g.textBaseline = "middle";
           g.font = `800 100px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
           const per = g.measureText(word).width / 100;
-          const size = Math.max(14, Math.min((cv.width * 0.6) / per, cv.height * 0.085));
+          const size = Math.max(14, Math.min((cv.width * 0.565) / per, cv.height * 0.08));
           g.font = `800 ${size}px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
-          const x = cv.width / 2, y = cv.height * 0.8;
+          const x = cv.width / 2, y = cv.height * 0.69;
           g.lineJoin = "round"; g.lineWidth = Math.max(1.5, size * 0.05);
           g.strokeStyle = "rgba(255,255,255,.42)"; g.strokeText(word, x, y);
           g.fillStyle = "rgba(60,60,60,.40)"; g.fillText(word, x, y);
