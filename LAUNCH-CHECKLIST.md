@@ -15,14 +15,6 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
 - [x] **Add the non-sport customs (e.g. Sonic the Hedgehog).** Ian made the "Customs - Non-Sport" Drive folder (2026-11-22);
   connected as a hidden section in config/site.json ("customs": true, "hidden": true): its scans show only under the Customs
   page's Non-Sport filter.
-- [ ] **Alex Gordon re-upload: 4 cards to check** (the old list had them, the new "Alex Gordon" folder doesn't):
-  - 2007 Upper Deck Masterpieces - Stroke of Genius Signatures **Windsor Green** #SG-GO, 1 of 1, BGS 9 (only the regular
-    Stroke of Genius auto is in the folder now).
-  - 2016 Topps Dynasty - Autograph Patches Silver #AP-AGO1 **#'d 4 of 5** (the folder has the encased one and 5 of 5).
-  - 2019 Historic Huskers **Jumbo Ball** custom, unsigned (only the signed one is in the folder now).
-  - Add the print run to 3 names that lost it: 2016 Topps Opening Day - Blue Foil #OD-31 (PR2016), 2017 Topps Chrome
-    Sapphire Edition #445 (PR250), 2017 Topps - Limited Edition #445 (PR1000). Without it they don't count as numbered.
-  If a card was sold or traded, nothing to do.
 - [ ] **Turn off downloads in the shared Drive folders.** In each folder's Share settings (gear icon), untick
   "Viewers and commenters can see the option to download, print, and copy", then open one card file to check
   the download option is gone there too. The site keeps working; this removes Drive's "Download all" zip.
@@ -128,7 +120,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   per-year folder IDs are gone from config. Groups are year ranges from the year at the start of each file name ("maxYear",
   same groups as before; 845 renamed scans the robot could not match were back-dated to 2025-01-01, not NEW). Its "Duplicates" subfolder goes to the Duplicates page (scripts/build_catalog.py DUP_FOLDER; works in
   any collection's folder). Checks done 2026-11-24 (old list of 2,671 vs new 2,832, matched by player + set + number):
-  nothing lost except the 4 cards in Ian's to-dos; store parallels were renamed, not lost (Walmart -> Blue, Target -> Red /
+  nothing lost (Ian confirmed the 4 missing/renamed cards as intended, 2026-11-25); store parallels were renamed, not lost (Walmart -> Blue, Target -> Red /
   Throwbacks); old double uploads ("#'d 2 of 50" + "#'d to 50") are now one card. Button (5) and Nameplate (9) relics are all
   tagged, with Immaculate Dual Players Black "(Button)" and 2014 In the Name "(Nameplate)" new. Lost auto/relic tags follow Ian's
   codes (e.g. Just Autographs Black/Gold/Silver without AU, Sweet Spot glove leather autos without MEM). chaseCollegeCards

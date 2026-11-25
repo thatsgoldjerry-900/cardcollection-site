@@ -233,11 +233,16 @@
   // The Customs page has its own filters (all its cards are customs).
   // Extra filter chips for particular pages.
   const INSCR = ["inscr", "Inscriptions"], PAGE_FILTERS = { "husker-football": [INSCR], customs: [INSCR] };
-  const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
+  const CUSTOM_FILTERS = [["auto", "Autographs"], ["relic", "Relics & Patches"], ["royals", "Royals"], ["huskers", "Huskers"], ["nonsport", "Non-Sport"]];
   // Kinds only some collections have: their chip shows only where the page has at least one such card.
   const RARE_FILTERS = new Set(["button", "nameplate", "dirt"]);
-  const FILTERS = [["auto", "Autographs"], ["relic", "Relics & patches"], ["button", "Button relics"], ["nameplate", "Nameplate relics"], ["dirt", "Dirt relics"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["rc", "Rookies"], ["custom", "Customs"], ["back", "Has back scan"]];
-  const SORTS = [["new", "Newest added"], ["old", "Year: oldest first"], ["recent", "Year: newest first"], ["az", "A–Z"], ["serial", "Lowest print run"]];
+  // No Rookies filter (Ian doesn't use the RC tag, so it can't be accurate) and no "Has back scan" filter (Ian, 2026-11-25).
+  const FILTERS = [["auto", "Autographs"], ["relic", "Relics & Patches"], ["button", "Button Relics"], ["nameplate", "Nameplate Relics"], ["dirt", "Dirt Relics"], ["numbered", "Numbered"], ["one", "1 of 1"], ["graded", "Graded"], ["custom", "Customs"]];
+  // Filters a page leaves out: the Want List has no customs, button relics, 1 of 1s or graded cards to pick from.
+  const PAGE_NO_FILTERS = { "want-list": new Set(["custom", "button", "one", "graded"]) };
+  const SORTS = [["new", "Newest Added"], ["old", "Year: Oldest First"], ["recent", "Year: Newest First"], ["az", "A–Z"], ["serial", "Lowest Print Run"]];
+  // A page's own default order: Rarest Cards by print run, Detroit Lions oldest first (Ian), everything else newest added.
+  const defaultSort = (key) => ({ rarest: "serial", "c/lions": "old" })[key] || "new";
   const state = { filters: new Set(), sort: "new", decade: "", team: "", list: [], shown: 0, q: "", where: null };
 
   const SET_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
@@ -267,6 +272,7 @@
     if (c.one) b += `<span class="bd one">1/1</span>`; else if (c.serial) b += `<span class="bd">/${c.serial}</span>`;
     else if (c.printRun) b += `<span class="bd pr" title="Print run of ${c.printRun} (not serial-numbered)">PR ${c.printRun}</span>`;
     if (c.tags.has("auto")) b += `<span class="bd auto">AUTO</span>`;
+    if (c.tags.has("relic")) b += `<span class="bd mem" title="Memorabilia (relic)">MEM</span>`;
     if (c.grade) b += `<span class="bd">${esc(c.grade)}</span>`;
     if (c.backId) b += `<span class="bd back" title="Front and back">⇆</span>`;
     return b;
@@ -572,7 +578,7 @@
       <div class="go-card"><div class="go-logos"><img class="go-logo" alt="Kansas City Royals logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></div><h3>Royals fans</h3><p>Check out the Gordon and Dye Super Collections, or the Kansas City Royals Team Collection.</p>
         <div class="go-links">${col("alex-gordon", "Alex Gordon")}${col("jermaine-dye", "Jermaine Dye")}${col("royals", "Kansas City Royals")}</div></div>
       <div class="go-card"><div class="go-logos"><img class="go-logo" alt="Nebraska Cornhuskers logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></div><h3>Husker fans</h3><p>Dig into the history of NFL Huskers, check out the autographs, and see an epic Husker card collection.</p>
-        <div class="go-links">${go("#/checklist", "NFL Huskers autograph list")}${go("#/nfl-huskers", "Husker Bios")}${col("husker-football", "Nebraska Football Cards &amp; Autos")}</div></div>
+        <div class="go-links">${go("#/checklist", "NFL Huskers Autograph List")}${go("#/nfl-huskers", "Husker Bios")}${col("husker-football", "Nebraska Football Cards &amp; Autos")}</div></div>
       <div class="go-card"><div class="go-logos"><span class="go-logo tcdb-badge" aria-label="TCDb">TCDb</span><img class="go-logo" alt="YouTube logo" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/120px-YouTube_full-color_icon_%282017%29.svg.png" onerror="this.remove()"></div><h3>Collectors &amp; traders</h3><p>Interviews, my TCDb how-to videos, the cards I'm still hunting, and my duplicates.</p>
         <div class="go-links">${(DATA.site.media?.items || []).length ? go("#/media", "Media &amp; interviews") : ""}${col("want-list", "Want List")}${DUPES.length ? go("#/duplicates", "Duplicates") : ""}${go("https://www.tcdb.com/Profile.cfm/DyeHardFan", "Trade with me on TCDb").replace("<a ", '<a class="go-tcdb" ').replace("→", "↗").replace("<a ", '<a target="_blank" rel="noopener" ')}</div></div>
       ${story.length ? `<a class="go-story" href="#/dye-career"><div class="go-fan">${story.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
@@ -619,8 +625,7 @@
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo" href="#/c/${x.slug}"><b><i class="sn">${pctText(x)}</i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></b><span>${esc(x.title)} Chase →</span></a>`).join("")}
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
-        <a class="stat link" href="#/letters"><b>🔤</b><span>Letterman Sets →</span></a>
-        ${DUPES.length ? `<a class="stat link" href="#/duplicates"><b>${fmt(DUPES.length)}</b><span>Duplicates →</span></a>` : ""}
+        <a class="stat link" href="#/letters"><b><img class="stat-ic" alt="" src="assets/letterman-icon.webp" width="76" height="36"></b><span>Letterman Sets →</span></a>
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
       ${startHere()}
@@ -701,11 +706,11 @@
         ${slug === "search" ? `${pageShortcut(state.q)}<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].filter(([k]) => !RARE_FILTERS.has(k) || state.filters.has(k) || base.some((c) => c.tags.has(k))).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].filter(([k]) => !(PAGE_NO_FILTERS[slug] || new Set()).has(k)).filter(([k]) => !RARE_FILTERS.has(k) || state.filters.has(k) || base.some((c) => c.tags.has(k))).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
           <div class="tools-r">${binderBtn()}${(sec || slug === "customs") && gi < 0 ? `<button type="button" class="btn" data-share-c="${slug}" aria-label="Share this collection">Share</button>` : ""}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
             const teams = [...new Set(base.map((c) => c.team).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-            const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
-            return tm + (ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""); })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
+            const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All Teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
+            return tm + (ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All Years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""); })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
         <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
       </div></div>`;
@@ -730,7 +735,7 @@
     $("#yr")?.addEventListener("change", (e) => { state.decade = e.target.value; apply(); syncURL(); });
     $("#tm")?.addEventListener("change", (e) => { state.team = e.target.value; apply(); syncURL(); });
     apply();
-    if (state.filters.size || state.sort !== "new") syncURL();
+    if (state.filters.size || state.sort !== defaultSort(state.where)) syncURL();
     io.observe($("#sentinel"));
     if (slug === "search") playerMatches(q, state.q);
   }
@@ -1136,6 +1141,17 @@
         name: x.name, slug, year: x.year || "", position: x.position || "", have: true, games: "", notes: "", signed: "", link: "", card: true });
     }));
     return ALL;
+  }
+  // The player page for the person on a card: a listed name in the card's name ("(Hand Signed by …)" names the signer),
+  // from the card's own sport first. Cards with two or more listed players get no link.
+  function bioFor(c) {
+    const m = c.name.match(/\(\s*hand signed by ([^)]+)\)/i), t = " " + norm(m ? m[1] : c.title || c.name) + " ";
+    const hits = allPlayers().filter((p) => norm(p.name).includes(" ") && t.includes(" " + norm(p.name) + " "));
+    const names = new Set(hits.map((p) => norm(p.name)).filter((n) => ![...hits].some((q) => norm(q.name) !== n && norm(q.name).includes(n))));
+    if (names.size !== 1) return null;
+    const sl = (SECTIONS[c.si] || {}).slug || "", sport = (sl.match(/^husker-(\w+)/) || [])[1];
+    const mine = hits.filter((p) => names.has(norm(p.name)));
+    return mine.find((p) => p.sport === sport && !p.card) || mine.find((p) => !p.card) || mine[0];
   }
   const slugFor = (listSlug, name) => (allPlayers().find((p) => p.listSlug === listSlug && p.name === name.trim()) || {}).slug || pslug(name);
   function tier1() {
@@ -2377,7 +2393,7 @@
   function notFound() {
     setTitle("Page not found");
     $("#app").innerHTML = `<div class="wrap nf"><h1>That page isn't here</h1><p>It may have moved when the site was rebuilt. Try searching above, or:</p>
-      <div class="go-links"><a href="#/">Home →</a><a href="#/random">Show me a random card →</a><a href="#/checklist">NFL Huskers autograph list →</a><a href="#/media">Media &amp; interviews →</a></div></div>`;
+      <div class="go-links"><a href="#/">Home →</a><a href="#/random">Show me a random card →</a><a href="#/checklist">NFL Huskers Autograph List →</a><a href="#/media">Media &amp; interviews →</a></div></div>`;
   }
 
   /* ---------- Router ---------- */
@@ -2436,7 +2452,7 @@
     // Moving between groups of the same collection keeps them.
     const prm = new URLSearchParams(qs), fs = (prm.get("f") || "").split(",").filter((k) => [...FILTERS, ...CUSTOM_FILTERS, INSCR].some(([x]) => x === k));
     const so = SORTS.some(([k]) => k === prm.get("sort")) ? prm.get("sort") : null;
-    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || (key === "rarest" ? "serial" : "new"); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; state.team = prm.get("t") || ""; }
+    if (qs || key !== state.where) { state.filters = new Set(fs); state.sort = so || defaultSort(key); state.decade = /^\d{4}$/.test(prm.get("y") || "") ? prm.get("y") : ""; state.team = prm.get("t") || ""; }
     state.where = key;
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     if (!a) home();
@@ -2465,7 +2481,7 @@
     else if (a === "card") {   // a shared card link opens the card over its own collection
       const k = CARDS.findIndex((x) => cid(x) === b); if (k < 0) return notFound();
       const card = CARDS[k], slug = SECTIONS[card.si].slug;
-      history.replaceState(null, "", toURL("#/c/" + slug)); state.where = "c/" + slug; state.filters.clear(); state.sort = "new";
+      history.replaceState(null, "", toURL("#/c/" + slug)); state.where = "c/" + slug; state.filters.clear(); state.sort = defaultSort(state.where);
       collection(slug); window.scrollTo(0, 0);
       const j = state.list.findIndex((x) => x.i === card.i);
       return openViewer(j >= 0 ? j : 0, j >= 0 ? state.list : [card]);
@@ -2491,7 +2507,7 @@
   function syncURL() {
     const p = [];
     if (state.filters.size) p.push("f=" + [...state.filters].join(","));
-    if (state.sort !== "new") p.push("sort=" + state.sort);
+    if (state.sort !== defaultSort(state.where)) p.push("sort=" + state.sort);
     if (state.decade) p.push("y=" + state.decade);
     if (state.team) p.push("t=" + encodeURIComponent(state.team));
     history.replaceState(history.state, "", toURL(HASH().split("?")[0] + (p.length ? "?" + p.join("&") : "")));
@@ -2758,7 +2774,14 @@
     const st = history.state; if (st && st.v && VIEWS.has(st.t)) VIEWS.set(st.t, { list: V.list, k: V.k, random: V.random });
     const first = V.k <= 0, last = V.k >= V.list.length - 1;
     $("#v-prev").style.visibility = first ? "hidden" : "visible"; $("#v-next").style.visibility = last ? "hidden" : "visible";
-    $("#v-name").textContent = (V.list[V.k] || {}).title || (V.list[V.k] || {}).short || "";
+    const cur = V.list[V.k] || {};
+    $("#v-name").textContent = cur.title || cur.short || ""; $("#v-bio").hidden = true;
+    // A player with a bio page on the site: his name links to it (lists load quietly the first time).
+    if (!cur.photo && cur.name) loadCheckQuiet().then(() => {
+      if (V.list[V.k] !== cur || $("#viewer").hidden) return;
+      const p = bioFor(cur); if (!p) return;
+      $("#v-name").innerHTML = `<a href="#/player/${esc(p.slug)}">${esc(cur.title || p.name)}</a>`; $("#v-bio").hidden = false;
+    }).catch(() => {});
     $("#viewer").classList.toggle("focus", V.zoom && !wide.matches);
     $("#v-pos").textContent = V.random ? "Random card" : `${V.k + 1} of ${fmt(V.list.length)}`;
   }

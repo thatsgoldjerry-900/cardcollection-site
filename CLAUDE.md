@@ -17,8 +17,8 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   article; link Ian's PDF.
 - **Cards shown:** hide any card whose name says "sold" or "gifted to", and 2nd/3rd copies. Keep custom cards even when
   they're copies (they were commissions).
-- **Scans are never altered.** Effects go around the card (viewer auras), not on it. Display is clean;
-  only saved images get the IANBADEER.COM watermark.
+- **Scans are never altered.** Effects go around the card (viewer auras), not on it. The IANBADEER.COM
+  watermark shows on every card at all times (display only, Ian 2026-11-25), and saved images carry it too.
   Signature showcase (player pages, config `signatures`): the signature's ink is lifted out on screen and shown as a red neon
   sign on black, Ian's request (display only, files untouched).
   Only complete, clean signatures: nothing cut off, no broken loops or streaky ink, no word inscriptions (a jersey # or nickname is fine).
