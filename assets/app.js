@@ -2510,12 +2510,11 @@
   }
   /* ---------- Page backgrounds (Ian, 2026-11-25): stadium lights on every page; the home page adds a wall of ghosted
      neon signatures; football pages (Huskers football, NFL Huskers, Lions) add a real photo of a field, baseball pages
-     (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Photos from Wikimedia
-     Commons, credited in the footer. Never on the card scans themselves. ---------- */
+     (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Football and baseball photos from
+     Wikimedia Commons, credited in the footer; the basketball one is Ian's own photo (Pinnacle Bank Arena). Never on the card scans themselves. ---------- */
   const BG_PHOTOS = {
     football: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Leavitt_Park_td_(2022-04-22)_29a_-_Leavitt_Field.jpg"],
     baseball: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Central_Park_North_Meadow_td_(2019-04-18)_084_-_Baseball_Field_5.jpg"],
-    basketball: ["Linda Banks", "https://commons.wikimedia.org/wiki/File:1958_Redfield,_Arkansas_Gymnasium_Interior.jpg"],
   };
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
