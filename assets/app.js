@@ -743,7 +743,7 @@
       </div></div>`;
     const apply = () => {
       let list = search(base, q);
-      state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));
+      if (!matchMedia("(max-width:860px)").matches) state.filters.forEach((f) => (list = list.filter((c) => c.tags.has(f))));   // phones have no filter chips
       if (state.decade && (!$("#yr") || $("#yr").value !== state.decade)) state.decade = "";   // a decade this page doesn't have
       if (state.decade) list = list.filter((c) => Math.floor(c.year / 10) * 10 === +state.decade);   // the Years menu
       if (state.team && (!$("#tm") || $("#tm").value !== state.team)) state.team = "";
@@ -2822,7 +2822,7 @@
       const stage = $("#v-stage"); stage.classList.remove("pair"); stage.classList.toggle("zoom", V.zoom && wide.matches);
       loadInto($("#v-img"), c, c.id, c.rk, c.caption, () => aura(c)); $("#v-img2").hidden = true;
       $("#v-title").innerHTML = `${esc(c.short)}${c.caption !== c.short ? `<small>${esc(c.caption)}</small>` : ""}`;
-      $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
+      $("#v-have").hidden = true; $("#v-dice").hidden = true; $("#v-dice-ic").hidden = true; $("#v-more").innerHTML = ""; showBackText(null);
       $("#v-flip").hidden = true;
       $("#v-meta").innerHTML = `<span>${c.ref ? "Reference image" : "With the players"}</span><span>·</span><span>${V.k + 1} of ${fmt(V.list.length)}</span>`;
       navState();
@@ -2849,7 +2849,7 @@
     $("#v-have").hidden = !(sec.kind === "want" && (DATA.site.contact || {}).code);
     if (!$("#v-have").hidden) $("#v-have").innerHTML = contactHTML("I have this card", "I have a card from your Want List: " + c.name,
       `Hi Ian,\n\nI have this card from your Want List:\n${c.name}\n${absURL("#/card/" + cid(c))}\n\n`, c.name);
-    $("#v-dice").hidden = !V.random;
+    $("#v-dice").hidden = !V.random; $("#v-dice-ic").hidden = !V.random;
     prefetch();
     showBackText(c);
     const setKey = (x) => x.sub.replace(/\s+#\S+$/, ""), same = (f) => CARDS.filter((x) => x !== c && f(x));
@@ -3091,15 +3091,17 @@
     roll($("#dice"));
     setTimeout(() => openViewer(0, [c], true), calm.matches ? 0 : 260);
   });
-  $("#v-dice").addEventListener("click", () => {
+  const vDice = (btn) => {
     const c = randomCard(); if (!c) return;
-    roll($("#v-dice"));
+    roll(btn);
     const show = () => { V.list = [c]; V.k = 0; V.back = false; V.zoom = false; showCard(); };
     if (calm.matches) return show();
     const st = $("#v-stage"); st.classList.remove("shuffle"); void st.offsetWidth; st.classList.add("shuffle");
     setTimeout(show, 190);
     setTimeout(() => st.classList.remove("shuffle"), 420);
-  });
+  };
+  $("#v-dice").addEventListener("click", () => vDice($("#v-dice")));
+  $("#v-dice-ic").addEventListener("click", () => vDice($("#v-dice-ic")));
 
   /* ---------- Boot ---------- */
   // The live Gordon and Dye numbers from the Inventory Stats master (published by the robot) load alongside the cards.
