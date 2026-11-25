@@ -1120,18 +1120,36 @@
     // beats an unsigned card in the Nebraska folder.
     const own = SECTIONS.findIndex((x) => !x.customs && norm(x.title) === norm(name));
     const all = [...scansFor(name, sport), ...(own < 0 ? [] : CARDS.filter((c) => c.si === own && /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(c.name)))];
-    // Ian's order, most important first: an autograph; of him alone (a card or a solo signed item such as an index card
-    // beats a program page or card he shares with others); a picture of him (not a cut or index card); certified (signed
-    // for the card company) rather than hand signed; in a Husker uniform (the card's team folder or name says Nebraska).
-    const rank = (c) => [c.tags.has("auto"), !multiPlayer(c, name), !noPicture(c, name), !handSigned(c),
-      /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(`${c.team || ""} ${c.name}`)];
-    const better = (a, b) => { const k = a.findIndex((v, i) => v !== b[i]); return k >= 0 && a[k]; };
+    const tier = (c) => playerPhotoTier(c, name), better = (a, b) => { const k = a.findIndex((v, i) => v !== b[i]); return k >= 0 && a[k]; };
+    // Within a tier: him alone (not a group card or program page), then a picture of him (not a cut or index card).
+    const rank = (c) => { const t = tier(c); return [...TIERS.map((_, k) => t === k), !multiPlayer(c, name), !noPicture(c, name)]; };
     let best = null, bestR = null;   // ties keep the earlier card
     all.forEach((c) => { const r = rank(c); if (!best || better(r, bestR)) { best = c; bestR = r; } });
     return best;
   }
-  function handSigned(c) {
-    return c.tags.has("custom") || /\bhand[- ]?signed\b|\bTTM\b|\bthrough the mail\b|\bIP\b|\bin[- ]person\b|\bprivate signing\b/i.test(c.name);
+  // Which card shows on a player's page and thumbnails, Ian's order (2026-11-25), best first. A card is a trading card
+  // (custom cards count); photos, 8x10s, programs, magazines, letters, index cards and cuts are "items". Certified means
+  // signed for the card company: a numbered card without "Hand Signed", TTM, in person or private signing in its name.
+  // Husker uniform: the card's team (its Drive team folder) or name says Nebraska; a custom from the Husker side of the
+  // Customs folder counts too.
+  const TIERS = ["certified Husker", "custom Husker", "certified", "custom", "hand signed card Husker", "hand signed Husker",
+    "hand signed solo", "any autograph", "Husker card", "any card"];
+  const HAND_SIGNED = /\bhand[- ]?signed\b|\bTTM\b|\bthrough the mail\b|\bIP\b|\bin[- ]person\b|\bprivate signing\b/i;
+  const NOT_A_CARD = /\b(deca|booklets?|oversized?|box ?loaders?|box ?toppers?|post ?cards?|posters?|fathead|photos?|magazines?|illustrated|programs?|letters?|notes?|pages?|calendars?|index cards?|contracts?|schedules?|caps?)\b|\b\d{1,2}(\.\d+)?\s*[x×]\s*\d{1,2}(\.\d+)?\b/i;
+  function playerPhotoTier(c, name) {
+    const custom = c.tags.has("custom"), auto = c.tags.has("auto");
+    const card = custom || (!NOT_A_CARD.test(c.name) && /#|\bcards?\b/i.test(c.name));
+    const husker = /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(`${c.team || ""} ${c.name}`) || (custom && !c.team && c.tags.has("huskers"));
+    const handSigned = auto && !custom && (HAND_SIGNED.test(c.name) || !card || !/#/.test(c.name));
+    if (auto && custom) return husker ? 1 : 3;
+    if (auto && card && !handSigned) return husker ? 0 : 2;
+    if (auto && handSigned && card && husker) return 4;
+    if (auto && handSigned && husker) return 5;
+    if (auto && handSigned && !multiPlayer(c, name)) return 6;
+    if (auto) return 7;
+    if (card && husker) return 8;
+    if (card) return 9;
+    return 10;
   }
   let PNAMES = null;
   function multiPlayer(c, name) {
