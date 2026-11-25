@@ -2513,9 +2513,9 @@
      (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Football and baseball photos from
      Wikimedia Commons, credited in the footer; the basketball one (Pinnacle Bank Arena) and the Husker baseball one
      (Haymarket Park, used on Husker baseball and the MLB Huskers list) are Ian's own photos, and so is Husker football
-     (Memorial Stadium: Husker football, NFL Huskers lists, bios, teams); the Lions keep the Commons turf photo. Never on the card scans themselves. ---------- */
+     (Memorial Stadium: Husker football, NFL Huskers lists, bios, teams); the Lions page has
+     Ian's Ford Field photo. Only the Gordon/Dye/Royals diamond is from Commons. Never on the card scans themselves. ---------- */
   const BG_PHOTOS = {
-    football: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Leavitt_Park_td_(2022-04-22)_29a_-_Leavitt_Field.jpg"],
     baseball: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Central_Park_North_Meadow_td_(2019-04-18)_084_-_Baseball_Field_5.jpg"],
   };
   function pageBg(a) {
@@ -2525,7 +2525,7 @@
       : /^(alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "baseball"
       : /^(checklist\/nba|husker-basketball)/.test(n) ? "basketball"
       : /^(checklist|husker-football|nfl-)/.test(n) ? "husker-football"
-      : /^lions/.test(n) ? "football" : "";
+      : /^lions/.test(n) ? "lions" : "";
     document.body.dataset.bg = bg;
     const cr = $("#bg-credit"), ph = BG_PHOTOS[bg]; if (!cr) return;
     cr.hidden = !ph;

@@ -12,10 +12,10 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   in `hideNotes`.
 - **Sports focus:** Wikipedia bios keep only sports content; sentences about crimes, prison, suicide and
   similar are filtered out (scripts/build_players.py OFF_FIELD). Neutral jobs like "chief of police" are fine.
-- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page background photos (assets/bg/): field and diamond from
-  Wikimedia Commons, CC BY-SA, credited in the footer (assets/app.js BG_PHOTOS); the basketball court, Husker baseball
-  (Haymarket Park) and Husker football (Memorial Stadium) are Ian's own photos (Gordon/Dye/Royals keep the Commons
-  diamond, the Lions the Commons turf).
+- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page background photos (assets/bg/): Husker football (Memorial
+  Stadium), Husker baseball (Haymarket Park), Husker basketball (Pinnacle Bank Arena) and the Lions (Ford Field) are Ian's
+  own photos; the Gordon/Dye/Royals home-plate photo is from Wikimedia Commons, CC BY-SA, credited in the footer
+  (assets/app.js BG_PHOTOS).
   Ian may send more of his own photos to replace them. Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
   article; link Ian's PDF.

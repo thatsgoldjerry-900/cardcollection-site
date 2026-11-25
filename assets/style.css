@@ -1027,11 +1027,12 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
 @media (max-width:640px){.lt-rows{gap:8px}}
 /* Page backgrounds (Ian, 2026-11-25): stadium lights and fine grain on every page; the home page adds ghosted neon
    signatures; football / baseball / basketball pages add a real field, diamond or court photo, faded into the page. */
-.page-bg{position:absolute;left:0;right:0;top:0;height:900px;z-index:-1;pointer-events:none;overflow:hidden}
+.page-bg{position:absolute;left:0;right:0;top:0;height:1100px;z-index:-1;pointer-events:none;overflow:hidden}
 .page-bg i,.page-bg::after{position:absolute;inset:0}
-.pb-ph{display:none;top:90px;background:center top/cover no-repeat;opacity:.34;
-  -webkit-mask:linear-gradient(#000 0,rgba(0,0,0,.8) 40%,transparent 100%);mask:linear-gradient(#000 0,rgba(0,0,0,.8) 40%,transparent 100%)}
-body[data-bg="football"] .pb-ph{display:block;background-image:url(bg/football.webp)}
+/* Desktop shows the whole photo across the page width (not zoomed in), fading out only near its bottom edge. */
+.pb-ph{display:none;top:90px;background:center top/100% auto no-repeat;opacity:.34;
+  -webkit-mask:linear-gradient(#000 0,#000 62%,transparent 92%);mask:linear-gradient(#000 0,#000 62%,transparent 92%)}
+body[data-bg="lions"] .pb-ph{display:block;background-image:url(bg/lions.webp)}
 body[data-bg="baseball"] .pb-ph{display:block;background-image:url(bg/baseball.webp)}
 body[data-bg="basketball"] .pb-ph{display:block;background-image:url(bg/basketball.webp)}
 body[data-bg="husker-baseball"] .pb-ph{display:block;background-image:url(bg/husker-baseball.webp)}
@@ -1051,8 +1052,8 @@ body[data-bg="home"] .pb-sig{display:block}
 .tools{background:rgba(9,12,17,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .bg-credit{flex-basis:100%;font-size:11.5px;opacity:.8}.bg-credit a{color:inherit}
 @media (max-width:700px){
-  .page-bg{height:780px}.pb-ph{top:150px}
-  body[data-bg="football"] .pb-ph{background-image:url(bg/football-m.webp)}
+  .page-bg{height:860px}.pb-ph{top:150px;background-size:cover}
+  body[data-bg="lions"] .pb-ph{background-image:url(bg/lions-m.webp)}
   body[data-bg="baseball"] .pb-ph{background-image:url(bg/baseball-m.webp)}
   body[data-bg="basketball"] .pb-ph{background-image:url(bg/basketball-m.webp)}
   body[data-bg="husker-baseball"] .pb-ph{background-image:url(bg/husker-baseball-m.webp)}
