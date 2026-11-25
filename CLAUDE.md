@@ -12,11 +12,10 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   in `hideNotes`.
 - **Sports focus:** Wikipedia bios keep only sports content; sentences about crimes, prison, suicide and
   similar are filtered out (scripts/build_players.py OFF_FIELD). Neutral jobs like "chief of police" are fine.
-- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page background photos (assets/bg/): Husker football (Memorial
-  Stadium), Husker baseball (Haymarket Park), Husker basketball (Pinnacle Bank Arena) and the Lions (Ford Field) are Ian's
-  own photos; the Gordon/Dye/Royals home-plate photo is from Wikimedia Commons, CC BY-SA, credited in the footer
-  (assets/app.js BG_PHOTOS).
-  Ian may send more of his own photos to replace them. Do not scrape
+- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page backgrounds (Ian 2026-11-25, replacing the photos): a color theme, a bright team-color gradient on the left (where the
+  logo and nav are) blending into the deep navy that sweeps left to right to the far side: Husker red on Nebraska and general
+  pages, Royals blue on Gordon/Dye/Royals, Honolulu blue on the Lions (assets/app.js pageBg, assets/style.css .page-bg).
+  The old photos are still in assets/bg/ but unused. Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
   article; link Ian's PDF.
 - **Cards shown:** hide any card whose name says "sold" or "gifted to", and 2nd/3rd copies. Keep custom cards even when
@@ -50,4 +49,4 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   readCodes); backs pair with fronts ignoring these codes and letter codes (scripts/build_catalog.py loose_key).
 - **Mobile:** Ian is often on his phone. Check layouts at phone width. On phones the header and filters scroll away;
   only the slim top bar (#mbar: home, current collection, search, dice; max four buttons) stays on screen.
-  Page background photos are fixed (they stay put while the page scrolls) and show whole, never zoomed in.
+  The page background color stays put while the page scrolls.

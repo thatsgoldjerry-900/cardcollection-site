@@ -489,7 +489,7 @@
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
     const s = DATA.site;
-    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · <a href="#/about">About &amp; sharing</a></span><span class="bg-credit" id="bg-credit" hidden></span></div>`;
+    $("#foot").innerHTML = `<div class="wrap"><span>Trades, questions, or a card I need? ${gform() ? `<button type="button" class="linkish" data-form data-item="" data-body="">Send me a message</button> · ` : ""}<button type="button" class="linkish" data-mail data-subject="Hello from IanBadeer.com">Email me</button> · <button type="button" class="linkish" data-copymail>Copy my email</button></span><span>${fmt(CARDS.length)} scans · updated ${esc(DATA.generated.slice(0, 10))} · <a href="#/about">About &amp; sharing</a></span></div>`;
   }
   // Each page gets its own browser-tab title, so tabs, bookmarks and shared links say where they go.
   function setTitle(t) { document.title = t ? `${t} · IanBadeer.com` : "IanBadeer.com"; }
@@ -2596,28 +2596,13 @@
     window.scrollTo(0, 0);
     track();
   }
-  /* ---------- Page backgrounds (Ian, 2026-11-25): stadium lights on every page; the home page adds a wall of ghosted
-     neon signatures; football pages (Huskers football, NFL Huskers, Lions) add a real photo of a field, baseball pages
-     (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Football and baseball photos from
-     Wikimedia Commons, credited in the footer; the basketball one (Pinnacle Bank Arena) and the Husker baseball one
-     (Haymarket Park, used on Husker baseball and the MLB Huskers list) are Ian's own photos, and so is Husker football
-     (Memorial Stadium: Husker football, NFL Huskers lists, bios, teams); the Lions page has
-     Ian's Ford Field photo. Only the Gordon/Dye/Royals diamond is from Commons. Never on the card scans themselves. ---------- */
-  const BG_PHOTOS = {
-    baseball: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Central_Park_North_Meadow_td_(2019-04-18)_084_-_Baseball_Field_5.jpg"],
-  };
+  /* ---------- Page backgrounds (Ian, 2026-11-25; color theme in place of the photos): a team-color gradient from the left
+     into deep navy. Royals blue on Alex Gordon, Jermaine Dye and Royals pages, Honolulu blue on the Lions page, Husker red on
+     everything else (Nebraska pages and the general ones). The colors live in style.css (body[data-bg]). ---------- */
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
-    const bg = !a ? "home"
-      : /^(checklist\/mlb|husker-baseball)/.test(n) ? "husker-baseball"
-      : /^(alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "baseball"
-      : /^(checklist\/nba|husker-basketball)/.test(n) ? "basketball"
-      : /^(checklist|husker-football|nfl-)/.test(n) ? "husker-football"
-      : /^lions/.test(n) ? "lions" : "";
-    document.body.dataset.bg = bg;
-    const cr = $("#bg-credit"), ph = BG_PHOTOS[bg]; if (!cr) return;
-    cr.hidden = !ph;
-    if (ph) cr.innerHTML = `Background photo: <a href="${ph[1]}" target="_blank" rel="noopener">${esc(ph[0])}, Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> (cropped and darkened).`;
+    document.body.dataset.bg = /^(alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "royals"
+      : /^lions/.test(n) ? "lions" : "red";
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
   // Each #/ page counts as its own page, e.g. /cardcollection-site/#/player/ricky-simmons.
