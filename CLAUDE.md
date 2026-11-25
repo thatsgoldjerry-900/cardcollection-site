@@ -2,7 +2,8 @@
 
 Static site (vanilla JS: index.html, assets/app.js, assets/style.css) on GitHub Pages. The GitHub Action
 `.github/workflows/update-catalog.yml` rebuilds data from Google Drive and Ian's private spreadsheets.
-At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-dos".
+At the start of a session, read LAUNCH-CHECKLIST.md (short, open items only) and remind Ian of "Ian's to-dos".
+Read docs/CHECKLIST-DETAILS.md only when working on a feature it covers.
 
 ## Ian's standing rules (don't undo these)
 - **Private spreadsheets:** the robot account is read-only. Publish only the approved lists and ranges
@@ -12,16 +13,16 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   in `hideNotes`.
 - **Sports focus:** Wikipedia bios keep only sports content; sentences about crimes, prison, suicide and
   similar are filtered out (scripts/build_players.py OFF_FIELD). Neutral jobs like "chief of police" are fine.
-- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page backgrounds (Ian 2026-11-25, replacing the photos): a color theme, a bright team-color gradient on the left (where the
+- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page backgrounds: a color theme, a bright team-color gradient on the left (where the
   logo and nav are) blending into the deep navy that sweeps left to right to the far side: Husker red on Nebraska and general
   pages, Royals blue on Gordon/Dye/Royals, Honolulu blue on the Lions (assets/app.js pageBg, assets/style.css .page-bg).
-  The old photos are still in assets/bg/ but unused. Do not scrape
+  (Old photos in assets/bg/ are unused.) Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
   article; link Ian's PDF.
 - **Cards shown:** hide any card whose name says "sold" or "gifted to", and 2nd/3rd copies. Keep custom cards even when
   they're copies (they were commissions).
 - **Scans are never altered.** Effects go around the card (viewer auras), not on it. The IANBADEER.COM
-  watermark shows on every card at all times (display only, Ian 2026-11-25), and saved images carry it too.
+  watermark shows on every card at all times (display only), and saved images carry it too.
   Signature showcase (player pages, config `signatures`): the signature's ink is lifted out on screen and shown as a red neon
   sign on black, Ian's request (display only, files untouched).
   Only complete, clean signatures: nothing cut off, no broken loops or streaky ink, no word inscriptions (a jersey # or nickname is fine).
