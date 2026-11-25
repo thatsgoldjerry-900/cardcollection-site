@@ -105,12 +105,16 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   scripts/build_catalog.py "refs"). The file name names the player (e.g. "John Howell"); the image shows in a column on the right of
   his page (below the bio on phones) and opens in the viewer. Extra words are fine ("John Howell Compilation"). Nothing pending.
 
-- [ ] **Jermaine Dye re-upload** (2026-11-23): the section now reads the Drive folder "Jermaine Dye" by name (team subfolders =
+- [x] **Jermaine Dye re-upload** (2026-11-23; Ian finished it 2026-11-25, and his section's "freshUploadDate" is removed): the section now reads the Drive folder "Jermaine Dye" by name (team subfolders =
   groups); the old per-team folder IDs are gone from config. ~900 renamed scans the robot couldn't match got "freshUploadDate":
   "2025-01-01" (section setting) instead of showing as NEW. Remove that setting once the re-upload is finished.
   Same for Nebraska Baseball ("Nebraska Baseball Cards & Autos") and the Royals ("Kansas City Royals", now one list, no groups),
   switched 2026-11-23. The Royals' old "Dirt Relics" group is gone: the dirt glow now goes only to cards with "Dirt" in the name.
 
+- [ ] **New: Detroit Lions folder and Nebraska Other Sports page** (2026-11-25). The Lions page now shows Ian's own Drive folder
+  "Detroit Lions" combined with the Husker Lions cards (the "Detroit Lions" subfolder in Nebraska Football Cards & Autos). New section
+  "Nebraska Other Sports Cards & Autos" (#/c/husker-other, Nebraska Cornhuskers menu) reads the Drive folder of that name; no bios
+  for these players. A section stays hidden until its folder has scans. Ian: check both pages after the next update.
 - [ ] **Chase pages are live** (2026-11-23): Nebraska Cracked Ice and Nebraska Precious Metal Gems (#/chase/<slug>, config
   "chases": match / exclude; scripts/build_chases.py makes data/chases.json from data/tcdb). Huskers only (scans in the Nebraska
   collections or Alex Gordon's, or on Ian's lists). Oldest first; filters for sport, College/Pro (config "chaseCollege", by set
@@ -140,7 +144,7 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   - [ ] Make set names consistent (e.g. the two TK Legacy styles) and drop private notes from file names, like
     "2nd (Sold to … for $15 on 4-22)": file names show on the site as captions and in search.
 - [ ] **Read straight from the main Drive folder** (`driveRoot` in `config/site.json`, parent folder `18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV`).
-  - [ ] Make the Drive folder names match the site section titles, or map them. Today "Royals" and "Nebraska Baseball & Softball" differ. (The Lions page has no folder of its own since 2026-11-21: it shows every card tagged "Detroit Lions", i.e. in a Detroit Lions subfolder.)
+  - [ ] Make the Drive folder names match the site section titles, or map them. Today "Royals" and "Nebraska Baseball & Softball" differ. The Lions page reads its own Drive folder "Detroit Lions" plus the cards tagged "Detroit Lions" in other collections (since 2026-11-25).
   - [ ] Check the new card names: count, auto and relic tags, and that every section still fills.
   - [ ] **Don't double uploads.** A scan copied into two folders counts as two cards (today ~147 names appear twice,
     mostly Gordon cards also in the Royals Button Relics / Nameplates / Dirt Relics groups).

@@ -132,8 +132,7 @@
         }
       ],
       "driveFolderName": "Jermaine Dye",
-      "freshUploadDate": "2025-01-01",
-      "_help": "Read from the Drive folder named 'Jermaine Dye' (found by name); each group is a team subfolder (\"match\"). Re-uploaded scans keep their old date when the name still matches; others get freshUploadDate so the re-upload doesn't all show as NEW (remove it once the re-upload is done)."
+      "_help": "Read from the Drive folder named 'Jermaine Dye' (found by name); each group is a team subfolder (\"match\"). The re-upload is finished (2026-11-25), so new scans show as NEW again."
     },
     {
       "slug": "husker-football",
@@ -203,6 +202,21 @@
       "_help": "Read from the Drive folder named in driveFolderName (the first of these names that exists; Sold/Pending/Cut/Extra subfolders skipped)."
     },
     {
+      "slug": "husker-other",
+      "title": "Nebraska Other Sports Cards & Autos",
+      "kind": "team",
+      "color": "husker",
+      "blurb": "Huskers from Nebraska's other sports, on cards and autographs from my collection.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Other Sports Cards & Autos"
+        }
+      ],
+      "driveFolderName": "Nebraska Other Sports Cards & Autos",
+      "_help": "Read from the Drive folder named 'Nebraska Other Sports Cards & Autos' (Sold/Pending/Cut/Extra subfolders skipped). In the Nebraska Cornhuskers menu; no bios or player pages for these players (those come only from Ian's lists). Chase pages file its cards under 'Other'."
+    },
+    {
       "slug": "royals",
       "title": "Kansas City Royals",
       "kind": "team",
@@ -224,9 +238,15 @@
       "kind": "team",
       "color": "lions",
       "blurb": "Some are PC and some are available for trade.",
-      "groups": [],
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Detroit Lions"
+        }
+      ],
+      "driveFolderName": "Detroit Lions",
       "teamTag": "Detroit Lions",
-      "_help": "No Drive folder of its own: shows every card tagged with this team (cards in a \"Detroit Lions\" subfolder in Drive, e.g. in Nebraska Football Cards & Autos). Each card is still one card, filed in its home collection."
+      "_help": "Ian's own Drive folder 'Detroit Lions' (a same-named subfolder inside another collection isn't mistaken for it), plus every card tagged with this team elsewhere, e.g. the 'Detroit Lions' subfolder in Nebraska Football Cards & Autos (Ian: combined is good). Those cards stay filed in their home collection too."
     },
     {
       "slug": "customs-folder",
