@@ -622,6 +622,21 @@
     </section>`;
   }
 
+  // Card of the day (desktop home): one official card, same all day. Nebraska or Alex Gordon only, and only cards with a
+  // TCDb-style name (year, set, #number), never customs, programs, schedules, index cards, posters, oversize or letters.
+  const COTD_BAD = /custom|program|schedule|index|poster|postcard|fathead|magazine|ticket|newspaper|letter|\b\d+x\d+\b|box (?:loader|topper)|checklist|\bsold\b/i;
+  function cardOfDay() {
+    const ok = (c) => /^(?:husker-|alex-gordon$)/.test(SECTIONS[c.si].slug) && !c.tags.has("custom") && !c.photo
+      && /^(?:19|20)\d\d(?:-\d\d)?\s.+#\S+/.test(c.name) && !COTD_BAD.test(c.name);
+    const pool = CARDS.filter(ok); if (!pool.length) return "";
+    const d = new Date(), day = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    let h = day; h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16;
+    const c = pool[(h >>> 0) % pool.length];
+    return `<aside class="cotd" aria-label="Card of the day"><span class="kick">Card of the day</span>
+      <a class="cotd-card" href="#/card/${cid(c)}" aria-label="${esc(c.name)}"><img alt="" src="${img(c.id, c.rk, 500)}"></a>
+      <div class="cap"><b>${esc(c.title)}</b>${esc(c.sub)}${c.par ? `<br><span class="par">${esc(c.par)}</span>` : ""}</div></aside>`;
+  }
+
   function home() {
     setNav(null); setTitle("");
     const s = DATA.site;
@@ -654,6 +669,7 @@
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill${/tcdb\.com/i.test(l.url) ? " pill-tcdb" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
+        ${cardOfDay()}
         <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
       </section>
       <section class="stats" aria-label="Collection stats">
