@@ -1928,7 +1928,7 @@
     BINDER.k = Math.max(0, Math.min(Math.ceil(items.length / 9) - 1, (page || 1) - 1));
     if (shared) history.replaceState({ binder: 1 }, "", toURL(withBinder(HASH(), BINDER.k + 1)));
     else if (!(history.state && history.state.binder)) history.pushState({ binder: 1 }, "", toURL(withBinder(HASH(), BINDER.k + 1)));
-    b.hidden = false; document.body.style.overflow = "hidden"; drawBinder();
+    fitViewer(); b.hidden = false; document.body.style.overflow = "hidden"; drawBinder();
   }
   const binderAddress = () => { if (!$("#binder").hidden) history.replaceState(history.state, "", toURL(withBinder(HASH(), BINDER.k + 1))); };
   function hideBinder() { const b = $("#binder"); if (!b || b.hidden) return; b.hidden = true; document.body.style.overflow = ""; $("#b-stage").innerHTML = ""; }
@@ -2550,7 +2550,7 @@
     });
   }
   function route() {
-    LAST_HASH = HASH();
+    LAST_HASH = HASH(); $("#app").classList.remove("from-card");
     requestAnimationFrame(() => requestAnimationFrame(readyMarquees));
     const bpage = +(new URLSearchParams(HASH().split("?")[1] || "").get("binder") || 0), base = withBinder(HASH(), 0);
     if (base === LAST_BASE && $("#app h1")) {   // only the binder part changed (e.g. Back out of the binder): keep the page as it is
@@ -2681,7 +2681,7 @@
   function fitViewer() {
     const mb = $("#mbar"), bar = getComputedStyle(mb).display !== "none" ? mb : $(".top");
     const h = Math.max(0, bar.getBoundingClientRect().bottom / pageZoom()) + "px";
-    $("#viewer").style.setProperty("--bar-h", h); document.documentElement.style.setProperty("--site-bar", getComputedStyle(mb).display !== "none" ? h : "0px");
+    document.documentElement.style.setProperty("--bar-h", h); document.documentElement.style.setProperty("--site-bar", getComputedStyle(mb).display !== "none" ? h : "0px");
   }
   fitViewer();
   addEventListener("resize", fitViewer);
@@ -2711,7 +2711,11 @@
       const b = $("#app a.back"); if (!b) return;
       const kind = ($("#app .kick") || {}).textContent || "", name = ($("#app h1") || {}).textContent || "";
       b.outerHTML = `<div class="fc-bar"><a class="back v-ic" href="${esc(FROM_CARD)}" aria-label="Back to card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
-        <div class="v-mid"><b>${esc(kind)}${kind && name ? " · " : ""}${esc(name)}</b><span>Back to card</span></div><span></span></div>`;
+        <div class="v-mid"><b>${esc(kind)}${kind && name ? " · " : ""}${esc(name)}</b><a class="back" href="${esc(FROM_CARD)}">Back to card</a></div><span></span></div>`;
+      // Compact page: the bar above already names it, so the big title goes and the summary text folds to two lines (tap to open),
+      // which puts the cards right under the bar.
+      const app = $("#app"), p = app.querySelector(".c-head p"); app.classList.add("from-card");
+      if (p) p.addEventListener("click", () => p.classList.toggle("open"));
       $("#app").classList.remove("slide-in"); void $("#app").offsetWidth; $("#app").classList.add("slide-in");
     });
   });
