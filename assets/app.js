@@ -1777,6 +1777,14 @@
           <button type="button" class="btn" data-mail data-subject="${esc(`Correction: ${info.name} (Husker Bios)`)}" data-body="${esc(`Hi Ian,\n\nI'd like to suggest a correction to this page:\n${absURL("#/player/" + slug)}\n\nWhat should change:\n\n\nSource or evidence (a link, book, newspaper article, media guide…):\n\n\nThanks!\n`)}">✉ Request a correction</button></section>
       </div>`;
       state.list = scans;
+      // The photo itself becomes the watermarked copy (like the viewer's), so "Open image in new tab" or "Save image"
+      // gets IANBADEER.COM too; the CSS mark shows until it's ready, then steps aside.
+      const heroIm = hero && $(".pl-card .pl-ph:not(.fd-hero) img");
+      if (heroIm) marked(hero.id, hero.rk).then((u) => {
+        if (!heroIm.isConnected) return;
+        heroIm.addEventListener("load", () => heroIm.parentNode.classList.add("baked"), { once: true });
+        heroIm.src = u.marked;
+      }).catch(() => {});
     }));
   }
 
