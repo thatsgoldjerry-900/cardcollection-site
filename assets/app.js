@@ -794,7 +794,7 @@
       if (!hits.length) return;
       box.innerHTML = `<div class="pmatch"><h4>Husker Bios</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
-        return `<a class="pm" href="#/player/${p.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
+        return `<a class="pm" href="#/player/${p.slug}">${pmPh(sc, p.slug)}
           <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.tagline ? esc(p.tagline) : `${p.league} Husker`}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
@@ -1278,7 +1278,7 @@
       setTitle(`Huskers on the ${t.name}`);
       const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
-        return `<a class="pm" href="#/player/${e.x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
+        return `<a class="pm" href="#/player/${e.x.slug}">${pmPh(sc, e.x.slug)}
           <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}${e.pfa ? ` <span class="src" title="Year from Pro Football Archives">· Pro Football Archives</span>` : ""}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       // My cards of this team: scans filed in a Drive folder named for the team (any of its names, e.g. St. Louis Rams), oldest first.
       const names = new Set(t.names.map((n) => n.toLowerCase()));
@@ -1346,6 +1346,7 @@
       const nm = `<a class="hub-name" href="#/player/${p.slug}">${hl(p.name, HUB.fixed || HUB.q)}${hofMarks(p)}</a>`;
       return `<li class="hub-row ${p.have ? "have" : "need"}">
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="thumbFit(this)"></button>`
+             : fanDayOf(p.slug) ? `<button type="button" class="hub-ph land fd" data-i="${fanDayOf(p.slug).c.i}" aria-label="View ${esc(p.name)}'s autograph on ${esc(fanDayOf(p.slug).c.name)}">${fdThumb(p.slug)}</button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
         <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
           <div class="hub-meta2">${p.have ? `<span class="st have">Autograph</span>` : ""}${p.sig ? `<span class="pill">Neon signature</span>` : ""}</div></div></li>`;
@@ -1508,6 +1509,14 @@
     return `<button type="button" class="fd-item" data-i="${c.i}" aria-label="${esc(name)}'s autograph on ${esc(c.name)}. Opens the whole sheet.">
       <span class="fd-crop" style="aspect-ratio:${((w * (g.ar || 1.3)) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, 1600)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span></button>`;
   }
+  // A small Fan Day crop for list thumbnails (team pages, Husker Bios), where a player has no card scan of his own.
+  function fdThumb(slug, size) {
+    const f = fanDayOf(slug); if (!f) return "";
+    const { g, c } = f, [x, y, w, h] = g.box, pos = (v, s) => (s >= 1 ? 0 : (v / (1 - s)) * 100);
+    return `<span class="fd-crop fd-th" style="aspect-ratio:${((w * (g.ar || 1.3)) / h).toFixed(3)};background-image:url('${img(c.id, c.rk, size || 1200)}');background-size:${(100 / w).toFixed(2)}% ${(100 / h).toFixed(2)}%;background-position:${pos(x, w).toFixed(2)}% ${pos(y, h).toFixed(2)}%"></span>`;
+  }
+  const pmPh = (sc, slug) => { const fd = !sc && fdThumb(slug);
+    return fd ? `<span class="pm-ph land fd">${fd}</span>` : `<span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>`; };
   const fdLabel = (c) => (c.name.match(/^\d{4}\s+Husker Fan Day/i) || [c.name])[0];
   function signatureHTML(slug, name) {
     const g = (DATA.site.signatures || {})[slug]; if (!g || !g.box) return "";
@@ -2625,7 +2634,7 @@
   /* ---------- Viewer ---------- */
   const V = { list: [], k: 0, back: false };
   document.addEventListener("click", (e) => {
-    const b = e.target.closest(".cd[data-i], .fd-item[data-i]"); if (!b) return;
+    const b = e.target.closest(".cd[data-i], .fd-item[data-i], .hub-ph[data-i]"); if (!b) return;
     // From the home page's Newest strip, open the card over its own collection, so closing it leaves you browsing.
     if (b.closest(".mq")) { go("#/card/" + cid(cardAt(+b.dataset.i))); return; }
     const i = +b.dataset.i, list = state.list.length && state.list.some((c) => c.i === i) ? state.list : [cardAt(i)];

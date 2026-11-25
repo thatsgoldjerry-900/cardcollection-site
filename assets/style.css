@@ -1082,3 +1082,7 @@ body[data-bg="home"] .pb-sig{display:block}
   .mb-cat[hidden]{display:block;visibility:hidden}
   .mb-cat.dd::after{content:" \25BE";font-size:13px;color:var(--mu)}
 }
+
+/* Fan Day crops as list thumbnails (team pages, Husker Bios, the Huskers list) */
+.pm-ph.fd,.hub-ph.fd{aspect-ratio:auto;display:flex;align-items:center;justify-content:center}
+.fd-th{flex:none;width:auto;border-radius:0}.pm-ph .fd-th{height:calc(40px * 7 / 5)}.hub-ph .fd-th{height:calc(72px * 7 / 5)}
