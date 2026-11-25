@@ -1079,3 +1079,6 @@ body[data-bg="lions"] .page-bg{--t1:#0a86cc;--t2:#055a8f;--t3:rgba(5,70,112,.55)
 .stat.c-royal b .sn{color:var(--royal)}.stat.c-husker b .sn{color:var(--husker)}
 .stat.c-royal span{color:var(--gold)}.stat.c-husker span{color:var(--husker)}
 .stat.c-royal b .sn{color:color-mix(in srgb,var(--royal) 60%,#fff)}
+/* Home chase tiles: white percentage and label, white track behind the colored fill (red/white, blue/white). */
+.stat.c-husker b .sn,.stat.c-royal b .sn,.stat.c-husker span,.stat.c-royal span{color:#fff}
+.stat.link .bar{background:#fff}
