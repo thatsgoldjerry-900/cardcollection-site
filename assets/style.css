@@ -1151,7 +1151,8 @@ body[data-bg="lions"] .page-bg{--t1:#0a86cc;--t2:#055a8f;--t3:rgba(5,70,112,.55)
   .cotd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;min-width:0}
   .cotd .kick{font:12px var(--f-m);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
   .cotd-card{display:block;border-radius:10px;box-shadow:0 20px 40px -20px rgba(0,0,0,.8),0 0 0 1px var(--line);overflow:hidden;position:relative}
-  .cotd-card img{display:block;max-width:100%;max-height:300px;width:auto;height:auto}
+  .cotd-card{width:min(210px,100%);aspect-ratio:5/7;background:rgba(255,255,255,.04)}
+  .cotd-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
   .cotd-card{container-type:inline-size}
   .cotd-card::after{content:"IANBADEER.COM";position:absolute;left:0;right:0;top:69%;transform:translateY(-50%);text-align:center;pointer-events:none;font:800 8.95cqi/1 "Barlow Condensed","Arial Narrow",Arial,sans-serif;color:rgba(60,60,60,.40);-webkit-text-stroke:.35px rgba(255,255,255,.42);letter-spacing:.01em;z-index:1}
   .cotd .cap{font-size:12px;color:#c3cad6;line-height:1.35}

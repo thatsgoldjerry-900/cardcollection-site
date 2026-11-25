@@ -633,7 +633,7 @@
     let h = day; h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16;
     const c = pool[(h >>> 0) % pool.length];
     return `<aside class="cotd" aria-label="Card of the day"><span class="kick">Card of the day</span>
-      <a class="cotd-card" href="#/card/${cid(c)}" aria-label="${esc(c.name)}"><img alt="" src="${img(c.id, c.rk, 500)}"></a>
+      <a class="cotd-card" href="#/card/${cid(c)}" aria-label="${esc(c.name)}"><img alt="" decoding="async" src="${img(c.id, c.rk, 600)}"></a>
       <div class="cap"><b>${esc(c.title)}</b>${esc(c.sub)}${c.par ? `<br><span class="par">${esc(c.par)}</span>` : ""}</div></aside>`;
   }
 
