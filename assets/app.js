@@ -108,6 +108,8 @@
       if (codes && codes.full) rest = rest.replace(codes.text, " ");
       if (DUAL_GRADE.test(rest)) rest = rest.replace(DUAL_GRADE, " ");
       let player = rest.replace(RX.serial, "").replace(/print run of\s*\d+/i, "").replace(RX.grade, "").replace(/\((?:[^)]*)\)/g, "").replace(/\s+(Back|2nd|3rd|\d)$/i, "").replace(/\s{2,}/g, " ").trim();
+      // Hidden codes leave their comma behind ("Quincy Enunwa AU, SN22, VAR - …" → "Quincy Enunwa, VAR - …").
+      player = player.replace(/\s+,/g, ",").replace(/^,\s*|\s*,$/g, "").trim();
       out.title = player || rest; out.sub = `${yr} ${set} #${num}`; out.par = par;
     } else if (codes && codes.full) out.title = name.replace(codes.text, " ").replace(/\s*,\s*(?=\s|$)/g, " ").replace(/\s{2,}/g, " ").trim();
     return out;
@@ -2338,9 +2340,11 @@
      ("Need it", never 1/1s) from data/chases.json (scripts/build_chases.py). A TCDb card I have a scan of drops off. */
   let CHASES = null, CHLOAD = null;
   const chaseData = () => CHLOAD || (CHLOAD = fetch("data/chases.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => (CHASES = d.chases || {})));
-  // Same card whatever the tags: year, set and insert, card number, player's first two words.
-  const chaseKey = (name) => { const m = name.replace(/\s+VAR(?:VAR)?:.*$/, "").match(/^(\d{4})(?:-\d{2})?\s+(.*?)\s+#(\S+)\s+(.*)$/); if (!m) return name.toLowerCase();
-    return [m[1], norm(m[2]), m[3].toLowerCase().replace(/[^a-z0-9]/g, ""), norm(m[4].replace(/\([^)]*\)/g, " ")).split(" ").slice(0, 2).join(" ")].join("|"); };
+  // Same card whatever the tags: year, set and insert, card number, player's first two words, plus a photo variation
+  // written Ian's way (", VAR - Ball in one hand"), so a variation and the main design count as two cards.
+  const chaseKey = (name) => { const v = name.match(/,?\s+VAR\s+-\s+(.+)$/), base = v ? name.slice(0, v.index) : name;
+    const m = base.replace(/\s+VAR(?:VAR)?:.*$/, "").match(/^(\d{4})(?:-\d{2})?\s+(.*?)\s+#(\S+)\s+(.*)$/); if (!m) return name.toLowerCase();
+    return [m[1], norm(m[2]), m[3].toLowerCase().replace(/[^a-z0-9]/g, ""), norm(m[4].replace(/\([^)]*\)/g, " ")).split(" ").slice(0, 2).join(" "), v ? norm(v[1]) : ""].join("|"); };
   function chasePage(slug) {
     const ch = (DATA.site.chases || []).find((x) => x.slug === slug); if (!ch) return notFound();
     if (!CHASES) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void chaseData().then(() => HASH().startsWith("#/chase/") && chasePage(slug)); }

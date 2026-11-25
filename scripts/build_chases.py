@@ -20,11 +20,12 @@ def who(name):
 def main():
     site = json.load(open(os.path.join(ROOT, "config", "site.json")))
     chases = [c for c in site.get("chases", []) if c.get("match")]
+    names = site.get("tcdbNames", {})   # TCDb entries with identical names that are different cards, renamed by card ID
     rows = {"collection": [], "wantlist": []}
     for kind in rows:
         for f in sorted(glob.glob(os.path.join(ROOT, "data", "tcdb", f"*-{kind}.json"))):
             sport = os.path.basename(f).rsplit("-", 1)[0]          # football, baseball, multi-sport, misc-sports...
-            rows[kind] += [r[:2] + [sport] for r in json.load(open(f))["cards"]]
+            rows[kind] += [[names.get(r[1], r[0]), r[1], sport] for r in json.load(open(f))["cards"]]
     mine = {r[1] for r in rows["collection"] if r[1]}
     # Huskers only: a TCDb card counts when I have scans of that player in the Nebraska collections or Alex Gordon's
     # (TCDb's baseball list also holds the Royals, e.g. Mike Moustakas). Players match on the first two words of the name.
