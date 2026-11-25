@@ -4,7 +4,7 @@ The short open-items list is ../LAUNCH-CHECKLIST.md. Read this file only when wo
 
 Housekeeping to do just before or after the new site replaces the Google Site at ianbadeer.com.
 Claude: bring this list up when Ian says he is ready to publish or switch the domain, and remind Ian of
-"Ian's to-dos" when a session starts or he asks what's left.
+"Ian's to-dos" only when he asks what's left (not at session start).
 
 ## Ian's to-dos
 - [x] **Fix the letter codes in letterman card names** (the number is the letter's spot in the word). Ian fixed these 2026-11-18; Claude checks the new names after Ian uploads the files:

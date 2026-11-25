@@ -2,7 +2,8 @@
 
 Static site (vanilla JS: index.html, assets/app.js, assets/style.css) on GitHub Pages. The GitHub Action
 `.github/workflows/update-catalog.yml` rebuilds data from Google Drive and Ian's private spreadsheets.
-At the start of a session, read LAUNCH-CHECKLIST.md (short, open items only) and remind Ian of "Ian's to-dos".
+LAUNCH-CHECKLIST.md (open launch items and "Ian's to-dos") is a resource for when Ian asks for it: do not read it or
+remind him of it at session start.
 Read docs/CHECKLIST-DETAILS.md only when working on a feature it covers.
 
 ## Ian's standing rules (don't undo these)

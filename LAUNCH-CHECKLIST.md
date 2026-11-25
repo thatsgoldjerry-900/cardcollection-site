@@ -1,6 +1,6 @@
 # Launch checklist (open items only)
 
-Claude: remind Ian of "Ian's to-dos" at session start; bring up the switch lists when he's ready to publish.
+Claude: read this only when Ian asks for it (what's left, to-dos, launch). Not loaded by default each session. Bring up the switch lists when he's ready to publish.
 Full details, finished items and feature notes: docs/CHECKLIST-DETAILS.md (read only when working on that feature).
 
 ## Ian's to-dos
