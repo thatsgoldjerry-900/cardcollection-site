@@ -2680,9 +2680,11 @@
   // The site bar (the header, or the slim bar on phones) stays on screen above the viewer; the viewer starts just under it.
   function fitViewer() {
     const mb = $("#mbar"), bar = getComputedStyle(mb).display !== "none" ? mb : $(".top");
-    $("#viewer").style.setProperty("--bar-h", Math.max(0, bar.getBoundingClientRect().bottom / pageZoom()) + "px");
+    const h = Math.max(0, bar.getBoundingClientRect().bottom / pageZoom()) + "px";
+    $("#viewer").style.setProperty("--bar-h", h); document.documentElement.style.setProperty("--site-bar", getComputedStyle(mb).display !== "none" ? h : "0px");
   }
-  addEventListener("resize", () => { if (!$("#viewer").hidden) fitViewer(); });
+  fitViewer();
+  addEventListener("resize", fitViewer);
   function openViewer(k, list, random) {
     V.list = list; V.k = k; V.back = false; V.zoom = false; V.random = !!random;
     fitViewer(); $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard(); $("#v-close").focus();
@@ -2690,14 +2692,17 @@
     // The step remembers which list and card were open, so coming Back to it reopens the same card.
     if (!(history.state && history.state.v)) { const t = ++VSEQ; VIEWS.set(t, { list: V.list, k: V.k, random: V.random }); history.pushState({ v: 1, t }, "", location.href); }
   }
-  const VIEWS = new Map(); let VSEQ = 0, FROM_CARD = null;
+  const VIEWS = new Map(); let VSEQ = 0, FROM_CARD = null, FROM_Y = 0;
   // Back onto a step where a card was open (e.g. from a rainbow or set page opened in the viewer): reopen that card.
   // And the page's own "← back" link goes back to the card too.
   addEventListener("hashchange", () => {
     const st = history.state, saved = st && st.v && VIEWS.get(st.t);
     if (saved && $("#viewer").hidden) {
       V.list = saved.list; V.k = saved.k; V.back = false; V.zoom = false; V.random = saved.random;
+      // Back from a rainbow/set/letters page: put the page back where it was (the cards load in as it re-draws), then the card fades in.
+      const y = FROM_Y; for (let n = 0, t = 0; n < 12 && y > 0; n++, t += 80) setTimeout(() => { if ($("#viewer").hidden || Math.abs(scrollY - y) < 2) return; scrollTo(0, y); }, t);
       fitViewer(); $("#viewer").hidden = false; document.body.style.overflow = "hidden"; showCard();
+      const vw = $("#viewer"); vw.classList.remove("back-in"); void vw.offsetWidth; vw.classList.add("back-in");
     }
     if (FROM_CARD !== HASH()) { FROM_CARD = null; return; }
     // Reached from a card: a bar like the viewer's (round back button, page name), and the page slides in,
@@ -2710,11 +2715,13 @@
       $("#app").classList.remove("slide-in"); void $("#app").offsetWidth; $("#app").classList.add("slide-in");
     });
   });
-  $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href]"); if (a && !a.target) FROM_CARD = hashOf(a.getAttribute("href")); });
+  $("#viewer").addEventListener("click", (e) => { const a = e.target.closest("a[href]"); if (a && !a.target) { FROM_CARD = hashOf(a.getAttribute("href")); FROM_Y = scrollY; } });
+  // Capture phase, so this runs before the site's general link handler (which would otherwise push the page's own
+  // address again and leave Back going nowhere): the round back button returns to the card exactly like the browser's Back.
   document.addEventListener("click", (e) => {
     const a = e.target.closest("#app a.back");
-    if (a && FROM_CARD && FROM_CARD === HASH()) { e.preventDefault(); history.back(); }
-  });
+    if (a && FROM_CARD && FROM_CARD === HASH()) { e.preventDefault(); e.stopPropagation(); history.back(); }
+  }, true);
   function closeViewer(silent) {
     if ($("#viewer").hidden) return;
     $("#viewer").hidden = true; document.body.style.overflow = ""; $("#v-stage").classList.remove("zoom", "pair"); $("#viewer").classList.remove("focus"); ["#v-img", "#v-img2"].forEach((q) => { const e = $(q); e.removeAttribute("src"); e.classList.remove("wm"); e.dataset.id = ""; }); $("#v-aura").className = "v-aura";
