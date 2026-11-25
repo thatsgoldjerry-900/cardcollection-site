@@ -31,6 +31,10 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   In binder view only, graded cards are cropped on screen to show the card without its slab (Ian's request; files untouched),
   and anything that doesn't fit a 9-pocket page (decas, booklets, 3x5/4x6/5x7/8x10 and other written sizes, oversized cards,
   box loaders/toppers, postcards, posters, Fatheads, photos, magazines, programs) is left out of the binder.
+- **Player photo card** (bio page and thumbnails; assets/app.js playerPhotoTier, Ian 2026-11-25), best first: 1 certified auto card
+  in a Husker uniform, 2 custom auto Husker, 3 certified auto card in a pro uniform, 4 custom auto pro, 5 hand-signed card Husker,
+  6 hand-signed item of any kind Husker, 7 hand-signed solo item, 8 any autograph, 9 Husker card, 10 any card. Within a tier,
+  him alone beats a group item, then a picture of him beats a cut or index card.
 - **Email:** never write Ian's address in the page or repo as plain text (it's encoded in config and
   built on click).
 - **Wording:** "Super Collection" is two words everywhere. Ian likes consistency and uniformity.
