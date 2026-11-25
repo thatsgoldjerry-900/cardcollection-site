@@ -524,8 +524,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 @media (max-width:900px){.search{flex:1 1 calc(100% - 60px);min-width:0}.dice{order:2}}
 @media (prefers-reduced-motion:reduce){.dice.roll svg,.btn.roll,.v-stage.shuffle img{animation:none}}
 .hero{align-items:start}
-/* Viewer: show the clean card (background) while the <img> itself is the watermarked copy, moved out of view */
-#v-img.wm,#v-img2.wm{object-position:-100000px 0;background-image:var(--plain);background-size:100% 100%;background-repeat:no-repeat}
+/* Viewer: the watermarked copy is shown as is (Ian, 2026-11-25: the IANBADEER.COM mark shows at all times). */
 .ck-plain{margin:-4px 0 14px;font-size:13.5px}.ck-plain a{color:var(--mu)}.ck-plain a:hover{color:var(--acc)}
 .pl-about{margin:12px 0 6px;max-width:62ch;color:#d5dbe5;line-height:1.6}
 /* Home: Start here + featured story */
@@ -995,3 +994,27 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
   box-shadow:0 30px 60px -25px rgba(0,0,0,.8),0 0 0 1px var(--line)}
 @media (max-width:800px){.hero{grid-template-columns:1fr;align-items:start}.hero-ph{min-height:0;justify-self:center;width:min(320px,85%)}
   .hero-ph img{position:static;display:block;width:100%;height:auto}}
+
+/* Watermark on every card picture (display only; the scans aren't changed): IANBADEER.COM, centered about 80% down,
+   like the viewer's marked copy. */
+.cd .ph{container-type:inline-size}
+.cd .ph::after{content:"IANBADEER.COM";position:absolute;left:0;right:0;top:80%;transform:translateY(-50%);text-align:center;pointer-events:none;
+  font:800 9.5cqi/1 "Barlow Condensed","Arial Narrow",Arial,sans-serif;color:rgba(60,60,60,.40);-webkit-text-stroke:.35px rgba(255,255,255,.42);letter-spacing:.01em;z-index:1}
+/* MEM (memorabilia) corner tag, next to AUTO */
+.bd.mem{background:#8a4fd1}
+/* Home stats bar: everything centered in its box */
+.stats .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px}
+.stats .stat b{display:flex;align-items:center;justify-content:center;min-height:38px}
+.stat-ic{height:36px;width:auto;display:block;border-radius:3px}
+/* Viewer top bar: a player's name links to his bio */
+.v-mid b a{color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
+.v-mid b a:hover{color:var(--acc)}
+.v-mid .v-bio{display:block;font-size:11px;color:var(--acc);line-height:1.3}
+/* Complete letterman sets: a soft gold shimmer inside the gold frame (behind the cards, never on them) */
+.lt-done::before{content:"";position:absolute;inset:0;border-radius:14px;pointer-events:none;z-index:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(247,215,116,.07) 42%,rgba(255,246,207,.15) 50%,rgba(247,215,116,.07) 58%,transparent 70%),radial-gradient(ellipse at 50% 0,rgba(247,215,116,.09),transparent 70%);
+  background-size:260% 100%,100% 100%;background-repeat:no-repeat;animation:lt-shim 6s ease-in-out infinite}
+.lt-done>*{position:relative;z-index:1}
+@keyframes lt-shim{0%{background-position:120% 0,0 0}100%{background-position:-20% 0,0 0}}
+@media (prefers-reduced-motion:reduce){.lt-done::before{animation:none}}
+.need-cd .ph::after{content:none}
