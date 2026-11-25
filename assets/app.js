@@ -3090,16 +3090,23 @@
   function roll(el) { if (!el || calm.matches) return; el.classList.remove("roll"); void el.offsetWidth; el.classList.add("roll"); }
   $("#v-pick").addEventListener("click", () => { const c = V.list[V.k]; if (c && togglePick(c)) showCard(); });
   pickCount();
+  let vSwap = false;
   // The dice sits in the site bar, which stays above the card viewer, so it never moves. With a card open it deals another.
   $("#dice").addEventListener("click", () => {
     if (!CARDS || !CARDS.length) return;
     const c = randomCard(); if (!c) return;
     roll($("#mb-dice")); roll($("#dice"));
     if (!$("#viewer").hidden) {
-      const show = () => { V.list = [c]; V.k = 0; V.back = false; V.zoom = false; V.random = true; showCard(); };
-      if (calm.matches) return show();
-      const st = $("#v-stage"); st.classList.remove("shuffle"); void st.offsetWidth; st.classList.add("shuffle");
-      setTimeout(show, 190); setTimeout(() => st.classList.remove("shuffle"), 420);
+      // Smooth swap: fade the card out, get the next one fully decoded (both sides when shown side by side), switch while
+      // it's invisible, then fade in. No half-loaded preview, no flip, no flash.
+      if (vSwap) return; vSwap = true;
+      const st = $("#v-stage"), wait = [ready(c.id, c.rk)];
+      if (wide.matches && c.backId) wait.push(ready(c.backId, c.backRk));
+      st.classList.add("swap");
+      Promise.all([Promise.race([Promise.all(wait.map((p) => p.catch(() => {}))), new Promise((r) => setTimeout(r, 1500))]), new Promise((r) => setTimeout(r, calm.matches ? 0 : 150))]).then(() => {
+        V.list = [c]; V.k = 0; V.back = false; V.zoom = false; V.random = true; showCard();
+        requestAnimationFrame(() => requestAnimationFrame(() => { st.classList.remove("swap"); vSwap = false; }));
+      });
       return;
     }
     setTimeout(() => openViewer(0, [c], true), calm.matches ? 0 : 260);
