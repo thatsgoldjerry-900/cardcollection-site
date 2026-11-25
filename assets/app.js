@@ -268,12 +268,13 @@
   }
   // How rare a card is, for sorting: its serial number, else its print run (unnumbered cards last).
   const rarity = (c) => c.serial || c.printRun || 1e9;
-  function badges(c) {
+  // lite (letterman pages): no print run or AUTO badge; the print run is in the set's description instead.
+  function badges(c, lite) {
     let b = "";
     if (c.added >= NEW_CUTOFF) b += `<span class="bd new">NEW</span>`;
-    if (c.one) b += `<span class="bd one">1/1</span>`; else if (c.serial) b += `<span class="bd">/${c.serial}</span>`;
+    if (lite) {} else if (c.one) b += `<span class="bd one">1/1</span>`; else if (c.serial) b += `<span class="bd">/${c.serial}</span>`;
     else if (c.printRun) b += `<span class="bd pr" title="Print run of ${c.printRun} (not serial-numbered)">PR ${c.printRun}</span>`;
-    if (c.tags.has("auto")) b += `<span class="bd auto">AUTO</span>`;
+    if (c.tags.has("auto") && !lite) b += `<span class="bd auto">AUTO</span>`;
     if (c.tags.has("relic")) b += `<span class="bd mem" title="Memorabilia (relic)">MEM</span>`;
     if (c.grade) b += `<span class="bd">${esc(c.grade)}</span>`;
     if (c.backId) b += `<span class="bd back" title="Front and back">⇆</span>`;
@@ -341,9 +342,10 @@
     $("#pk-clear")?.addEventListener("click", () => { if (confirm(`Remove all ${list.length} picks?`)) { PICKS = []; savePicks(); picksPage(); } });
     $("#pk-add")?.addEventListener("click", () => { list.forEach((c) => { if (!isPicked(c) && PICKS.length < PICK_MAX) PICKS.push(pickId(c)); }); savePicks(); picksPage(shared); toast("Added to your picks."); });
   }
-  function cardHTML(c, q) {
+  // lite: letterman pages show the card without print run, AUTO or picks star.
+  function cardHTML(c, q, lite) {
     return `<button class="cd" type="button" data-i="${c.i}" aria-label="${esc(c.name)}">
-      <div class="ph"><img loading="lazy" decoding="async" alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><div class="badges">${badges(c)}</div>${pickStar(c)}</div>
+      <div class="ph"><img loading="lazy" decoding="async" alt="" src="${img(c.id, c.rk, 400)}" onload="this.classList.add('ok')"><div class="badges">${badges(c, lite)}</div>${lite ? "" : pickStar(c)}</div>
       <div class="cap"><b>${hl(c.title, q)}</b>${hl(c.sub, q)}${c.par ? `<br><span class="par">${hl(c.par, q)}</span>` : ""}</div></button>`;
   }
   const pctText = (sec) => sec.progressText || sec.progress + "%";
@@ -2222,8 +2224,22 @@
   }
   // One column per letter; a second copy of a letter (another parallel) stacks under the first.
   const letterSlot = (s, shown) => s.cards.length
-    ? `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${s.cards.map((x) => { shown.push(x); return cardHTML(x); }).join("")}</div>`
+    ? `<div class="lt-slot"><span class="lt-l">${esc(s.letter)}</span>${s.cards.map((x) => { shown.push(x); return cardHTML(x, "", true); }).join("")}</div>`
     : `<div class="lt-slot lt-miss" aria-label="Missing ${esc(s.letter || "letter " + s.pos)}"><span class="lt-l">${esc(s.letter || "?")}</span><div class="lt-blank"><b>${esc(s.letter || "?")}</b><small>Need</small></div></div>`;
+  // Each word on its own line ("GORDON" / "KANSAS" / "CITY" / "ROYALS"), its letters side by side. Every word uses the
+  // longest word's column size, so all the cards are the same size.
+  function letterRows(L, shown) {
+    const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z0-9]/g, "").length).filter(Boolean) : [L.slots.length];
+    let at = 0; const cols = Math.max(...lens);
+    return lens.map((n) => { const part = L.slots.slice(at, at + n); at += n;
+      return `<div class="lt-word" style="--n:${cols}">${part.map((x) => letterSlot(x, shown)).join("")}</div>`; }).join("");
+  }
+  // The set's print run for its description (the cards themselves don't show it on letterman pages): "/25", "1 of 1",
+  // "Print run of 99" (PR, no serial stamp).
+  function letterRun(L) {
+    const runs = [...new Set(L.slots.flatMap((s) => s.cards).map((x) => x.one ? "1 of 1" : x.printRun ? `Print run of ${fmt(x.printRun)}` : x.serial ? `/${fmt(x.serial)}` : "").filter(Boolean))];
+    return runs.join(" & ");
+  }
   // Every letterman set on one page (#/letters), grouped by the word it spells, with the letters I still need.
   function allLettersPage() {
     const first = CARDS.find((x) => isLetterSet(x) && letterOf(x)); if (!first) return notFound();
@@ -2246,8 +2262,8 @@
         // A complete set gets a celebration frame and badge (around the cards, never on them).
         const full = L.word && !miss.length;
         return `<section class="lt-set${full ? " lt-done" : ""}"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a>${full ? `<span class="lt-badge"><i aria-hidden="true">★</i>Complete set<b>${fmt(L.slots.length)}/${fmt(L.slots.length)}</b></span>` : ""}</h3>
-          <p>${esc(title)} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
-          <div class="lt-word" style="--n:${L.slots.length}">${L.slots.map((x) => letterSlot(x, shown)).join("")}</div></section>`; }).join("")}</section>`;
+          <p>${esc(title)}${letterRun(L) ? ` · ${esc(letterRun(L))}` : ""} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
+          <div class="lt-rows">${letterRows(L, shown)}</div></section>`; }).join("")}</section>`;
     }).join("");
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
       <div class="c-head"><div class="kick">Letterman sets</div><h1>All letterman sets</h1>
@@ -2261,18 +2277,11 @@
     const L = lettersOf(c); if (!L) return notFound();
     const sec = SECTIONS[c.si], title = letterSetTitle(c);
     setNav(sec.slug); setTitle(`${c.title} letters`);
-    const shown = [];
-    const slot = (x) => letterSlot(x, shown);
-    // Each word on its own line ("GORDON" / "KANSAS" / "CITY" / "ROYALS"), its letters side by side.
-    const lens = L.word ? (L.shown || L.word).split(/\s+/).map((w) => w.replace(/[^A-Z0-9]/g, "").length).filter(Boolean) : [L.slots.length];
-    // Every word uses the longest word's column size, so all the cards are the same size.
-    let at = 0; const cols = Math.max(...lens);
-    const rows = lens.map((n) => { const part = L.slots.slice(at, at + n); at += n;
-      return `<div class="lt-word" style="--n:${cols}">${part.map(slot).join("")}</div>`; }).join("");
+    const shown = [], rows = letterRows(L, shown);
     $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
-      <p>${esc(L.who)} · ${esc(title)}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters scanned${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
+      <p>${esc(L.who)} · ${esc(title)}${letterRun(L) ? ` (${esc(letterRun(L))})` : ""}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters scanned${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
       <div class="b-row">${binderBtn()}</div><div class="lt-words">${rows}</div><p class="lt-tip">Tap a card for its details. <a href="#/letters">All letterman sets →</a></p></div></div>`;
     state.list = shown;
     state.binderItems = L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }]));
