@@ -1089,6 +1089,7 @@ body[data-bg="lions"] .page-bg{--t1:#0a86cc;--t2:#055a8f;--t3:rgba(5,70,112,.55)
   body{padding-top:calc(48px + env(safe-area-inset-top,0px))}
   .top{padding-top:0}
   .top .dice{display:none}
+  .top .logo{display:none} /* the home button in the slim bar replaces it (Ian) */
   /* Phones: no filter chips and no "more from" buttons (desktop keeps both). */
   .tools .chips{display:none}
   .tools{padding:8px 0}
