@@ -1082,3 +1082,24 @@ body[data-bg="lions"] .page-bg{--t1:#0a86cc;--t2:#055a8f;--t3:rgba(5,70,112,.55)
 /* Home chase tiles: white percentage and label, white track behind the colored fill (red/white, blue/white). */
 .stat.c-husker b .sn,.stat.c-royal b .sn,.stat.c-husker span,.stat.c-royal span{color:#fff}
 .stat.link .bar{background:#fff}
+
+/* Card pages: checkbox filters; on desktop they sit in the left bar */
+.fchip input{position:absolute;opacity:0;pointer-events:none}
+.fchip:has(input:checked){background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600}
+.fchip:has(input:focus-visible){outline:2px solid var(--acc);outline-offset:2px}
+.chip.fchip{display:inline-block}
+@media (min-width:861px){
+  .side{overflow-x:hidden}
+  .tools.in-side{position:static;flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:10px;padding:2px 2px 14px;margin:0;border:0;border-bottom:1px solid var(--line);background:none;justify-content:flex-start}
+  .tools.in-side:before{content:"Filters";font:600 11px var(--f-b);letter-spacing:.09em;text-transform:uppercase;color:var(--mu);padding:0 8px}
+  .tools.in-side .chips{flex-direction:column;gap:1px}
+  .tools.in-side .chip.fchip{display:flex;align-items:center;gap:10px;border:0;border-radius:6px;padding:7px 8px;font-size:14px;background:none;color:var(--mu);font-weight:400;cursor:pointer}
+  .tools.in-side .chip.fchip:hover{background:var(--panel-2);color:var(--fg)}
+  .tools.in-side .chip.fchip:has(input:checked){background:none;color:var(--fg);font-weight:600}
+  .tools.in-side .fchip:before{content:"";flex:none;width:17px;height:17px;border:1.5px solid var(--mu);border-radius:4px;box-sizing:border-box;background:transparent center/12px no-repeat}
+  .tools.in-side .fchip:has(input:checked):before{background-color:var(--acc);border-color:var(--acc);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.3l2.6 2.6L10 3.4' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+  .tools.in-side .tools-r{flex-direction:column;align-items:stretch;gap:8px}
+  .tools.in-side .tools-r .count{order:-1;padding:0 8px}
+  .tools.in-side .tools-r .binder-btn{margin-right:0}
+  .tools.in-side .tools-r select,.tools.in-side .tools-r .btn{width:100%;max-width:none}
+}

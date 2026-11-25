@@ -713,9 +713,7 @@
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
     setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : slug === "duplicates" ? "Duplicates" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
-    const side = groups.length > 1 ? `<div><h4>${esc(sec.title)}</h4><ul>
-        <li><a href="#/c/${slug}" aria-current="${gi < 0}"><em style="font-style:normal">All</em><span>${fmt(sectionCards(si).length)}</span></a></li>
-        ${groups.map((g, k) => `<li><a href="#/c/${slug}/${g.slug}" aria-current="${k === gi}">${esc(g.label)}<span>${fmt(g.count)}</span></a></li>`).join("")}</ul></div>` : "";
+    const side = "";   // desktop: no year list in the left bar (Ian, 2026-11-25); phones keep the .mgroups strip
     const others = `<div><h4>Collections</h4><ul>${siteOrder().map((x) => x === "customs"
         ? `<li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li>`
         : `<li><a href="#/c/${x.slug}" aria-current="${x.slug === slug}">${esc(x.title)}<span>${fmt(sectionCards(SECTIONS.indexOf(x)).length)}</span></a></li>`).join("")}</ul></div>`;
@@ -735,7 +733,7 @@
         ${slug === "search" ? `${pageShortcut(state.q)}<div id="pmatch"></div>` : ""}
         ${slug === "customs" ? withPlayers() : ""}
         <div class="tools">
-          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].filter(([k]) => !(PAGE_NO_FILTERS[slug] || new Set()).has(k)).filter(([k]) => !RARE_FILTERS.has(k) || state.filters.has(k) || base.some((c) => c.tags.has(k))).map(([k, l]) => `<button type="button" class="chip" data-f="${k}" aria-pressed="${state.filters.has(k)}">${l}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Filters">${[...(slug === "customs" ? CUSTOM_FILTERS : FILTERS), ...(PAGE_FILTERS[slug] || [])].filter(([k]) => !(PAGE_NO_FILTERS[slug] || new Set()).has(k)).filter(([k]) => !RARE_FILTERS.has(k) || state.filters.has(k) || base.some((c) => c.tags.has(k))).map(([k, l]) => `<label class="chip fchip" data-f="${k}"><input type="checkbox" data-f="${k}"${state.filters.has(k) ? " checked" : ""}><span>${l}</span></label>`).join("")}</div>
           <div class="tools-r">${binderBtn()}${(sec || slug === "customs") && gi < 0 ? `<button type="button" class="btn" data-share-c="${slug}" aria-label="Share this collection">Share</button>` : ""}<span class="count" id="count"></span>${(() => { const ds = [...new Set(base.filter((c) => c.year < 9999).map((c) => Math.floor(c.year / 10) * 10))].sort((a, b) => b - a);
             const teams = [...new Set(base.map((c) => c.team).filter(Boolean))].sort((a, b) => a.localeCompare(b));
             const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All Teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
@@ -755,11 +753,17 @@
       $("#count").textContent = `${fmt(state.list.length)} scan${state.list.length === 1 ? "" : "s"}`;
       more();
     };
-    $(".chips").addEventListener("click", (e) => {
-      const b = e.target.closest(".chip"); if (!b) return;
-      state.filters.has(b.dataset.f) ? state.filters.delete(b.dataset.f) : state.filters.add(b.dataset.f);
-      b.setAttribute("aria-pressed", state.filters.has(b.dataset.f)); apply(); syncURL();
+    $(".chips").addEventListener("change", (e) => {
+      const b = e.target.closest("input[data-f]"); if (!b) return;
+      b.checked ? state.filters.add(b.dataset.f) : state.filters.delete(b.dataset.f);
+      apply(); syncURL();
     });
+    // Desktop: the filters and buttons live in the left bar; phones keep them above the cards.
+    const tools = $(".coll .tools"), mainCol = tools.parentNode, aside = $(".coll .side");
+    placeTools = () => { if (!tools.isConnected) return;
+      if (matchMedia("(min-width:861px)").matches) { tools.classList.add("in-side"); aside.prepend(tools); }
+      else { tools.classList.remove("in-side"); mainCol.insertBefore(tools, mainCol.querySelector("#grid")); } };
+    placeTools();
     $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); syncURL(); });
     $("#yr")?.addEventListener("change", (e) => { state.decade = e.target.value; apply(); syncURL(); });
     $("#tm")?.addEventListener("change", (e) => { state.team = e.target.value; apply(); syncURL(); });
@@ -768,6 +772,8 @@
     io.observe($("#sentinel"));
     if (slug === "search") playerMatches(q, state.q);
   }
+  let placeTools = null;
+  matchMedia("(min-width:861px)").addEventListener("change", () => placeTools && placeTools());
   // Share a collection: its c/<slug>/ link, which shows the collection's own picture and title in texts and on social media.
   document.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-share-c]"); if (!b) return;
