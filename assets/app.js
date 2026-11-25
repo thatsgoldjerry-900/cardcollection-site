@@ -1120,20 +1120,23 @@
     // beats an unsigned card in the Nebraska folder.
     const own = SECTIONS.findIndex((x) => !x.customs && norm(x.title) === norm(name));
     const all = [...scansFor(name, sport), ...(own < 0 ? [] : CARDS.filter((c) => c.si === own && /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(c.name)))];
-    const pic = all.filter((c) => !noPicture(c, name));
-    // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
-    const solo = pic.filter((c) => !multiPlayer(c, name));
-    // A certified autograph (signed for the card company) beats one he signed by hand (Ian): hand signed, TTM, in person,
-    // private signings and signed customs come after it.
-    const cert = (l) => l.find((c) => c.tags.has("auto") && !handSigned(c)), au = (l) => l.find((c) => c.tags.has("auto"));
-    return cert(solo) || au(solo) || solo[0] || cert(pic) || au(pic) || pic[0]
-      || cert(all) || au(all) || all[0] || null;
+    // Ian's order, most important first: an autograph; of him alone (a card or a solo signed item such as an index card
+    // beats a program page or card he shares with others); a picture of him (not a cut or index card); certified (signed
+    // for the card company) rather than hand signed; in a Husker uniform (the card's team folder or name says Nebraska).
+    const rank = (c) => [c.tags.has("auto"), !multiPlayer(c, name), !noPicture(c, name), !handSigned(c),
+      /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(`${c.team || ""} ${c.name}`)];
+    const better = (a, b) => { const k = a.findIndex((v, i) => v !== b[i]); return k >= 0 && a[k]; };
+    let best = null, bestR = null;   // ties keep the earlier card
+    all.forEach((c) => { const r = rank(c); if (!best || better(r, bestR)) { best = c; bestR = r; } });
+    return best;
   }
   function handSigned(c) {
     return c.tags.has("custom") || /\bhand[- ]?signed\b|\bTTM\b|\bthrough the mail\b|\bIP\b|\bin[- ]person\b|\bprivate signing\b/i.test(c.name);
   }
   let PNAMES = null;
   function multiPlayer(c, name) {
+    // A list of signers: "Program Page 15 - Randy Florell, Derrie Nelson, Dan Pensick, Bill Barnett".
+    if (/[A-Z][\w.'’-]+(?: [A-Z][\w.'’-]+)+\s*,\s*[A-Z][\w.'’-]+(?: [A-Z][\w.'’-]+)+/.test(c.name.replace(/\b(?:AU|MEM|MANU|RC|SSP|SP|SN\d+|PR\d+)\b,?/g, ""))) return true;
     if (/\b(dual|duos?|trios?|triple|quad|quads|tandem|combos?|pairings|teammates|and (?:\w+ )?others)\b/i.test(c.name.replace(/triple threads/i, ""))) return true;
     if (!PNAMES) PNAMES = [...new Set((CHECK ? allPlayers() : []).map((p) => norm(p.name)).filter((n) => n.split(" ").length > 1))];
     const t = " " + norm(c.name) + " ", me = norm(name);
