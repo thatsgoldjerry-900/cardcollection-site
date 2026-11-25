@@ -451,17 +451,22 @@
   const isNeb = (s) => /^husker-/.test(s.slug);
   function renderNav() {
     const neb = SECTIONS.filter((s) => shown(s) && isNeb(s));
-    // Menu order: Nebraska Cornhuskers ▾, Alex Gordon, Jermaine Dye, Customs, the other collections, Detroit Lions last.
-    const links = siteOrder().filter((s) => s === "customs" || !isNeb(s))
-      .map((s) => s === "customs" ? `<a href="#/customs" data-s="customs">Customs</a>` : `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`);
-    // Duplicates goes right after the Want List (both are about trading), or at the end.
-    if (DUPES.length) { const w = links.findIndex((x) => x.includes('data-s="want-list"')); links.splice(w >= 0 ? w + 1 : links.length, 0, `<a href="#/duplicates" data-s="duplicates">Duplicates</a>`); }
-    if ((DATA.site.media?.items || []).length) links.push(`<a href="#/media" data-s="media">Media</a>`);
-    links.splice(0, 0, `<button type="button" class="dd-btn" id="dd-btn" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button>`);
-    $("#nav").innerHTML = links.join("");
+    // Four menus: Nebraska Cornhuskers, Super Collections, Team Collections, Explore.
+    const sl = (slug) => SECTIONS.find((x) => x.slug === slug && shown(x));
+    const sec = (slug) => { const x = sl(slug); return x ? `<a href="#/c/${x.slug}" data-s="${x.slug}">${esc(x.title)}</a>` : ""; };
+    const used = ["alex-gordon", "jermaine-dye", "royals", "lions", "want-list"];
+    const rest = SECTIONS.filter((x) => shown(x) && !isNeb(x) && !used.includes(x.slug)).map((x) => sec(x.slug));
+    const groups = [
+      ["Super Collections", "dd-menu-super", [sec("alex-gordon"), sec("jermaine-dye")]],
+      ["Team Collections", "dd-menu-team", [sec("royals"), sec("lions")]],
+      ["Explore", "dd-menu-explore", [`<a href="#/customs" data-s="customs">Custom Cards</a>`, DUPES.length ? `<a href="#/duplicates" data-s="duplicates">Duplicates</a>` : "", sec("want-list"), (DATA.site.media?.items || []).length ? `<a href="#/media" data-s="media">Media</a>` : "", ...rest]],
+    ].map(([t, id, items]) => [t, id, items.filter(Boolean)]).filter((g) => g[2].length);
+    const btn = (t, id, bid) => `<button type="button" class="dd-btn"${bid ? ` id="${bid}"` : ""} data-menu="${id}" aria-expanded="false" aria-controls="${id}">${t} <span aria-hidden="true">▾</span></button>`;
+    $("#nav").innerHTML = btn("Nebraska Cornhuskers", "dd-menu", "dd-btn") + groups.map((g) => btn(g[0], g[1])).join("");
     const chases = (DATA.site.chases || []).map((x, k) => `<a href="#/chase/${x.slug}" data-s="chase-${x.slug}"${k === 0 ? ' class="sep"' : ""}>${esc(x.title)}</a>`).join("");
-    document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}${chases}</div>`);
-    $("#dd-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#dd-menu").hidden ? openDD() : closeDD(); });
+    document.body.insertAdjacentHTML("beforeend", `<div class="dd-menu" id="dd-menu" hidden>${neb.map((s) => `<a href="#/c/${s.slug}" data-s="${s.slug}">${esc(s.title)}</a>`).join("")}${chases}</div>`
+      + groups.map((g) => `<div class="dd-menu" id="${g[1]}" hidden>${g[2].join("")}</div>`).join(""));
+    document.querySelectorAll(".dd-btn[data-menu]").forEach((b) => b.addEventListener("click", (e) => { e.stopPropagation(); const m = $("#" + b.dataset.menu), was = !m.hidden; closeDD(); if (!was) openDD(b); }));
     // The autograph pages appear once the checklist data has been published.
     fetch("data/lists/husker-pros.json", { method: "HEAD" }).then((r) => {
       if (!r.ok || $('#dd-menu a[data-s="checklist"]')) return;
@@ -472,19 +477,21 @@
     }).catch(() => {});
   }
   function openDD(at) {
-    const b = (at || $("#dd-btn")).getBoundingClientRect(), m = $("#dd-menu");
+    const btn = at || $("#dd-btn"), m = $("#" + (btn.dataset.menu || "dd-menu"));
+    closeDD();
+    const b = btn.getBoundingClientRect();
     m.hidden = false;
     const w = m.offsetWidth, z = pageZoom();
     m.style.top = b.bottom / z + 6 + "px";
     m.style.left = Math.max(12, Math.min(b.left / z, innerWidth / z - w - 12)) + "px";
-    $("#dd-btn").setAttribute("aria-expanded", "true");
+    if (btn.classList.contains("dd-btn")) btn.setAttribute("aria-expanded", "true");
   }
   function closeDD() {
-    const m = $("#dd-menu"); if (!m || m.hidden) return;
-    m.hidden = true; $("#dd-btn").setAttribute("aria-expanded", "false");
+    document.querySelectorAll(".dd-menu").forEach((m) => { m.hidden = true; });
+    document.querySelectorAll(".dd-btn").forEach((b) => b.setAttribute("aria-expanded", "false"));
   }
-  document.addEventListener("click", (e) => { if (!e.target.closest("#dd-menu")) closeDD(); else if (e.target.closest("a")) closeDD(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#dd-menu") && !$("#dd-menu").hidden) { closeDD(); $("#dd-btn").focus(); } });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".dd-menu")) closeDD(); else if (e.target.closest("a")) closeDD(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document.querySelector(".dd-menu:not([hidden])")) { closeDD(); $("#dd-btn").focus(); } });
   addEventListener("scroll", closeDD, { passive: true }); addEventListener("resize", closeDD);
   $("#nav").addEventListener("scroll", closeDD, { passive: true });
   function renderFoot() {
@@ -496,15 +503,15 @@
   let NAV_NOW = null;
   function setNav(slug) {
     NAV_NOW = slug;
-    document.querySelectorAll("#nav a, #dd-menu a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
-    const dd = $("#dd-btn"); if (dd) dd.classList.toggle("on", !!$("#dd-menu a[aria-current]"));
+    document.querySelectorAll("#nav a, .dd-menu a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+    document.querySelectorAll(".dd-btn[data-menu]").forEach((b) => b.classList.toggle("on", !!$("#" + b.dataset.menu + " a[aria-current]")));
     mbarCat();
   }
   /* ---------- Phones: the slim bar that stays at the top once the header has scrolled away ---------- */
   // Its middle button is the collection you're in: "Nebraska" opens the Nebraska menu, others go to their page.
   function mbarCat() {
     const el = $("#mb-cat"), s = NAV_NOW || ""; if (!el) return;
-    const neb = /^(husker-|checklist|nfl-|chase-)/.test(s), a = !neb && s && $(`#nav a[data-s="${s}"]`);
+    const neb = /^(husker-|checklist|nfl-|chase-)/.test(s), a = !neb && s && document.querySelector(`.dd-menu a[data-s="${s}"]`);
     el.hidden = !(neb || a); el.classList.toggle("dd", neb);
     el.textContent = neb ? "Nebraska" : a ? a.textContent : "";
     el.setAttribute("href", neb ? toURL("#/") : a ? a.getAttribute("href") : toURL("#/"));
