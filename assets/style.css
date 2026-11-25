@@ -1018,3 +1018,8 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
 @keyframes lt-shim{0%{background-position:120% 0,0 0}100%{background-position:-20% 0,0 0}}
 @media (prefers-reduced-motion:reduce){.lt-done::before{animation:none}}
 .need-cd .ph::after{content:none}
+/* Customs page: the video sits small in the top right corner, beside the title */
+.c-top.with-vid{grid-template-columns:minmax(0,1fr) minmax(250px,340px)}
+.vids-top{margin:0;grid-template-columns:1fr;gap:12px}
+.vids-top .vid figcaption{font-size:12.5px;line-height:1.4}
+@media (max-width:980px){.c-top.with-vid{grid-template-columns:1fr}.vids-top{max-width:420px}}

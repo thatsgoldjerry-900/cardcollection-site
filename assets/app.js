@@ -699,7 +699,7 @@
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
       <aside class="side">${side}${others}</aside>
       <div style="min-width:0">
-        <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}</div>
+        <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}${slug === "customs" && customVideos() ? " with-inv with-vid" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}${slug === "customs" ? customVideos() : ""}</div>
         ${mg}
         ${slug === "search" && parseQuery(q).said.length ? `<p class="fixnote smart">Showing ${parseQuery(q).words.length ? `<b>${esc(parseQuery(q).words.join(" "))}</b> · ` : ""}${parseQuery(q).said.map((x) => `<span class="sq">${esc(x)}</span>`).join(" ")}</p>` : ""}
         ${fixed ? `<p class="fixnote">Nothing matched “${esc(state.q)}”, so these are results for <b>${esc(fixed)}</b>.</p>` : ""}
@@ -779,16 +779,19 @@
   }
   // Customs page: a slowly rotating strip of photos with the players, then the videos.
   function withPlayers() {
-    const cfg = DATA.site.customsPhotos || {}, vids = (cfg.videos || []).filter((v) => v.id);
     const tile = (p, k) => `<button type="button" class="ph-tile" data-photo="${k}" aria-label="${esc(p.caption)}">
       <img decoding="async" alt="" src="${img(p.id, p.rk, 500)}" onload="this.classList.add('ok')"><span><em>${esc(p.short)}</em></span></button>`;
     // A still row of photos; one at a time fades out and another fades in (startPhotoRow).
     const strip = PHOTOS.length ? `<h2 class="sub-h">With the players</h2><section class="ph-row" id="ph-row" aria-label="Photos with the players"></section>` : "";
-    const videos = vids.length ? `<div class="vids">${vids.map((v) => `<figure class="vid">
+    return strip ? `<div class="players">${strip}<h2 class="sub-h">The cards</h2></div>` : "";
+  }
+  // The Customs page's video(s): small, in the top right corner beside the page title (Ian, 2026-11-25).
+  function customVideos() {
+    const vids = ((DATA.site.customsPhotos || {}).videos || []).filter((v) => v.id);
+    return vids.length ? `<div class="vids vids-top">${vids.map((v) => `<figure class="vid">
         <div class="vid-frame"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}${v.start ? `?start=${+v.start}` : ""}" title="${esc(v.caption || "Video")}" loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
         ${v.caption ? `<figcaption>${esc(v.caption)}</figcaption>` : ""}</figure>`).join("")}</div>` : "";
-    return strip || videos ? `<div class="players">${strip}${videos}<h2 class="sub-h">The cards</h2></div>` : "";
   }
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-photo]"); if (!b) return;
@@ -2037,7 +2040,7 @@
     const has = (t) => cards.filter((c) => c.tags.has(t)).length;
     const both = cards.filter((c) => c.tags.has("auto") && c.tags.has("relic")).length;
     const kinds = [["Autographs", has("auto"), "#/search/autos"], ["Relics & patches", has("relic"), "#/search/relics"], ["Autograph + relic", both, "#/search/autos relics"],
-      ["Numbered", has("numbered"), "#/search/numbered"], ["Rookie cards", has("rc"), "#/search/rookies"], ["Customs", has("custom"), "#/customs"], ["Graded", has("graded"), "#/search/graded"]];
+      ["Numbered", has("numbered"), "#/search/numbered"], ["Customs", has("custom"), "#/customs"], ["Graded", has("graded"), "#/search/graded"]];
     const kmax = Math.max(...kinds.map((k) => k[1]));
     // Print runs
     const tiers = [["1 of 1", (c) => c.one, "1/1"], ["/2 – /5", (c) => !c.one && c.serial && c.serial <= 5, "over /1 /5 or less"], ["/6 – /10", (c) => c.serial > 5 && c.serial <= 10, "over /5 /10 or less"], ["/11 – /25", (c) => c.serial > 10 && c.serial <= 25, "over /10 /25 or less"],
