@@ -1707,7 +1707,7 @@
         </div>
         ${moreHuskers(slug, info, p)}
         ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} scans in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
-        ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${scans.map((c) => cardHTML(c)).join("")}</div>` : ""}
+        ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${sortList(scans, "old").map((c) => cardHTML(c)).join("")}</div>` : ""}
         ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See ${n === 1 ? "the 1 scan" : `all ${fmt(n)} scans`} of ${esc(info.name)} in my collection →</a></p>` : ""; })()}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
@@ -2778,7 +2778,8 @@
     const bySet = c.sub ? same((x) => x.sub && setKey(x) === setKey(c)) : [], byPlayer = c.title ? same((x) => plainTitle(x) === plainTitle(c)) : [];
     $("#v-more").innerHTML = (bySet.length ? `<button type="button" class="btn" data-more="set">More from ${esc(setKey(c))} (${fmt(bySet.length)} scan${bySet.length === 1 ? "" : "s"})</button>` : "")
       + (byPlayer.length && byPlayer.length < CARDS.length ? `<button type="button" class="btn" data-more="player">More of ${esc(plainTitle(c))} (${fmt(byPlayer.length)} scan${byPlayer.length === 1 ? "" : "s"})</button>` : "");
-    V.more = { set: [c, ...bySet], player: [c, ...byPlayer] };
+    // More of this player: oldest to newest (Ian), with this card in its place; the viewer moves on to the next one.
+    V.more = { set: [c, ...bySet], player: sortList([c, ...byPlayer], "old") }; V.moreFrom = c;
     const rb = rainbowOf(c);
     const lt = lettersOf(c);
     if (lt && lt.count >= 1 && (lt.word || lt.count > 1)) $("#v-more").insertAdjacentHTML("afterbegin", `<a class="btn rb-btn" href="#/letters/${encodeURIComponent(cid(c))}">🔤 View letters (${lt.count} of ${lt.slots.length})</a>`);
@@ -2849,7 +2850,7 @@
   $("#v-more").addEventListener("click", (e) => {
     const b = e.target.closest("[data-more]"); if (!b || !V.more) return;
     const list = V.more[b.dataset.more]; if (!list || list.length < 2) return;
-    V.list = list; V.k = Math.min(1, list.length - 1); V.back = false; V.zoom = false; V.random = false; showCard();
+    V.list = list; V.k = (list.indexOf(V.moreFrom) + 1) % list.length; V.back = false; V.zoom = false; V.random = false; showCard();
   });
   $("#v-save").onclick = saveCard;
   $("#v-flip").onclick = () => { V.back = !V.back; V.zoom = false; showCard(); };
