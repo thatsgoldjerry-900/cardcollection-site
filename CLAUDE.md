@@ -44,4 +44,6 @@ At the start of a session, read LAUNCH-CHECKLIST.md and remind Ian of "Ian's to-
   autos. MANU is a manufactured patch and does NOT count under Relics & patches.
   When a name has AU/MEM/MANU/SN/PR they override the word-based guesses and are hidden from captions (assets/app.js
   readCodes); backs pair with fronts ignoring these codes and letter codes (scripts/build_catalog.py loose_key).
-- **Mobile:** Ian is often on his phone. Check layouts at phone width.
+- **Mobile:** Ian is often on his phone. Check layouts at phone width. On phones the header and filters scroll away;
+  only the slim top bar (#mbar: home, current collection, search, dice; max four buttons) stays on screen.
+  Page background photos are fixed (they stay put while the page scrolls) and show whole, never zoomed in.

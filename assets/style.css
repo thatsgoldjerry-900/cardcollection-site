@@ -41,7 +41,6 @@ h1,h2,h3{font-family:var(--f-d);text-transform:uppercase;letter-spacing:.01em;li
   .nav{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -6px}
   .nav::-webkit-scrollbar{display:none}
 }
-@media (max-width:860px){.top{position:static}.tools{position:static}}
 
 main{min-height:calc(70vh / var(--z));outline:none}
 .loading,.empty{color:var(--mu);text-align:center;padding:80px 16px}
@@ -1027,16 +1026,18 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
 @media (max-width:640px){.lt-rows{gap:8px}}
 /* Page backgrounds (Ian, 2026-11-25): stadium lights and fine grain on every page; the home page adds ghosted neon
    signatures; football / baseball / basketball pages add a real field, diamond or court photo, faded into the page. */
-.page-bg{position:absolute;left:0;right:0;top:0;height:1100px;z-index:-1;pointer-events:none;overflow:hidden}
+.page-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .page-bg i,.page-bg::after{position:absolute;inset:0}
-/* Desktop shows the whole photo across the page width (not zoomed in), fading out only near its bottom edge. */
-.pb-ph{display:none;top:90px;background:center top/100% auto no-repeat;opacity:.34;
-  -webkit-mask:linear-gradient(#000 0,#000 62%,transparent 92%);mask:linear-gradient(#000 0,#000 62%,transparent 92%)}
-body[data-bg="lions"] .pb-ph{display:block;background-image:url(bg/lions.webp)}
-body[data-bg="baseball"] .pb-ph{display:block;background-image:url(bg/baseball.webp)}
-body[data-bg="basketball"] .pb-ph{display:block;background-image:url(bg/basketball.webp)}
-body[data-bg="husker-baseball"] .pb-ph{display:block;background-image:url(bg/husker-baseball.webp)}
-body[data-bg="husker-football"] .pb-ph{display:block;background-image:url(bg/husker-football.webp)}
+/* The backgrounds stay in place while the page scrolls (fixed layer). Each photo shows whole across the page width
+   (not zoomed in), up to the screen's height, and fades out gently toward its bottom edge. */
+.pb-ph{display:none;top:90px;bottom:auto;aspect-ratio:var(--ar,1.5);max-height:calc(100vh - 90px);background:center 75%/cover no-repeat;opacity:.34;
+  -webkit-mask:linear-gradient(#000 0,#000 45%,rgba(0,0,0,.85) 58%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.35) 81%,rgba(0,0,0,.14) 91%,transparent 100%);
+  mask:linear-gradient(#000 0,#000 45%,rgba(0,0,0,.85) 58%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.35) 81%,rgba(0,0,0,.14) 91%,transparent 100%)}
+body[data-bg="lions"] .pb-ph{display:block;--ar:1500/1004;background-image:url(bg/lions.webp)}
+body[data-bg="baseball"] .pb-ph{display:block;--ar:2000/1333;background-image:url(bg/baseball.webp)}
+body[data-bg="basketball"] .pb-ph{display:block;--ar:1760/1152;background-image:url(bg/basketball.webp)}
+body[data-bg="husker-baseball"] .pb-ph{display:block;--ar:2000/1325;background-image:url(bg/husker-baseball.webp)}
+body[data-bg="husker-football"] .pb-ph{display:block;--ar:1680/960;background-image:url(bg/husker-football.webp)}
 .pb-sig{display:none;top:70px;bottom:auto;height:640px;opacity:.2;background:url(bg/signatures.webp) max(0px,calc(50% - 760px)) 0/1440px auto no-repeat;
   -webkit-mask:linear-gradient(90deg,#000 0,#000 45%,transparent 75%);mask:linear-gradient(90deg,#000 0,#000 45%,transparent 75%)}
 body[data-bg="home"] .pb-sig{display:block}
@@ -1052,11 +1053,32 @@ body[data-bg="home"] .pb-sig{display:block}
 .tools{background:rgba(9,12,17,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .bg-credit{flex-basis:100%;font-size:11.5px;opacity:.8}.bg-credit a{color:inherit}
 @media (max-width:700px){
-  .page-bg{height:860px}.pb-ph{top:150px;background-size:cover}
+  /* Phones: the whole photo, edge to edge at the top of the screen (sharp 1200px copies), showing through the header. */
+  .pb-ph{top:calc(48px + env(safe-area-inset-top,0px));max-height:none;background-size:100% auto;background-position:center top;opacity:.5}
   body[data-bg="lions"] .pb-ph{background-image:url(bg/lions-m.webp)}
   body[data-bg="baseball"] .pb-ph{background-image:url(bg/baseball-m.webp)}
   body[data-bg="basketball"] .pb-ph{background-image:url(bg/basketball-m.webp)}
   body[data-bg="husker-baseball"] .pb-ph{background-image:url(bg/husker-baseball-m.webp)}
   body[data-bg="husker-football"] .pb-ph{background-image:url(bg/husker-football-m.webp)}
   .pb-sig{top:60px;height:560px;background:url(bg/signatures-m.webp) 0 0/100% auto no-repeat;-webkit-mask:linear-gradient(#000 60%,transparent);mask:linear-gradient(#000 60%,transparent)}
+}
+
+/* Phones (Ian, 2026-11-25): the header and the filters scroll away with the page (nothing floats over the cards).
+   Once the header is gone, a slim bar stays at the top: home, the collection you're in, search and the dice. */
+.mbar{display:none}
+@media (max-width:860px){
+  .top,.tools,.coll .tools{position:static}
+  .top{background:linear-gradient(rgba(13,17,24,.72),rgba(13,17,24,.35))}
+  .mbar{display:flex;align-items:center;gap:4px;position:fixed;top:0;left:0;right:0;z-index:30;
+    padding:env(safe-area-inset-top,0px) max(8px,env(safe-area-inset-right,0px)) 0 max(8px,env(safe-area-inset-left,0px));
+    height:calc(48px + env(safe-area-inset-top,0px));background:rgba(13,17,24,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);box-shadow:0 8px 24px -16px rgba(0,0,0,.9);transform:translateY(-105%);visibility:hidden;transition:transform .2s,visibility .2s}
+  .mbar.on{transform:none;visibility:visible}
+  .mb-b{flex:none;height:40px;min-width:44px;display:grid;place-items:center;padding:0 8px;border:0;border-radius:9px;background:none;color:var(--fg);text-decoration:none;cursor:pointer}
+  .mb-b:active,.mb-b:focus-visible{background:var(--panel)}
+  .mb-b svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mb-dice svg{stroke-width:1.8}.mb-dice circle{fill:currentColor;stroke:none}
+  .mb-cat{flex:1 1 auto;min-width:0;display:block;margin-right:auto;font-family:var(--f-d);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.02em;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+  .mb-cat[hidden]{display:block;visibility:hidden}
+  .mb-cat.dd::after{content:" \25BE";font-size:13px;color:var(--mu)}
 }

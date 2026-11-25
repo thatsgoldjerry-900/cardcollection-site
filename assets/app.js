@@ -471,8 +471,8 @@
       setNav(NAV_NOW);
     }).catch(() => {});
   }
-  function openDD() {
-    const b = $("#dd-btn").getBoundingClientRect(), m = $("#dd-menu");
+  function openDD(at) {
+    const b = (at || $("#dd-btn")).getBoundingClientRect(), m = $("#dd-menu");
     m.hidden = false;
     const w = m.offsetWidth, z = pageZoom();
     m.style.top = b.bottom / z + 6 + "px";
@@ -498,7 +498,25 @@
     NAV_NOW = slug;
     document.querySelectorAll("#nav a, #dd-menu a").forEach((a) => (a.dataset.s === slug ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
     const dd = $("#dd-btn"); if (dd) dd.classList.toggle("on", !!$("#dd-menu a[aria-current]"));
+    mbarCat();
   }
+  /* ---------- Phones: the slim bar that stays at the top once the header has scrolled away ---------- */
+  // Its middle button is the collection you're in: "Nebraska" opens the Nebraska menu, others go to their page.
+  function mbarCat() {
+    const el = $("#mb-cat"), s = NAV_NOW || ""; if (!el) return;
+    const neb = /^(husker-|checklist|nfl-|chase-)/.test(s), a = !neb && s && $(`#nav a[data-s="${s}"]`);
+    el.hidden = !(neb || a); el.classList.toggle("dd", neb);
+    el.textContent = neb ? "Nebraska" : a ? a.textContent : "";
+    el.setAttribute("href", neb ? toURL("#/") : a ? a.getAttribute("href") : toURL("#/"));
+  }
+  $("#mb-cat").addEventListener("click", (e) => {
+    if (!e.currentTarget.classList.contains("dd")) return;
+    e.preventDefault(); e.stopPropagation();
+    $("#dd-menu") && ($("#dd-menu").hidden ? openDD(e.currentTarget) : closeDD());
+  });
+  $("#mb-search").addEventListener("click", () => { scrollTo(0, 0); $("#q").focus(); });
+  $("#mb-dice").addEventListener("click", () => $("#dice").click());
+  if ("IntersectionObserver" in window) new IntersectionObserver(([en]) => { $("#mbar").classList.toggle("on", !en.isIntersecting); closeDD(); }).observe($(".top"));
 
   /* ---------- Contact: my address is only put together when someone clicks, so scrapers can't read it ---------- */
   const myEmail = () => { const c = DATA.site.contact || {}; try { return c.code ? atob(c.code).split("").reverse().join("") : ""; } catch (e) { return ""; } };
