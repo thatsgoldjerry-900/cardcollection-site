@@ -1123,8 +1123,14 @@
     const pic = all.filter((c) => !noPicture(c, name));
     // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
     const solo = pic.filter((c) => !multiPlayer(c, name));
-    return solo.find((c) => c.tags.has("auto")) || solo[0] || pic.find((c) => c.tags.has("auto")) || pic[0]
-      || all.find((c) => c.tags.has("auto")) || all[0] || null;
+    // A certified autograph (signed for the card company) beats one he signed by hand (Ian): hand signed, TTM, in person,
+    // private signings and signed customs come after it.
+    const cert = (l) => l.find((c) => c.tags.has("auto") && !handSigned(c)), au = (l) => l.find((c) => c.tags.has("auto"));
+    return cert(solo) || au(solo) || solo[0] || cert(pic) || au(pic) || pic[0]
+      || cert(all) || au(all) || all[0] || null;
+  }
+  function handSigned(c) {
+    return c.tags.has("custom") || /\bhand[- ]?signed\b|\bTTM\b|\bthrough the mail\b|\bIP\b|\bin[- ]person\b|\bprivate signing\b/i.test(c.name);
   }
   let PNAMES = null;
   function multiPlayer(c, name) {
