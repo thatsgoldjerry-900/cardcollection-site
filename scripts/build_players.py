@@ -36,7 +36,11 @@ OFF_FIELD = re.compile(r"\b(prison|jail(ed)?|incarcerat\w*|convict(ed|ion|ions)?
                        r"accus(ed|ation|ations)|alleg(ed|ation|ations|edly)|assault\w*|murder\w*|manslaughter|homicide|rape|"
                        r"sexual(ly)? (assault|abuse|misconduct)|domestic (violence|abuse|assault)|kidnapp\w*|robbery|burglary|"
                        r"drunk driving|dui|dwi|probation|parole|suicide|hanged|hanging himself|took his own life|killed himself|"
-                       r"custody|stalking|restraining order|trial|legal (trouble|troubles|issues|problems))\b", re.I)
+                       r"custody|stalking|restraining order|trial|legal (trouble|troubles|issues|problems)|"
+                       r"abus(e|ed|es|er|ers|ing|ive)|violence|harass\w*|misconduct|conduct policy|strangl\w*|stabb\w*|"
+                       r"(was|been|got|fatally) shot|shot (and|to death)|gunshot|"
+                       r"cocaine|heroin|marijuana|methamphetamine|opioids?|overdos\w*|performance-enhancing|steroids?|"
+                       r"(tested|testing|test) positive|banned substances?|drug (policy|test|tests|testing|use|charges?)|first offense)\b", re.I)
 
 
 def off_field_out(text):
@@ -64,6 +68,15 @@ def off_field_facts(sections):
                 new.append(r)
         clean[head] = new
     return clean
+
+
+def clean_wiki(p):
+    """Apply the off-field filter to a player's saved Wikipedia text (intro and infobox)."""
+    w = p.get("wiki")
+    if w:
+        w["intro"] = off_field_out(w.get("intro"))
+        if "sections" in w: w["sections"] = off_field_facts(w["sections"])
+    return p
 
 
 def slugify(t):
@@ -316,6 +329,7 @@ def main():
                 skip = (only and only not in (sport["sport"], key)) or (prev and (prev.get("wiki") or prev.get("checked")) and "--refresh" not in sys.argv)
                 if skip and prev:
                     p.update({k: prev[k] for k in ("wiki", "college", "collegeSource", "position", "collegeTables", "checked") if k in prev})
+                    clean_wiki(p)                         # re-filter saved bios when the filter list grows
                     if override == "none":                # wrong person matched before: drop the article
                         for k in ("wiki", "collegeTables"): p.pop(k, None)
                     players.append(p); continue
@@ -365,7 +379,7 @@ def card_players(used, ov, old_card):
             used.add(slug)
             prev = old_card.get(slug)
             if prev and prev.get("checked") and "--refresh" not in sys.argv:
-                out.append(prev); continue
+                out.append(clean_wiki(prev)); continue
             override = ov.get(f"card:{name}")
             p = {"slug": slug, "name": name, "card": True, "checked": time.strftime("%Y-%m-%d")}
             try:
