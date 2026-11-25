@@ -1034,6 +1034,7 @@ a.have-cd:hover .ph{border-color:rgba(70,200,120,.6)}
 body[data-bg="football"] .pb-ph{display:block;background-image:url(bg/football.webp)}
 body[data-bg="baseball"] .pb-ph{display:block;background-image:url(bg/baseball.webp)}
 body[data-bg="basketball"] .pb-ph{display:block;background-image:url(bg/basketball.webp)}
+body[data-bg="husker-baseball"] .pb-ph{display:block;background-image:url(bg/husker-baseball.webp)}
 .pb-sig{display:none;top:70px;bottom:auto;height:640px;opacity:.2;background:url(bg/signatures.webp) max(0px,calc(50% - 760px)) 0/1440px auto no-repeat;
   -webkit-mask:linear-gradient(90deg,#000 0,#000 45%,transparent 75%);mask:linear-gradient(90deg,#000 0,#000 45%,transparent 75%)}
 body[data-bg="home"] .pb-sig{display:block}
@@ -1053,5 +1054,6 @@ body[data-bg="home"] .pb-sig{display:block}
   body[data-bg="football"] .pb-ph{background-image:url(bg/football-m.webp)}
   body[data-bg="baseball"] .pb-ph{background-image:url(bg/baseball-m.webp)}
   body[data-bg="basketball"] .pb-ph{background-image:url(bg/basketball-m.webp)}
+  body[data-bg="husker-baseball"] .pb-ph{background-image:url(bg/husker-baseball-m.webp)}
   .pb-sig{top:60px;height:560px;background:url(bg/signatures-m.webp) 0 0/100% auto no-repeat;-webkit-mask:linear-gradient(#000 60%,transparent);mask:linear-gradient(#000 60%,transparent)}
 }

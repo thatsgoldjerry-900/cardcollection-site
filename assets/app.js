@@ -2511,7 +2511,8 @@
   /* ---------- Page backgrounds (Ian, 2026-11-25): stadium lights on every page; the home page adds a wall of ghosted
      neon signatures; football pages (Huskers football, NFL Huskers, Lions) add a real photo of a field, baseball pages
      (Gordon, Dye, Royals, Husker baseball, MLB Huskers) a diamond, basketball pages a court. Football and baseball photos from
-     Wikimedia Commons, credited in the footer; the basketball one is Ian's own photo (Pinnacle Bank Arena). Never on the card scans themselves. ---------- */
+     Wikimedia Commons, credited in the footer; the basketball one (Pinnacle Bank Arena) and the Husker baseball one
+     (Haymarket Park, used on Husker baseball and the MLB Huskers list) are Ian's own photos. Never on the card scans themselves. ---------- */
   const BG_PHOTOS = {
     football: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Leavitt_Park_td_(2022-04-22)_29a_-_Leavitt_Field.jpg"],
     baseball: ["Tdorante10", "https://commons.wikimedia.org/wiki/File:Central_Park_North_Meadow_td_(2019-04-18)_084_-_Baseball_Field_5.jpg"],
@@ -2519,7 +2520,8 @@
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
     const bg = !a ? "home"
-      : /^(checklist\/mlb|husker-baseball|alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "baseball"
+      : /^(checklist\/mlb|husker-baseball)/.test(n) ? "husker-baseball"
+      : /^(alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "baseball"
       : /^(checklist\/nba|husker-basketball)/.test(n) ? "basketball"
       : /^(checklist|husker-football|lions|nfl-)/.test(n) ? "football" : "";
     document.body.dataset.bg = bg;
