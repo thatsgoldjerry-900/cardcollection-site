@@ -229,6 +229,22 @@
       "_help": "No Drive folder of its own: shows every card tagged with this team (cards in a \"Detroit Lions\" subfolder in Drive, e.g. in Nebraska Football Cards & Autos). Each card is still one card, filed in its home collection."
     },
     {
+      "slug": "customs-folder",
+      "title": "Customs",
+      "kind": "team",
+      "color": "gold",
+      "customs": true,
+      "hidden": true,
+      "driveFolderName": "Customs",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Customs"
+        }
+      ],
+      "_help": "Ian's \"Customs\" Drive folder, read by name. Hidden: no menu, tile or page of its own; every scan in it is a custom and shows on the Customs page (Huskers or Royals filter from the name or its subfolder; non-sport if the name or subfolder says so) and on the player's page. A scan also filed in another collection (same name) is shown once, from that collection. Folders read on their own (Customs - Non-Sport, Customs - With the Players) are skipped if they sit inside it."
+    },
+    {
       "slug": "customs-non-sport",
       "title": "Customs - Non-Sport",
       "kind": "team",

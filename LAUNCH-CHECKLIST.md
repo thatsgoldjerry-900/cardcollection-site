@@ -134,6 +134,10 @@ Claude: bring this list up when Ian says he is ready to publish or switch the do
   codes (e.g. Just Autographs Black/Gold/Silver without AU, Sweet Spot glove leather autos without MEM). chaseCollegeCards
   updated to the new Black Friday name.
   After all re-uploads: remove "freshUploadDate" from the alex-gordon, jermaine-dye, royals and husker-baseball sections in config/site.json.
+- Session notes 2026-11-25 (also live): the "Customs" Drive folder is read (config section customs-folder, hidden): its scans
+  show on the Customs page (Huskers, or Royals when the name/subfolder says so) and on player pages; a custom also filed in a
+  collection is shown once. Player-page cards: a Husker with his own collection (Alex Gordon) now shows a Nebraska autograph
+  from it (2015 Panini Nebraska Signatures) instead of the unsigned Honors card from the Nebraska Baseball folder.
 - Session notes 2026-11-23 (also live): Huskers by NFL Team pages end with Ian's cards of that team (Drive team folders);
   Nebraska Basketball Cards & Autos page; letterman pages are Huskers only, split by parallel and autograph, ignore letter codes
   in set names / card numbers, and Own The Name cards count as nameplate relics; filters Button / Nameplate / Dirt relics (config

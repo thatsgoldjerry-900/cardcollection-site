@@ -136,7 +136,9 @@ def scans_index():
         out["own:" + norm(s["title"])] = (s["slug"], s["title"], [c for c in cat["cards"] if c[3] == i and "(back)" not in c[2].lower()])
     for sport, slug in SCAN_SECTION.items():
         si = sec.get(slug)
-        out[sport] = [(" " + norm(c[2]) + " ", c) for c in cat["cards"] if si is not None and c[3] == si and "(back)" not in c[2].lower()]
+        # Plus the customs-only Drive folders ("Customs"), like the site.
+        cust = {i for i, s in enumerate(cat["sections"]) if s.get("customs")}
+        out[sport] = [(" " + norm(c[2]) + " ", c) for c in cat["cards"] if si is not None and (c[3] == si or c[3] in cust) and "(back)" not in c[2].lower()]
     return out
 
 
@@ -147,13 +149,16 @@ def best_scan(idx, name, sport):
     n = norm(name)
     if len(n.split()) < 2: return None
     hits = [c for t, c in idx.get(sport, []) if " " + n + " " in t]
-    if not hits and ("own:" + n) in idx: hits = idx["own:" + n][2]
+    # His own collection's Nebraska cards count too (a Nebraska autograph there beats an unsigned card), like the site.
+    own = idx.get("own:" + n, (None, None, []))[2]
+    hits += [c for c in own if re.search(r"\b(?:nebraska|(?:corn)?huskers?)\b", c[2], re.I)]
+    if not hits: hits = own
     # Prefer a card with a picture over an index card, cut autograph or signed letter (same rule as the site).
     who = r"[^#]*?".join(re.escape(w) for w in n.split())
     picture = r"\b(photo|8x10|11x14|16x20|magazine|illustrated|poster|program|schedules?|postcard|card)\b"
     nopic = lambda c: not re.search(r"\bcustom\b", c[2], re.I) and not re.search(picture, re.sub(r"index card", "", c[2], flags=re.I), re.I) and bool(re.search(r"\bcut\b|index card|\b(?:signed|autographed)\s+letter\b", c[2], re.I)
                                                                       or re.search(rf"^\d{{4}}(?:-\d{{2}})?\s+{who}[^#]*?\b(?:signed\s+)?(?:cut\s+)?autograph", c[2], re.I))
-    signed = lambda c: re.search(r"\b(auto|autograph|signed|signature)", c[2], re.I)
+    signed = lambda c: re.search(r"\b(auto|autograph|signed|signature)", c[2], re.I) or re.search(r"(?<![A-Za-z])AU(?![A-Za-z])", c[2])   # or Ian's AU code
     pic = [c for c in hits if not nopic(c)]
     # A solo card of him beats one shared with other players (same rule as the site).
     def multi(c):

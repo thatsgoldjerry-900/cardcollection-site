@@ -169,7 +169,7 @@ NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|
 SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
 DUP_FOLDER = re.compile(r"^duplicates?$", re.I)
 
-def images_by_name(get, name, prefer=None, avoid=()):
+def images_by_name(get, name, prefer=None, avoid=(), skip=()):
     """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
     q = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and mimeType = '{FOLDER}' and trashed = false"
     found = get({"q": q, "fields": "files(id, name, parents)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
@@ -200,7 +200,7 @@ def images_by_name(get, name, prefer=None, avoid=()):
         out = []
         for f in drive_children(get, fid):
             if f["mimeType"] == FOLDER:
-                if depth < 4 and not SKIP_FOLDER.search(f["name"]):
+                if depth < 4 and not SKIP_FOLDER.search(f["name"]) and f["name"].strip().lower() not in skip:
                     nm = f["name"].strip()
                     if DUP_FOLDER.search(nm): out += walk(f["id"], depth + 1, team, True); continue
                     out += walk(f["id"], depth + 1, team or ("" if NOT_TEAM.search(nm) else nm), dup)
@@ -225,8 +225,11 @@ def sections_from_config(cfg):
             names = sec["driveFolderName"] if isinstance(sec["driveFolderName"], list) else [sec["driveFolderName"]]
             files = []
             pats = [g["match"] for g in sec["groups"] if g.get("match")]
+            # A customs folder ("Customs") may hold other folders the site reads on their own ("Customs - Non-Sport",
+            # "Customs - With the Players"): skip those inside it so no scan is read twice or a photo becomes a card.
+            skip = (others - {n.strip().lower() for n in names}) | {PHOTOS_FOLDER, REFS_FOLDER.lower()} if sec.get("customs") else ()
             for nm in names:
-                files = images_by_name(get, nm, pats, others)
+                files = images_by_name(get, nm, pats, others, skip)
                 if files: break
             year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
             groups, left = [], files
@@ -383,6 +386,17 @@ def main():
         cards[:] = [c for c in cards if id(c) not in ids]
         dupes.extend(c[:9] for c in moved)
         print(f"{len(moved)} documented-serial copies moved to Duplicates", file=sys.stderr)
+    # The "Customs" folder may hold a copy of a custom that is also filed in a collection (e.g. Nebraska Football): the
+    # collection's copy stays (it keeps its page and date), the Customs folder's copy is dropped so it isn't counted twice.
+    cust = {i for i, s in enumerate(sections) if s.get("customs")}
+    filed = {c[2].strip().lower() for c in cards if c[3] not in cust}
+    twice = [c for c in cards if c[3] in cust and c[2].strip().lower() in filed]
+    if twice:
+        ids = {id(c) for c in twice}
+        cards[:] = [c for c in cards if id(c) not in ids]
+        for c in twice:
+            g = sections[c[3]]["groups"][c[4]]; g["count"] -= 1
+        print(f"{len(twice)} scans in a customs folder are also filed in a collection; the collection's copy is used.", file=sys.stderr)
     site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot") and not k.startswith("_")}
     if "customsPhotos" in site: site["customsPhotos"] = {k: v for k, v in site["customsPhotos"].items() if k != "folders"}
     # Photo name without extension is its caption; newest first.

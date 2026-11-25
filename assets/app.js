@@ -179,10 +179,12 @@
       // A customs-only Drive folder (config "customs": true, e.g. "Customs - Non-Sport"): every scan in it is a custom.
       if (SECTIONS[si].customs) p.tags.add("custom");
       if (p.tags.has("custom")) {
-        const sl = SECTIONS[si].slug;
-        if (/non[- ]?sport/i.test(name + " " + sl)) p.tags.add("nonsport");
+        const sl = SECTIONS[si].slug, own = name + " " + team;
+        if (/non[- ]?sport/i.test(own + " " + sl)) p.tags.add("nonsport");
         else if (/^husker-/.test(sl)) p.tags.add("huskers");
         else if (["royals", "alex-gordon", "jermaine-dye"].includes(sl)) p.tags.add("royals");
+        // The "Customs" Drive folder holds every kind: Royals if the name or its subfolder says so, otherwise Huskers.
+        else if (SECTIONS[si].customs) p.tags.add(/\broyals\b|kansas city/i.test(own) && !/husker|nebraska/i.test(own) ? "royals" : "huskers");
       }
       // Relic kinds for the Button / Nameplate / Dirt filters: from the name (Ian adds "(Button)", "(Nameplate)",
       // "(Dirty Relic)" where the set name doesn't say it), or config "dirtRelics". Topps "Hot Button" and Gypsy Queen
@@ -826,7 +828,8 @@
       const si = SECTIONS.findIndex((s) => s.slug === "husker-" + sport) >= 0 ? SECTIONS.findIndex((s) => s.slug === "husker-" + sport) : SECTIONS.findIndex((s) => s.slug === sport);
       // "(Hand Signed by Tyrone Fahie)": the autograph is his, so the card goes on his page only, not the pictured player's.
       const who = (c) => { const m = c.name.match(/\(\s*hand signed by ([^)]+)\)/i); return m ? m[1] : c.name; };
-      scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si).map((c) => [" " + norm(who(c)) + " ", c]);
+      // Plus the customs-only Drive folders ("Customs"): a custom of him shows on his page wherever Ian files it.
+      scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si || (SECTIONS[c.si].customs && SECTIONS[si].slug.startsWith("husker-"))).map((c) => [" " + norm(who(c)) + " ", c]);
     }
     const n = norm(name); if (n.split(" ").length < 2) return [];
     return scanIndex[sport].filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
@@ -1083,7 +1086,10 @@
   const noPicture = (c, name) => !c.tags.has("custom") && !PICTURE.test(c.name.replace(/index card/i, "")) && (/\bcut\b|index card|\b(?:signed|autographed)\s+letter\b/i.test(c.name)
     || new RegExp(`^\\d{4}(?:-\\d{2})?\\s+${norm(name).split(" ").map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^#]*?")}[^#]*?\\b(?:signed\\s+)?(?:cut\\s+)?autograph`, "i").test(c.name));
   function bestScan(name, sport = "football") {
-    const all = scansFor(name, sport);
+    // A Husker with his own collection (Alex Gordon): its Nebraska cards count too, so a Nebraska autograph filed there
+    // beats an unsigned card in the Nebraska folder.
+    const own = SECTIONS.findIndex((x) => !x.customs && norm(x.title) === norm(name));
+    const all = [...scansFor(name, sport), ...(own < 0 ? [] : CARDS.filter((c) => c.si === own && /\b(?:nebraska|(?:corn)?huskers?)\b/i.test(c.name)))];
     const pic = all.filter((c) => !noPicture(c, name));
     // A solo card of him beats one shared with other players (two or more names from my lists, or Dual/Trio/... sets).
     const solo = pic.filter((c) => !multiPlayer(c, name));

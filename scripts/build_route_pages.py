@@ -41,7 +41,8 @@ for i, s in enumerate(cat["sections"]):
     n = sum(1 for x in cards if in_section(x, i, s))
     if not n: continue
     write(f"c/{s['slug']}/", s["title"], f"{first(s.get('blurb'))} {n:,} high-resolution scans.".strip(), prev(s["slug"]))
-nc = sum(1 for x in cards if re.search(r"\bcustom\b", x[2], re.I))
+_cust = {k for k, x in enumerate(cat["sections"]) if x.get("customs")}   # customs-only Drive folders: every scan is a custom
+nc = sum(1 for x in cards if x[3] in _cust or re.search(r"\bcustom\b", x[2], re.I))
 write("customs/", "Custom Cards", f"Custom cards are a labor of love, made by hand. {nc:,} scans.", prev("customs"))
 write("duplicates/", "Duplicates", "Cards/Items that I have more than one copy of. A duplicate doesn't guarantee that it's available for trade, but it doesn't hurt to ask.")
 write("rarest/", "Rarest Cards", "Every numbered card I've scanned, rarest first: one-of-ones, then /2, /3 and up.")
