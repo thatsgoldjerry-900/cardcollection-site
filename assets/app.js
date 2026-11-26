@@ -1208,10 +1208,16 @@
     if (card) return 9;
     return 10;
   }
-  // Seasons a Husker lettered (the University's Letter Winners lists, per sport): consecutive years become ranges.
-  const lettersText = (ys, sport) => { if (!ys || !ys.length) return ""; const out = []; let a = ys[0], b = ys[0];
+  // Nebraska years: the Wikipedia range, widened by any letter years outside it (letter years fill gaps; not every season is on the list).
+  // With no Wikipedia range, the letter years alone, as ranges.
+  const yearRanges = (ys) => { const out = []; let a = ys[0], b = ys[0];
     for (const y of [...ys.slice(1), null]) { if (y === b + 1) { b = y; continue; } out.push(a === b ? `${a}` : `${a}–${b}`); if (y !== null) { a = b = y; } }
-    return out.join(", ") + (sport === "football" ? " (letter years, not every season)" : ` (${sport} letter years, not every season)`); };
+    return out.join(", "); };
+  const nebYears = (wiki, letters) => { const w = (wiki.match(/(?:19|20)\d{2}/g) || []).map(Number);
+    if (!letters.length) return wiki;
+    if (!w.length) return yearRanges([...new Set(letters)].sort((x, y) => x - y));
+    const lo = Math.min(w[0], ...letters), hi = Math.max(w[w.length - 1], ...letters);
+    return lo === w[0] && hi === w[w.length - 1] ? wiki : `${lo}–${hi}`; };
   let PNAMES = null;
   function multiPlayer(c, name) {
     // A list of signers: "Program Page 15 - Randy Florell, Derrie Nelson, Dan Pensick, Bill Barnett".
@@ -1746,8 +1752,7 @@
       const myFinal = info.year || info.finalYear, wikiNeb = (schools.find(([n]) => /nebraska/i.test(n)) || [])[1] || "";
       const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", useWiki ? "" : myFinal],
-        ["Nebraska years", (info.collegeNote && info.collegeNote.nebraska) || (useWiki ? wikiNeb : "")],
-        ["Nebraska letters", lettersText((info.letters || {})[sport], sport)],
+        ["Nebraska years", (info.collegeNote && info.collegeNote.nebraska) || nebYears(useWiki ? wikiNeb : "", ((info.letters || {})[sport]) || [])],
         [useWiki || myFinal ? "Also played at" : "College", (info.collegeNote && info.collegeNote.also) || schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
         [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
