@@ -1,6 +1,14 @@
 {
-  "_help": "Player name on our site -> the name as the Letter Winners list has it, for a player the list can't match by name. Used by scripts/build_letter_years.py, same sport only.",
+  "_help": "Player name on our site -> the name as the Letter Winners list has it, for a player the list can't match by name. Used by scripts/build_letter_years.py, same sport only. An entry with \"years\" sets the letter years directly (used when the list's line is unreadable).",
   "players": {
-    "Al Bloodgood": "Elbert L. Bloodgood"
+    "Al Bloodgood": "Elbert L. Bloodgood",
+    "Willie Greenlaw": {
+      "name": "William Greenlaw",
+      "years": [
+        1955,
+        1956
+      ],
+      "note": "Years confirmed by Ian; the PDF line is cut off before the years."
+    }
   }
 }

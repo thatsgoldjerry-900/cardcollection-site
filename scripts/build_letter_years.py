@@ -129,7 +129,11 @@ def main():
                 if (p.get("sport") or "football") != sport: continue
                 yrs = by.get(norm(p["name"]))
                 if not yrs and p["name"] in ALIASES:
-                    yrs = by.get(norm(ALIASES[p["name"]]))
+                    al = ALIASES[p["name"]]
+                    if isinstance(al, dict):
+                        yrs = set(al.get("years", [])) or by.get(norm(al["name"]))
+                    else:
+                        yrs = by.get(norm(al))
                 if not yrs:
                     yrs = fuzzy(norm(p["name"]), by_last)
                 if not yrs and '"' in p["name"]:
