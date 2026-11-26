@@ -1214,3 +1214,70 @@ body[data-bg="red"] .side h4{color:#d9c9a8}
 
 /* Nebraska and general pages: a thick cream border around the filters box, so the scarlet-and-cream look carries below the title bar */
 body[data-bg="red"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(14,11,12,.88)}
+
+/* Royals (gold) and Lions (silver) pages (Ian, 2026-11-26): same layout as the Nebraska pages. Royals blue title bar with gold accents;
+   Honolulu blue title bar with silver accents. */
+body[data-bg="royals"]{--bg:#080b12;--tint:26,91,196;--cream:#d4b05a;background:#080b12}
+body[data-bg="royals"] .pb-lit{background:
+  radial-gradient(ellipse 55% 420px at 6% -60px,rgba(212,176,90,.18),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 6% -40px,rgba(26,91,196,.55),transparent 75%),
+  radial-gradient(ellipse 55% 420px at 94% -60px,rgba(212,176,90,.12),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 94% -40px,rgba(26,91,196,.42),transparent 75%)}
+body[data-bg="royals"] .top{background:#1a5bc4;border-bottom:3px solid var(--cream);box-shadow:0 8px 24px -16px rgba(0,0,0,.9)}
+body[data-bg="royals"] .logo,body[data-bg="royals"] .logo span{color:#fff}
+body[data-bg="royals"] .logo span{color:var(--cream)}
+body[data-bg="royals"] .nav a,body[data-bg="royals"] .dd-btn{color:#dce8ff}
+body[data-bg="royals"] .nav a:hover,body[data-bg="royals"] .dd-btn:hover,body[data-bg="royals"] .dd-btn[aria-expanded="true"]{color:#fff;background:rgba(255,255,255,.2)}
+body[data-bg="royals"] .nav a[aria-current="page"],body[data-bg="royals"] .dd-btn.on{color:#fff;background:rgba(255,255,255,.26)}
+body[data-bg="royals"] .top .search{background:rgba(0,0,0,.28);border-color:rgba(212,176,90,.4)}
+body[data-bg="royals"] .top .search:focus-within{border-color:var(--cream)}
+body[data-bg="royals"] .top .search svg{stroke:var(--cream)}
+body[data-bg="royals"] .top .search input{color:#fff}
+body[data-bg="royals"] .top .search input::placeholder{color:#cfe0ff}
+body[data-bg="royals"] .top .search kbd{color:var(--cream);border-color:rgba(212,176,90,.4)}
+body[data-bg="royals"] .tools{background:#0e131d;border-top:1px solid rgba(212,176,90,.18);border-bottom:2px solid #1a5bc4}
+body[data-bg="royals"] .chip{border-color:rgba(212,176,90,.45);color:var(--cream)}
+body[data-bg="royals"] .chip:hover{border-color:var(--cream);color:#fff}
+body[data-bg="royals"] .chip[aria-pressed="true"]{background:var(--cream);border-color:var(--cream);color:#1a5bc4;font-weight:700}
+body[data-bg="royals"] .tools-r{color:#c9d3e6}
+body[data-bg="royals"] .tools select,body[data-bg="royals"] .ck-q{background:rgba(0,0,0,.3);border-color:rgba(212,176,90,.35);color:var(--cream)}
+body[data-bg="royals"] .side a:hover{background:rgba(212,176,90,.1)}
+body[data-bg="royals"] .side a[aria-current="true"]{background:rgba(212,176,90,.13);color:#fff;box-shadow:inset 3px 0 var(--cream)}
+body[data-bg="royals"] .side h4{color:#d4b05a}
+@media (max-width:860px){
+  body[data-bg="royals"] .top{background:#1a5bc4}
+  body[data-bg="royals"] .mbar{background:#1a5bc4;border-bottom:2px solid var(--cream)}
+}
+body[data-bg="royals"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(9,12,20,.88)}
+body[data-bg="lions"]{--bg:#090b0d;--tint:0,118,182;--cream:#b0b7bc;background:#090b0d}
+body[data-bg="lions"] .pb-lit{background:
+  radial-gradient(ellipse 55% 420px at 6% -60px,rgba(176,183,188,.18),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 6% -40px,rgba(0,118,182,.55),transparent 75%),
+  radial-gradient(ellipse 55% 420px at 94% -60px,rgba(176,183,188,.12),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 94% -40px,rgba(0,118,182,.42),transparent 75%)}
+body[data-bg="lions"] .top{background:#0076b6;border-bottom:3px solid var(--cream);box-shadow:0 8px 24px -16px rgba(0,0,0,.9)}
+body[data-bg="lions"] .logo,body[data-bg="lions"] .logo span{color:#fff}
+body[data-bg="lions"] .logo span{color:var(--cream)}
+body[data-bg="lions"] .nav a,body[data-bg="lions"] .dd-btn{color:#dcf0fb}
+body[data-bg="lions"] .nav a:hover,body[data-bg="lions"] .dd-btn:hover,body[data-bg="lions"] .dd-btn[aria-expanded="true"]{color:#fff;background:rgba(255,255,255,.2)}
+body[data-bg="lions"] .nav a[aria-current="page"],body[data-bg="lions"] .dd-btn.on{color:#fff;background:rgba(255,255,255,.26)}
+body[data-bg="lions"] .top .search{background:rgba(0,0,0,.28);border-color:rgba(176,183,188,.4)}
+body[data-bg="lions"] .top .search:focus-within{border-color:var(--cream)}
+body[data-bg="lions"] .top .search svg{stroke:var(--cream)}
+body[data-bg="lions"] .top .search input{color:#fff}
+body[data-bg="lions"] .top .search input::placeholder{color:#cfe9f7}
+body[data-bg="lions"] .top .search kbd{color:var(--cream);border-color:rgba(176,183,188,.4)}
+body[data-bg="lions"] .tools{background:#0f1215;border-top:1px solid rgba(176,183,188,.18);border-bottom:2px solid #0076b6}
+body[data-bg="lions"] .chip{border-color:rgba(176,183,188,.45);color:var(--cream)}
+body[data-bg="lions"] .chip:hover{border-color:var(--cream);color:#fff}
+body[data-bg="lions"] .chip[aria-pressed="true"]{background:var(--cream);border-color:var(--cream);color:#0076b6;font-weight:700}
+body[data-bg="lions"] .tools-r{color:#c3c9ce}
+body[data-bg="lions"] .tools select,body[data-bg="lions"] .ck-q{background:rgba(0,0,0,.3);border-color:rgba(176,183,188,.35);color:var(--cream)}
+body[data-bg="lions"] .side a:hover{background:rgba(176,183,188,.1)}
+body[data-bg="lions"] .side a[aria-current="true"]{background:rgba(176,183,188,.13);color:#fff;box-shadow:inset 3px 0 var(--cream)}
+body[data-bg="lions"] .side h4{color:#c3c9ce}
+@media (max-width:860px){
+  body[data-bg="lions"] .top{background:#0076b6}
+  body[data-bg="lions"] .mbar{background:#0076b6;border-bottom:2px solid var(--cream)}
+}
+body[data-bg="lions"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(10,12,14,.88)}
