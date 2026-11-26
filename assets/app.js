@@ -749,7 +749,7 @@
     $("#app").innerHTML = `<div class="wrap coll c-${color}">
       <aside class="side">${side}${others}</aside>
       <div style="min-width:0">
-        <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}${slug === "customs" && customVideos() ? " with-inv with-vid" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}${prog}</div>${sec ? invBox(sec.slug) : ""}${slug === "customs" ? customVideos() : ""}</div>
+        <div class="c-top${sec && invBox(sec.slug) ? " with-inv" : ""}${slug === "customs" && customVideos() ? " with-inv with-vid" : ""}"><div class="c-head"><div class="kick">${kick}${gi >= 0 ? " · " + esc(groups[gi].label) : ""}</div><h1>${title}</h1>${blurb ? `<p>${blurb}</p>` : ""}<div class="c-logos" id="c-logos"></div>${prog}</div>${sec ? invBox(sec.slug) : ""}${slug === "customs" ? customVideos() : ""}</div>
         ${mg}
         ${slug === "search" && parseQuery(q).said.length ? `<p class="fixnote smart">Showing ${parseQuery(q).words.length ? `<b>${esc(parseQuery(q).words.join(" "))}</b> · ` : ""}${parseQuery(q).said.map((x) => `<span class="sq">${esc(x)}</span>`).join(" ")}</p>` : ""}
         ${fixed ? `<p class="fixnote">Nothing matched “${esc(state.q)}”, so these are results for <b>${esc(fixed)}</b>.</p>` : ""}
@@ -789,7 +789,8 @@
     placeTools();
     $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; apply(); syncURL(); });
     $("#yr")?.addEventListener("change", (e) => { state.decade = e.target.value; apply(); syncURL(); });
-    $("#tm")?.addEventListener("change", (e) => { state.team = e.target.value; apply(); syncURL(); });
+    $("#tm")?.addEventListener("change", (e) => { state.team = e.target.value; apply(); syncURL(); pageBg(""); drawLogos(slug); });
+    drawLogos(slug);
     apply();
     if (state.filters.size || state.sort !== defaultSort(state.where)) syncURL();
     io.observe($("#sentinel"));
@@ -1324,6 +1325,30 @@
   const lum = (h) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => (v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const teamVars = (t) => { const [a, b] = t.colors || ["#3b6fd8", "#9aa4b2"]; const acc = [a, b].filter((x) => lum(x) > 0.08 && lum(x) < 0.9).sort((x, y) => lum(y) - lum(x))[0] || "#c9d1db";
     return `--tc1:${a};--tc2:${b};--tca:${acc}`; };
+  /* Team logos on the team collection pages (Wikipedia, data/site-team-logos.json). Jermaine Dye's page shows his four teams' logos;
+     picking one in his Team menu (or tapping its logo) leaves just that logo, and the page takes that team's colors (style.css team-*). */
+  const SECTION_LOGO = { "husker-football": "nebraska", "husker-baseball": "nebraska", "husker-basketball": "nebraska", "husker-other": "nebraska", royals: "royals", lions: "lions" };
+  const DYE_TEAMS = { "Kansas City Royals": "royals", "Atlanta Braves": "braves", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
+  const SITELOGOS = fetch("data/site-team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.teams || {}).catch(() => ({}));
+  function drawLogos(slug) {
+    const el = $("#c-logos"); if (!el) return;
+    SITELOGOS.then((T) => {
+      if ($("#c-logos") !== el) return;
+      let keys, names = {};
+      if (slug === "jermaine-dye") {
+        const have = [...document.querySelectorAll("#tm option")].map((o) => o.value);
+        Object.entries(DYE_TEAMS).forEach(([n, k]) => have.includes(n) && (names[k] = n));
+        keys = state.team && DYE_TEAMS[state.team] ? [DYE_TEAMS[state.team]] : Object.keys(names);
+      } else keys = SECTION_LOGO[slug] ? [SECTION_LOGO[slug]] : [];
+      keys = keys.filter((k) => T[k]);
+      el.classList.toggle("solo", keys.length === 1);
+      el.innerHTML = keys.map((k) => { const t = T[k], img = `<img alt="${esc(t.name)} logo" src="${esc(t.logo)}" onerror="this.parentNode.remove()">`;
+        if (!names[k]) return `<span class="c-logo" title="${esc(t.name)}">${img}</span>`;
+        return `<button type="button" class="c-logo" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("")
+        + (keys.length ? `<p class="c-logo-cr">Logos: ${keys.map((k) => `<a href="${esc(T[k].logoPage)}" target="_blank" rel="noopener">${esc(T[k].name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.</p>` : "");
+      el.querySelectorAll("button.c-logo").forEach((b) => b.addEventListener("click", () => { const sel = $("#tm"); if (!sel) return; sel.value = state.team ? "" : b.dataset.team; sel.dispatchEvent(new Event("change")); }));
+    });
+  }
   const teamLogo = (t, cls) => t.logo ? `<img class="${cls}" alt="${esc(t.name)} logo" loading="lazy" src="${esc(t.logo)}" onerror="this.remove()">` : "";
   function nflTeams(slug) {
     setNav("nfl-teams");
@@ -2636,7 +2661,8 @@
      everything else (Nebraska pages and the general ones). The colors live in style.css (body[data-bg]). ---------- */
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
-    document.body.dataset.bg = /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
+    const dk = n === "jermaine-dye" && state.team ? DYE_TEAMS[state.team] : "";
+    document.body.dataset.bg = dk && dk !== "royals" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
       : /^lions/.test(n) ? "lions" : "red";
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
