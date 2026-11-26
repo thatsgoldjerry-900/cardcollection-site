@@ -1,6 +1,12 @@
 {
   "_help": "Hand-written college lines for players where Wikipedia has no years. Shown in the bio's Nebraska years and Also played at lines. Merged into data/players.json by scripts/build_letter_years.py.",
   "players": {
-    "Buddy Hunter": { "nebraska": "1960s (1 year)", "also": "Pershing College (1960s)" }
+    "Buddy Hunter": {
+      "nebraska": "1960s (1 year)",
+      "also": "Pershing College (1960s)"
+    },
+    "Ad Liska": {
+      "nebraska": "1925 (1 year)"
+    }
   }
 }
