@@ -40,6 +40,7 @@ Read docs/CHECKLIST-DETAILS.md only when working on a feature it covers.
 - **Wording:** "Super Collection" is two words everywhere. Ian likes consistency and uniformity.
 - Card-back transcriptions (data/card-text.json) are for custom cards only, and Ian checks them before
   they go live.
+- **No branches:** don't keep or push working branches; commit and push straight to `main` (Ian, 2026-11-26).
 - **Deploy:** Ian wants finished work merged into `main` (the live site) without asking. Always merge, every session (Ian, 2026-11-25).
   When assets/app.js or assets/style.css change, bump the `?v=` on their links in index.html so phones load fresh copies.
 - **Ian's tag codes in file names** (football, from Nov 2026): AU autograph, MEM memorabilia, MANU manufactured patch,
