@@ -1384,10 +1384,10 @@ body[data-bg="team-white-sox"] .side{border:3px solid var(--cream);border-radius
 /* Team logos on the team collection pages and Jermaine Dye's team filter */
 .c-logos{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:4px}
 .c-logos:empty{display:none}
-.c-logo{width:84px;height:84px;padding:9px;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35);cursor:default;display:grid;place-items:center;transition:transform .15s,box-shadow .15s}
-.c-logo img{width:100%;height:100%;object-fit:contain}
+.c-logo{width:84px;height:84px;padding:14px;box-sizing:border-box;overflow:hidden;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35);cursor:default;display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s}
+.c-logo img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 button.c-logo{cursor:pointer}
 button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 0 3px var(--cream,var(--acc))}
 .c-logos.solo .c-logo{width:112px;height:112px}
-.c-logo-cr{flex-basis:100%;font-size:11.5px;color:var(--mu);margin:0}.c-logo-cr a{color:inherit}
-@media (max-width:700px){.c-logo{width:64px;height:64px;padding:7px;border-radius:12px}.c-logos.solo .c-logo{width:84px;height:84px}}
+.c-logo-cr{font-size:11.5px;color:var(--mu);margin:28px 0 8px}.c-logo-cr:empty{display:none}.c-logo-cr a{color:inherit}
+@media (max-width:700px){.c-logo{width:64px;height:64px;padding:10px;border-radius:12px}.c-logos.solo .c-logo{width:84px;height:84px}}

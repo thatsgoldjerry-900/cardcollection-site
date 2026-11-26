@@ -762,7 +762,7 @@
             const tm = teams.length ? `<label class="sr" for="tm">Team</label><select id="tm"><option value="">All Teams</option>${teams.map((t) => `<option value="${esc(t)}"${state.team === t ? " selected" : ""}>${esc(t)} (${fmt(base.filter((c) => c.team === t).length)})</option>`).join("")}</select>` : "";
             return tm + (ds.length > 1 ? `<label class="sr" for="yr">Years</label><select id="yr"><option value="">All Years</option>${ds.map((d) => `<option value="${d}"${state.decade === String(d) ? " selected" : ""}>${d}s</option>`).join("")}</select>` : ""); })()}<label class="sr" for="sort">Sort</label><select id="sort">${SORTS.map(([k, l]) => `<option value="${k}"${state.sort === k ? " selected" : ""}>${l}</option>`).join("")}</select></div>
         </div>
-        <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div>
+        <div class="grid" id="grid"></div><div class="sentinel" id="sentinel"></div><p class="c-logo-cr" id="c-logo-cr"></p>
       </div></div>`;
     const apply = () => {
       let list = search(base, q);
@@ -1344,8 +1344,8 @@
       el.classList.toggle("solo", keys.length === 1);
       el.innerHTML = keys.map((k) => { const t = T[k], img = `<img alt="${esc(t.name)} logo" src="${esc(t.logo)}" onerror="this.parentNode.remove()">`;
         if (!names[k]) return `<span class="c-logo" title="${esc(t.name)}">${img}</span>`;
-        return `<button type="button" class="c-logo" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("")
-        + (keys.length ? `<p class="c-logo-cr">Logos: ${keys.map((k) => `<a href="${esc(T[k].logoPage)}" target="_blank" rel="noopener">${esc(T[k].name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.</p>` : "");
+        return `<button type="button" class="c-logo" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("");
+      const cr = $("#c-logo-cr"); if (cr) cr.innerHTML = keys.length ? `Logos: ${keys.map((k) => `<a href="${esc(T[k].logoPage)}" target="_blank" rel="noopener">${esc(T[k].name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.` : "";
       el.querySelectorAll("button.c-logo").forEach((b) => b.addEventListener("click", () => { const sel = $("#tm"); if (!sel) return; sel.value = state.team ? "" : b.dataset.team; sel.dispatchEvent(new Event("change")); }));
     });
   }
