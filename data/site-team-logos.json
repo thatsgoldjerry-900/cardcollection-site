@@ -1,0 +1,59 @@
+{
+ "_help": "Team logos for the team collection pages and Jermaine Dye's team filter, from each team's Wikipedia article (infobox logo; credited on the page). Colors are the team's primary and secondary.",
+ "teams": {
+  "nebraska": {
+   "name": "Nebraska Cornhuskers",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/250px-Nebraska_Cornhuskers_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Nebraska_Cornhuskers_logo.svg",
+   "colors": [
+    "#E41C38",
+    "#F5F1E7"
+   ]
+  },
+  "royals": {
+   "name": "Kansas City Royals",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/250px-Kansas_City_Royals_Primary_Logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Kansas_City_Royals_Primary_Logo.svg",
+   "colors": [
+    "#004687",
+    "#BD9B60"
+   ]
+  },
+  "lions": {
+   "name": "Detroit Lions",
+   "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/7/71/Detroit_Lions_logo.svg/250px-Detroit_Lions_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Detroit_Lions_logo.svg",
+   "colors": [
+    "#0076B6",
+    "#B0B7BC"
+   ]
+  },
+  "braves": {
+   "name": "Atlanta Braves",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Atlanta_Braves_Insignia.svg/250px-Atlanta_Braves_Insignia.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Atlanta_Braves_Insignia.svg",
+   "colors": [
+    "#13274F",
+    "#CE1141"
+   ]
+  },
+  "athletics": {
+   "name": "Oakland Athletics",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Oakland_A%27s_logo.svg/250px-Oakland_A%27s_logo.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Oakland_A%27s_logo.svg",
+   "colors": [
+    "#003831",
+    "#EFB21E"
+   ]
+  },
+  "white-sox": {
+   "name": "Chicago White Sox",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Chicago_White_Sox.svg/250px-Chicago_White_Sox.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Chicago_White_Sox.svg",
+   "colors": [
+    "#27251F",
+    "#C4CED4"
+   ]
+  }
+ }
+}
