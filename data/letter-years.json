@@ -267,6 +267,14 @@
     2016
    ]
   },
+  "Nate Gerry": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
   "Maliek Collins": {
    "football": [
     2013,
@@ -366,6 +374,14 @@
   },
   "Spencer Long": {
    "football": [
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Brent Qvale": {
+   "football": [
+    2010,
     2011,
     2012,
     2013
@@ -854,6 +870,14 @@
     2000
    ]
   },
+  "Russ Hochstein": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
   "Carlos Polk": {
    "football": [
     1997,
@@ -886,6 +910,14 @@
    ]
   },
   "Mike Brown": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Ralph Brown": {
    "football": [
     1996,
     1997,
@@ -938,6 +970,14 @@
    ]
   },
   "Chad Kelsay": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Bill Lafleur": {
    "football": [
     1995,
     1996,
@@ -1039,6 +1079,13 @@
   "Eric Stokes": {
    "football": [
     1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Jared Tomich": {
+   "football": [
     1994,
     1995,
     1996
@@ -1314,6 +1361,14 @@
     1987,
     1988,
     1989
+   ]
+  },
+  "LeRoy \"Larry\" Etienne": {
+   "football": [
+    1985,
+    1986,
+    1987,
+    1988
    ]
   },
   "Dana Brinson": {
@@ -1686,6 +1741,13 @@
     1978
    ]
   },
+  "Rick Berns": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
   "Ed Burns": {
    "football": [
     1977
@@ -1825,6 +1887,13 @@
     1973,
     1974,
     1975
+   ]
+  },
+  "David Humm": {
+   "football": [
+    1972,
+    1973,
+    1974
    ]
   },
   "Bob Nelson": {
@@ -2024,6 +2093,11 @@
     1967
    ]
   },
+  "Bob Pickens": {
+   "football": [
+    1966
+   ]
+  },
   "Carel Stith": {
    "football": [
     1965,
@@ -2058,6 +2132,20 @@
     1965
    ]
   },
+  "Billy Johnson": {
+   "football": [
+    1963,
+    1964,
+    1965
+   ]
+  },
+  "Ted Vactor": {
+   "football": [
+    1963,
+    1964,
+    1965
+   ]
+  },
   "Freeman White": {
    "football": [
     1963,
@@ -2066,11 +2154,24 @@
     1989
    ]
   },
+  "Bob Hohn": {
+   "football": [
+    1963,
+    1964
+   ]
+  },
   "Kent McCloughan": {
    "football": [
     1962,
     1963,
     1964
+   ]
+  },
+  "Bob Brown": {
+   "football": [
+    1961,
+    1962,
+    1963
    ]
   },
   "Dennis Claridge": {
@@ -2159,6 +2260,14 @@
     1959
    ]
   },
+  "Bob Smith": {
+   "football": [
+    1951,
+    1952,
+    1953,
+    1954
+   ]
+  },
   "Nick Adduci": {
    "football": [
     1949,
@@ -2188,6 +2297,14 @@
     1950
    ]
   },
+  "Clete Fischer": {
+   "football": [
+    1945,
+    1946,
+    1947,
+    1948
+   ]
+  },
   "Carl Samuelson": {
    "football": [
     1946,
@@ -2197,6 +2314,12 @@
   "Sam Vacanti": {
    "football": [
     1946
+   ]
+  },
+  "Joseph Byler": {
+   "football": [
+    1941,
+    1942
    ]
   },
   "Vic Schleich": {
@@ -2214,6 +2337,13 @@
    ]
   },
   "Harry Hopp": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Bob Kahler": {
    "football": [
     1938,
     1939,
@@ -2241,6 +2371,18 @@
     1940
    ]
   },
+  "Bill Callihan": {
+   "football": [
+    1936,
+    1937,
+    1938
+   ]
+  },
+  "Bob DeFruiter": {
+   "football": [
+    1939
+   ]
+  },
   "George Seeman": {
    "football": [
     1936,
@@ -2249,6 +2391,20 @@
    ]
   },
   "Fred Shirey": {
+   "football": [
+    1935,
+    1936,
+    1937
+   ]
+  },
+  "Charlie Brock": {
+   "football": [
+    1936,
+    1937,
+    1938
+   ]
+  },
+  "Ted Doyle": {
    "football": [
     1935,
     1936,
@@ -2283,6 +2439,20 @@
     1936
    ]
   },
+  "Bernie Scherer": {
+   "football": [
+    1933,
+    1934,
+    1935
+   ]
+  },
+  "Bernie Masterson": {
+   "football": [
+    1931,
+    1932,
+    1933
+   ]
+  },
   "Gail O'Brien": {
    "football": [
     1931,
@@ -2295,6 +2465,13 @@
     1931,
     1932,
     1933
+   ]
+  },
+  "Steve Hokuf": {
+   "football": [
+    1929,
+    1930,
+    1932
    ]
   },
   "Hugh Rhea": {
@@ -2317,6 +2494,13 @@
     1930
    ]
   },
+  "Herald \"Dick\" Frahm": {
+   "football": [
+    1928,
+    1929,
+    1930
+   ]
+  },
   "Ray Richards": {
    "football": [
     1927,
@@ -2325,6 +2509,13 @@
    ]
   },
   "Cliff Ashburn": {
+   "football": [
+    1926,
+    1927,
+    1928
+   ]
+  },
+  "Ted James": {
    "football": [
     1926,
     1927,
@@ -2343,6 +2534,12 @@
     1926,
     1927,
     1928
+   ]
+  },
+  "Arnie Oehlrich": {
+   "football": [
+    1926,
+    1927
    ]
   },
   "Glenn Presnell": {
@@ -2366,6 +2563,13 @@
     1925
    ]
   },
+  "Henry Bassett": {
+   "football": [
+    1920,
+    1922,
+    1923
+   ]
+  },
   "Joy Berquist": {
    "football": [
     1921,
@@ -2376,6 +2580,12 @@
   "Herb DeWitz": {
    "football": [
     1921,
+    1922,
+    1923
+   ]
+  },
+  "Rufe DeWitz": {
+   "football": [
     1922,
     1923
    ]
@@ -2394,9 +2604,22 @@
     1923
    ]
   },
+  "Carl Peterson": {
+   "football": [
+    1921,
+    1922
+   ]
+  },
   "Fred Thomsen": {
    "football": [
     1920,
+    1922
+   ]
+  },
+  "Raymond \"Bub\" Weller": {
+   "football": [
+    1920,
+    1921,
     1922
    ]
   },
@@ -2405,6 +2628,33 @@
     1920,
     1921,
     1922
+   ]
+  },
+  "Harold \"Hal\" Wilder": {
+   "football": [
+    1916,
+    1917,
+    1919
+   ]
+  },
+  "Edson \"Ed\" Shaw": {
+   "football": [
+    1915,
+    1916,
+    1917
+   ]
+  },
+  "Ted Riddell": {
+   "football": [
+    1915,
+    1916,
+    1917
+   ]
+  },
+  "Guy Chamberlin": {
+   "football": [
+    1914,
+    1915
    ]
   },
   "Dane Key": {
@@ -2529,6 +2779,12 @@
     2021
    ]
   },
+  "Pheldarious Payne": {
+   "football": [
+    2020,
+    2021
+   ]
+  },
   "Deontai Williams": {
    "football": [
     2018,
@@ -2559,6 +2815,14 @@
   "Tyjon Lindsey": {
    "football": [
     2017
+   ]
+  },
+  "Dedrick Young": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
    ]
   },
   "Tyler Hoppes": {
@@ -3116,6 +3380,13 @@
     1991
    ]
   },
+  "Curtis Cotton": {
+   "football": [
+    1989,
+    1990,
+    1991
+   ]
+  },
   "Omar Soto": {
    "football": [
     1990,
@@ -3402,6 +3673,13 @@
     1973
    ]
   },
+  "Randy Borg": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
   "Brent Longwell": {
    "football": [
     1971,
@@ -3471,9 +3749,34 @@
     1969
    ]
   },
+  "Bob Taucher": {
+   "football": [
+    1965,
+    1966,
+    1967
+   ]
+  },
+  "Jim Baffico": {
+   "football": [
+    1962
+   ]
+  },
+  "Bob Jones": {
+   "football": [
+    1960,
+    1961,
+    1963
+   ]
+  },
   "Monte Kiffin": {
    "football": [
     1961,
+    1962,
+    1963
+   ]
+  },
+  "Dave Theisen": {
+   "football": [
     1962,
     1963
    ]
@@ -4242,6 +4545,13 @@
     1982
    ]
   },
+  "Mike Mandelko": {
+   "football": [
+    1980,
+    1981,
+    1982
+   ]
+  },
   "Randy Theiss": {
    "football": [
     1980,
@@ -4468,6 +4778,13 @@
     1966
    ]
   },
+  "Richard Czap": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
   "Ron Kirkland": {
    "football": [
     1964,
@@ -4556,6 +4873,13 @@
     1961,
     1962,
     1963
+   ]
+  },
+  "Bill Comstock": {
+   "football": [
+    1960,
+    1961,
+    1962
    ]
   },
   "Mike Eger": {
@@ -4698,6 +5022,14 @@
     1949
    ]
   },
+  "Frank Collopy": {
+   "football": [
+    1944,
+    1946,
+    1947,
+    1948
+   ]
+  },
   "Jack Dedrick": {
    "football": [
     1944
@@ -4712,6 +5044,11 @@
   "Frank Hazard": {
    "football": [
     1943
+   ]
+  },
+  "Wally Hopp": {
+   "football": [
+    1942
    ]
   },
   "Bert Gissler": {
@@ -4738,11 +5075,31 @@
     1941
    ]
   },
+  "Viscount \"Vike\" Francis": {
+   "football": [
+    1939,
+    1940
+   ]
+  },
   "Fred Preston": {
    "football": [
     1939,
     1940,
     1941
+   ]
+  },
+  "Walter \"Butch\" Luther": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Bob Mills": {
+   "football": [
+    1936,
+    1937,
+    1938
    ]
   },
   "Elmer Dohrmann": {
@@ -4761,6 +5118,19 @@
   },
   "Willard Bronson": {
    "football": [
+    1926,
+    1927
+   ]
+  },
+  "Lloyd Grow": {
+   "football": [
+    1926,
+    1927
+   ]
+  },
+  "Evard Lee": {
+   "football": [
+    1925,
     1926,
     1927
    ]
