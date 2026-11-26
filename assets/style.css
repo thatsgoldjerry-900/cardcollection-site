@@ -1178,7 +1178,7 @@ body.ice-bg .page-bg .pb-ice{display:block}
 .cotd-big .cap{font-size:13px;color:#c3cad6;line-height:1.35}
 .cotd-big .cap b{display:block;color:#fff;font-size:14px}
 
-/* NFL Huskers timeline: one bubble per year, 1900 to today. Bubble size follows the count (--s = sqrt of count / most). */
+/* NFL Huskers timeline: one bubble per year, 1900 to today. Bubble size is linear in the count (--s = count / most); years with no Husker get no bubble. */
 .nfl-tl{margin:8px 0 48px}
 .nfl-tl-sub{color:#c3cad6;margin:-6px 0 14px}
 .nfl-tl-scroll{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 12px 6px;-webkit-overflow-scrolling:touch}
@@ -1186,14 +1186,14 @@ body.ice-bg .page-bg .pb-ice{display:block}
 .nfl-tl-col{position:relative;width:36px;flex:0 0 36px;height:120px}
 .nfl-tl-col::before{content:"";position:absolute;left:0;right:0;top:56px;height:1px;background:var(--line)}
 .nfl-tl-col.dec::before{background:#4a5263}
-.nfl-tl-b{position:absolute;left:50%;top:56px;transform:translate(-50%,-50%);width:calc(8px + 26px * var(--s));height:calc(8px + 26px * var(--s));display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff5b63,#b3151f 70%);box-shadow:0 0 0 1px rgba(255,255,255,.15),0 0 14px rgba(215,38,46,.35);color:#fff;font:700 11px/1 var(--f-m);cursor:default}
+.nfl-tl-b{position:absolute;left:50%;top:56px;transform:translate(-50%,-50%);width:calc(6px + 54px * var(--s));height:calc(6px + 54px * var(--s));display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff5b63,#b3151f 70%);box-shadow:0 0 0 1px rgba(255,255,255,.15),0 0 14px rgba(215,38,46,.35);color:#fff;font:700 11px/1 var(--f-m);cursor:default}
 .nfl-tl-b.big{font-size:12px}
 .nfl-tl-y{position:absolute;left:-6px;right:-6px;bottom:0;text-align:center;font:11px var(--f-m);color:#8f99a8;white-space:nowrap}
 .nfl-tl-col.dec .nfl-tl-y{color:#fff}
 @media (max-width:600px){
   .nfl-tl-col{width:22px;flex-basis:22px}
   .nfl-tl-col::before{top:44px}
-  .nfl-tl-b{top:44px;width:calc(6px + 14px * var(--s));height:calc(6px + 14px * var(--s));font-size:9px}
+  .nfl-tl-b{top:44px;width:calc(4px + 28px * var(--s));height:calc(4px + 28px * var(--s));font-size:9px}
   .nfl-tl-col{height:108px}
   .nfl-tl-y{font-size:10px;left:-8px;right:-8px}
 }
