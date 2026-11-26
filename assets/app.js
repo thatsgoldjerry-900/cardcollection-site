@@ -1341,7 +1341,7 @@
       setTitle(`Huskers on the ${t.name}`);
       const list = idx[slug].slice().sort((a, b) => a.tier - b.tier || (parseInt(b.yrs) || +b.x.year || 0) - (parseInt(a.yrs) || +a.x.year || 0) || a.x.name.localeCompare(b.x.name));
       const card = (e) => { const sc = e.x.have ? bestScan(e.x.name, "football") : null;
-        return `<a class="pm" href="#/player/${e.x.slug}">${pmPh(sc, e.x.slug)}
+        return `<a class="pm" href="#/player/${e.x.slug}">${e.x.have ? pmPh(sc, e.x.slug) : `<span class="pm-ph pm-need" title="No autograph yet: I need one"><b>Need<br>auto</b></span>`}
           <span class="pm-t"><b>${esc(e.x.name)}${hofMarks(e.x)}</b>${e.yrs ? `<small>${esc(e.yrs)}${e.pfa ? ` <span class="src" title="Year from Pro Football Archives">· Pro Football Archives</span>` : ""}</small>` : ""}</span><span class="pm-go">→</span></a>`; };
       // My cards of this team: scans filed in a Drive folder named for the team (any of its names, e.g. St. Louis Rams), oldest first.
       const names = new Set(t.names.map((n) => n.toLowerCase()));
