@@ -1347,7 +1347,7 @@
       el.innerHTML = keys.map((k) => { const t = T[k], img = (t.logos || [t]).map((l) => `<img alt="${esc(l.name)} logo" src="${esc(l.logo)}" onerror="this.remove()">`).join("");
         if (!names[k]) return `<span class="c-logo" title="${esc(t.name)}">${img}</span>`;
         return `<button type="button" class="c-logo${T[k].logos ? " multi" : ""}" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("");
-      const cr = $("#c-logo-cr"); if (cr) cr.innerHTML = keys.length ? `Logos: ${keys.flatMap((k) => T[k].logos || [T[k]]).map((l) => `<a href="${esc(l.logoPage)}" target="_blank" rel="noopener">${esc(l.name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.` : "";
+      const cr = $("#c-logo-cr"); if (cr) cr.innerHTML = keys.length ? `Logos: ${keys.flatMap((k) => T[k].logos || [T[k]]).map((l) => l.logoPage ? `<a href="${esc(l.logoPage)}" target="_blank" rel="noopener">${esc(l.name)}</a>` : esc(l.name)).join(", ")}${keys.flatMap((k) => T[k].logos || [T[k]]).every((l) => l.logoPage) ? " (Wikipedia)" : " (most from Wikipedia)"}. Team names and logos are trademarks of their teams.` : "";
       el.querySelectorAll("button.c-logo").forEach((b) => b.addEventListener("click", () => { const sel = $("#tm"); if (!sel) return; sel.value = state.team ? "" : b.dataset.team; sel.dispatchEvent(new Event("change")); }));
     });
   }
