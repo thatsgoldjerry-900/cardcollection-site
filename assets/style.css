@@ -642,6 +642,15 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .v-aura.has-ice canvas.v-ice{display:block;position:absolute;z-index:-1;pointer-events:none}
 .v-aura.t-dirt canvas.v-dirt{display:block;position:absolute;z-index:-1;pointer-events:none}
 @keyframes aura-turn{to{--ang:360deg}}
+/* Dual view: the gap between the front and back takes the card's effect color (no dark stripe) */
+.v-gap{position:absolute;display:none;z-index:-1;pointer-events:none}
+.v-aura.dual .v-gap{display:block}
+.v-aura.t-one .v-gap{background:radial-gradient(ellipse at center,rgba(255,214,110,.42),rgba(255,170,40,.16) 70%,rgba(255,170,40,0))}
+.v-aura.t-low .v-gap{background:radial-gradient(ellipse at center,rgba(150,120,255,.42),rgba(110,140,255,.16) 70%,rgba(110,140,255,0))}
+.v-aura.t-auto .v-gap{background:radial-gradient(ellipse at center,rgba(70,130,255,.38),rgba(60,110,230,.14) 70%,rgba(60,110,230,0))}
+.v-aura.t-holo .v-gap{background:linear-gradient(90deg,rgba(255,77,141,.35),rgba(255,201,77,.35),rgba(77,255,176,.35),rgba(77,184,255,.35),rgba(181,77,255,.35),rgba(255,77,141,.35))}
+.v-aura.t-dirt .v-gap{background:radial-gradient(ellipse at center,rgba(120,80,44,.55),rgba(90,58,30,.3) 70%,rgba(80,52,28,0))}
+.v-aura.t-ice .v-gap,.v-aura.has-ice .v-gap{background:radial-gradient(ellipse at center,rgba(170,235,255,.22),rgba(200,170,255,.1) 70%,rgba(200,170,255,0))}
 @keyframes aura-spin{to{transform:rotate(360deg)}}
 @keyframes aura-pulse{0%,100%{opacity:.75}50%{opacity:1}}
 @keyframes aura-sparkle{0%{transform:translateY(8%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateY(-18%);opacity:0}}

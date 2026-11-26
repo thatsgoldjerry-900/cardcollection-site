@@ -3177,6 +3177,11 @@
     let gap = null;
     if (both.length === 2) { const g0 = Math.min(im.offsetLeft + im.offsetWidth, im2.offsetLeft + im2.offsetWidth) - L, g1 = Math.max(im.offsetLeft, im2.offsetLeft) - L; if (g1 > g0) gap = [g0, g1]; }
     if (a.classList.contains("has-ice")) ice(a, w, h, gap);
+    // The gap gets the card's own effect color (CSS .v-gap), so no dark stripe shows between the front and back.
+    let gapEl = a.querySelector(":scope > .v-gap");
+    if (!gapEl) { gapEl = document.createElement("div"); gapEl.className = "v-gap"; a.prepend(gapEl); }
+    a.classList.toggle("dual", !!gap);
+    if (gap) Object.assign(gapEl.style, { left: gap[0] + "px", width: gap[1] - gap[0] + "px", top: "0px", height: h + "px" });
   }
   // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
   // Seeded by the card, so the same card always gets the same pile.
