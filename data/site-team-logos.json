@@ -77,6 +77,11 @@
      ]
     },
     {
+     "name": "Omaha Royals",
+     "logo": "assets/team-logos/omaha-royals.gif",
+     "logoPage": ""
+    },
+    {
      "name": "Omaha Storm Chasers",
      "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/8/8c/Omaha_Storm_Chasers_logo.svg/250px-Omaha_Storm_Chasers_logo.svg.png",
      "logoPage": "https://en.wikipedia.org/wiki/File:Omaha_Storm_Chasers_logo.svg"
