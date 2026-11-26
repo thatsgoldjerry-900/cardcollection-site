@@ -3142,16 +3142,16 @@
   const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : isDirt(c) ? "dirt" : /cracked ice/i.test(c.name) ? "ice" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
   function placeAura() {
     const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
-    if (!a.className.match(/\bt-/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
+    if (!a.className.match(/\bt-|has-ice/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
     a.hidden = false;
     Object.assign(a.style, { left: im.offsetLeft + "px", top: im.offsetTop + "px", width: im.offsetWidth + "px", height: im.offsetHeight + "px" });
     if (a.classList.contains("t-dirt")) dirt(a, im.offsetWidth, im.offsetHeight);
-    if (a.classList.contains("t-ice")) ice(a, im.offsetWidth, im.offsetHeight);
+    if (a.classList.contains("has-ice")) ice(a, im.offsetWidth, im.offsetHeight);
   }
   // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
   // Seeded by the card, so the same card always gets the same pile.
   function dirt(a, w, h) {
-    let cv = a.querySelector("canvas");
+    let cv = a.querySelector("canvas.v-dirt");
     const key = a.dataset.seed + "|" + w + "x" + h;
     if (cv && cv.dataset.key === key) return;
     if (!cv) { cv = document.createElement("canvas"); cv.className = "v-dirt"; a.append(cv); }
@@ -3235,7 +3235,7 @@
   }
   function aura(c) {
     const a = $("#v-aura"), front = !(V.back && !isPair(c));
-    a.className = "v-aura" + (front && auraTier(c) ? " t-" + auraTier(c) : "");
+    a.className = "v-aura" + (front && auraTier(c) ? " t-" + auraTier(c) : "") + (front && c && /cracked ice/i.test(c.name) ? " has-ice" : "");
     a.dataset.seed = c ? c.id : "";
     requestAnimationFrame(placeAura);
   }

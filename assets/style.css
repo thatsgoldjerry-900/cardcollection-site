@@ -639,7 +639,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Cracked Ice: a faint icy glow and iridescent glass shards around the card (drawn in app.js) */
 .v-aura.t-ice{box-shadow:0 0 30px 8px rgba(170,235,255,.32),0 0 80px 26px rgba(200,170,255,.14)}
 .v-aura canvas.v-ice{display:none}
-.v-aura.t-ice canvas.v-ice{display:block;position:absolute;z-index:-1;pointer-events:none}
+.v-aura.has-ice canvas.v-ice{display:block;position:absolute;z-index:-1;pointer-events:none}
 .v-aura.t-dirt canvas.v-dirt{display:block;position:absolute;z-index:-1;pointer-events:none}
 @keyframes aura-turn{to{--ang:360deg}}
 @keyframes aura-spin{to{transform:rotate(360deg)}}
