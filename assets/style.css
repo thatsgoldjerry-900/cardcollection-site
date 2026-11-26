@@ -441,6 +441,13 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 .btn.have-btn:hover{filter:brightness(1.12)}
 .fixnote{margin:-4px 0 16px;font-size:14px;color:#c3cad6}
 .fixnote b{color:var(--fg)}
+/* MLB and NBA autograph lists: each player's default card, shown as a thumbnail before the scans */
+.ck td.ph,.ck th.ph{width:78px;padding-top:6px;padding-bottom:6px}
+.ck-ph{display:block;flex:none;width:66px;aspect-ratio:5/7;border-radius:4px;overflow:hidden;background:var(--panel-2);border:0;padding:0;cursor:zoom-in;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.ck-ph img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.ck-ph img.ok{opacity:1}
+.ck-ph.land{width:auto;height:calc(66px * 7 / 5)}
+.ck-ph.land img{object-fit:contain}
 /* Autograph lists on touch screens: bigger targets for the player page link and Scan button (Have/Need is just a label) */
 @media (pointer:coarse){
   .ck td.nm a.pl-link{display:inline-block;padding:11px 0;margin:-8px 0}
@@ -451,6 +458,7 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   .ck th,.ck td{padding-inline:5px}
   .ck td:first-child,.ck th:first-child{padding-left:0}
   .ck td.sc{padding-right:0}
+  .ck td.ph,.ck th.ph{width:54px}.ck-ph{width:44px}.ck-ph.land{height:calc(44px * 7 / 5)}
   .ck td.sc .btn.sm{padding-inline:10px}
 }
 /* Jermaine Dye career story */
