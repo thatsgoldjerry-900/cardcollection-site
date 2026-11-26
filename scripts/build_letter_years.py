@@ -33,15 +33,42 @@ def norm(s):
     s = re.sub(r"[.'’\"]", "", s); s = re.sub(r"\s+(jr|sr|ii|iii|iv)$", "", s)
     return re.sub(r"\s+", " ", s).strip()
 
+# Common nicknames and long forms, either way ("Bob" = "Robert"). Used only with a unique last-name match.
+NICKS = [("robert", "bob", "bobby", "rob"), ("nathan", "nate", "nathaniel"), ("bernard", "bernie", "bernhard"), ("stephen", "steve", "steven"), ("arnold", "arnie"), ("rufus", "rufe"), ("cletus", "clete"), ("wallace", "wally"), ("william", "bill", "billy", "will", "willie", "willy"), ("david", "dave", "davey"), ("edward", "ed", "eddie", "ted", "teddy", "edson"),
+         ("theodore", "ted", "teddy"), ("james", "jim", "jimmy", "jamie"), ("richard", "dick", "rich", "ritch", "rick", "ricky"), ("joseph", "joe", "joey"),
+         ("charles", "chuck", "charlie", "chas"), ("walter", "walt", "wally", "butch"), ("donald", "don", "donnie"), ("ronald", "ron", "ronnie", "rj"),
+         ("russell", "russ"), ("michael", "mike", "mick"), ("thomas", "tom", "tommy"), ("harold", "hal", "herald"), ("kenneth", "ken", "kenny"),
+         ("lawrence", "larry"), ("roderick", "rod"), ("howard", "howie"), ("gerald", "jerry", "gerry"), ("frederick", "fred", "freddie"), ("anthony", "tony"),
+         ("alfred", "al", "fred"), ("albert", "al", "bert"), ("alonzo", "lon"), ("clarence", "clare", "clarence"), ("elmer", "el"), ("evard", "ev")]
+def variants(first):
+    out = {first}
+    for group in NICKS:
+        if first in group: out.update(group)
+    return out
+
 def fuzzy(name, by_last):
     """The list's entry with the same last name whose first name is a short form, initial or prefix of ours; only if unique."""
     parts = name.split(" "); first, last = parts[0], parts[-1]
     hits = []
     for k, v in by_last.get(last, []):
         kf = k.split(" ")[0]
-        if kf == first: continue
-        if kf and first and (first.startswith(kf) or kf.startswith(first)) and min(len(first), len(kf)) >= 2 or (kf[:1] == first[:1] and (len(kf) == 1 or len(first) == 1)):
+        # Same first name with a middle initial added on the list ("Guy B. Chamberlin"), or a short form or initial.
+        if kf == first or (kf and first and (first.startswith(kf) or kf.startswith(first)) and min(len(first), len(kf)) >= 2) \
+           or (kf[:1] == first[:1] and (len(kf) == 1 or len(first) == 1)):
             hits.append(v)
+    if len(hits) == 1:
+        return hits[0]
+    # Nicknames: "Bob" for Robert, "Dave" for David (the list's first name is one of our name's variants, or the reverse).
+    hits = []
+    for k, v in by_last.get(last, []):
+        kf = k.split(" ")[0]
+        if kf and first and kf != first and (kf in variants(first) or first in variants(kf)):
+            hits.append(v)
+    if len(hits) == 1:
+        return hits[0]
+    # Spelling variants of the first name ("Pheldarious" / "Pheldarius") with the same last name.
+    import difflib
+    hits = [v for k, v in by_last.get(last, []) if difflib.SequenceMatcher(None, k.split(" ")[0], first).ratio() >= 0.85]
     if len(hits) == 1:
         return hits[0]
     return None
@@ -49,13 +76,18 @@ def fuzzy(name, by_last):
 def from_pdf(path):
     txt = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True, check=True).stdout
     txt = txt.replace("�", ".").replace("“", " ")
-    rows = []
+    rows, seen = [], set()
+    def add(m):
+        last, first = [x.strip() for x in m.group(1).split(",", 1)]
+        key = (f"{first} {last}", tuple(expand(m.group(4))))
+        if key not in seen:
+            seen.add(key); rows.append(key)
     for line in txt.splitlines():
+        # Two passes, both kept: columns split on long gaps, and every entry on the line (columns can sit three spaces apart).
         for col in re.split(r"\s{4,}", line.strip()):
             m = ENTRY.search(col) if col.strip() else None
-            if not m: continue
-            last, first = [x.strip() for x in m.group(1).split(",", 1)]
-            rows.append((f"{first} {last}", expand(m.group(4))))
+            if m: add(m)
+        for m in ENTRY.finditer(line): add(m)
     return rows
 
 def from_xlsx(path):
@@ -95,6 +127,13 @@ def main():
                 yrs = by.get(norm(p["name"]))
                 if not yrs:
                     yrs = fuzzy(norm(p["name"]), by_last)
+                if not yrs and '"' in p["name"]:
+                    # LeRoy "Larry" Etienne: try "LeRoy Etienne", then "Larry Etienne".
+                    m = re.match(r'^(\S+) "([^"]+)" (.+)$', p["name"])
+                    if m:
+                        for alt in (f"{m.group(1)} {m.group(3)}", f"{m.group(2)} {m.group(3)}"):
+                            yrs = by.get(norm(alt)) or fuzzy(norm(alt), by_last)
+                            if yrs: break
                 if yrs: data["players"].setdefault(p["name"], {})[sport] = sorted(yrs)
             print(sport, "matched", sum(1 for v in data["players"].values() if sport in v), "players")
         json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
