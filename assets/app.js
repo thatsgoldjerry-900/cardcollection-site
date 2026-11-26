@@ -810,7 +810,7 @@
     if (/^\s*(duplicates?|dupes?|doubles|extras?)\s*$/i.test(q || "") && DUPES.length) return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/duplicates"><span class="pm-ph pm-ic" aria-hidden="true">⧉</span>
       <span class="pm-t"><b>Duplicates</b><small>Cards I have more than one copy of</small></span><span class="pm-go">→</span></a></div></div>`;
     if (!/^\s*(letter|letters|letterman|lettermans|lettermen)(\s+sets?)?\s*$/i.test(q || "")) return "";
-    return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/letters"><span class="pm-ph pm-ic" aria-hidden="true">🔤</span>
+    return `<div class="pmatch"><h4>Page</h4><div class="pm-list"><a class="pm" href="#/letters"><span class="pm-ph pm-ic pm-wide" aria-hidden="true"><img alt="" src="assets/letterman-icon.webp" width="76" height="36" style="opacity:1"></span>
       <span class="pm-t"><b>All letterman sets</b><small>Every set by the word it spells, with the letters I still need</small></span><span class="pm-go">→</span></a></div></div>`;
   }
   // Searching a name also offers that player's NFL Huskers page.

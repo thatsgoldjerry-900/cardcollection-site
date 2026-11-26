@@ -1172,3 +1172,7 @@ body[data-bg="lions"]{--tint:0,0,0}
   .top{background:linear-gradient(rgba(var(--tint),.09),rgba(var(--tint),.09)),linear-gradient(rgba(13,17,24,.72),rgba(13,17,24,.35))}
   .mbar{background:linear-gradient(rgba(var(--tint),.09),rgba(var(--tint),.09)),rgba(13,17,24,.94)}
 }
+
+/* Search result link with the Letterman Sets icon from the home page (wide, so the thumbnail grows to fit it) */
+.pm-ph.pm-wide{width:auto;aspect-ratio:auto;background:none;padding:0}
+.pm-ph.pm-wide img{width:auto;height:36px;border-radius:3px;object-fit:contain}
