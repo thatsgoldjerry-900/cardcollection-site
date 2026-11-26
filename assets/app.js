@@ -2729,7 +2729,29 @@
   }
   /* ---------- Page backgrounds (Ian, 2026-11-25; color theme in place of the photos): stadium lights in one team color per page. Royals blue on Alex Gordon, Jermaine Dye and Royals pages (not the Nebraska chase pages like Cracked Ice), Honolulu blue on the Lions page, Husker red on
      everything else (Nebraska pages and the general ones). The colors live in style.css (body[data-bg]). ---------- */
+  // Cracked Ice page wallpaper: the same shards spread over the whole page, behind everything (Ian's request).
+  // Drawn on a canvas in the fixed page background; redrawn when the window size changes.
+  function iceWall() {
+    const bg = document.querySelector(".page-bg"); if (!bg) return;
+    let cv = bg.querySelector("canvas.pb-ice");
+    if (!cv) { cv = document.createElement("canvas"); cv.className = "pb-ice"; bg.append(cv); }
+    const W = innerWidth, H = innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+    const key = W + "x" + H; if (cv.dataset.key === key) return; cv.dataset.key = key;
+    cv.width = W * dpr; cv.height = H * dpr;
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    let sd = 4242;
+    const R = () => ((sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296);
+    const sc = Math.max(0.6, Math.min(W, H) / 600), n = Math.round((W * H) / 2600);
+    g.globalAlpha = 0.7;
+    for (let i = 0; i < n; i++) paintShard(g, R, R() * W, R() * H, (1.2 + R() * 2.6) * sc);
+    for (let i = 0; i < Math.round(n * 0.28); i++) paintShard(g, R, R() * W, R() * H, (3.5 + R() * 4.5) * sc);
+    for (let i = 0; i < Math.round(n * 0.05); i++) paintShard(g, R, R() * W, R() * H, (8 + R() * 7) * sc);
+  }
+  let iceWallTimer = 0;
+  addEventListener("resize", () => { clearTimeout(iceWallTimer); iceWallTimer = setTimeout(() => { if (document.body.classList.contains("ice-bg")) iceWall(); }, 150); });
   function pageBg(a) {
+    document.body.classList.toggle("ice-bg", /^chase-cracked-ice$/.test(NAV_NOW || ""));
+    if (document.body.classList.contains("ice-bg")) iceWall();
     const n = (NAV_NOW || "").replace(/^c\//, "");
     const dk = SLUG_TEAMS[n] && state.team ? teamKey(n, state.team) : "";
     document.body.dataset.bg = dk === "nebraska" ? "red" : dk && dk !== "royals" && dk !== "minor" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
@@ -3198,6 +3220,17 @@
     for (let i = 0; i < 160; i++) { const [x, y] = spot(0.6); chunk(x, y, (3 + R() * 7) * Math.max(0.7, sc)); }
     for (let i = 0; i < 26; i++) { const [x, y] = spot(0.4); chunk(x, y, (8 + R() * 9) * Math.max(0.7, sc)); }
   }
+  // One iridescent glass shard (pearly pastel facets with a bright edge). Shared by the card auras and the Cracked Ice wallpaper.
+  const PEARL = [[190, 245, 255], [205, 190, 255], [255, 205, 235], [190, 255, 225], [235, 250, 255], [175, 215, 255], [255, 235, 205]];
+  function paintShard(g, R, x, y, r) {
+    const n = 3 + ((R() * 2) | 0), rot = R() * 6.283, pts = [];
+    for (let k = 0; k < n; k++) { const an = rot + (k / n) * 6.283 + (R() - 0.5) * 0.9, rr = r * (0.35 + R() * 0.75); pts.push([x + Math.cos(an) * rr, y + Math.sin(an) * rr]); }
+    const c1 = PEARL[(R() * PEARL.length) | 0], c2 = PEARL[(R() * PEARL.length) | 0];
+    const gr = g.createLinearGradient(x - r, y - r, x + r, y + r);
+    gr.addColorStop(0, `rgba(${c1},${0.8 + R() * 0.2})`); gr.addColorStop(0.6, `rgba(${c2},${0.7 + R() * 0.25})`); gr.addColorStop(1, `rgba(${c1},0.45)`);
+    g.fillStyle = gr; g.beginPath(); pts.forEach(([px, py], k) => (k ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath(); g.fill();
+    g.strokeStyle = "rgba(255,255,255,.6)"; g.lineWidth = 0.6; g.stroke();
+  }
   // Cracked Ice: iridescent glass shards scattered around the card (drawn in app.js, like the dirt), seeded by the card.
   // Pearly pastel facets with a bright edge; more of them near the card, fewer farther out.
   function ice(a, w, h) {
@@ -3223,17 +3256,8 @@
         if (x > 0 && y > 0 && x < W && y < H) return [x, y];
       }
     };
-    const pearl = [[190, 245, 255], [205, 190, 255], [255, 205, 235], [190, 255, 225], [235, 250, 255], [175, 215, 255], [255, 235, 205]];
     const sc = Math.max(0.7, Math.min(w, h) / 400);
-    const shard = (x, y, r) => {
-      const n = 3 + ((R() * 2) | 0), rot = R() * 6.283, pts = [];
-      for (let k = 0; k < n; k++) { const an = rot + (k / n) * 6.283 + (R() - 0.5) * 0.9, rr = r * (0.35 + R() * 0.75); pts.push([x + Math.cos(an) * rr, y + Math.sin(an) * rr]); }
-      const c1 = pearl[(R() * pearl.length) | 0], c2 = pearl[(R() * pearl.length) | 0];
-      const gr = g.createLinearGradient(x - r, y - r, x + r, y + r);
-      gr.addColorStop(0, `rgba(${c1},${0.8 + R() * 0.2})`); gr.addColorStop(0.6, `rgba(${c2},${0.7 + R() * 0.25})`); gr.addColorStop(1, `rgba(${c1},0.45)`);
-      g.fillStyle = gr; g.beginPath(); pts.forEach(([px, py], k) => (k ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath(); g.fill();
-      g.strokeStyle = "rgba(255,255,255,.6)"; g.lineWidth = 0.6; g.stroke();
-    };
+    const shard = (x, y, r) => paintShard(g, R, x, y, r);
     for (let i = 0; i < 700; i++) { const [x, y] = spot(1); shard(x, y, (1.2 + R() * 2.6) * sc); }
     for (let i = 0; i < 200; i++) { const [x, y] = spot(0.8); shard(x, y, (3.5 + R() * 4.5) * sc); }
     for (let i = 0; i < 36; i++) { const [x, y] = spot(0.5); shard(x, y, (8 + R() * 7) * sc); }
