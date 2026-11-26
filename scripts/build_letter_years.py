@@ -33,6 +33,19 @@ def norm(s):
     s = re.sub(r"[.'’\"]", "", s); s = re.sub(r"\s+(jr|sr|ii|iii|iv)$", "", s)
     return re.sub(r"\s+", " ", s).strip()
 
+def fuzzy(name, by_last):
+    """The list's entry with the same last name whose first name is a short form, initial or prefix of ours; only if unique."""
+    parts = name.split(" "); first, last = parts[0], parts[-1]
+    hits = []
+    for k, v in by_last.get(last, []):
+        kf = k.split(" ")[0]
+        if kf == first: continue
+        if kf and first and (first.startswith(kf) or kf.startswith(first)) and min(len(first), len(kf)) >= 2 or (kf[:1] == first[:1] and (len(kf) == 1 or len(first) == 1)):
+            hits.append(v)
+    if len(hits) == 1:
+        return hits[0]
+    return None
+
 def from_pdf(path):
     txt = subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True, check=True).stdout
     txt = txt.replace("�", ".").replace("“", " ")
@@ -73,9 +86,15 @@ def main():
             for name, yrs in fn(path):
                 by.setdefault(norm(name), set()).update(yrs)
             data["sources"][sport] = os.path.basename(path)
+            # Same last name and a first name that is a short form or initial of the list's ("Stu" / "Stuart", "J." / "Joe").
+            by_last = {}
+            for k, v in by.items():
+                by_last.setdefault(k.split(" ")[-1], []).append((k, v))
             for p in plist:
                 if (p.get("sport") or "football") != sport: continue
                 yrs = by.get(norm(p["name"]))
+                if not yrs:
+                    yrs = fuzzy(norm(p["name"]), by_last)
                 if yrs: data["players"].setdefault(p["name"], {})[sport] = sorted(yrs)
             print(sport, "matched", sum(1 for v in data["players"].values() if sport in v), "players")
         json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
