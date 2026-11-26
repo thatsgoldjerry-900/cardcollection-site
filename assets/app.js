@@ -1563,7 +1563,9 @@
     const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
     // College: Nebraska and any other school, else his final Nebraska season.
     // Nebraska is drawn from the page's Nebraska years (neb), so the bar matches the stat box and Hall of Fame card.
-    const nebV = yrs(neb || "");
+    // The Hall of Fame list's years are a check, not shown: the Nebraska bar is widened to cover them.
+    const nebV = yrs(neb || "").concat(hof && hof.years ? yrs(hof.years) : []);
+    if (!yrs(neb || "").length) nebV.length = 0;
     if (nebV.length) spans.push({ lane: "c", a: nebV[0], b: nebV[nebV.length - 1], label: "Nebraska", neb: true });
     schools.forEach(([n, y]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
     (info.playingCollege || []).forEach(([y, n]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
@@ -1840,7 +1842,7 @@
               <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
               <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
-              <b>Class of ${esc(String(hof.class))}</b><span>${hof.role ? esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role) + " · " : ""}${nebStr || hof.years ? "Nebraska " + esc(String(nebStr || hof.years).replace(/-/g, "–")) : "Nebraska"}</span>
+              <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
             <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
