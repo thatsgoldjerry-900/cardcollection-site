@@ -641,7 +641,7 @@
   function nflTimelineHTML() {
     return `<section class="nfl-tl" aria-label="NFL Huskers by year">
       <div class="sec-h"><h2>NFL Huskers by year</h2></div>
-      <p class="nfl-tl-sub">Each bubble is a year, sized by how many NFL Huskers last played for Nebraska that year.</p>
+      <p class="nfl-tl-sub">Each bubble is a year that had an NFL Husker, sized by how many last played for Nebraska that year. Years with none have no bubble.</p>
       <div class="nfl-tl-scroll" id="nfl-tl-scroll"><div class="nfl-tl-strip" id="nfl-tl-strip" role="list"></div></div>
     </section>`;
   }
@@ -656,7 +656,7 @@
     for (let y = 1900; y <= y1; y++) {
       const k = n[y] || 0, one = `${y}: ${k} Husker${k === 1 ? "" : "s"}`;
       h += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}" role="listitem">
-        ${k ? `<span class="nfl-tl-b${k >= 5 ? " big" : ""}" style="--s:${Math.sqrt(k / max).toFixed(3)}" title="${one}" aria-label="${one}">${k >= 5 ? k : ""}</span>` : ""}
+        ${k ? `<span class="nfl-tl-b${k >= 5 ? " big" : ""}" style="--s:${(k / max).toFixed(3)}" title="${one}" aria-label="${one}">${k >= 5 ? k : ""}</span>` : ""}
         <span class="nfl-tl-y">${y % 10 === 0 ? y : ""}</span></div>`;
     }
     strip.innerHTML = h;
