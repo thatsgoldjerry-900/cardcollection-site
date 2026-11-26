@@ -1746,9 +1746,9 @@
       const myFinal = info.year || info.finalYear, wikiNeb = (schools.find(([n]) => /nebraska/i.test(n)) || [])[1] || "";
       const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", useWiki ? "" : myFinal],
-        ["Nebraska years", useWiki ? wikiNeb : ""],
+        ["Nebraska years", (info.collegeNote && info.collegeNote.nebraska) || (useWiki ? wikiNeb : "")],
         ["Nebraska letters", lettersText((info.letters || {})[sport], sport)],
-        [useWiki || myFinal ? "Also played at" : "College", schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
+        [useWiki || myFinal ? "Also played at" : "College", (info.collegeNote && info.collegeNote.also) || schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
         [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
         ["NFL games", football ? info.games || info.nflGames : ""], ["Born", (pick("Born") || [])[1] || line(/^Born:\s*/)],
