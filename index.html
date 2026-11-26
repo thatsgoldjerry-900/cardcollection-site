@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+  // Every page of the site is this same page at its own address (/player/ricky-simmons/ …), so files load from the
+  // site's folder: the root at ianbadeer.com, /cardcollection-site/ on GitHub's address.
+  document.write('<base href="' + (location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/") + '">');
+</script>
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noai, noimageai">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IanBadeer.com</title>
+<meta name="description" content="Thousands of high-resolution scans from Ian Badeer's Alex Gordon, Jermaine Dye, Royals and Nebraska Cornhuskers card collections.">
+<!-- Link previews (texts, Facebook, Instagram, X). At the ianbadeer.com switch, change these addresses too. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="IanBadeer.com">
+<meta property="og:title" content="IanBadeer.com · Card collection">
+<meta property="og:description" content="Thousands of high-resolution scans from Ian Badeer's Alex Gordon and Jermaine Dye Super Collections, and his Nebraska Cornhuskers and Kansas City Royals collections.">
+<meta property="og:url" content="https://thatsgoldjerry-900.github.io/cardcollection-site/">
+<meta property="og:image" content="https://thatsgoldjerry-900.github.io/cardcollection-site/assets/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="IanBadeer.com card collection">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0c12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://lh3.googleusercontent.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="preload" href="data/catalog.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=20261126i1">
+</head>
+<body>
+<div class="page-bg" aria-hidden="true"><i class="pb-lit"></i></div>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#/">Ian<span>Badeer</span></a>
+    <nav class="nav" id="nav" aria-label="Collections"><!-- the menu as it is today, so the header doesn't jump while the site loads; app.js rebuilds it --><button type="button" class="dd-btn" id="dd-btn" data-menu="dd-menu" aria-expanded="false" aria-controls="dd-menu">Nebraska Cornhuskers <span aria-hidden="true">▾</span></button><button type="button" class="dd-btn" data-menu="dd-menu-super" aria-expanded="false" aria-controls="dd-menu-super">Super Collections <span aria-hidden="true">▾</span></button><button type="button" class="dd-btn" data-menu="dd-menu-team" aria-expanded="false" aria-controls="dd-menu-team">Team Collections <span aria-hidden="true">▾</span></button><button type="button" class="dd-btn" data-menu="dd-menu-explore" aria-expanded="false" aria-controls="dd-menu-explore">Explore <span aria-hidden="true">▾</span></button></nav>
+    <form class="search" id="search-form" role="search">
+      <label for="q" class="sr">Search every card</label>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search 9,000+ cards… try “Triple Threads”" autocomplete="off">
+      <kbd>/</kbd>
+    </form>
+    <a class="picks-link" id="picks-link" href="#/picks" hidden title="My picks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></svg><b>0</b></a>
+    <button type="button" class="dice" id="dice" aria-label="Show me a random card" title="Random card">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg>
+    </button>
+  </div>
+</header>
+<!-- Phones: once the header scrolls away, this slim bar stays at the top: home, the collection you're in, the search box, random card. -->
+<nav class="mbar" id="mbar" aria-label="Quick menu">
+  <a class="mb-b" href="#/" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2 12 4.5l8 6.7M6.5 9.5V19.5h4.2v-5.2h2.6v5.2h4.2V9.5"/></svg></a>
+  <a class="mb-b mb-cat" id="mb-cat" href="#/" hidden></a>
+  <button type="button" class="mb-b mb-dice" id="mb-dice" aria-label="Show me a random card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4.5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg></button>
+</nav>
+<main id="app" tabindex="-1">
+<div class="wrap sk" id="sk" aria-busy="true" aria-label="Loading the collection">
+  <section class="hero">
+    <div>
+      <h1>Alex Gordon &amp; Jermaine Dye <em>super collector</em></h1>
+      <p><!--intro-->My name is Ian and my passion is collecting! Within this site you&#x27;ll find thousands of high resolution scans of my cards (with a few game-used items as well). Every image is labeled with its database name. If you have a rare card of either player, have a Husker autograph I need, or see a card here you want to trade for, let me know!<!--/intro--></p>
+      <div class="pills"><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span><span class="sk-b sk-pill"></span></div>
+    </div>
+    <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
+  </section>
+  <section class="stats"><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div><div class="stat"><span class="sk-b sk-num"></span><span class="sk-b sk-lbl"></span></div></section>
+  <div class="band"><div class="sec-h"><h2>Newest additions</h2></div><div class="sk-row"><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span></div></div>
+</div>
+<script>
+  // Not the home page: show a plain page outline instead of the home layout.
+  if (!/^#?\/?$/.test(location.hash)) document.getElementById("sk").innerHTML = '<span class="sk-b sk-title"></span><span class="sk-b sk-line"></span><span class="sk-b sk-line short"></span><div class="sk-grid"><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span><span class="sk-b sk-card"></span></div>';
+</script>
+</main>
+<footer class="foot" id="foot"></footer>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Card viewer">
+  <div class="v-top">
+    <button type="button" id="v-back" class="v-ic" aria-label="Back to the cards"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="v-mid"><b id="v-name"></b><span id="v-bio" class="v-bio" hidden>Tap/Click Name to See Bio</span><span id="v-pos"></span></div>
+    <div class="v-tools">
+      <button type="button" id="v-pick" class="v-ic" aria-label="Add to my picks" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.7l5.8-.8z"/></svg></button>
+      <button type="button" id="v-copy" class="v-ic" aria-label="Copy link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+      <button type="button" id="v-save" class="v-ic" aria-label="Save image"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button>
+    </div>
+  </div>
+  <div class="v-bar">
+    <div class="v-title" id="v-title"></div>
+    <div id="v-have" class="v-have" hidden></div>
+    <div id="v-more" class="v-more"></div>
+    <div class="v-actions">
+      <button type="button" id="v-flip" class="btn" hidden>Show back</button>
+      <button type="button" id="v-read" class="btn" hidden aria-expanded="false" aria-controls="v-text">📖 Read the back</button>
+      <button type="button" id="v-close" class="btn icon" aria-label="Close">✕</button>
+    </div>
+  </div>
+  <button type="button" class="v-nav prev" id="v-prev" aria-label="Previous card">‹</button>
+  <div class="v-stage" id="v-stage"><div class="v-aura" id="v-aura" aria-hidden="true" hidden></div><img id="v-img" alt=""><img id="v-img2" alt="" hidden></div>
+  <button type="button" class="v-nav next" id="v-next" aria-label="Next card">›</button>
+  <section class="v-text" id="v-text" hidden aria-label="Card back text"></section>
+  <div class="v-meta" id="v-meta"></div>
+</div>
+<script src="assets/app.js?v=20261126i1"></script>
+</body>
+</html>

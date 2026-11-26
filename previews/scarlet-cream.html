@@ -1,0 +1,54 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Scarlet and cream options</title>
+<style>
+body{margin:0;background:#222;font:15px/1.5 Inter,system-ui,sans-serif;padding:20px;color:#eee}
+h2{font:600 14px system-ui;letter-spacing:.08em;text-transform:uppercase;margin:24px 0 8px;color:#bbb}
+.mock{position:relative;overflow:hidden;border-radius:12px;max-width:1100px;min-height:470px;margin-bottom:10px}
+.bar{display:flex;gap:18px;align-items:center;padding:12px 18px}
+.logo{font:800 24px "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.nav a{font-size:13.5px;padding:6px 9px;border-radius:6px;margin-right:2px;display:inline-block}
+.body{display:grid;grid-template-columns:200px 1fr;gap:22px;padding:20px 18px;position:relative}
+.side h4{margin:0 0 8px;font:600 11px system-ui;letter-spacing:.09em;text-transform:uppercase}
+.side a{display:block;padding:6px 10px;border-radius:6px;font-size:14px}
+h1{font:800 44px "Barlow Condensed","Arial Narrow",sans-serif;text-transform:uppercase;margin:0 0 12px;line-height:1}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.c{padding:10px 14px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.c small{display:block;opacity:.7}
+.mock>.in{position:relative}
+
+/* A: scarlet dominant, cream accents */
+.A{background:#1c0b0e;color:#f6f1e4}
+.A::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(ellipse 55% 420px at 6% -60px,rgba(255,244,224,.20),transparent 70%),
+ radial-gradient(ellipse 60% 480px at 6% -40px,rgba(206,18,48,.65),transparent 75%),
+ radial-gradient(ellipse 55% 420px at 94% -60px,rgba(255,244,224,.14),transparent 70%),
+ radial-gradient(ellipse 60% 480px at 94% -40px,rgba(190,16,44,.5),transparent 75%)}
+.A .bar{background:rgba(32,10,14,.82);border-bottom:2px solid #f2e9d3;position:relative}
+.A .logo span{color:#f2e9d3}
+.A .nav a{color:#cdb9b3}.A .nav a.on{background:rgba(242,233,211,.14);color:#f6f1e4}
+.A .side h4{color:#d9c9a8}.A .side a{color:#cdb9b3}.A .side a.on{background:rgba(242,233,211,.13);color:#fff;box-shadow:inset 3px 0 #f2e9d3}
+.A h1{color:#f6f1e4}
+.A .c{background:rgba(30,10,13,.82);border:1px solid rgba(242,233,211,.18);border-left:3px solid #f2e9d3}
+.A .c b{color:#fff}.A .c i{color:#f2e9d3;font-style:normal}
+
+/* B: cream dominant, scarlet accents */
+.B{background:#efe6d0;color:#2a1014}
+.B::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(ellipse 55% 420px at 6% -60px,rgba(255,255,255,.7),transparent 70%),
+ radial-gradient(ellipse 55% 420px at 94% -60px,rgba(255,255,255,.55),transparent 70%),
+ radial-gradient(ellipse 70% 120px at 50% 0,rgba(206,18,48,.10),transparent 80%)}
+.B .bar{background:#d51f3a;color:#fff6e2;position:relative;box-shadow:0 2px 0 #9c1228}
+.B .logo span{color:#fff6e2;opacity:.85}
+.B .nav a{color:#ffd9d9}.B .nav a.on{background:rgba(255,246,226,.2);color:#fff}
+.B .side h4{color:#9c1228}.B .side a{color:#5a2a30}.B .side a.on{background:#e4d5b4;color:#2a1014;box-shadow:inset 3px 0 #d51f3a}
+.B h1{color:#a3102a}
+.B .c{background:#fbf6e9;border:1px solid #d9c9a3;border-left:3px solid #d51f3a}
+.B .c b{color:#2a1014}.B .c i{color:#d51f3a;font-style:normal}
+</style>
+<h2>Option A · Scarlet with cream accents</h2>
+<div class="mock A"><div class="in"><div class="bar"><div class="logo">Ian<span>Badeer</span></div><div class="nav"><a class=on>Nebraska</a><a>Royals</a><a>Lions</a><a>Rainbow</a></div></div>
+<div class="body"><div class="side"><h4>Collections</h4><a class=on>Husker football</a><a>NFL Huskers</a><a>Husker baseball</a><a>Letterman sets</a></div>
+<div><h1>Huskers on the Chiefs</h1><div class="cards"><div class="c"><span><b>Ben Stille</b><small>2023–2024</small></span><i>→</i></div><div class="c"><span><b>Travis Vokolek</b><small>2023–2025</small></span><i>→</i></div><div class="c"><span><b>Vincent Valentine</b><small>2018</small></span><i>→</i></div><div class="c"><span><b>Givens Price</b><small>2016–2017</small></span><i>→</i></div></div></div></div></div></div>
+<h2>Option B · Cream with scarlet accents</h2>
+<div class="mock B"><div class="in"><div class="bar"><div class="logo">Ian<span>Badeer</span></div><div class="nav"><a class=on>Nebraska</a><a>Royals</a><a>Lions</a><a>Rainbow</a></div></div>
+<div class="body"><div class="side"><h4>Collections</h4><a class=on>Husker football</a><a>NFL Huskers</a><a>Husker baseball</a><a>Letterman sets</a></div>
+<div><h1>Huskers on the Chiefs</h1><div class="cards"><div class="c"><span><b>Ben Stille</b><small>2023–2024</small></span><i>→</i></div><div class="c"><span><b>Travis Vokolek</b><small>2023–2025</small></span><i>→</i></div><div class="c"><span><b>Vincent Valentine</b><small>2018</small></span><i>→</i></div><div class="c"><span><b>Givens Price</b><small>2016–2017</small></span><i>→</i></div></div></div></div></div></div>

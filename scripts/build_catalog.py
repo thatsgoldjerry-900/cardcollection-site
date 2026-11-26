@@ -1,0 +1,443 @@
+#!/usr/bin/env python3
+"""Build data/catalog.json from the public Google Drive folders listed in config/site.json.
+
+Run it whenever you add scans (the GitHub Action runs it automatically every few hours):
+    python3 scripts/build_catalog.py
+
+It reads each folder's public "embedded folder view" page, so no API key is needed.
+The folders must stay shared as "Anyone with the link can view".
+"""
+import html, json, os, re, sys, time, urllib.request
+from datetime import date, datetime, timezone
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONFIG = os.path.join(ROOT, "config", "site.json")
+OUT = os.path.join(ROOT, "data", "catalog.json")
+
+ENTRY = re.compile(
+    r'<div class="flip-entry" id="entry-([^"]+)".*?<a href="([^"]+)".*?'
+    r'<div class="flip-entry-title">([^<]*)</div>.*?flip-entry-last-modified"><div>([^<]*)</div>', re.S)
+
+def fetch(url, tries=4):
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (catalog builder)"})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.read().decode("utf-8", "ignore")
+        except Exception as e:
+            if i == tries - 1: raise
+            time.sleep(2 * (i + 1))
+
+def parse_date(s):
+    s = s.strip()
+    for fmt in ("%m/%d/%y", "%m/%d/%Y", "%b %d, %Y"):
+        try: return datetime.strptime(s, fmt).date().isoformat()
+        except ValueError: pass
+    return date.today().isoformat()  # Drive shows a time (e.g. "3:41 PM") for files changed today
+
+def list_folder(fid, rk, depth=0):
+    url = f"https://drive.google.com/embeddedfolderview?id={fid}" + (f"&resourcekey={rk}" if rk else "")
+    page = fetch(url)
+    if "flip-entries" not in page:
+        raise RuntimeError(f"Folder {fid} did not list. Is it shared as 'Anyone with the link'?")
+    files = []
+    for iid, href, title, mod in ENTRY.findall(page):
+        href = html.unescape(href); title = html.unescape(title).replace("\xa0", " ")
+        frk = (re.search(r"resourcekey=([^&]+)", href) or [None, ""])[1]
+        if "/folders/" in href or "folderview" in href:
+            if depth < 3: files += list_folder(iid, frk, depth + 1)   # include subfolders
+            continue
+        if not re.search(r"\.(jpe?g|png|webp|gif|heic)$", title, re.I): continue
+        files.append({"id": iid, "rk": frk, "name": title, "mod": parse_date(mod)})
+    return files
+
+BACK = re.compile(r"\s*(\((?:back|back single|inside back)\)|\bback)\s*$", re.I)
+# "Back" before a trailing note also marks a back: "… Custom Back (Gifted to Austin Allen)" pairs with
+# "… Custom (Gifted to Austin Allen)".
+BACK_NOTE = re.compile(r"\s+back(?=\s*\([^()]*\)\s*$)", re.I)
+CODE_RE = re.compile(r"(?<![A-Za-z])(?:AU|MEM|MANU|RC|SSP|SP|SN\d+(?:\s+of\s+\d+)?|PR\d+|1 of 1|1/1)(?![A-Za-z])")
+def loose_key(name):
+    """A name without tag codes, letter codes ("4N", "3 H"), copy marks, inscription notes and punctuation."""
+    h = name.find("#"); head, tail = (name[:h], name[h:]) if h >= 0 else ("", name)
+    tail = CODE_RE.sub(" ", tail)
+    tail = re.sub(r"#'?d\s*(?:to\s*)?\d+(?:\s*of\s*\d+)?|print run of\s*\d+|\b\d+\s+of\s+\d+\b|\b(?:autographs?|signatures?|signed|auto|memorabilia|jersey|relic)\b", " ", tail, flags=re.I)
+    tail = re.sub(r"(?:^|\s)(?:Letter\s+)?0?\d{1,2}\s?[A-Z0-9](?=\s|$|,)", " ", tail)
+    tail = re.sub(r"\([^()]*\)", " ", tail)        # notes like (Adidas Black), (7th), (Creased): one back serves them all
+    tail = re.sub(r"\b[\w' -]*?\binsc(?:ription)?\b", " ", tail, flags=re.I)
+    return re.sub(r"[^a-z0-9#]+", " ", (head + tail).lower()).strip()
+def base_name(name):
+    stem = re.sub(r"\.[a-z0-9]+$", "", name, flags=re.I)
+    if BACK.search(stem): return BACK.sub("", stem).strip(), True
+    if BACK_NOTE.search(stem): return re.sub(r"\s+", " ", BACK_NOTE.sub("", stem)).strip(), True
+    return stem.strip(), False
+
+# ---------- Reading one parent folder through the Drive API (the robot) ----------
+# Layout:  Parent / Section folder / Group folder / scans   (deeper subfolders join their group)
+# Scans directly inside a section folder become a group named after the section.
+
+def natural(s):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", s)]
+
+
+def drive_session():
+    key = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
+    if not key:
+        raise SystemExit("driveRoot is enabled but GOOGLE_SERVICE_ACCOUNT_JSON is not set.")
+    import requests
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request
+    creds = service_account.Credentials.from_service_account_info(
+        json.loads(key), scopes=["https://www.googleapis.com/auth/drive.readonly"])
+    sess = requests.Session()
+    def get(params, path=""):
+        # path: one file's id, to read that file (e.g. a folder's parent) instead of searching. A parent the robot can't
+        # see just comes back empty.
+        if not creds.valid: creds.refresh(Request())
+        r = sess.get("https://www.googleapis.com/drive/v3/files" + ("/" + path if path else ""), params=params,
+                     headers={"Authorization": f"Bearer {creds.token}"}, timeout=60)
+        if path and r.status_code in (403, 404): return {}
+        if r.status_code in (403, 404):
+            raise SystemExit(f"Drive said HTTP {r.status_code}. Is the parent folder shared (Viewer) with the robot?")
+        r.raise_for_status()
+        return r.json()
+    return get
+
+
+def drive_children(get, folder_id):
+    out, token = [], None
+    while True:
+        d = get({"q": f"'{folder_id}' in parents and trashed = false", "pageSize": 1000, "pageToken": token,
+                 "fields": "nextPageToken, files(id, name, mimeType, createdTime, resourceKey)",
+                 "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"})
+        out += d.get("files", [])
+        token = d.get("nextPageToken")
+        if not token: return out
+
+
+FOLDER = "application/vnd.google-apps.folder"
+
+def drive_images(get, folder_id, depth=0):
+    files = []
+    for f in drive_children(get, folder_id):
+        if f["mimeType"] == FOLDER:
+            if depth < 4: files += drive_images(get, f["id"], depth + 1)
+        elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
+            files.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10]})
+    return files
+
+
+# Photos of athletes with the custom cards Ian made for them. Not cards, so they live in their own list.
+PHOTOS_FOLDER = "customs - with the players"
+_photos = []
+# Reference images of Nebraska players (e.g. a compilation of photos), shown on that player's page. The file name
+# names the player; assets/app.js matches it to his page. Not cards, so they live in their own list ("refs").
+REFS_FOLDER = "Nebraska Player Reference Images"
+_refs = []
+
+
+def sections_from_root(cfg, root_id):
+    """Returns [(section_settings, [(group_slug, group_label, files)])] from the folder tree."""
+    get = drive_session()
+    known = {s["title"].lower(): s for s in cfg["sections"]}
+    order = {s["title"].lower(): i for i, s in enumerate(cfg["sections"])}
+    tops = [f for f in drive_children(get, root_id) if f["mimeType"] == FOLDER]
+    for f in [t for t in tops if t["name"].strip().lower() == PHOTOS_FOLDER]:
+        _photos.extend(drive_images(get, f["id"])); tops.remove(f)
+    for f in [t for t in tops if t["name"].strip().lower() == REFS_FOLDER.lower()]:
+        _refs.extend(drive_images(get, f["id"])); tops.remove(f)
+    tops.sort(key=lambda f: (order.get(f["name"].strip().lower(), 999), natural(f["name"])))
+    out = []
+    for top in tops:
+        title = top["name"].strip()
+        meta = {k: v for k, v in known.get(title.lower(), {}).items() if k != "groups"}
+        meta.setdefault("slug", re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-"))
+        meta.setdefault("title", title); meta.setdefault("kind", "team"); meta.setdefault("color", "royal")
+        kids = drive_children(get, top["id"])
+        groups = []
+        loose = [f for f in kids if f["mimeType"] != FOLDER]
+        if loose:
+            groups.append(("all", title, drive_images(get, top["id"], depth=99)))   # only files directly inside
+        for sub in sorted((f for f in kids if f["mimeType"] == FOLDER), key=lambda f: natural(f["name"])):
+            label = sub["name"].strip()
+            groups.append((re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-"), label, drive_images(get, sub["id"])))
+        out.append((meta, groups))
+    return out
+
+
+NOT_TEAM = re.compile(r"memorabilia|^\d{4}s\b|\bfootball$|^cards?$|autographs?$|^misc|^other$|gift", re.I)
+# Subfolders inside a section's Drive folder that aren't part of the shown collection.
+SKIP_FOLDER = re.compile(r"sold|traded|pending|lost|cut or destroyed|extra info|project|details", re.I)
+DUP_FOLDER = re.compile(r"^duplicates?$", re.I)
+
+def images_by_name(get, name, prefer=None, avoid=(), skip=()):
+    """All scans in the Drive folder called `name` (found by the robot by name), skipping Sold/Pending/Cut/Extra folders."""
+    q = f"name = '{name.replace(chr(39), chr(92) + chr(39))}' and mimeType = '{FOLDER}' and trashed = false"
+    found = get({"q": q, "fields": "files(id, name, parents)", "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"}).get("files", [])
+    if len(found) > 1 and avoid:
+        # A subfolder of another collection with the same name (e.g. "Kansas City Royals" inside "Jermaine Dye") isn't
+        # this collection's folder: drop folders whose parent is another collection's folder.
+        def parent_name(f):
+            pid = (f.get("parents") or [""])[0]
+            return get({"fileId": pid, "fields": "name", "supportsAllDrives": "true"}, path=pid).get("name", "") if pid else ""
+        keep = [f for f in found if parent_name(f).strip().lower() not in avoid]
+        if keep and len(keep) < len(found):
+            print(f"{len(found) - len(keep)} other folder(s) named '{name}' inside another collection skipped.", file=sys.stderr)
+            found = keep
+    if not found:
+        print(f"Drive folder '{name}' not found (yet): its section stays empty.", file=sys.stderr); return []
+    if len(found) > 1 and prefer:
+        # Several folders share the name (e.g. a "Jermaine Dye" folder inside another collection): use the one whose
+        # own subfolders match the section's groups.
+        def fit(f):
+            kids = [k["name"] for k in drive_children(get, f["id"]) if k["mimeType"] == FOLDER]
+            return sum(1 for k in kids for pat in prefer if re.search(pat, k, re.I))
+        found.sort(key=fit, reverse=True)
+        print(f"{len(found)} Drive folders named '{name}': using the one with the matching subfolders.", file=sys.stderr)
+    # A card's team is the first folder on its path that names a team (e.g. "Kansas City Chiefs"); folders for a
+    # kind of item or an era ("Memorabilia", "1970s Football") don't count, so "Memorabilia\Detroit Lions" works too.
+    # A "Duplicates" subfolder (e.g. Alex Gordon / Duplicates) holds Ian's extra copies: they go to the Duplicates page.
+    def walk(fid, depth=0, team="", dup=False):
+        out = []
+        for f in drive_children(get, fid):
+            if f["mimeType"] == FOLDER:
+                if depth < 4 and not SKIP_FOLDER.search(f["name"]) and f["name"].strip().lower() not in skip:
+                    nm = f["name"].strip()
+                    if DUP_FOLDER.search(nm): out += walk(f["id"], depth + 1, team, True); continue
+                    out += walk(f["id"], depth + 1, team or ("" if NOT_TEAM.search(nm) else nm), dup)
+            elif f["mimeType"].startswith("image/") or re.search(r"\.(jpe?g|png|webp|gif|heic)$", f["name"], re.I):
+                out.append({"id": f["id"], "rk": f.get("resourceKey", ""), "name": f["name"], "mod": f["createdTime"][:10], "team": team,
+                            **({"dup": True} if dup else {})})
+        return out
+    return walk(found[0]["id"])
+
+def sections_from_config(cfg):
+    for fid, rk in (cfg.get("customsPhotos") or {}).get("folders", []):
+        _photos.extend(list_folder(fid, rk))
+    out, get = [], drive_session()
+    # Every collection's folder name, so a same-named subfolder inside another collection is never mistaken for it.
+    others = {n.strip().lower() for x in cfg["sections"] for n in ([x["driveFolderName"]] if isinstance(x.get("driveFolderName"), str) else x.get("driveFolderName") or [])}
+    _refs.extend(images_by_name(get, REFS_FOLDER))
+    for sec in cfg["sections"]:
+        if sec.get("driveFolderName"):
+            # One Drive folder, read by name; its groups are year ranges ("maxYear"), e.g. 2009 and older / 2010 and newer.
+            get = get or drive_session()
+            # One name, or a few spellings to try in order (the first folder found is used).
+            names = sec["driveFolderName"] if isinstance(sec["driveFolderName"], list) else [sec["driveFolderName"]]
+            files = []
+            pats = [g["match"] for g in sec["groups"] if g.get("match")]
+            # A customs folder ("Customs") may hold other folders the site reads on their own ("Customs - Non-Sport",
+            # "Customs - With the Players"): skip those inside it so no scan is read twice or a photo becomes a card.
+            skip = (others - {n.strip().lower() for n in names}) | {PHOTOS_FOLDER, REFS_FOLDER.lower()} if sec.get("customs") else ()
+            for nm in names:
+                files = images_by_name(get, nm, pats, others, skip)
+                if files: break
+            year = lambda f: int((re.match(r"(\d{4})", f["name"]) or [0, 0])[1])
+            groups, left = [], files
+            for grp in sec["groups"]:
+                # A group takes the scans in a team subfolder ("match", e.g. Jermaine Dye / Braves) or up to a year ("maxYear").
+                if grp.get("match"):
+                    mine = [f for f in left if re.search(grp["match"], f.get("team", ""), re.I)]
+                else:
+                    mx = grp.get("maxYear")
+                    mine = [f for f in left if mx is None or year(f) <= mx]
+                left = [f for f in left if f not in mine]
+                groups.append((grp["slug"], grp["label"], mine))
+            if left and pats:
+                print(f"{len(left)} scans in '{names[0]}' aren't in a team subfolder; shown under 'Other'.", file=sys.stderr)
+                groups.append(("other", "Other", left))
+            out.append(({k: v for k, v in sec.items() if k not in ("groups", "driveFolderName") and not k.startswith("_")}, groups))
+            continue
+        groups = []
+        for grp in sec["groups"]:
+            files = []
+            for fid, rk in grp["folders"]:
+                files += list_folder(fid, rk)
+            groups.append((grp["slug"], grp["label"], files))
+        out.append(({k: v for k, v in sec.items() if k != "groups"}, groups))
+    return out
+
+
+def main():
+    cfg = json.load(open(CONFIG))
+    sync_first_screen(cfg)
+    prev, prev_name, prev_photo, prev_loose, old = {}, {}, {}, {}, None
+    if os.path.exists(OUT):
+        try:
+            old = json.load(open(OUT))
+            for c in old["cards"]:
+                prev[c[0]] = c[5]
+                prev_name[c[2].lower()] = c[5]   # card name without extension
+                prev_loose.setdefault(loose_key(c[2]), c[5])   # the same card after a rename that only added tags
+            for ph in old.get("photos", []) + old.get("refs", []): prev_photo[ph[0]] = ph[3]
+        except Exception: pass
+    today = date.today().isoformat()
+    cards, sections, dupes = [], [], []
+    root = cfg.get("driveRoot") or {}
+    source = sections_from_root(cfg, root["id"]) if root.get("enabled") else sections_from_config(cfg)
+    for si, (sec, group_files) in enumerate(source):
+        groups = []
+        for gi, (gslug, glabel, files) in enumerate(group_files):
+            print(f"{sec['slug']}/{gslug}: {len(files)} files", file=sys.stderr)
+            # Scans in a "Duplicates" subfolder: every front (with its back, paired the same way) goes to the Duplicates page.
+            extra = [f for f in files if f.get("dup")]
+            if extra:
+                files = [f for f in files if not f.get("dup")]
+                xf = {base_name(f["name"])[0].lower(): f for f in extra if not base_name(f["name"])[1]}
+                xloose = {loose_key(k): k for k in xf}
+                xback, paired = {}, set()
+                for f in extra:
+                    b, is_back = base_name(f["name"])
+                    k = b.lower() if b.lower() in xf else xloose.get(loose_key(b))
+                    if is_back and k: xback.setdefault(k, f); paired.add(f["id"])
+                for f in extra:
+                    if f["id"] in paired: continue                  # shown with its front
+                    b, is_back = base_name(f["name"])
+                    card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                    if SOLD.search(card_name): continue
+                    back = xback.get(b.lower()) if not is_back else None
+                    dupes.append([f["id"], f["rk"], card_name, si, gi, prev.get(f["id"]) or prev_name.get(card_name.lower()) or f["mod"],
+                                  back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
+                print(f"{sec['slug']}/{gslug}: {len(extra)} files in Duplicates", file=sys.stderr)
+            # pair backs with fronts: by exact name, or failing that by the name without Ian's tag codes and
+            # letter codes (a back is often named "... SN199 Back" while its front is "... AU, MEM, SN199").
+            fronts, backs, loose_fronts = {}, {}, {}
+            for f in files:
+                b, is_back = base_name(f["name"])
+                (backs if is_back else fronts).setdefault(b.lower(), f)
+                if not is_back: loose_fronts.setdefault(loose_key(b), []).append(b.lower())
+            back_of = {}                                             # front name -> its back file
+            for k, f in backs.items():
+                if k in fronts: back_of[k] = f
+            # Backs Ian maps by hand (config "backFor": back name -> the fronts it belongs to).
+            for k, f in backs.items():
+                for fr in cfg.get("backFor", {}).get(f["name"].rsplit(".", 1)[0], []):
+                    if fr.lower() in fronts: back_of[fr.lower()] = f; f["_paired"] = True
+            for k, f in backs.items():
+                if k in fronts or f.get("_paired"): continue
+                # One back can serve several fronts, e.g. every letter of a letterman set shares the same back.
+                cands = [c for c in loose_fronts.get(loose_key(base_name(f["name"])[0]), []) if c not in back_of]
+                for c in cands: back_of[c] = f
+                if cands: f["_paired"] = True
+            # Back-only variations (Allen & Ginter "Mini A and G Back", Topps 206 "Piedmont", Goudey "Red Backs"...): the
+            # variation is in the back, so Ian scans only the back and the front is the base card's. Such a back becomes
+            # its own card (the variation) showing the base card's front scan with this back.
+            def card_parts(name):   # (year, set words, number, player) of "2010 Topps 206 - Mini Piedmont #202 Alex Gordon"
+                m = re.match(r"^(\S+)\s+(.*?)\s+#(\S+)\s+(.*)$", name)
+                if not m: return None
+                who = re.sub(r"\s*(#'d\b.*|print run\b.*|\bSN\d.*|\(.*|\b(AU|MEM|MANU|RC|SSP|SP)\b.*)$", "", m.group(4), flags=re.I).strip().lower()
+                return m.group(1), re.sub(r"[^a-z0-9&]+", " ", m.group(2).lower()).split(), m.group(3).lower(), re.sub(r"\s+", " ", who)
+            borrowed = {}
+            for k, f in backs.items():
+                if k in fronts or f.get("_paired"): continue
+                me = card_parts(base_name(f["name"])[0])
+                if not me: continue
+                # The front to borrow: same year, number and player, from the set this variation is named after
+                # ("Topps 206" or "Topps 206 Mini" for "Topps 206 Mini Piedmont"). Never the same set name (that would be
+                # a different card of the same kind, e.g. a non-auto version).
+                cands = []
+                for c in fronts:
+                    pt = card_parts(c)
+                    if pt and (pt[0], pt[2], pt[3]) == (me[0], me[2], me[3]) and len(pt[1]) < len(me[1]) and me[1][:len(pt[1])] == pt[1]:
+                        cands.append((fronts[c], pt))
+                if not cands: continue
+                mini = "mini" in me[1]
+                cands.sort(key=lambda x: (("mini" in x[1][1]) != mini, -len(x[1][1])))
+                borrowed[f["id"]] = cands[0][0]
+            n = 0
+            for f in files:
+                b, is_back = base_name(f["name"])
+                if f["id"] in borrowed:
+                    fr = borrowed[f["id"]]
+                    if not_shown(b): continue
+                    added = (prev_name.get(b.lower()) or prev.get(f["id"]) or prev_loose.get(loose_key(b))
+                             or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or sec.get("freshUploadDate")
+                             or (f["mod"] if not prev else today))
+                    cards.append([fr["id"], fr["rk"], b, si, gi, added, f["id"], f["rk"], f.get("team", ""), 1])
+                    n += 1; continue
+                if is_back and (b.lower() in fronts or f.get("_paired")): continue        # shown with its front
+                back = back_of.get(b.lower()) if not is_back else None
+                card_name = b if not is_back else f["name"].rsplit(".", 1)[0]
+                if COPY.search(card_name) and not SOLD.search(card_name) and not re.search(r"\bcustom\b", card_name, re.I):
+                    # 2nd/3rd/4th... copies: not in the collections, but listed on the Duplicates page.
+                    dupes.append([f["id"], f["rk"], card_name, si, gi, prev.get(f["id"]) or prev_name.get(card_name.lower()) or f["mod"], back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
+                    continue
+                if not_shown(card_name): continue                   # sold, or a second copy
+                # A re-uploaded scan gets a new Drive ID; match it by name so it keeps its original date
+                # (and isn't marked NEW). The extension may change, e.g. .png to .jpg.
+                # A fresh re-upload of renamed scans (new Drive IDs, tags added) keeps the date of the card it replaces;
+                # a card never seen before gets its file's own date, not today, so a big batch doesn't all show as NEW.
+                added = (prev.get(f["id"]) or prev_name.get(card_name.lower()) or prev_loose.get(loose_key(card_name))
+                         or (cfg.get("freshUploadDate") if cfg.get("freshUpload") else None) or sec.get("freshUploadDate")
+                         or (f["mod"] if not prev else today))
+                cards.append([f["id"], f["rk"], card_name, si, gi, added,
+                              back["id"] if back else "", back["rk"] if back else "", f.get("team", "")])
+                n += 1
+            groups.append({"slug": gslug, "label": glabel, "count": n})
+        s = dict(sec); s["groups"] = groups
+        sections.append(s)
+    # Same card twice where one is "SN50" and the other a documented copy "SN23 of 50": the documented one is an extra
+    # copy (Ian), so it goes to the Duplicates page.
+    OF = re.compile(r"\bSN\d+ of (\d+)\b")
+    skey = lambda c: (c[3], re.sub(r"\s+", " ", OF.sub(r"SN\1", c[2])).strip().lower())
+    plain = {skey(c) for c in cards if not OF.search(c[2])}
+    moved = [c for c in cards if OF.search(c[2]) and skey(c) in plain]
+    if moved:
+        ids = {id(c) for c in moved}
+        cards[:] = [c for c in cards if id(c) not in ids]
+        dupes.extend(c[:9] for c in moved)
+        print(f"{len(moved)} documented-serial copies moved to Duplicates", file=sys.stderr)
+    # The "Customs" folder may hold a copy of a custom that is also filed in a collection (e.g. Nebraska Football): the
+    # collection's copy stays (it keeps its page and date), the Customs folder's copy is dropped so it isn't counted twice.
+    cust = {i for i, s in enumerate(sections) if s.get("customs")}
+    filed = {c[2].strip().lower() for c in cards if c[3] not in cust}
+    twice = [c for c in cards if c[3] in cust and c[2].strip().lower() in filed]
+    if twice:
+        ids = {id(c) for c in twice}
+        cards[:] = [c for c in cards if id(c) not in ids]
+        for c in twice:
+            g = sections[c[3]]["groups"][c[4]]; g["count"] -= 1
+        print(f"{len(twice)} scans in a customs folder are also filed in a collection; the collection's copy is used.", file=sys.stderr)
+    site = {k: v for k, v in cfg.items() if k not in ("sections", "driveRoot") and not k.startswith("_")}
+    if "customsPhotos" in site: site["customsPhotos"] = {k: v for k, v in site["customsPhotos"].items() if k != "folders"}
+    # Photo name without extension is its caption; newest first.
+    photos = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
+                     for f in _photos), key=lambda x: x[3], reverse=True)
+    refs = sorted(([f["id"], f["rk"], re.sub(r"\.[a-z0-9]+$", "", f["name"], flags=re.I), prev_photo.get(f["id"]) or f["mod"]]
+                   for f in _refs), key=lambda x: x[2].lower())
+    out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "site": site, "sections": sections, "photos": photos, "refs": refs,
+           "fields": ["id", "rk", "name", "section", "group", "added", "backId", "backRk", "team", "frontFromBase"], "cards": cards, "dupes": dupes}
+    if old and len(cards) < len(old.get("cards", [])) // 2 and "--allow-shrink" not in sys.argv:
+        # Folders look mostly empty (e.g. mid-way through deleting and re-uploading scans).
+        # Keep the previous list so the site doesn't go blank and card dates aren't lost.
+        print(f"Found {len(cards)} cards, fewer than half of the {len(old['cards'])} last time. "
+              "Keeping the previous card list. Run with --allow-shrink if this drop is intended.", file=sys.stderr)
+        return
+    if old and {k: v for k, v in old.items() if k != "generated"} == {k: v for k, v in out.items() if k != "generated"}:
+        print("No changes in Drive; card list left as is.", file=sys.stderr)
+        return
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    with open(OUT, "w") as fh: json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
+    print(f"Wrote {len(cards)} cards to {OUT}", file=sys.stderr)
+
+# Cards that aren't on the site: anything sold (the name says "Sold ..."), and a second or third copy of a card
+# ("... 2nd", "... 3rd" at the end of the name; "10th Anniversary" sets don't count). Customs are kept:
+# numbered customs ("Custom 2nd") are separate commissioned pieces, not copies.
+SOLD = re.compile(r"\bsold\b|\bgifted to\b", re.I)   # sold, or given away (e.g. a custom gifted to the player)
+COPY = re.compile(r"\s\(?(?:2nd|3rd|\d+th)\)?\s*(?:\([^)]*\))?\s*$", re.I)
+
+
+def not_shown(name):
+    return bool(SOLD.search(name) or (COPY.search(name) and not re.search(r"\bcustom\b", name, re.I)))
+
+
+def sync_first_screen(cfg):
+    """index.html shows the home intro before the card list loads; keep that copy matching config/site.json."""
+    import html as _h
+    path = os.path.join(ROOT, "index.html")
+    page = open(path, encoding="utf-8").read()
+    new = re.sub(r"<!--intro-->.*?<!--/intro-->", lambda m: "<!--intro-->" + _h.escape(cfg.get("intro", "")) + "<!--/intro-->", page, flags=re.S)
+    if new != page: open(path, "w", encoding="utf-8").write(new)
+
+
+if __name__ == "__main__":
+    main()

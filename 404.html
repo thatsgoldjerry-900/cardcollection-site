@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page not found · IanBadeer.com</title>
+<script>
+  // Works at the site root (ianbadeer.com) and in the project folder (…github.io/cardcollection-site/).
+  var BASE = location.pathname.indexOf("/cardcollection-site/") === 0 ? "/cardcollection-site/" : "/";
+  document.write('<base href="' + BASE + '">');
+  // A page of the site without its own file (a search, a card, a rainbow…): hand it to the site, which shows it at
+  // this same address. Anything that looks like a file (or an old Google Sites address) gets the "not found" page.
+  (function () {
+    var rel = location.pathname.slice(BASE.length);
+    if (rel && !/\.[a-z0-9]+$/i.test(rel) && /^(c|player|player-cards|search|card|rainbow|set|letters|word|checklist|player-pages|husker-bios|nfl-teams|media|stats|rarest|duplicates|customs|all|picks|about|dye-career|random)(\/|$)/.test(rel))
+      location.replace(BASE + "#/" + rel.replace(/\/$/, "") + location.search);
+  })();
+</script>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#090c11;color:#e8ecf2;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px}
+main{max-width:560px;width:100%}.logo{font:800 24px/1 "Arial Narrow",Arial,sans-serif;letter-spacing:.02em;text-transform:uppercase;text-decoration:none;color:#e8ecf2}.logo span{color:#7aa7ff}
+h1{font-size:34px;margin:22px 0 8px}p{color:#c3cad6;margin:0 0 18px}
+form{display:flex;gap:8px;margin:0 0 20px}input{flex:1;min-width:0;background:#161e2a;border:1px solid #29354a;border-radius:9px;color:#e8ecf2;font:inherit;padding:10px 12px}
+button{background:#c8102e;border:0;border-radius:9px;color:#fff;font:600 15px system-ui,sans-serif;padding:0 16px;cursor:pointer}
+.links{display:flex;flex-wrap:wrap;gap:8px 18px}.links a{color:#7aa7ff;text-decoration:none}.links a:hover{text-decoration:underline}
+</style>
+</head>
+<body><main>
+  <a class="logo" href="./">Ian<span>Badeer</span></a>
+  <h1>That page isn't here</h1>
+  <p>The link may be old, or the page moved when the site was rebuilt. Search the collection, or try one of these:</p>
+  <form onsubmit="var q=this.q.value.trim();if(q)location.href=BASE+'#/search/'+encodeURIComponent(q);return false">
+    <input name="q" type="search" placeholder="Search 9,000+ cards or a player's name" aria-label="Search the collection">
+    <button type="submit">Search</button>
+  </form>
+  <div class="links">
+    <a href="./">Home →</a>
+    <a href="./#/random">Show me a random card →</a>
+    <a href="./#/checklist">NFL Huskers autograph list →</a>
+    <a href="nfl-huskers/">Nebraska Cornhuskers in the NFL →</a>
+    <a href="./#/media">Media &amp; interviews →</a>
+  </div>
+</main></body></html>

@@ -1,0 +1,2957 @@
+{
+  "title": "IanBadeer.com",
+  "siteUrl": "https://thatsgoldjerry-900.github.io/cardcollection-site/",
+  "_siteUrlHelp": "\"siteUrl\": the site's public address, used in sitemap.xml. Change to https://ianbadeer.com/ at the domain switch.",
+  "tagline": "Alex Gordon & Jermaine Dye super collector · Kansas City Royals & Nebraska Cornhuskers team collector",
+  "intro": "My name is Ian and my passion is collecting! Within this site you'll find thousands of high resolution scans of my cards (with a few game-used items as well). Every image is labeled with its database name. If you have a rare card of either player, have a Husker autograph I need, or see a card here you want to trade for, let me know!",
+  "contact": {
+    "code": "bW9jLmxpYW1nQHJlZWRhYi5uYWk=",
+    "googleForm": {
+      "id": "1FAIpQLSdp7tl53xav17pmckrS101lu3_34TVww05-EqNjh9ewWJKbxQ",
+      "fields": {
+        "name": "entry.1403628426",
+        "email": "entry.1181161113",
+        "item": "",
+        "message": "entry.240862003"
+      }
+    }
+  },
+  "_contactHelp": "\"contact.code\" is my email address, reversed and base64-encoded so scrapers cannot read it; the site decodes it only when someone clicks. \"contact.googleForm\" connects the form on the page to my Google Form: \"id\" is the long code after /forms/d/e/ in the form's link, and each field is the form's \"entry.123…\" name for that question (from its pre-filled link). Leave \"id\" empty to use email buttons only.",
+  "analytics": {
+    "goatcounter": ""
+  },
+  "_analyticsHelp": "\"analytics.goatcounter\" is the site code from goatcounter.com (the part before .goatcounter.com). Empty means no analytics.",
+  "links": [
+    {
+      "label": "Trade with me on TCDb",
+      "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan"
+    },
+    {
+      "label": "Instagram: Alex Gordon",
+      "url": "https://www.instagram.com/alexgordoncollector/"
+    },
+    {
+      "label": "Instagram: Huskers",
+      "url": "https://www.instagram.com/huskercardcollector/"
+    }
+  ],
+  "sections": [
+    {
+      "slug": "alex-gordon",
+      "title": "Alex Gordon",
+      "kind": "pc",
+      "progress": 93,
+      "progressLabel": "of Gordon's cards collected (excludes 1/1s)",
+      "color": "royal",
+      "blurb": "I started collecting Alex's cards after he signed his extension to be a Royal for life. I watched him grow up as a Nebraska Cornhusker and was thrilled when the Royals drafted him #2 overall. My primary focus is game-used relic cards.",
+      "groups": [
+        {
+          "slug": "2003-2007",
+          "label": "2003–2007",
+          "maxYear": 2007
+        },
+        {
+          "slug": "2008",
+          "label": "2008",
+          "maxYear": 2008
+        },
+        {
+          "slug": "2009-2012",
+          "label": "2009–2012",
+          "maxYear": 2012
+        },
+        {
+          "slug": "2013-14",
+          "label": "2013–14",
+          "maxYear": 2014
+        },
+        {
+          "slug": "2015",
+          "label": "2015",
+          "maxYear": 2015
+        },
+        {
+          "slug": "2016",
+          "label": "2016",
+          "maxYear": 2016
+        },
+        {
+          "slug": "2017-19",
+          "label": "2017–19",
+          "maxYear": 2019
+        },
+        {
+          "slug": "2020-present",
+          "label": "2020–Present"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "Gordon cards for trade (TCDb)",
+          "url": "https://www.tcdb.com/Profile.cfm/DyeHardFan"
+        }
+      ],
+      "driveFolderName": "Alex Gordon",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Alex Gordon' (found by name); groups are year ranges from the year at the start of each file name (\"maxYear\"). Scans in its 'Duplicates' subfolder go to the Duplicates page. freshUploadDate: renamed re-uploads the robot can't match aren't shown as NEW (remove once the re-upload is done)."
+    },
+    {
+      "slug": "jermaine-dye",
+      "title": "Jermaine Dye",
+      "kind": "pc",
+      "progress": 89,
+      "progressLabel": "of Dye's cards collected (excludes 1/1s)",
+      "color": "royal",
+      "blurb": "I started collecting Jermaine Dye as a kid listening to Royals games on the radio in the late 1990s. He played for the Braves, Royals, Athletics and White Sox, where he won World Series MVP in 2005.",
+      "groups": [
+        {
+          "slug": "braves",
+          "label": "Braves",
+          "match": "braves"
+        },
+        {
+          "slug": "royals",
+          "label": "Royals",
+          "match": "royals"
+        },
+        {
+          "slug": "athletics",
+          "label": "Athletics",
+          "match": "athletics|\\boakland\\b|\\ba's\\b"
+        },
+        {
+          "slug": "white-sox",
+          "label": "White Sox",
+          "match": "white sox"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "Read his career story, told through my cards",
+          "url": "#/dye-career"
+        }
+      ],
+      "driveFolderName": "Jermaine Dye",
+      "_help": "Read from the Drive folder named 'Jermaine Dye' (found by name); each group is a team subfolder (\"match\"). The re-upload is finished (2026-11-25), so new scans show as NEW again."
+    },
+    {
+      "slug": "husker-football",
+      "title": "Nebraska Football Cards & Autos",
+      "kind": "team",
+      "color": "husker",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Football Cards & Autos"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "Read the story and see the full list on the NFL Tier 1 Huskers Autograph List",
+          "url": "#/checklist"
+        }
+      ],
+      "driveFolderName": "Nebraska Football Cards & Autos",
+      "_help": "Read from the Drive folder named in driveFolderName (one folder; Sold/Pending/Cut/Extra subfolders skipped)."
+    },
+    {
+      "slug": "husker-baseball",
+      "title": "Nebraska Baseball Cards & Autos",
+      "kind": "team",
+      "color": "husker",
+      "blurb": "The Huskers who have logged time in the major leagues, each on an autographed card.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Baseball Cards & Autos"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "MLB Huskers Autograph List",
+          "url": "#/checklist/mlb"
+        }
+      ],
+      "driveFolderName": "Nebraska Baseball Cards & Autos",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Nebraska Baseball Cards & Autos'. freshUploadDate: as for the Royals (remove once the re-upload is done)."
+    },
+    {
+      "slug": "husker-basketball",
+      "title": "Nebraska Basketball Cards & Autos",
+      "kind": "team",
+      "color": "husker",
+      "blurb": "The Huskers who made the NBA, plus more Cornhusker basketball cards and autographs from my collection.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Basketball Cards & Autos"
+        }
+      ],
+      "extraLinks": [
+        {
+          "label": "NBA Huskers Autograph List",
+          "url": "#/checklist/nba"
+        }
+      ],
+      "driveFolderName": [
+        "Nebraska Basketball Cards & Autos",
+        "Nebraska Basketball"
+      ],
+      "_help": "Read from the Drive folder named in driveFolderName (the first of these names that exists; Sold/Pending/Cut/Extra subfolders skipped)."
+    },
+    {
+      "slug": "husker-other",
+      "title": "Nebraska Other Sports Cards & Autos",
+      "kind": "team",
+      "color": "husker",
+      "blurb": "Huskers from Nebraska's other sports, on cards and autographs from my collection.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Nebraska Other Sports Cards & Autos"
+        }
+      ],
+      "driveFolderName": "Nebraska Other Sports Cards & Autos",
+      "_help": "Read from the Drive folder named 'Nebraska Other Sports Cards & Autos' (Sold/Pending/Cut/Extra subfolders skipped). In the Nebraska Cornhuskers menu; no bios or player pages for these players (those come only from Ian's lists). Chase pages file its cards under 'Other'."
+    },
+    {
+      "slug": "royals",
+      "title": "Kansas City Royals",
+      "kind": "team",
+      "color": "royal",
+      "blurb": "Some are PC and some are available for trade, but I'll always listen if you have a card I need.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Kansas City Royals"
+        }
+      ],
+      "driveFolderName": "Kansas City Royals",
+      "freshUploadDate": "2025-01-01",
+      "_help": "Read from the Drive folder named 'Kansas City Royals' (one folder; a same-named subfolder inside another collection, e.g. Jermaine Dye, is skipped). freshUploadDate: renamed re-uploads the robot can't match aren't shown as NEW (remove once the re-upload is done)."
+    },
+    {
+      "slug": "lions",
+      "title": "Detroit Lions",
+      "kind": "team",
+      "color": "lions",
+      "blurb": "Some are PC and some are available for trade.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Detroit Lions"
+        }
+      ],
+      "driveFolderName": "Detroit Lions",
+      "teamTag": "Detroit Lions",
+      "_help": "Ian's own Drive folder 'Detroit Lions' (a same-named subfolder inside another collection isn't mistaken for it), plus every card tagged with this team elsewhere, e.g. the 'Detroit Lions' subfolder in Nebraska Football Cards & Autos (Ian: combined is good). Those cards stay filed in their home collection too."
+    },
+    {
+      "slug": "customs-folder",
+      "title": "Customs",
+      "kind": "team",
+      "color": "gold",
+      "customs": true,
+      "hidden": true,
+      "driveFolderName": "Customs",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Customs"
+        }
+      ],
+      "_help": "Ian's \"Customs\" Drive folder, read by name. Hidden: no menu, tile or page of its own; every scan in it is a custom and shows on the Customs page (Huskers or Royals filter from the name or its subfolder; non-sport if the name or subfolder says so) and on the player's page. A scan also filed in another collection (same name) is shown once, from that collection. Folders read on their own (Customs - Non-Sport, Customs - With the Players) are skipped if they sit inside it."
+    },
+    {
+      "slug": "customs-non-sport",
+      "title": "Customs - Non-Sport",
+      "kind": "team",
+      "color": "gold",
+      "customs": true,
+      "hidden": true,
+      "driveFolderName": "Customs - Non-Sport",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "Non-Sport Customs"
+        }
+      ],
+      "_help": "Ian's non-sport custom cards (e.g. Sonic the Hedgehog), read from the Drive folder named in driveFolderName. Hidden: no menu, tile or page of its own; the cards show under the Customs page's Non-Sport filter (customs: true marks every scan in it as a custom)."
+    },
+    {
+      "slug": "want-list",
+      "title": "Want List",
+      "kind": "want",
+      "color": "gold",
+      "blurb": "Cards I'm still hunting. If you know where to find one, please get in touch.",
+      "groups": [
+        {
+          "slug": "all",
+          "label": "All",
+          "folders": [
+            [
+              "0B9zOOzkfqijNZVdQUkl6Tmx4cVk",
+              "0-J6mN-2-TOH3NFcLVM2aA3A"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "driveRoot": {
+    "_help": "One parent folder read by the robot: Parent / Section / Group / scans. Folder names become labels; section folders named like a section below keep its text and progress. Switch on with enabled: true.",
+    "id": "18u_eEO7u8WP7Db8Hyo5VypOwIQTWTqWV",
+    "enabled": false
+  },
+  "nflListStory": [
+    "In the mid-2000s, I started a project to collect one autograph of every Nebraska Cornhusker to play in the NFL. I had no idea what an incredible journey that decision would start.",
+    "It began with picking up $5 autographed cards, which led to signed index cards for Huskers who never had a trading card. Years later, I made my first custom cards by designing them around some of those signed index cards. Eventually, I realized that no website had an accurate list of which Huskers actually played in the NFL; every one I found had errors or omissions. So I set out to build my own.",
+    "I have spent countless hours digging through old newspapers, media guides, college yearbooks and more to check every list I could find. The list featured here is the most accurate one available (so far!). What started as an autograph project has become the joy of researching, documenting, and now sharing Husker history."
+  ],
+  "customsPhotos": {
+    "_help": "Photos of athletes with custom cards I made for them, shown in a rotating strip on the Customs page. Put them in a Drive folder named 'Customs - With the Players' (inside the parent folder once it is switched on, or list its [id, resourcekey] under folders until then). The file name is the caption; the text before the first period is the short label on the strip. To replace an awkward file name, add it to captions: {\"file name without extension\": \"Caption to show\"}.",
+    "folders": [
+      [
+        "1eSIXCWr-eKz9eYCXMKZlPv2K-pv_RYb-",
+        ""
+      ]
+    ],
+    "captions": {},
+    "videos": [
+      {
+        "id": "scDrT6hoARA",
+        "caption": "Adrian Martinez showed off my custom creation at Husker Fan Day.",
+        "start": 85,
+        "players": [
+          "adrian-martinez"
+        ],
+        "title": "Adrian Martinez shows off my custom card at Husker Fan Day"
+      }
+    ]
+  },
+  "tagFixes": {
+    "_help": "Correct a tag the file name gets wrong. List card names exactly as shown in the viewer's grey file-name line, without the file extension.",
+    "auto": {
+      "add": [
+        "1994 Signature Rookies #41 Michael Tucker #'d to 8650"
+      ],
+      "remove": []
+    }
+  },
+  "media": {
+    "intro": "Articles, interviews and shows that have featured my collection.",
+    "items": [
+      {
+        "type": "video",
+        "title": "What does it mean to be a super collector?",
+        "outlet": "The Brewer & The Baker · Ep. 34",
+        "youtube": "7SnThuBwNYM",
+        "start": 960,
+        "url": "https://www.youtube.com/watch?v=7SnThuBwNYM&t=960s",
+        "note": "A fun interview where we cover super collecting, finding joy in the hobby, and answering listener questions. Starts at 16:00.",
+        "date": "September 2026"
+      },
+      {
+        "type": "video",
+        "title": "How I met Husker Ricky Simmons through cards",
+        "outlet": "The Get Your Happy On Hour with Ricky Simmons · 93.7 The Ticket",
+        "youtube": "CY41TEOdRSY",
+        "start": 1002,
+        "url": "https://www.youtube.com/watch?v=CY41TEOdRSY&t=1002s",
+        "note": "Former Husker Ricky Simmons interviews me about how we met through my Husker autograph project. Starts at 16:42.",
+        "date": "June 2024",
+        "players": [
+          "ricky-simmons"
+        ]
+      },
+      {
+        "type": "video",
+        "title": "Power Searching on COMC",
+        "outlet": "COMC · Check Out My Cards Tutorials",
+        "date": "August 2023",
+        "youtube": "g8aqLcHIQQs",
+        "url": "https://www.youtube.com/watch?v=g8aqLcHIQQs",
+        "note": "A tips-and-tricks video I recorded for COMC to use on their channel and blog, on power searching COMC to find the cards you're after."
+      },
+      {
+        "type": "video",
+        "title": "Custom Cards and a collab with Brewer Hicklen",
+        "outlet": "The Card Life · Season 2, Episode 7",
+        "date": "January 2023",
+        "youtube": "-Vh-U_KiuAI",
+        "start": 690,
+        "url": "https://www.youtube.com/watch?v=-Vh-U_KiuAI&t=690s",
+        "note": "The Card Life features my custom card work and a collaboration with Brewer Hicklen. Starts at 11:30."
+      },
+      {
+        "type": "video",
+        "title": "The Card Life - Kansas City Collectors",
+        "outlet": "The Card Life · Season 2, Episode 4",
+        "youtube": "VwmpAhPuIOM",
+        "start": 746,
+        "url": "https://www.youtube.com/watch?v=VwmpAhPuIOM&t=746s",
+        "note": "My collection featured on the show. Starts at 12:26.",
+        "date": "October 2022"
+      },
+      {
+        "type": "video",
+        "title": "Royals Super Collector Ian Badeer",
+        "outlet": "WaxPackHero Podcast with Mike Sommer · Ep. 174",
+        "date": "September 2022",
+        "url": "https://www.youtube.com/watch?v=qkk47iwoiOA&t=192s",
+        "note": "Episode 174: my interview about being a super collector. Starts at 3:12.",
+        "youtube": "qkk47iwoiOA",
+        "start": 192
+      },
+      {
+        "type": "video",
+        "title": "How to trade cards on TCDb",
+        "outlet": "My YouTube channel",
+        "youtube": "PTu7pQPu9bE",
+        "url": "https://www.youtube.com/watch?v=PTu7pQPu9bE",
+        "note": "A walkthrough of trading cards with other collectors on Trading Card Database.",
+        "date": "September 2021"
+      },
+      {
+        "type": "video",
+        "title": "Upgrade your card collecting with Trading Card Database",
+        "outlet": "My YouTube channel",
+        "youtube": "h2K2fRKXmCk",
+        "start": 73,
+        "url": "https://www.youtube.com/watch?v=h2K2fRKXmCk&t=73s",
+        "note": "A one-hour class I taught at Capital City Sports Cards on how to use TCDb to track your collection. Starts at 1:13.",
+        "date": "March 2020"
+      },
+      {
+        "type": "article",
+        "title": "My story in The Kansas City Star",
+        "outlet": "The Kansas City Star",
+        "url": "https://thatsgoldjerry-900.github.io/cardcollection-site/assets/kc-star-article.pdf",
+        "note": "A feature on my Kansas City Royals collection.",
+        "date": "June 2020"
+      }
+    ]
+  },
+  "_mediaHelp": "Media page items: \"type\" is \"video\", \"podcast\" or \"article\". Give a \"title\", \"outlet\", optional \"date\" (e.g. \"July 2019\") and \"note\", a \"url\", and for YouTube the video \"youtube\" id plus optional \"start\" in seconds; for a Spotify podcast, its embed link as \"spotify\". Videos and podcasts show first, then articles, in the order listed. Add \"players\": [\"player-page-slug\"] to show a Watch link on those player pages (also works on Customs videos). The home page features the first item, or the one marked \"featured\": true.",
+  "dyeStory": {
+    "_help": "The Jermaine Dye career page (#/dye-career). Text is Ian's own write-up. Each chapter's cards are picked automatically from that team's group (1/1s, autos, relics, low print runs first, one per set); list card names (or a unique part of them) under \"cards\" to choose them yourself, in order.",
+    "title": "Jermaine Dye: A Career in Cards",
+    "intro": [
+      "I started collecting Jermaine Dye as a kid while listening to Royals games on the radio in the late 1990s. He flashed excellent power in the Royals big ballpark and had a cannon for an arm, winning a Gold Glove with the Royals in 2000. He, along with Johnny Damon and Carlos Beltran, formed one of the best Royals outfields of all-time. One wonders what the Royals could have been if they had been able to hold onto all three. Jermaine played for the Braves, Royals, Athletics, and finished his career with the White Sox, where he won World Series MVP in 2005.",
+      "I track my inventory of his cards with TradingCardDatabase as well as manually in Excel for stat generation. My primary focus of collecting is Game-Used relic cards, the rest I fill in when the price is right. I don't collect printing plates or other 1/1s unless they include an autograph or relic."
+    ],
+    "highlights": [
+      {
+        "card": "Bat Knob Autographs #BKA-JDY1",
+        "caption": "The ultimate relic card for Jermaine, his 1/1 Game-Used Bat Knob"
+      },
+      {
+        "card": "Bat Knob Autographs #BKA-JDY2",
+        "caption": "Two is better than one! The other bat knob variation 1/1 from 2009 Topps Unique"
+      },
+      {
+        "card": "Gold Worthy Jermaine Dye Custom (Dirty Glove)",
+        "caption": "A custom booklet I made featuring game-used batting glove pieces."
+      },
+      {
+        "card": "Armory Batting Gloves Jermaine Dye Royals Custom",
+        "caption": "One of my custom booklets made with a Jermaine Dye batting glove"
+      }
+    ],
+    "chapters": [
+      {
+        "team": "Atlanta Braves",
+        "years": "1994–1996",
+        "group": "Braves",
+        "paragraphs": [
+          "Jermaine is part of a select group of baseball players that have hit a home run in their first ever Major League at bat.",
+          "He connected for the notable blast on May 17th, 1996 against Marcus Moore of the Reds. He entered the game as a defensive replacement in the 5th inning, and then got his first turn to swing the bat in the 6th, where he made the most of his opportunity.",
+          "He made his mark in his first and only season with the Braves, playing a half season after replacing the injured David Justice and finishing 6th in the Rookie of the Year balloting. He stayed on with the team in the postseason, homering in the NLDS playoffs and helping the team make the World Series where they were eventually defeated by the Yankees."
+        ]
+      },
+      {
+        "team": "Kansas City Royals",
+        "years": "1997–2001",
+        "group": "Royals",
+        "paragraphs": [
+          "Just before the start of the 1997 season, the Atlanta Braves traded Jermaine and a relief pitcher to the Royals in exchange for Keith Lockhart and Michael Tucker.",
+          "He struggled to stay healthy in '97 and '98, hitting well in AAA Omaha but struggling mightily with the big league club.",
+          "In 1999 it all came together, he was healthy for a full campaign and his hitting and fielding began to reach their potential. He slashed .294/.354/.526 and quickly became a fan favorite. The 2000 season was one of his finest efforts, as he hit .321/.390/.561 and earned the starting RF job for the American League All-Star team.",
+          "2001 was quieter from a performance standpoint, but he was still effective at the midway point in the season. Inexplicably, the Royals traded him in a three-team deal for the baseball disaster that was Neifi Perez, one of the worst trades in Royals history."
+        ]
+      },
+      {
+        "team": "Oakland Athletics",
+        "years": "2001–2004",
+        "group": "Athletics",
+        "paragraphs": [
+          "The Athletics were on the favorable end of the three team deal, and Jermaine quickly responded to the energy of a team in the thick of the playoff race. He improved every offensive and defensive statistic in the transition, and helped Oakland make the ALDS right before the start of the \"Moneyball\" era.",
+          "Unfortunately, injuries and slumps plagued him again and he struggled from 2002-2004 to maintain league average performance. At the conclusion of the '04 season, he hit free agency."
+        ]
+      },
+      {
+        "team": "Chicago White Sox",
+        "years": "2005–2009",
+        "group": "White Sox",
+        "paragraphs": [
+          "The White Sox signed Jermaine to a 2-year deal in 2005 and he began to return to form. He posted his best offensive numbers since '00 in his first campaign with the Sox and it culminated in a starring turn in the World Series. He hit an outstanding .438/.526/.688 with a home run, 3 runs batted in, and the clinching go ahead single in the final game to win World Series MVP.",
+          "He followed up with the best power output of his career in 2006. 44 HRs, 120 RBI, and a 1.006 OPS landed him an All-Star nod, a Silver Slugger, and a 5th Place finish in the AL MVP race, getting a 40% share of the vote.",
+          "He finished his career with the White Sox, announcing his retirement on March 31, 2011."
+        ]
+      }
+    ]
+  },
+  "playerExtras": {
+    "ricky-simmons": {
+      "about": "Ricky is also an author. His memoir, Explosion of Redemption: Trying to Win the Game of Personal Forgiveness in Life (2017), shares his story of forgiveness and second chances, and he speaks to schools and groups about it."
+    }
+  },
+  "_playerExtrasHelp": "\"playerExtras\": {\"player-page-slug\": {\"about\": \"a sentence or two\"}} adds an About line to that player's page and plain page.",
+  "letterWords": {},
+  "_letterWordsHelp": "\"letterWords\": {\"<year>|<player>|<card number letters>\": \"WORD\"} sets the word a letterman set spells when the site can't work it out (it tries the player's last or full name, CORNHUSKERS, HUSKERS, NEBRASKA, ROOKIE + last name, and last name + KANSAS CITY ROYALS / ROYALS).",
+  "tcdb": {
+    "_help": "TCDb links on player pages. \"member\": your TCDb name. \"players\": player page slug -> TCDb person ID (the number after /pid/ in a TCDb player link). A player with an ID gets \"View my full collection on TCDb\" (and a for-trade button once its link format is set in \"tradeUrl\").",
+    "member": "DyeHardFan",
+    "collectionUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=G",
+    "tradeUrl": "https://www.tcdb.com/CollectionBrowseP.cfm/pid/{pid}/{name}?Member={member}&CollectionID=1&Filter=S",
+    "players": {
+      "alex-gordon": 2167,
+      "jermaine-dye": 1638,
+      "ahman-green": 10211,
+      "irving-fryar": 10009,
+      "ndamukong-suh": 33880,
+      "ameer-abdullah": 65758,
+      "neil-smith": 12791,
+      "roger-craig": 9456,
+      "lavonte-david": 40123,
+      "lawrence-phillips": 22350,
+      "correll-buckhalter": 9073,
+      "rex-burkhead": 46237,
+      "brandon-jackson": 10747,
+      "kenny-bell": 65782,
+      "tom-rathman": 12294,
+      "eric-crouch": 18422,
+      "mike-rozier": 12485,
+      "tyrone-williams": 107509,
+      "prince-amukamara": 37136,
+      "roy-helu": 37201,
+      "adam-carriker": 9204,
+      "quincy-enunwa": 48900,
+      "tyrone-hughes": 18746,
+      "johnny-mitchell": 19017,
+      "broderick-thomas": 13065,
+      "niles-paul": 37251,
+      "randy-gregory": 65739,
+      "mike-croel": 18419,
+      "jared-crick": 40120,
+      "barrett-ruud": 27435,
+      "grant-wistrom": 19502,
+      "stanley-morgan": 218820,
+      "fabian-washington": 27780,
+      "derek-brown": 18298,
+      "johnny-rodgers": 12437,
+      "vince-ferragamo": 9899,
+      "will-shields": 19246,
+      "daniel-bullocks": 21944,
+      "maliek-collins": 95700,
+      "dan-alexander": 8526,
+      "bobby-newcombe": 22311,
+      "tommie-frazier": 18565,
+      "stewart-bradley": 8927,
+      "tanner-lee": 190998,
+      "alfonzo-dennard": 40126,
+      "sam-keller": 11015,
+      "cam-taylor-britt": 355395,
+      "brian-washington": 13330,
+      "jason-peter": 27286,
+      "chris-kelsay": 11026,
+      "joel-makovicka": 18921,
+      "wan-dale-robinson": 356878,
+      "trev-alberts": 21858,
+      "kyle-vanden-bosch": 13238,
+      "trey-palmer": 386947,
+      "cory-schlesinger": 19218,
+      "mike-brown": 18302,
+      "kenny-walker": 19419,
+      "josh-bullocks": 26055,
+      "luke-mccaffrey": 419692,
+      "dahrran-diedrick": 18463,
+      "samori-toure": 355354,
+      "scott-frost": 26431,
+      "michael-booker": 25962,
+      "bruce-pickens": 19106,
+      "andy-janovich": 110489,
+      "demorrio-williams": 27839,
+      "mike-rucker": 19195,
+      "john-dutton": 9755,
+      "zac-taylor": 13043,
+      "kris-brown": 26031,
+      "marlon-lucky": 26940,
+      "dean-steinkuhler": 12889,
+      "jammal-lord": 48190,
+      "keyuo-craver": 18414,
+      "john-garrison": 192877,
+      "matt-davison": 192911,
+      "jeff-makovicka": 194230,
+      "kyler-reed": 192719,
+      "adam-treu": 196251,
+      "brad-johnson": 18791,
+      "greg-jorgensen": 185867,
+      "dan-hadenfeldt": 192909,
+      "trevor-roach": 192298,
+      "lornell-mcpherson": 192731,
+      "joe-ganz": 192792,
+      "anthony-grant": 403698,
+      "chris-brooks": 192799,
+      "matt-o-hanlon": 192804,
+      "anthony-west": 192845,
+      "mike-caputo": 192870,
+      "jordan-westerkamp": 169513,
+      "zaven-yaralian": 175235,
+      "steve-manstedt": 174927,
+      "clinton-childs": 196282,
+      "jason-jenkins": 196289,
+      "jeff-lake": 197654,
+      "zac-lee": 192854,
+      "brian-schuster": 196381,
+      "brad-jenkins": 185874,
+      "rich-costanzo": 175224,
+      "bob-lingenfelter": 185876,
+      "frosty-anderson": 175149,
+      "tierre-green": 192788,
+      "keith-williams": 267527,
+      "doug-dubose": 152514,
+      "oliver-martin": 192270,
+      "ed-stewart": 192946,
+      "mike-smith": 267748,
+      "forrest-mcpherson": 320767,
+      "micah-mazzccua": 458991,
+      "george-mills": 185868,
+      "dennis-pavelka": 185870,
+      "ted-vactor": 13225,
+      "brent-longwell": 175133,
+      "titus-adams": 192737,
+      "phalen-sanford": 403773,
+      "d-j-jones": 267505,
+      "marco-ortiz": 403762,
+      "todd-peterson": 267756,
+      "armando-murillo": 192789,
+      "tamon-lynum": 403784,
+      "julius-jackson": 147832,
+      "menelik-holt": 192805,
+      "rob-zatechka": 27917,
+      "kieron-williams": 216507,
+      "dejon-gomes": 192846,
+      "ralph-powell": 174926,
+      "terry-luck": 185858,
+      "terrence-moore": 192871,
+      "tom-alward": 175232,
+      "nouredin-nouili": 403772,
+      "bill-lafleur": 180780,
+      "keithen-mccant": 138537,
+      "pat-fischer": 9920,
+      "bob-wolfe": 175132,
+      "randy-borg": 175223,
+      "le-kevin-smith": 192735,
+      "bob-schmit": 175130,
+      "eric-stokes": 196252,
+      "seppo-evwaraye": 192736,
+      "corey-mckeon": 192785,
+      "joe-arenas": 8597,
+      "tommi-hill": 487800,
+      "cortney-grixby": 192786,
+      "bo-ruud": 46039,
+      "ricky-henry": 192850,
+      "lydon-murtha": 192793,
+      "corey-cooper": 192293,
+      "mark-gilman": 196293,
+      "cole-pensick": 192559,
+      "adi-kunalic": 192844,
+      "curenski-gilleylen": 192861,
+      "jeff-mills": 11696,
+      "don-boll": 8883,
+      "mike-knox": 267563,
+      "lance-lewis": 267525,
+      "sam-vacanti": 172505,
+      "neil-harris": 114605,
+      "frank-lockett": 11302,
+      "ed-burns": 95844,
+      "ron-kirkland": 136875,
+      "mike-jefferson": 138411,
+      "warren-powers": 78087,
+      "bob-hohn": 127715,
+      "cody-glenn": 33159,
+      "cethan-carter": 143910,
+      "jason-wiltz": 463940,
+      "charles-fryar": 152656,
+      "carl-johnson": 10860,
+      "p-j-mangieri": 353850,
+      "don-purcell": 109997,
+      "scott-strasburger": 114598,
+      "mark-behning": 152505,
+      "zach-wiegert": 22534,
+      "mick-tingelhoff": 13125,
+      "danny-noonan": 11928,
+      "carlos-polk": 27312,
+      "jerry-tagge": 12996,
+      "mike-minter": 27097,
+      "josh-brown": 26029,
+      "calvin-jones": 22166,
+      "tracey-wistrom": 19503,
+      "dave-rimington": 12388,
+      "ty-robinson": 233294,
+      "dominic-raiola": 27349,
+      "ron-mcdole": 11539,
+      "ochaun-mathis": 398435,
+      "andra-franklin": 9984,
+      "john-parrella": 19080,
+      "bill-lewis": 11249,
+      "steve-taylor": 115883,
+      "jimmy-williams": 81532,
+      "turner-gill": 77897,
+      "lamar-jackson": 254176,
+      "jim-skow": 12739,
+      "toby-wright": 22561,
+      "bob-brown": 9002,
+      "alex-henery": 39191,
+      "ciante-evans": 178170,
+      "phillip-dillard": 36495,
+      "nash-hutmacher": 403768,
+      "devine-ozigbo": 245760,
+      "jay-foreman": 26408,
+      "mike-mcneill": 38319,
+      "keith-bishop": 8847,
+      "bryce-benhart": 233193,
+      "aaron-green": 95720,
+      "isaiah-neyor": 355382,
+      "tim-smith": 12802,
+      "dedrick-mills": 291226,
+      "scott-shanle": 27503,
+      "omar-brown": 403694,
+      "jeff-kinney": 11074,
+      "maurice-purify": 19132,
+      "isaac-gifford": 403734,
+      "thomas-fidone": 403787,
+      "cory-ross": 27411,
+      "guy-chamberlin": 18355,
+      "emmett-johnson": 403721,
+      "junior-miller": 11686,
+      "dejuan-groce": 26543,
+      "barron-miles": 107706,
+      "jon-bostick": 267526,
+      "josh-banderas": 245175,
+      "stan-parker": 152529,
+      "larry-tomlinson": 359619,
+      "elmer-dohrmann": 267542,
+      "mark-schellen": 12586,
+      "gerry-gdowski": 262920,
+      "toby-williams": 467226,
+      "ken-geddes": 10089,
+      "corey-dixon": 267498,
+      "todd-frain": 152530,
+      "zach-miller": 101781,
+      "todd-brown": 126358,
+      "bernie-scherer": 349283,
+      "leroy-etienne": 152718,
+      "dan-schneiss": 165952,
+      "ray-prochaska": 406136,
+      "derrie-nelson": 100381,
+      "shane-swanson": 114603,
+      "chris-spachman": 152539,
+      "richie-incognito": 160690,
+      "jonathan-rose": 177732,
+      "christian-peter": 22346,
+      "jamie-williams": 13487,
+      "carl-nicks": 27203,
+      "jeff-smith": 12778,
+      "russ-hochstein": 102010,
+      "tyrone-legette": 18885,
+      "brenden-stai": 22455,
+      "cam-jurgens": 382333,
+      "kyle-larson": 46400,
+      "nate-turner": 19397,
+      "david-humm": 138844,
+      "brett-maher": 209630,
+      "vershan-jackson": 26745,
+      "rik-bonness": 138842,
+      "bob-martin": 11437,
+      "eric-warfield": 46345,
+      "monte-johnson": 10891,
+      "alex-bullock": 403697,
+      "willie-harper": 10384,
+      "ralph-brown": 26035,
+      "jared-tomich": 27702,
+      "freeman-white": 191618,
+      "sheldon-jackson": 26742,
+      "tony-davis": 57113,
+      "aaron-graham": 26499,
+      "tony-jeter": 138860,
+      "sandro-deangelis": 107763,
+      "sam-francis": 108208,
+      "bob-nelson": 159403,
+      "dave-volk": 192900,
+      "jerry-murtaugh": 146937,
+      "jay-moore": 27128,
+      "mike-fultz": 98329,
+      "billy-kemp": 403703,
+      "quinton-newsome": 403775,
+      "wonder-monds": 65129,
+      "frank-solich": 60057,
+      "nate-gerry": 230168,
+      "joe-sims": 19253,
+      "pat-tyrance": 19399,
+      "bob-newton": 11900,
+      "spencer-long": 155043,
+      "marvin-crenshaw": 138777,
+      "bruce-mathison": 11466,
+      "deshon-singleton": 403717,
+      "jason-schwab": 192910,
+      "josh-davis": 209953,
+      "sam-koch": 117482,
+      "stanley-jean-baptiste": 63152,
+      "lawrence-pete": 19102,
+      "john-bullock": 403749,
+      "heinrich-haarberg": 403732,
+      "lloyd-cardwell": 138783,
+      "rick-berns": 57112,
+      "eric-hagg": 37196,
+      "link-lyman": 18910,
+      "austin-allen": 361597,
+      "daimion-stafford": 49082,
+      "verne-lewellen": 65170,
+      "george-sauer": 12565,
+      "ed-weir": 13382,
+      "matt-slauson": 33877,
+      "hugh-rhea": 138781,
+      "dave-butterfield": 59088,
+      "kelvin-clark": 138863,
+      "brian-davis": 9546,
+      "tom-pate": 144143,
+      "darrion-daniels": 258417,
+      "maury-damkroger": 175186,
+      "ken-clark": 9313,
+      "bernie-masterson": 60026,
+      "drew-brown": 225878,
+      "pierre-allen": 37135,
+      "will-compton": 135414,
+      "daryl-white": 138871,
+      "bret-clark": 9303,
+      "aaron-taylor": 202014,
+      "jim-mcfarland": 138846,
+      "larry-jacobson": 138872,
+      "kent-mccloughan": 11518,
+      "jarvis-redwine": 60058,
+      "joe-orduna": 138778,
+      "bill-thornton": 60056,
+      "kenny-wilhite": 138406,
+      "eric-johnson": 186539,
+      "tom-novak": 146943,
+      "mark-traynowicz": 114595,
+      "mohammed-seisay": 155042,
+      "charles-toogood": 13146,
+      "rich-glover": 10137,
+      "fred-shirey": 86429,
+      "warren-alfson": 138874,
+      "vincent-valentine": 117326,
+      "matt-herian": 192732,
+      "henry-lutovsky": 403733,
+      "kade-warner": 386953,
+      "dane-key": 398726,
+      "brandon-reilly": 197941,
+      "patrick-kabongo": 180167,
+      "russell-thompson": 278257,
+      "george-andrews": 138779,
+      "walt-barnes": 138845,
+      "russell-gary": 10075,
+      "keith-wortman": 13609,
+      "ben-scott": 403701,
+      "danny-mcmullen": 138847,
+      "stan-waldemore": 185860,
+      "brent-qvale": 155044,
+      "donta-jones": 22169,
+      "adrian-martinez": 439077,
+      "harry-grimminger": 59091,
+      "eric-martin": 207970,
+      "laverne-allers": 146940,
+      "larry-kramer": 138859,
+      "javin-wright": 403745,
+      "chris-dishman": 193102,
+      "wayne-meylan": 138861,
+      "eric-anderson": 193137,
+      "john-mccormick": 146887,
+      "ed-husmann": 10712,
+      "erwin-swiney": 192902,
+      "jerry-minnick": 146936,
+      "barry-turner": 192790,
+      "dana-brinson": 56227,
+      "jason-ankrah": 155039,
+      "tony-ortiz": 147828,
+      "chad-kelsay": 192947,
+      "i-m-hipp": 181405,
+      "terrell-newby": 146164,
+      "laverne-torczon": 13152,
+      "troy-dumas": 22028,
+      "ryon-bingham": 192728,
+      "demoine-adams": 192875,
+      "larry-mushinskie": 174924,
+      "jeremiah-sirles": 155041,
+      "mark-doak": 175153,
+      "travis-hill": 36463,
+      "dean-gissler": 175147,
+      "ardell-johnson": 175121,
+      "jon-clanton": 192880,
+      "ritch-bahe": 175227,
+      "keith-jones": 157738,
+      "dennis-claridge": 9300,
+      "tom-davis": 146941,
+      "brian-buschini": 403705,
+      "steve-warren": 145216,
+      "zach-potter": 192797,
+      "larry-asante": 145762,
+      "randy-schleusener": 138775,
+      "rickey-thenarse": 192806,
+      "tom-ruud": 175233,
+      "jeremy-slechta": 192904,
+      "glenn-presnell": 86585,
+      "terrell-farley": 193106,
+      "terry-connealy": 69871,
+      "stan-hegener": 175228,
+      "tony-veland": 153875,
+      "ray-richards": 138873,
+      "marcel-jones": 155040,
+      "ron-pruitt": 174923,
+      "austin-cassidy": 192859,
+      "don-westbrook": 175148,
+      "bill-olds": 11985,
+      "kent-wells": 86454,
+      "joe-walker": 27759,
+      "john-starkebaum": 175152,
+      "andrew-green": 192553,
+      "damon-benning": 193103,
+      "jamel-williams": 193104,
+      "nate-boerkircher": 403769,
+      "nate-swift": 192795,
+      "john-reece": 22381,
+      "zaire-anderson": 192299,
+      "taylor-martinez": 192564,
+      "pat-ricketts": 192727,
+      "ty-steinkuhler": 192796,
+      "de-mornay-pierson-el": 216508,
+      "jamie-burrow": 192903,
+      "loran-kaiser": 180957,
+      "jeff-ogard": 196386,
+      "thunder-collins": 181257,
+      "fred-pollack": 197558,
+      "john-lee": 185865,
+      "josh-mitchell": 192296,
+      "terrence-nunn": 135418,
+      "marc-munford": 152523,
+      "aaron-golliday": 192873,
+      "jake-cotton": 192294,
+      "trevor-johnson": 192730,
+      "doug-colman": 26163,
+      "jim-burrow": 147881,
+      "clint-finley": 180956,
+      "tim-jackson": 138371,
+      "carlos-davis": 480673,
+      "lloyd-voss": 101964,
+      "cameron-meredith": 267435,
+      "greg-bell": 337727,
+      "josh-heskew": 192948,
+      "matt-farniok": 145458,
+      "dion-booker": 192901,
+      "mj-sherman": 458995,
+      "baker-steinkuhler": 192715,
+      "brett-byford": 192784,
+      "brandon-kinnie": 192860,
+      "wilson-thomas": 192879,
+      "ricky-simmons": 12707,
+      "john-o-leary": 185864,
+      "jon-hesse": 196253,
+      "jon-zatechka": 197655,
+      "ad-liska": 71712,
+      "ryan-kurosaki": 60247,
+      "darin-erstad": 1716,
+      "ken-harvey": 20616,
+      "joba-chamberlain": 1020,
+      "jake-meyers": 303556,
+      "pete-o-brien": 4333,
+      "spencer-schwellenbach": 325588,
+      "dan-johnson": 2909,
+      "brice-matthews": 414980,
+      "tim-burke": 811,
+      "tony-watson": 54107,
+      "cade-povich": 325422,
+      "brian-duensing": 28602,
+      "cody-asche": 47714,
+      "aaron-bummer": 182940,
+      "kevin-jordan": 17422,
+      "thad-weber": 62908,
+      "stan-bahnsen": 236,
+      "adam-moore": 33765,
+      "matt-waldron": 326387,
+      "bob-cerv": 1011,
+      "bob-sebra": 5303,
+      "adam-shabala": 30207,
+      "kip-gross": 20568,
+      "todd-sears": 30185,
+      "adam-stern": 21601,
+      "andrew-brown": 47741,
+      "eric-helfand": 20631,
+      "zach-kroenke": 47068,
+      "bill-mcguire": 3851,
+      "dan-jennings": 86199,
+      "jamal-strong": 30355,
+      "shane-komine": 29273,
+      "ken-ramos": 21334,
+      "troy-brohawn": 28200,
+      "steve-stanicek": 5595,
+      "marc-sagmoen": 21460,
+      "steve-edlefsen": 45907,
+      "gary-neibauer": 4222,
+      "dwight-siebler": 5393,
+      "michael-mariot": 71243,
+      "nate-fisher": 231273,
+      "dave-mcdonald": 57086,
+      "drew-anderson": 27970,
+      "buddy-hunter": 100915,
+      "andrew-white": 170469,
+      "tyronn-lue": 7526,
+      "isaiah-roby": 232257,
+      "eric-piatkowski": 7805,
+      "bryce-mcgowens": 349615,
+      "erick-strickland": 8097,
+      "dalano-banton": 341219,
+      "mikki-moore": 7668,
+      "rich-king": 17966,
+      "tony-farmer": 17875,
+      "stu-lantz": 7472,
+      "dave-hoppen": 7248,
+      "jack-mcveigh": 370001,
+      "eric-johnson-basketball": 7334
+    }
+  },
+  "playerAliases": {
+    "_help": "Other names a player goes by, so the Find a player boxes find him (list name: [other names]).",
+    "JoJo Domann": [
+      "Johansen Domann"
+    ]
+  },
+  "backFor": {
+    "_help": "Back scans that belong to fronts with different names (back file name without extension: [front names]).",
+    "2021 Damian Jackson Autograph Custom Back": [
+      "2021 Damian Jackson Black Ink Autograph Custom",
+      "2021 Damian Jackson Black Ink Autograph Custom 2nd",
+      "2021 Damian Jackson Red Ink Autograph Custom",
+      "2021 Damian Jackson Red Ink Autograph Custom 2nd"
+    ]
+  },
+  "freshUpload": false,
+  "_freshUploadHelp": "While freshUpload is true, a card the robot can't match to one it saw before is dated freshUploadDate (not today), so the big football re-upload doesn't all show as NEW. Turn off after the re-upload.",
+  "freshUploadDate": "2022-11-28",
+  "cardPlayers": {
+    "_help": "People I made custom cards of who aren't on my Pro-player lists: each gets a player page built from his cards and my card-back write-ups (data/card-text.json). grouped by where their cards are: 'football' = my Nebraska football cards, or a section slug such as 'royals'; 'year' = final Nebraska season; 'position' as written on my card.",
+    "football": [
+      {
+        "name": "Tom Osborne",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Bob Devaney",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Larry Frost",
+        "position": "RB/WR",
+        "year": "1969"
+      },
+      {
+        "name": "Alonzo Whaley",
+        "position": "",
+        "year": "2012"
+      },
+      {
+        "name": "Bill Bomberger",
+        "position": "Kicker / fullback",
+        "year": "1970"
+      },
+      {
+        "name": "Randy Reeves",
+        "position": "Safety",
+        "year": "1969"
+      },
+      {
+        "name": "Ladas Hubka",
+        "position": "Guard",
+        "year": "1935"
+      },
+      {
+        "name": "Omar Manning",
+        "position": "Wide receiver",
+        "year": ""
+      },
+      {
+        "name": "Maurice Washington",
+        "position": "Running back",
+        "year": "2019"
+      },
+      {
+        "name": "Mick Stoltenberg",
+        "position": "Defensive lineman",
+        "year": "2018"
+      },
+      {
+        "name": "Sam Foltz",
+        "position": "Punter",
+        "year": "2015"
+      },
+      {
+        "name": "Ron Brown",
+        "position": "Assistant coach",
+        "year": ""
+      },
+      {
+        "name": "Pete Elliot",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Dana X. Bible",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Biff Jones",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Bo Pelini",
+        "position": "Head coach",
+        "year": ""
+      },
+      {
+        "name": "Mike Riley",
+        "position": "Head coach",
+        "year": ""
+      }
+    ],
+    "royals": [
+      {
+        "name": "Brewer Hicklen",
+        "position": "Kansas City Royals · Outfielder",
+        "tagline": "Kansas City Royals"
+      }
+    ]
+  },
+  "sharing": {
+    "_help": "The About & sharing page (#/about), linked from every page's footer. [text](https://...) makes a link.",
+    "sections": [
+      {
+        "title": "About this site",
+        "text": "IanBadeer.com is a personal collection and research site, documenting players' careers through cards, autographs and memorabilia. It is not affiliated with or endorsed by any team, school, league or card manufacturer. Team names, logos and trademarks belong to their respective owners and are shown for identification and historical reference."
+      },
+      {
+        "title": "Research & written lists",
+        "text": "My player lists, research notes and card-back write-ups are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). You may share and adapt them for non-commercial purposes with credit to Ian Badeer and a link to IanBadeer.com. News and media use with credit is welcome. Biographies adapted from Wikipedia stay under their own license ([CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)), and stats are from the sources credited where they appear."
+      },
+      {
+        "title": "Card images & scans",
+        "text": "My custom card (ACEO) designs are © Ian Badeer; team logos and photos used in them belong to their owners. The card scans are images of cards in my collection; the original card designs belong to their manufacturers. Please don't reproduce, redistribute, hotlink, scrape or bulk-download these images, or use them in AI training datasets. Small thumbnails shown by search engines are fine."
+      }
+    ]
+  },
+  "signatures": {
+    "_help": "Signature showcase (Ian's request): the signature's ink lifted out of one autograph scan on screen only (the scan file is untouched) and shown as a red neon sign. id = the card's Drive image ID; box = [left, top, width, height] as fractions of the scan; ar = the scan's width / height; ink = blue (default), dark (black marker) or both; src = a signature image Ian cleaned up himself (assets/signatures/), used instead of the scan; t = ink threshold (default 40, higher drops more background). Rules (Ian): show a signature only when it's complete and clean: nothing cut off by the sticker or crop edge, every loop whole, no streaky or broken strokes. No word inscriptions (e.g. '2001 Heisman'); a jersey number or a nickname is fine.",
+    "tommie-frazier": {
+      "id": "1EoA3Nh1bV6KM8O0AcwE65oY4kCPKrC5r",
+      "box": [
+        0.16,
+        0.69,
+        0.62,
+        0.17
+      ],
+      "ar": 0.7109
+    },
+    "ahman-green": {
+      "id": "158zWZ0j0ZYG84-FlTwXcFuL9GO9gRyL6",
+      "box": [
+        0.14,
+        0.68,
+        0.72,
+        0.17
+      ],
+      "ar": 0.7143
+    },
+    "lavonte-david": {
+      "id": "1kW3lmR2jw2H-kXP82zkipeZxrkmG5sIC",
+      "box": [
+        0.13,
+        0.57,
+        0.7,
+        0.15
+      ],
+      "ar": 0.7126
+    },
+    "will-shields": {
+      "id": "1urmpZXy1WrYy5-eptMJ4cRFOJt21J7-t",
+      "box": [
+        0.13,
+        0.7,
+        0.66,
+        0.18
+      ],
+      "ar": 0.7151
+    },
+    "ameer-abdullah": {
+      "id": "1reLDsnSnCjIsV_5NaUAAaG9a2lp6xGM3",
+      "box": [
+        0.38,
+        0.78,
+        0.24,
+        0.19
+      ],
+      "ar": 2.3438
+    },
+    "tom-rathman": {
+      "id": "1LezOJy1ct8rXW0NN7jBiHDL7bd9Nw9qo",
+      "box": [
+        0.0352,
+        0.7879,
+        0.9117,
+        0.155
+      ],
+      "ar": 0.7236
+    },
+    "keith-neubert": {
+      "id": "12CnDDRAtQK1fJk2kh8K4GIGuXqBuLGmC",
+      "box": [
+        0.2289,
+        0.1339,
+        0.6922,
+        0.8622
+      ],
+      "ar": 1.6667
+    },
+    "mike-rozier": {
+      "id": "1KsDQSSDC2Fc0LD7hnfh4HFaZ_vG51CdD",
+      "box": [
+        0.1955,
+        0.3363,
+        0.495,
+        0.3077
+      ],
+      "ar": 1.4085
+    },
+    "reggie-cooper": {
+      "id": "15rMXwtF4R0uHy65f_VGXZkQa6h6LXnzq",
+      "box": [
+        0.1218,
+        0.1877,
+        0.6384,
+        0.4945
+      ],
+      "ar": 1.6667
+    },
+    "jamel-williams": {
+      "id": "1pYWd2l614LRTdIvQ5Y2AP6BAgI7EgV7k",
+      "box": [
+        0.1334,
+        0.2038,
+        0.8333,
+        0.5269
+      ],
+      "ar": 1.6393
+    },
+    "stanley-morgan": {
+      "id": "1VhNLmBVV3eyz8iN9LpFct7wHpoOK9_-g",
+      "box": [
+        0.1318,
+        0.7002,
+        0.7504,
+        0.1877
+      ],
+      "ar": 0.7102
+    },
+    "tim-jackson": {
+      "id": "1w9xIt3WMw7-oNnDeSKguBNcmZlZBBM1D",
+      "box": [
+        0.0856,
+        0.2945,
+        0.7907,
+        0.3174
+      ],
+      "ar": 1.6722
+    },
+    "i-m-hipp": {
+      "id": "1tHqLSutTmxxcug5nQichWZxAQ3bA3yBj",
+      "box": [
+        0.3914,
+        0.3909,
+        0.4973,
+        0.2738
+      ],
+      "ar": 1.3928
+    },
+    "maliek-collins": {
+      "id": "1_S1znUp4qmme2HaxubiEqn6ovB8G6RTw",
+      "box": [
+        0.1492,
+        0.7798,
+        0.5757,
+        0.1422
+      ],
+      "ar": 0.7133
+    },
+    "cam-jurgens": {
+      "id": "15aatX__7wI4bZor40rm8ub9kPIwQAr5K",
+      "box": [
+        0.1973,
+        0.7979,
+        0.5354,
+        0.1413
+      ],
+      "ar": 0.7143
+    },
+    "samori-toure": {
+      "id": "1NXmxbBzd5CBbBnW5vORrsiv4Xmchvd7q",
+      "box": [
+        0.2012,
+        0.8435,
+        0.5757,
+        0.0946
+      ],
+      "ar": 0.7092
+    },
+    "roy-helu": {
+      "id": "11f-SHD502UfzNggI6iyrvgQv6mttJNY5",
+      "box": [
+        0.5052,
+        0.6971,
+        0.3517,
+        0.2171
+      ],
+      "ar": 1.4085
+    },
+    "brandon-jackson": {
+      "id": "15wZmn_gHwbMbqoObUyZvdnuG13IkP9Ao",
+      "box": [
+        0.3749,
+        0.4257,
+        0.4682,
+        0.2019
+      ],
+      "ar": 1.4006
+    },
+    "quincy-enunwa": {
+      "id": "1ClSo1o0H5mbUBX-15mx-ONfPORHnTYKn",
+      "box": [
+        0.4234,
+        0.5791,
+        0.5331,
+        0.2728
+      ],
+      "ar": 1.4085
+    },
+    "randy-gregory": {
+      "id": "1yKvXJSmeUjcHEvDNxkMetMGX-xzc5zto",
+      "box": [
+        0.1639,
+        0.7584,
+        0.6362,
+        0.1723
+      ],
+      "ar": 0.7163
+    },
+    "neil-smith": {
+      "id": "12mXwIlUg5erVR56dXErQw7xI5_LF3qdt",
+      "box": [
+        0.1375,
+        0.6072,
+        0.719,
+        0.1563
+      ],
+      "ar": 0.7184
+    },
+    "irving-fryar": {
+      "id": "1xbe2jKY9MRYF0rIhnzigt9uVQzrqf96_",
+      "box": [
+        0.1302,
+        0.6939,
+        0.6675,
+        0.1852
+      ],
+      "ar": 0.7143
+    },
+    "alfonzo-dennard": {
+      "id": "1SPuwc-IxRcn06nJLM0rbL8DYxrxALPkP",
+      "box": [
+        0.3619,
+        0.7668,
+        0.3382,
+        0.0793
+      ],
+      "ar": 0.7143
+    },
+    "jeff-lee": {
+      "id": "1PQ-IW6Igr1IKxZGHbbZ4plEp6nOinocc",
+      "box": [
+        0.1251,
+        0.2668,
+        0.6518,
+        0.5065
+      ],
+      "ar": 1.6667
+    },
+    "fabian-washington": {
+      "id": "1l2S2gbUPJLMBdY19m912Ze05rt3CI-NS",
+      "box": [
+        0.179,
+        0.6458,
+        0.3539,
+        0.1633
+      ],
+      "ar": 0.7153
+    },
+    "bill-barnett": {
+      "id": "1jQ22LH54s7DPOo84wY6FlsSKAE9YgnVf",
+      "box": [
+        0.2951,
+        0.333,
+        0.5018,
+        0.4269
+      ],
+      "ar": 1.6611
+    },
+    "darrion-daniels": {
+      "id": "1Yz8iOmDo1H6yM-m_sol-xcSSJBcG9pQc",
+      "box": [
+        0.1786,
+        0.736,
+        0.6227,
+        0.1919
+      ],
+      "ar": 0.7123
+    },
+    "rex-burkhead": {
+      "id": "1Wv7FyqLn7KiS7qamtxgM4moYv5BYH1rL",
+      "box": [
+        0.1813,
+        0.6705,
+        0.5734,
+        0.1589
+      ],
+      "ar": 0.7123
+    },
+    "trey-palmer": {
+      "id": "1n95yKVi9TxKPSFBGfitpktVSJ8eRICtf",
+      "box": [
+        0.2424,
+        0.7247,
+        0.3651,
+        0.133
+      ],
+      "ar": 0.7102
+    },
+    "adam-carriker": {
+      "id": "1z1afEsl8mzjfMad2TzaEKv8wqmlinuYX",
+      "box": [
+        0.391,
+        0.625,
+        0.5421,
+        0.2207
+      ],
+      "ar": 1.3928
+    },
+    "roger-craig": {
+      "id": "1pmuxr37gkrCueOqVIcMikicBU2wcUGPn",
+      "box": [
+        0.1252,
+        0.7838,
+        0.7616,
+        0.2023
+      ],
+      "ar": 0.7143
+    },
+    "andy-janovich": {
+      "id": "1yLiKao4N9lhOSoeOd9h380D2cAD6iPGi",
+      "box": [
+        0.4566,
+        0.609,
+        0.4368,
+        0.2193
+      ],
+      "ar": 1.3928
+    },
+    "niles-paul": {
+      "id": "1UnnGjhfqcUchREgUDirNH-iCpG_-9Afz",
+      "box": [
+        0.5252,
+        0.7308,
+        0.3875,
+        0.2051
+      ],
+      "ar": 1.4124
+    },
+    "barrett-ruud": {
+      "id": "1zJ_SdO5Tev2ICvrtDOoNV9qQ6TcbQBwd",
+      "box": [
+        0.2792,
+        0.521,
+        0.4995,
+        0.1186
+      ],
+      "ar": 0.7112
+    },
+    "jerry-tagge": {
+      "id": "1k1RveIZLNucFXGFYPR1423X1TGd55np8",
+      "box": [
+        0.0264,
+        0.8309,
+        0.7011,
+        0.1691
+      ],
+      "ar": 0.7163
+    },
+    "ndamukong-suh": {
+      "id": "1ZCO0h1oIsWGVwaiQenBtVS4jiz1PWV2A",
+      "box": [
+        0.4086,
+        0.5411,
+        0.4368,
+        0.2717
+      ],
+      "ar": 1.4045
+    },
+    "cam-taylor-britt": {
+      "id": "1lZvSTbTanWQZlO61wbdqX67NzZuXf0v7",
+      "box": [
+        0.3996,
+        0.8117,
+        0.3427,
+        0.086
+      ],
+      "ar": 0.5834
+    },
+    "freeman-white": {
+      "id": "14gMZIcCaGA5W8gsee3liL6fLin88iY7D",
+      "box": [
+        0.0266,
+        0.7719,
+        0.9587,
+        0.2281
+      ],
+      "ar": 0.7194
+    },
+    "jared-crick": {
+      "id": "1w2kUSlWpYUrn-Z3rhhj1NA4fKkZRmd9G",
+      "box": [
+        0.2895,
+        0.5889,
+        0.681,
+        0.371
+      ],
+      "ar": 1.3928
+    },
+    "jojo-domann": {
+      "id": "1lAV1U6TSY76bZXTf8DO6J_5Lz4QxN7Sa",
+      "box": [
+        0.2923,
+        0.6707,
+        0.3674,
+        0.1366
+      ],
+      "ar": 0.7133
+    },
+    "ochaun-mathis": {
+      "id": "1eOTwSUPTmsGNBvu_H63vMVGhn7bgqsHj",
+      "box": [
+        0.191,
+        0.6431,
+        0.504,
+        0.1409
+      ],
+      "ar": 0.7143
+    },
+    "lamar-jackson": {
+      "id": "1BHc4JXZLwSHks3hvqexeNbOxXTzA67F0",
+      "box": [
+        0.0407,
+        0.6895,
+        0.6966,
+        0.1984
+      ],
+      "ar": 0.7092
+    },
+    "johnny-rodgers": {
+      "id": "1EdBkUGuebubpV9mRnxWGwMZseD0qsinS",
+      "box": [
+        0.0829,
+        0.6504,
+        0.8422,
+        0.2165
+      ],
+      "ar": 0.7163
+    },
+    "dan-alexander": {
+      "id": "1VUg4fBRPln_nOiEkZTCVYH0CwLaHDhNo",
+      "box": [
+        0.0939,
+        0.784,
+        0.6742,
+        0.181
+      ],
+      "ar": 0.7133
+    },
+    "prince-amukamara": {
+      "id": "1z3PUYXxMyVOLfjIvAe9NSNasdTsFjxiV",
+      "box": [
+        0.1555,
+        0.78,
+        0.569,
+        0.1774
+      ],
+      "ar": 0.7133
+    },
+    "tony-jeter": {
+      "id": "1SlJ0FFT-QlCk2JVAIRT8o3w8SYV50jhk",
+      "box": [
+        0.0118,
+        0.7545,
+        0.9744,
+        0.2455
+      ],
+      "ar": 0.7143
+    },
+    "henry-lutovsky": {
+      "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+      "box": [
+        0.7435,
+        0.0886,
+        0.16,
+        0.1276
+      ],
+      "ar": 1.2945,
+      "ink": "red",
+      "w": 2000
+    },
+    "heinrich-haarberg": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.2505,
+        0.3854,
+        0.158,
+        0.1276
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "dasan-mccullough": {
+      "id": "1DuMN6HiLGWxNgWrHUWQoCoBOwnvAXFPf",
+      "box": [
+        0.743,
+        0.3829,
+        0.1605,
+        0.1278
+      ],
+      "ar": 1.2979,
+      "ink": "red",
+      "w": 2000
+    },
+    "deshon-singleton": {
+      "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+      "box": [
+        0.4055,
+        0.0844,
+        0.1605,
+        0.1269
+      ],
+      "ar": 1.2887,
+      "ink": "red",
+      "w": 2000
+    },
+    "ceyair-wright": {
+      "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+      "box": [
+        0.4055,
+        0.2378,
+        0.1605,
+        0.1269
+      ],
+      "ar": 1.2887,
+      "ink": "red",
+      "w": 2000
+    },
+    "jahmal-banks": {
+      "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+      "box": [
+        0.0785,
+        0.6618,
+        0.16,
+        0.1288
+      ],
+      "ar": 1.308,
+      "ink": "red",
+      "w": 2000
+    },
+    "brian-buschini": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.4135,
+        0.0863,
+        0.158,
+        0.1276
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "micah-mazzccua": {
+      "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+      "box": [
+        0.089,
+        0.5209,
+        0.158,
+        0.1269
+      ],
+      "ar": 1.3089,
+      "ink": "red",
+      "w": 2000
+    },
+    "javin-wright": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.247,
+        0.3843,
+        0.156,
+        0.1242
+      ],
+      "ar": 1.3072,
+      "ink": "purple",
+      "w": 2000,
+      "t": 30
+    },
+    "mj-sherman": {
+      "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+      "box": [
+        0.085,
+        0.6576,
+        0.159,
+        0.1276
+      ],
+      "ar": 1.3021,
+      "ink": "red",
+      "w": 2000
+    },
+    "nash-hutmacher": {
+      "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+      "box": [
+        0.7055,
+        0.3902,
+        0.136,
+        0.1081
+      ],
+      "ar": 1.3765,
+      "ink": "red",
+      "w": 2000
+    },
+    "tommi-hill": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.4305,
+        0.0682,
+        0.161,
+        0.1279
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "quinton-newsome": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.597,
+        0.0682,
+        0.1605,
+        0.1279
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "tamon-lynum": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.0975,
+        0.4799,
+        0.161,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "phalen-sanford": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.264,
+        0.3435,
+        0.1605,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "isaac-gifford": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.0975,
+        0.7831,
+        0.161,
+        0.1286
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "marco-ortiz": {
+      "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+      "box": [
+        0.6045,
+        0.6383,
+        0.1455,
+        0.1091
+      ],
+      "ar": 1.2987,
+      "ink": "red",
+      "w": 2000
+    },
+    "chris-kolarevic": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.259,
+        0.5353,
+        0.132,
+        0.0928
+      ],
+      "ar": 1.3072,
+      "ink": "dark",
+      "w": 2000
+    },
+    "eteva-mauga-clements": {
+      "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+      "box": [
+        0.097,
+        0.8105,
+        0.1315,
+        0.0928
+      ],
+      "ar": 1.3072,
+      "ink": "dark",
+      "w": 2000
+    },
+    "oliver-martin": {
+      "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+      "box": [
+        0.0985,
+        0.096,
+        0.1325,
+        0.0934
+      ],
+      "ar": 1.3149,
+      "ink": "dark",
+      "w": 2000
+    },
+    "alex-bullock": {
+      "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+      "box": [
+        0.591,
+        0.096,
+        0.1325,
+        0.0934
+      ],
+      "ar": 1.3149,
+      "ink": "dark",
+      "w": 2000
+    },
+    "bryce-benhart": {
+      "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+      "box": [
+        0.0805,
+        0.2289,
+        0.1595,
+        0.1282
+      ],
+      "ar": 1.308,
+      "ink": "red",
+      "w": 2000
+    },
+    "brady-weas": {
+      "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+      "box": [
+        0.2575,
+        0.6717,
+        0.1325,
+        0.0935
+      ],
+      "ar": 1.308,
+      "ink": "dark",
+      "w": 2000
+    },
+    "kenny-bell": {
+      "id": "18EQH5fByWjkY-ghFY89mKzU1OAG3qvc_",
+      "box": [
+        0.1717,
+        0.7152,
+        0.6026,
+        0.2063
+      ],
+      "ar": 0.7123
+    },
+    "dave-volk": {
+      "id": "1vIkroPm3qM1hHXwgpoK3sB41nq4-UUcG",
+      "box": [
+        0.1475,
+        0.3051,
+        0.345,
+        0.3057
+      ],
+      "ar": 1.6835
+    },
+    "eric-crouch": {
+      "id": "16MMrYxaBQw9exFPnM6qTcx_DEhPozkEr",
+      "box": [
+        0.0842,
+        0.8292,
+        0.6317,
+        0.1572
+      ],
+      "ar": 0.7143
+    },
+    "zac-taylor": {
+      "id": "1hNyyEfewqADgDp0zUBmy4E4yNvp4PiNQ",
+      "box": [
+        0.2332,
+        0.7958,
+        0.4995,
+        0.1494
+      ],
+      "ar": 0.7153
+    },
+    "dedrick-mills": {
+      "id": "1JcLUwA-ycS9qNani1PBFQxkKBCIMMNao",
+      "box": [
+        0.1971,
+        0.5742,
+        0.5018,
+        0.1641
+      ],
+      "ar": 0.7102
+    },
+    "steve-taylor": {
+      "id": "1hn9N5Lw4P9o4W3uwmJqBxBI2G9hmCeb3",
+      "box": [
+        0.0488,
+        0.8008,
+        0.8803,
+        0.1718
+      ],
+      "ar": 0.7174
+    },
+    "tanner-lee": {
+      "id": "1GK3G45NLsWt_RXdyL-YkdH-UvII7g9A4",
+      "box": [
+        0.1755,
+        0.6231,
+        0.569,
+        0.1403
+      ],
+      "ar": 0.7133
+    },
+    "jermarcus-hardrick": {
+      "id": "1YPjQsZgYA_uVaoWFaS1z7tC583qm86a5",
+      "box": [
+        0.1986,
+        0.6939,
+        0.5107,
+        0.1844
+      ],
+      "ar": 0.7153
+    },
+    "sam-keller": {
+      "id": "1YB6mbHdsAkuY8DqtSdPg5977PaY-xWfq",
+      "box": [
+        0.166,
+        0.5323,
+        0.672,
+        0.1769
+      ],
+      "ar": 0.7143
+    },
+    "jerry-murtaugh": {
+      "id": "1dHrcJGrALMHIKnc8U6EBrHMqMNPCkDu6",
+      "box": [
+        0.0147,
+        0.8242,
+        0.9206,
+        0.1758
+      ],
+      "ar": 0.7163
+    },
+    "brenden-jaimes": {
+      "id": "1710GXcnKJISpFUkMpXjhOpRIZPZnH3ix",
+      "box": [
+        0.177,
+        0.3141,
+        0.5779,
+        0.5294
+      ],
+      "ar": 1.6779,
+      "ink": "red"
+    },
+    "mike-mcneill": {
+      "id": "1YlzUpof6QdYZPoy9Y33fsYjWtYRKDb-Z",
+      "box": [
+        0.2538,
+        0.2309,
+        0.5264,
+        0.4985
+      ],
+      "ar": 1.6556,
+      "ink": "red"
+    },
+    "eric-martin": {
+      "id": "1JOkitsZn_lEo_H1oVkiAQ9RQxc2FKdWq",
+      "box": [
+        0.0118,
+        0.12,
+        0.9744,
+        0.6238
+      ],
+      "ar": 1.6611,
+      "ink": "red"
+    },
+    "zach-sterup": {
+      "id": "1xZV8PgWM7sXgU_EdJ3FYJg0HSU_PJ99Q",
+      "box": [
+        0.1272,
+        0.1767,
+        0.6115,
+        0.5417
+      ],
+      "ar": 1.6393,
+      "ink": "black",
+      "t": 105
+    },
+    "le-kevin-smith": {
+      "id": "1MmXGPS5OX1h4NBcT3co2l1h0jU7hBj4y",
+      "box": [
+        0.146,
+        0.2793,
+        0.448,
+        0.5024
+      ],
+      "ar": 1.6949,
+      "ink": "black",
+      "t": 105
+    },
+    "nick-gates": {
+      "id": "1Gsu0sLA_t3R-QqJigDDNhkmBhExYJtYL",
+      "box": [
+        0.1338,
+        0.2274,
+        0.4144,
+        0.3709
+      ],
+      "ar": 1.6447,
+      "ink": "black",
+      "t": 105
+    },
+    "luke-mccaffrey": {
+      "id": "1x9hfurEVqLl-6G33EZpIQfOGTRUDJPVI",
+      "box": [
+        0.332,
+        0.7216,
+        0.3741,
+        0.1123
+      ],
+      "ar": 0.5848
+    },
+    "warren-powers": {
+      "id": "1mY_yOR3rdVCR7BH5ybMZS_kzXZqbSMaw",
+      "box": [
+        0.0723,
+        0.1057,
+        0.8534,
+        0.3368
+      ],
+      "ar": 1.6667,
+      "ink": "black",
+      "t": 105
+    },
+    "jim-burrow": {
+      "id": "1Xo9jUtZlyKSPsuj6-rOf4SFu46MuA1qX",
+      "box": [
+        0.0118,
+        0.007,
+        0.9744,
+        0.3439
+      ],
+      "ar": 1.6447,
+      "ink": "black",
+      "t": 105
+    },
+    "lloyd-voss": {
+      "id": "1AJdZ9YfoK-V9EZhpvxJZOcKqR_TjKRPE",
+      "src": "assets/signatures/lloyd-voss.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 2.5056,
+      "t": 18
+    },
+    "ed-husmann": {
+      "id": "1psEl7OZyAJq21wKde4kYG0aPCCO6kS1m",
+      "src": "assets/signatures/ed-husmann.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 3.3113,
+      "ink": "black",
+      "t": 55,
+      "grow": 3
+    },
+    "rich-glover": {
+      "id": "1CdeWVgu_ZcU1B1PmXrZPhsj4RHUDkwHS",
+      "src": "assets/signatures/rich-glover.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 4.197,
+      "ink": "black",
+      "t": 60,
+      "grow": 2,
+      "minArea": 0.0001
+    },
+    "ron-mcdole": {
+      "id": "1iWX4SGncbICcix4XvCpBZsSWodOz7osd",
+      "src": "assets/signatures/ron-mcdole.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.7293,
+      "ink": "blue",
+      "t": 30,
+      "grow": 1,
+      "minArea": 0.0003
+    },
+    "dave-rimington": {
+      "id": "1ZF1szbPy-9JpHS8Me_VHHVsJO1t2CjHA",
+      "src": "assets/signatures/dave-rimington.webp",
+      "box": [
+        0.01,
+        0.01,
+        0.98,
+        0.98
+      ],
+      "ar": 2.3806,
+      "ink": "black",
+      "t": 60,
+      "grow": 2,
+      "minArea": 0.0001
+    },
+    "zach-wiegert": {
+      "id": "1vevd9SKo2GVRxstQdjMRF-1RJ6Ie-1YK",
+      "src": "assets/signatures/zach-wiegert.webp",
+      "box": [
+        0.11,
+        0.05,
+        0.86,
+        0.75
+      ],
+      "ar": 1.4025,
+      "ink": "gray",
+      "t": 110,
+      "grow": 2
+    },
+    "junior-miller": {
+      "id": "1wSPn0h5QgKwDkl_q1stfLTxOCkmOVUNQ",
+      "src": "assets/signatures/junior-miller.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 2.635,
+      "ink": "dark",
+      "t": 45,
+      "grow": 2,
+      "minArea": 0.0001
+    },
+    "jon-hesse": {
+      "id": "1p3hrR1y2kHc2LytVOWr20GY_SPjvRLbA",
+      "src": "assets/signatures/jon-hesse.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.4676,
+      "ink": "black",
+      "t": 40,
+      "grow": 2,
+      "minArea": 0.0003
+    },
+    "bob-martin": {
+      "id": "1UIGKYs8mGWyUTdjbm5GvJ7xV3htuvK2g",
+      "src": "assets/signatures/bob-martin.webp",
+      "box": [
+        0.02,
+        0.02,
+        0.96,
+        0.96
+      ],
+      "ar": 1.5527,
+      "ink": "red",
+      "t": 30,
+      "grow": 2,
+      "minArea": 0.0003
+    },
+    "nick-adduci": {
+      "id": "1Yr0VJpdMidfq5ziln9qih8YpCmcSU1Kp",
+      "src": "assets/signatures/nick-adduci.webp",
+      "box": [
+        0.01,
+        0.02,
+        0.98,
+        0.96
+      ],
+      "ar": 3.4444,
+      "ink": "black",
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0002
+    },
+    "freedom-akinmoladun": {
+      "id": "1lKm9PnuHkQcdQSh43sb5tn1sQkh1XiB5",
+      "src": "assets/signatures/freedom-akinmoladun.webp",
+      "box": [
+        0.055,
+        0.01,
+        0.935,
+        0.94
+      ],
+      "ar": 3.0774,
+      "ink": "black",
+      "t": 150,
+      "grow": 2,
+      "minArea": 0.0003
+    },
+    "trev-alberts": {
+      "id": "1MrOfsHthl7fu8lRid0APhzdXl_tS7rIV",
+      "src": "assets/signatures/trev-alberts.webp",
+      "box": [
+        0.01,
+        0.01,
+        0.98,
+        0.98
+      ],
+      "ar": 1.8241,
+      "ink": "blue",
+      "t": 100,
+      "grow": 1,
+      "minArea": 0.002
+    },
+    "tom-alward": {
+      "id": "149wBJt_sxBhaNZA5OvlLQS7AuWFElDiQ",
+      "src": "assets/signatures/tom-alward.webp",
+      "box": [
+        0.08,
+        0.06,
+        0.88,
+        0.92
+      ],
+      "ar": 1.2786,
+      "ink": "blue",
+      "t": 40,
+      "grow": 1,
+      "minArea": 0.001
+    },
+    "zaire-anderson": {
+      "id": "16P5v0rWLTkkLHGIfakltnw_D4BVjrMdT",
+      "src": "assets/signatures/zaire-anderson.webp",
+      "box": [
+        0.0,
+        0.1,
+        0.93,
+        0.86
+      ],
+      "ar": 1.5589,
+      "ink": "black",
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0008
+    },
+    "george-andrews": {
+      "id": "1mHX44lRzUcpSfPhusSrQ3AMtoGn99d2N",
+      "src": "assets/signatures/george-andrews.webp",
+      "box": [
+        0.03,
+        0.1,
+        0.88,
+        0.86
+      ],
+      "ar": 1.7307,
+      "ink": "black",
+      "t": 120,
+      "grow": 0,
+      "minArea": 0.0005
+    },
+    "troy-dumas": {
+      "id": "1Pfwv7FdKRVQisku89ataxkCuRftxQ1V4",
+      "src": "assets/signatures/troy-dumas.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.4579,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "rodney-lewis": {
+      "id": "1ggQrCTSSzSaRkJCdPDQWRjXxXOaVQFJa",
+      "src": "assets/signatures/rodney-lewis.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.9169,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "marc-munford": {
+      "id": "1jUw4UEIld3gXzp181lrjE16ZmhS5j4qI",
+      "src": "assets/signatures/marc-munford.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 1.5033,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "russ-hochstein": {
+      "id": "1GH024eHrWfX7sEQ2UIVWXbW7-VqNIaTl",
+      "src": "assets/signatures/russ-hochstein.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.6946,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    },
+    "jack-stoll": {
+      "id": "1pFvFCVFwRq2EBcKTdVw6zIO2fOZtl1d1",
+      "src": "assets/signatures/jack-stoll.webp",
+      "box": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "ar": 2.2471,
+      "ink": "black",
+      "t": 120,
+      "minArea": 0.0002
+    }
+  },
+  "fanDay": {
+    "_help": "Fan Day sheets (multi-signed, one box per player with his name printed under it): each player's box, cropped on screen only, on his page. id = the sheet's Drive image ID; box = [left, top, width, height] as fractions; ar = sheet width / height.",
+    "henry-lutovsky": [
+      {
+        "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+        "box": [
+          0.7375,
+          0.0964,
+          0.172,
+          0.1392
+        ],
+        "ar": 1.2945
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.4025,
+          0.0824,
+          0.172,
+          0.14
+        ],
+        "ar": 1.308
+      }
+    ],
+    "heinrich-haarberg": [
+      {
+        "id": "178a0EfSXToiBaevYeybIll_NuuRFERgP",
+        "box": [
+          0.24,
+          0.8078,
+          0.172,
+          0.1385
+        ],
+        "ar": 1.2945
+      },
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.2445,
+          0.3933,
+          0.17,
+          0.1394
+        ],
+        "ar": 1.3089
+      },
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.7335,
+          0.6654,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.568,
+          0.3846,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "dasan-mccullough": [
+      {
+        "id": "1DuMN6HiLGWxNgWrHUWQoCoBOwnvAXFPf",
+        "box": [
+          0.737,
+          0.3907,
+          0.1725,
+          0.1395
+        ],
+        "ar": 1.2979
+      }
+    ],
+    "deshon-singleton": [
+      {
+        "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+        "box": [
+          0.3995,
+          0.0921,
+          0.1725,
+          0.1385
+        ],
+        "ar": 1.2887
+      },
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.4245,
+          0.211,
+          0.173,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "ceyair-wright": [
+      {
+        "id": "1MX5yT3RXDNfTrmRmR1HDLSR5o0otLwa5",
+        "box": [
+          0.3995,
+          0.2455,
+          0.1725,
+          0.1385
+        ],
+        "ar": 1.2887
+      }
+    ],
+    "isaiah-neyor": [
+      {
+        "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+        "box": [
+          0.0725,
+          0.5284,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "jahmal-banks": [
+      {
+        "id": "1H_HPBo6PXWLmYYNX_ZJwQzF-gFYdRv-6",
+        "box": [
+          0.0725,
+          0.6697,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "emmett-johnson": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.734,
+          0.5288,
+          0.17,
+          0.1387
+        ],
+        "ar": 1.3089
+      }
+    ],
+    "brian-buschini": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.4075,
+          0.0942,
+          0.17,
+          0.1394
+        ],
+        "ar": 1.3089
+      },
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.4025,
+          0.6619,
+          0.172,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ],
+    "micah-mazzccua": [
+      {
+        "id": "1CJNCulY7s-vMRI2EmEPYrT-df4dYY23Z",
+        "box": [
+          0.083,
+          0.5288,
+          0.17,
+          0.1387
+        ],
+        "ar": 1.3089
+      }
+    ],
+    "john-bullock": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.405,
+          0.0918,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.0775,
+          0.3902,
+          0.1705,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "javin-wright": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.405,
+          0.2448,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.3902,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "mj-sherman": [
+      {
+        "id": "1KJaGlMiqrOWhUAyqQWUUAwI6CNG_6Im7",
+        "box": [
+          0.079,
+          0.6654,
+          0.171,
+          0.1393
+        ],
+        "ar": 1.3021
+      }
+    ],
+    "ty-robinson": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.073,
+          0.0895,
+          0.163,
+          0.1404
+        ],
+        "ar": 1.3765
+      }
+    ],
+    "nash-hutmacher": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.692,
+          0.3882,
+          0.163,
+          0.1411
+        ],
+        "ar": 1.3765
+      }
+    ],
+    "thomas-fidone": [
+      {
+        "id": "1VYy2jq2whDdZG2PD5EJGAQCeigPaqJ-N",
+        "box": [
+          0.2265,
+          0.7963,
+          0.163,
+          0.1418
+        ],
+        "ar": 1.3765
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.5685,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "tommi-hill": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.4245,
+          0.076,
+          0.173,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "quinton-newsome": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.076,
+          0.1725,
+          0.1396
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "omar-brown": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.3513,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "tamon-lynum": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.0915,
+          0.4877,
+          0.173,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "phalen-sanford": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.258,
+          0.3513,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "isaac-gifford": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.0915,
+          0.7909,
+          0.173,
+          0.1403
+        ],
+        "ar": 1.2987
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.4035,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "marco-ortiz": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.591,
+          0.6364,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      }
+    ],
+    "nate-boerkircher": [
+      {
+        "id": "1t4lbPiR89ImQZVI4E6FRY6NjdBnWFECa",
+        "box": [
+          0.7555,
+          0.7909,
+          0.1725,
+          0.1403
+        ],
+        "ar": 1.2987
+      },
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.2431,
+          0.171,
+          0.1392
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "travis-vokolek": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.5685,
+          0.0895,
+          0.171,
+          0.1392
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "chris-kolarevic": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.2395,
+          0.5255,
+          0.171,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "eteva-mauga-clements": [
+      {
+        "id": "1NtVa8oUVJvsXCS6fyBIQrSGrjs5jzp9U",
+        "box": [
+          0.0775,
+          0.8007,
+          0.1705,
+          0.1399
+        ],
+        "ar": 1.3072
+      }
+    ],
+    "oliver-martin": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.079,
+          0.0861,
+          0.1715,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "alex-bullock": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.5715,
+          0.0861,
+          0.1715,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "brant-banks": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.5715,
+          0.6667,
+          0.1715,
+          0.1414
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "trey-palmer": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.242,
+          0.5253,
+          0.171,
+          0.1414
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "omar-manning": [
+      {
+        "id": "1hLuXKY6aYQpbY845AWEJ2SAHZkzXBta0",
+        "box": [
+          0.736,
+          0.3892,
+          0.171,
+          0.1407
+        ],
+        "ar": 1.3149
+      }
+    ],
+    "bryce-benhart": [
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.0745,
+          0.2368,
+          0.1715,
+          0.14
+        ],
+        "ar": 1.308
+      }
+    ],
+    "brady-weas": [
+      {
+        "id": "1VPnquoaK2psgtqxlWPOG5D61NQLllLza",
+        "box": [
+          0.238,
+          0.6619,
+          0.1715,
+          0.1406
+        ],
+        "ar": 1.308
+      }
+    ]
+  },
+  "_dirtRelicsHelp": "Dirt relics whose file name has no room for \"(Dirty Relic)\": exact card names (file name without extension). They get the dirt glow in the viewer.",
+  "dirtRelics": [
+    "2022 Topps Triple Threads - Touch 'Em All Three-Player Triple Relics #TEARC-BRM Andrew Benintendi Whit Merrifield Salvador Perez MEM, SN18"
+  ],
+  "_tcdbNamesHelp": "TCDb cards renamed by TCDb card ID (\"set/card\"), for TCDb entries with identical names that are really different cards (e.g. photo variations). Used by scripts/build_chases.py and scripts/build_rainbow_wants.py. Write the variation the way Ian names files (\", VAR - Ball in one hand\") so the site can tell them apart.",
+  "tcdbNames": {
+    "106066/7357960": "2014 Panini Contenders - Cracked Ice #166 Quincy Enunwa AU, SN22, VAR - Ball in one hand",
+    "106066/7357959": "2014 Panini Contenders - Cracked Ice #166 Quincy Enunwa AU, SN22"
+  },
+  "_chasesHelp": "Chase pages (#/chase/<slug>, in the Nebraska Cornhuskers menu): every Husker card whose name matches \"match\" (scans in the Nebraska collections and Alex Gordon's), plus TCDb collection cards not scanned yet (Have it) and TCDb want list cards (Need it, never 1/1s), with a progress bar. TCDb lists come from data/tcdb via scripts/build_chases.py. \"exclude\" leaves out names that also match it (e.g. colored Cracked Ice). The page filters by sport: Nebraska collection for scans, TCDb list (or the player) for the rest.",
+  "chases": [
+    {
+      "slug": "cracked-ice",
+      "title": "Nebraska Cracked Ice",
+      "match": "cracked ice",
+      "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need.",
+      "skip": ["2016 David Lee Limited Edition Cracked Ice #NNO Johnny Rodgers 1 of 1"],
+      "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b|\\bgreen crystals\\b"
+    },
+    {
+      "slug": "precious-metal-gems",
+      "title": "Nebraska Precious Metal Gems",
+      "match": "precious metal gems|\\bpmg\\b",
+      "blurb": "Every Husker Precious Metal Gems card I'm chasing: the ones in my collection and the ones I still need."
+    }
+  ],
+  "chaseCollege": "draft picks|collegiate|\\bcollege\\b|\\bncaa\\b|cornhuskers|nebraska|\\bhuskers?\\b|\\bsage\\b|bowman u\\b|bowman university|\\bonit\\b|\\bu now\\b|metal universe champions|legends of college",
+  "chaseCollegeCards": [
+    "2016 Panini Black Friday - Cracked Ice #26 Alex Gordon",
+    "2016 Panini Contenders - Cracked Ice Ticket #158 Aaron Green",
+    "2017 Panini Father's Day - Cracked Ice #78 Jordan Westerkamp",
+    "2018 Panini Father's Day - NFL Rookies Cracked Ice #FB20 Tanner Lee",
+    "2019 Panini Father's Day - Football Prospects Cracked Ice #FB12 Stanley Morgan Jr.",
+    "2019 Panini Father's Day - Football Prospects Cracked Ice #FB15 Devine Ozigbo"
+  ],
+  "_chaseCollegeHelp": "Chase pages' College / Pro filter: a card whose set name matches this is College (Contenders Draft Picks, Metal Universe Champions, SAGE...); every other card is Pro. \"chaseCollegeCards\" lists college cards by name (any tags) in sets that are mostly pro, e.g. Father's Day. A chase's \"skip\" leaves cards off that page by name (e.g. Johnny Rodgers' David Lee custom, not one of Ian's commissions)."
+}

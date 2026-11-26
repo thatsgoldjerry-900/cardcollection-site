@@ -1,0 +1,30 @@
+# IanBadeer.com: the card scans are Ian Badeer's.
+# - Search engines and AI *search/answer* crawlers (ChatGPT search, Perplexity, etc.) are welcome, so the site can be
+#   found, quoted and linked. They fall under "User-agent: *" below.
+# - AI *training* crawlers are not, except for the NFL Husker lists at /nfl-huskers/, which Ian is happy to have
+#   quoted with credit.
+# (Only read at the root of a domain, so this takes effect once ianbadeer.com points at this site.)
+User-agent: GPTBot
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: anthropic-ai
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: Meta-ExternalAgent
+User-agent: FacebookBot
+User-agent: Diffbot
+User-agent: ImagesiftBot
+User-agent: Omgilibot
+User-agent: cohere-ai
+Allow: /nfl-huskers/
+Disallow: /
+
+User-agent: *
+Disallow: /data/
+Disallow: /scripts/
+Disallow: /config/
+
+Sitemap: https://ianbadeer.com/sitemap.xml

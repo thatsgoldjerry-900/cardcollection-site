@@ -1,0 +1,122 @@
+{
+ "_help": "NFL team years from Pro Football Archives for players whose research note names the team without a year (scripts/pfa_team_years.py). Used only where the note gives no year; shown as from Pro Football Archives.",
+ "source": "https://www.profootballarchives.com/",
+ "players": {
+  "tony-jeter": {
+   "green-bay-packers": "1966",
+   "pittsburgh-steelers": "1966–1969"
+  },
+  "charles-bryant": {
+   "green-bay-packers": "1955"
+  },
+  "terrell-farley": {
+   "green-bay-packers": "1998"
+  },
+  "al-grubaugh": {
+   "green-bay-packers": "1944"
+  },
+  "fred-preston": {
+   "green-bay-packers": "1942"
+  },
+  "greg-jorgensen": {
+   "new-york-giants": "1978"
+  },
+  "bob-mills": {
+   "new-york-giants": "1939"
+  },
+  "john-havekost": {
+   "denver-broncos": "1980–1981"
+  },
+  "bob-taucher": {
+   "new-orleans-saints": "1968–1969",
+   "dallas-cowboys": "1968"
+  },
+  "tracey-wistrom": {
+   "tampa-bay-buccaneers": "2002"
+  },
+  "keven-lightner": {
+   "tampa-bay-buccaneers": "1988"
+  },
+  "patrick-kabongo": {
+   "detroit-lions": "2004"
+  },
+  "phil-bates": {
+   "detroit-lions": "1982"
+  },
+  "preston-love": {
+   "detroit-lions": "1965"
+  },
+  "ray-novak": {
+   "detroit-lions": "1954"
+  },
+  "ardell-johnson": {
+   "washington-commanders": "1975"
+  },
+  "jerry-minnick": {
+   "washington-commanders": "1954"
+  },
+  "elmer-dohrmann": {
+   "washington-commanders": "1938"
+  },
+  "kenny-wilhite": {
+   "chicago-bears": "1993"
+  },
+  "dana-stephenson": {
+   "chicago-bears": "1970"
+  },
+  "lynn-senkbeil": {
+   "chicago-bears": "1966–1967"
+  },
+  "pat-tyrance": {
+   "los-angeles-rams": "1991"
+  },
+  "dave-theisen": {
+   "los-angeles-rams": "1963–1964"
+  },
+  "clarence-cook": {
+   "los-angeles-rams": "1957"
+  },
+  "walter-luther": {
+   "los-angeles-rams": "1941"
+  },
+  "randy-poeschl": {
+   "cleveland-browns": "1979"
+  },
+  "josh-davis": {
+   "new-york-jets": "2004–2005"
+  },
+  "dave-butterfield": {
+   "new-york-jets": "1977"
+  },
+  "ted-connor": {
+   "philadelphia-eagles": "1954"
+  },
+  "larry-mushinskie": {
+   "dallas-cowboys": "1976"
+  },
+  "glenn-patterson": {
+   "dallas-cowboys": "1970"
+  },
+  "van-brownson": {
+   "indianapolis-colts": "1972"
+  },
+  "ron-kirkland": {
+   "indianapolis-colts": "1967"
+  },
+  "mike-green": {
+   "los-angeles-chargers": "1970"
+  },
+  "kenny-brown": {
+   "cincinnati-bengals": "1981"
+  },
+  "byron-mccane": {
+   "pittsburgh-steelers": "1968"
+  },
+  "corey-dixon": {
+   "atlanta-falcons": "1994–1995"
+  },
+  "terrence-moore": {
+   "baltimore-ravens": "2012"
+  }
+ }
+}
