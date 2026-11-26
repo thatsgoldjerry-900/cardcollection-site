@@ -1328,7 +1328,7 @@
   /* Team logos on the team collection pages (Wikipedia, data/site-team-logos.json). Jermaine Dye's page shows his four teams' logos;
      picking one in his Team menu (or tapping its logo) leaves just that logo, and the page takes that team's colors (style.css team-*). */
   const SECTION_LOGO = { "husker-football": "nebraska", "husker-baseball": "nebraska", "husker-basketball": "nebraska", "husker-other": "nebraska", royals: "royals", lions: "lions" };
-  const DYE_TEAMS = { "Kansas City Royals": "royals", "Atlanta Braves": "braves", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
+  const DYE_TEAMS = { "Atlanta Braves": "braves", "Kansas City Royals": "royals", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
   const SITELOGOS = fetch("data/site-team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.teams || {}).catch(() => ({}));
   function drawLogos(slug) {
     const el = $("#c-logos"); if (!el) return;
