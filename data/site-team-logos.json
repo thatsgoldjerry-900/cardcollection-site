@@ -64,10 +64,24 @@
     "#F0384F"
    ]
   },
-  "wichita": {
-   "name": "Wichita Wranglers",
-   "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/97/Wichitawranglers.png/250px-Wichitawranglers.png",
-   "logoPage": "https://en.wikipedia.org/wiki/File:Wichitawranglers.png",
+  "minor": {
+   "name": "Minor Leagues",
+   "logos": [
+    {
+     "name": "Wichita Wranglers",
+     "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/97/Wichitawranglers.png/250px-Wichitawranglers.png",
+     "logoPage": "https://en.wikipedia.org/wiki/File:Wichitawranglers.png",
+     "colors": [
+      "#004687",
+      "#BD9B60"
+     ]
+    },
+    {
+     "name": "Omaha Storm Chasers",
+     "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/8/8c/Omaha_Storm_Chasers_logo.svg/250px-Omaha_Storm_Chasers_logo.svg.png",
+     "logoPage": "https://en.wikipedia.org/wiki/File:Omaha_Storm_Chasers_logo.svg"
+    }
+   ],
    "colors": [
     "#004687",
     "#BD9B60"

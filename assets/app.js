@@ -1328,7 +1328,7 @@
   /* Team logos on the team collection pages (Wikipedia, data/site-team-logos.json). Jermaine Dye's page shows his four teams' logos;
      picking one in his Team menu (or tapping its logo) leaves just that logo, and the page takes that team's colors (style.css team-*). */
   const SECTION_LOGO = { "husker-football": "nebraska", "husker-baseball": "nebraska", "husker-basketball": "nebraska", "husker-other": "nebraska", royals: "royals", lions: "lions" };
-  const SLUG_TEAMS = { "alex-gordon": [["nebraska", /nebraska|husker/i], ["usa", /usa/i], ["wichita", /minor/i], ["royals", /royals/i]], "jermaine-dye": [["braves", /braves/i], ["royals", /royals/i], ["athletics", /athletics|a's/i], ["white-sox", /white sox/i]] };
+  const SLUG_TEAMS = { "alex-gordon": [["nebraska", /nebraska|husker/i], ["usa", /usa/i], ["minor", /minor/i], ["royals", /royals/i]], "jermaine-dye": [["braves", /braves/i], ["royals", /royals/i], ["athletics", /athletics|a's/i], ["white-sox", /white sox/i]] };
   const teamKey = (slug, t) => { const m = (SLUG_TEAMS[slug] || []).find(([, re]) => re.test(t || "")); return m ? m[0] : ""; };
   const DYE_TEAMS = { "Atlanta Braves": "braves", "Kansas City Royals": "royals", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
   const SITELOGOS = fetch("data/site-team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.teams || {}).catch(() => ({}));
@@ -1343,11 +1343,11 @@
         keys = state.team && teamKey(slug, state.team) ? [teamKey(slug, state.team)] : Object.keys(names);
       } else keys = SECTION_LOGO[slug] ? [SECTION_LOGO[slug]] : [];
       keys = keys.filter((k) => T[k]);
-      el.classList.toggle("solo", keys.length === 1);
-      el.innerHTML = keys.map((k) => { const t = T[k], img = `<img alt="${esc(t.name)} logo" src="${esc(t.logo)}" onerror="this.parentNode.remove()">`;
+      el.classList.toggle("solo", keys.length === 1 && !T[keys[0]].logos);
+      el.innerHTML = keys.map((k) => { const t = T[k], img = (t.logos || [t]).map((l) => `<img alt="${esc(l.name)} logo" src="${esc(l.logo)}" onerror="this.remove()">`).join("");
         if (!names[k]) return `<span class="c-logo" title="${esc(t.name)}">${img}</span>`;
-        return `<button type="button" class="c-logo" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("");
-      const cr = $("#c-logo-cr"); if (cr) cr.innerHTML = keys.length ? `Logos: ${keys.map((k) => `<a href="${esc(T[k].logoPage)}" target="_blank" rel="noopener">${esc(T[k].name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.` : "";
+        return `<button type="button" class="c-logo${T[k].logos ? " multi" : ""}" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("");
+      const cr = $("#c-logo-cr"); if (cr) cr.innerHTML = keys.length ? `Logos: ${keys.flatMap((k) => T[k].logos || [T[k]]).map((l) => `<a href="${esc(l.logoPage)}" target="_blank" rel="noopener">${esc(l.name)}</a>`).join(", ")} (Wikipedia). Team names and logos are trademarks of their teams.` : "";
       el.querySelectorAll("button.c-logo").forEach((b) => b.addEventListener("click", () => { const sel = $("#tm"); if (!sel) return; sel.value = state.team ? "" : b.dataset.team; sel.dispatchEvent(new Event("change")); }));
     });
   }
@@ -2664,7 +2664,7 @@
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
     const dk = SLUG_TEAMS[n] && state.team ? teamKey(n, state.team) : "";
-    document.body.dataset.bg = dk === "nebraska" ? "red" : dk && dk !== "royals" && dk !== "wichita" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
+    document.body.dataset.bg = dk === "nebraska" ? "red" : dk && dk !== "royals" && dk !== "minor" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
       : /^lions/.test(n) ? "lions" : "red";
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
