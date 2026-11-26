@@ -1,5 +1,5 @@
 {
-  "_help": "Player name on our site -> the name as the Letter Winners list has it, for a player the list can't match by name. Used by scripts/build_letter_years.py, same sport only. An entry with \"years\" sets the letter years directly (used when the list's line is unreadable).",
+  "_help": "Player name on our site -> the name as the Letter Winners list has it, for a player the list can't match by name. Used by scripts/build_letter_years.py, same sport only. An entry with \"years\" sets the letter years directly (used when the list's line is unreadable). multiSport: a player who lettered in more than one sport, listed by sport (same person only; two players with one name are not linked).",
   "players": {
     "Al Bloodgood": "Elbert L. Bloodgood",
     "Willie Greenlaw": {
@@ -11,5 +11,6 @@
       ],
       "note": "Years confirmed by Ian (1954 also from the record book); the PDF line is cut off before the years."
     }
-  }
+  },
+  "multiSport": {}
 }

@@ -151,9 +151,16 @@ def main():
     data = json.load(open(PLAYERS, encoding="utf-8"))
     recs = data["players"].values() if isinstance(data["players"], dict) else data["players"]
     n = 0
+    multi = {}
+    if os.path.exists(os.path.join(ROOT, "data", "letter-aliases.json")):
+        multi = json.load(open(os.path.join(ROOT, "data", "letter-aliases.json"), encoding="utf-8")).get("multiSport", {})
     for p in recs:
-        if p["name"] in letters:
-            p["letters"] = letters[p["name"]]; n += 1
+        # Each record gets its own sport's years. Another sport counts only for a player listed under multiSport (same person).
+        mine = (p.get("sport") or "football")
+        sports = {mine, *multi.get(p["name"], [])}
+        got = {sp: v for sp, v in letters.get(p["name"], {}).items() if sp in sports}
+        if got:
+            p["letters"] = got; n += 1
         else:
             p.pop("letters", None)
     notes = {}
