@@ -54,6 +54,15 @@
     "#27251F",
     "#C4CED4"
    ]
+  },
+  "usa": {
+   "name": "USA Baseball",
+   "logo": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/USA_Baseball_logo_%28blue%29.svg/250px-USA_Baseball_logo_%28blue%29.svg.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:USA_Baseball_logo_(blue).svg",
+   "colors": [
+    "#0A3161",
+    "#F0384F"
+   ]
   }
  }
 }

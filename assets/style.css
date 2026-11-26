@@ -1316,6 +1316,38 @@ body[data-bg="team-braves"] .side h4{color:#e63355}
   body[data-bg="team-braves"] .mbar{background:#1b3a73;border-bottom:2px solid var(--cream)}
 }
 body[data-bg="team-braves"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(8,11,20,.88)}
+body[data-bg="team-usa"]{--bg:#080b14;--tint:10,49,97;--cream:#f0384f;background:#080b14}
+body[data-bg="team-usa"] .pb-lit{background:
+  radial-gradient(ellipse 55% 420px at 6% -60px,rgba(240,56,79,.18),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 6% -40px,rgba(10,49,97,.55),transparent 75%),
+  radial-gradient(ellipse 55% 420px at 94% -60px,rgba(240,56,79,.12),transparent 70%),
+  radial-gradient(ellipse 60% 520px at 94% -40px,rgba(10,49,97,.42),transparent 75%)}
+body[data-bg="team-usa"] .top{background:#0a3161;border-bottom:3px solid var(--cream);box-shadow:0 8px 24px -16px rgba(0,0,0,.9)}
+body[data-bg="team-usa"] .logo,body[data-bg="team-usa"] .logo span{color:#fff}
+body[data-bg="team-usa"] .logo span{color:var(--cream)}
+body[data-bg="team-usa"] .nav a,body[data-bg="team-usa"] .dd-btn{color:#dbe3f5}
+body[data-bg="team-usa"] .nav a:hover,body[data-bg="team-usa"] .dd-btn:hover,body[data-bg="team-usa"] .dd-btn[aria-expanded="true"]{color:#fff;background:rgba(255,255,255,.2)}
+body[data-bg="team-usa"] .nav a[aria-current="page"],body[data-bg="team-usa"] .dd-btn.on{color:#fff;background:rgba(255,255,255,.26)}
+body[data-bg="team-usa"] .top .search{background:rgba(0,0,0,.28);border-color:rgba(240,56,79,.4)}
+body[data-bg="team-usa"] .top .search:focus-within{border-color:var(--cream)}
+body[data-bg="team-usa"] .top .search svg{stroke:var(--cream)}
+body[data-bg="team-usa"] .top .search input{color:#fff}
+body[data-bg="team-usa"] .top .search input::placeholder{color:#cdd8f0}
+body[data-bg="team-usa"] .top .search kbd{color:var(--cream);border-color:rgba(240,56,79,.4)}
+body[data-bg="team-usa"] .tools{background:#0e1220;border-top:1px solid rgba(240,56,79,.18);border-bottom:2px solid #0a3161}
+body[data-bg="team-usa"] .chip{border-color:rgba(240,56,79,.45);color:var(--cream)}
+body[data-bg="team-usa"] .chip:hover{border-color:var(--cream);color:#fff}
+body[data-bg="team-usa"] .chip[aria-pressed="true"]{background:var(--cream);border-color:var(--cream);color:#0a3161;font-weight:700}
+body[data-bg="team-usa"] .tools-r{color:#c7cee0}
+body[data-bg="team-usa"] .tools select,body[data-bg="team-usa"] .ck-q{background:rgba(0,0,0,.3);border-color:rgba(240,56,79,.35);color:var(--cream)}
+body[data-bg="team-usa"] .side a:hover{background:rgba(240,56,79,.1)}
+body[data-bg="team-usa"] .side a[aria-current="true"]{background:rgba(240,56,79,.13);color:#fff;box-shadow:inset 3px 0 var(--cream)}
+body[data-bg="team-usa"] .side h4{color:#f0384f}
+@media (max-width:860px){
+  body[data-bg="team-usa"] .top{background:#0a3161}
+  body[data-bg="team-usa"] .mbar{background:#0a3161;border-bottom:2px solid var(--cream)}
+}
+body[data-bg="team-usa"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(8,11,20,.88)}
 body[data-bg="team-athletics"]{--bg:#080c0b;--tint:0,87,74;--cream:#efb21e;background:#080c0b}
 body[data-bg="team-athletics"] .pb-lit{background:
   radial-gradient(ellipse 55% 420px at 6% -60px,rgba(239,178,30,.18),transparent 70%),
