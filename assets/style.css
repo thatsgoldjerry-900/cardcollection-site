@@ -1430,3 +1430,22 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 
 /* Single team logo sits to the right of the title on desktop (Ian, 2026-11-26); Gordon and Dye keep theirs under the text */
 @media (min-width:701px){.c-head.logo-r{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:28px;align-items:start}.c-head.logo-r>*{grid-column:1}.c-head.logo-r>.c-logos{grid-column:2;grid-row:1/span 6;align-self:center;margin:0}}
+
+/* Site-bar menus stay above the card viewer (a later .dd-menu rule had dropped them under it) */
+.dd-menu{z-index:70}
+
+/* Rainbow page: version list on the left (desktop), cards sized to the count, celebration when complete */
+.rb-side li{display:flex;align-items:center;gap:9px;padding:5px 10px;font-size:13.5px;color:var(--mu)}
+.rb-side li i{flex:none;width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line);display:grid;place-items:center;font:700 13px/1 var(--f-b);font-style:normal}
+.rb-side li.got{color:var(--fg)}.rb-side li.got i{background:#2fa866;border-color:#2fa866;color:#fff}
+.rb-side .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (min-width:900px){.rb-grid{grid-template-columns:repeat(auto-fit,minmax(var(--rb-min,168px),1fr))}}
+@media (max-width:899px){.rb-page .rb-side{display:none}}
+.c-head .prog.done b{background:linear-gradient(90deg,#ff5468,#ffc446,#50c878,#5a96ff,#aa6eff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.prog.done .bar i{background:linear-gradient(90deg,#ff5468,#ffc446,#50c878,#5a96ff,#aa6eff,#ff5468);background-size:200% 100%;animation:rb-flow 3s linear infinite}
+@keyframes rb-flow{to{background-position:-200% 0}}
+.rb-win{align-self:flex-start;border:0;border-radius:99px;padding:8px 16px;font:700 14px var(--f-b);color:#fff;cursor:pointer;background:linear-gradient(90deg,rgba(255,84,104,.55),rgba(255,196,70,.55),rgba(80,200,120,.55),rgba(90,150,255,.55),rgba(170,110,255,.55));box-shadow:0 0 22px rgba(255,196,70,.35)}
+.rb-win span{font-weight:500;opacity:.8;font-size:12px;margin-left:6px}
+.rb-done .rb-grid .cd .ph{box-shadow:0 0 0 1px rgba(255,196,70,.5),0 0 18px rgba(255,196,70,.22)}
+#rb-confetti{position:fixed;inset:0;width:100vw;height:100vh;z-index:49;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.prog.done .bar i{animation:none}}
