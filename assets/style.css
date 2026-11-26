@@ -136,7 +136,7 @@ mark{background:rgba(127,178,255,.25);color:inherit;border-radius:2px}
 .foot .email{font-family:var(--f-m);color:var(--fg);user-select:all}
 
 /* Viewer */
-.viewer{position:fixed;inset:0;z-index:50;background:transparent;display:grid;grid-template-columns:64px 1fr 64px;grid-template-rows:auto 1fr auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.viewer{position:fixed;inset:0;z-index:50;background:#05070a;display:grid;grid-template-columns:64px 1fr 64px;grid-template-rows:auto 1fr auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .viewer{grid-template-rows:auto auto 1fr auto;top:var(--bar-h,0px);padding-top:0}
 .top{z-index:60}.dd-menu{z-index:70}
 .v-top{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:transparent}
