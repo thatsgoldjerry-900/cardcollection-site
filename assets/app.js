@@ -2547,7 +2547,7 @@
     const prog = tracked ? `<div class="prog${complete ? " done" : ""}"><b>${complete ? 100 : Math.floor(rbPct)}%</b><div class="bar"><i style="width:${complete ? 100 : rbPct}%"></i></div><small>${complete ? `Complete: all ${fmt(total)} versions` : `${fmt(owned)} of ${fmt(total)} versions`}${have.length ? ` (${fmt(all.length)} scanned)` : ""}</small></div>${complete ? '<button type="button" class="rb-win" id="rb-win">🌈 Rainbow complete! <span>Tap to celebrate</span></button>' : ""}` : "";
     // Left box (desktop): every version by name, checked off when I have it.
     const verName = (x) => `${(x.par || "").trim() || "Base"}${x.one ? " 1/1" : x.serial ? " /" + x.serial : ""}`;
-    const sideBox = `<aside class="side rb-side" aria-label="Versions in this rainbow"><h4>Versions · ${fmt(owned)} of ${fmt(total)}</h4><ul>${both.map((x) => { const got = !isWant(x) || x.th; return `<li class="${got ? "got" : "need"}"><i aria-hidden="true">${got ? "✓" : ""}</i><span>${esc(verName(x))}</span><em class="sr">${got ? "have" : "need"}</em></li>`; }).join("")}</ul></aside>`;
+    const sideBox = `<aside class="side rb-side" aria-label="Checklist for this rainbow"><h4>Checklist ·${fmt(owned)} of ${fmt(total)}</h4><ul>${both.map((x) => { const got = !isWant(x) || x.th; return `<li class="${got ? "got" : "need"}"><i aria-hidden="true">${got ? "✓" : ""}</i><span>${esc(verName(x))}</span><em class="sr">${got ? "have" : "need"}</em></li>`; }).join("")}</ul></aside>`;
     // Few cards: bigger; dozens: small (desktop).
     const n = both.length, rbMin = n <= 2 ? 400 : n <= 4 ? 300 : n <= 8 ? 230 : n <= 14 ? 190 : 168;
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
