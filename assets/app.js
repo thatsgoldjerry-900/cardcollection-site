@@ -2304,7 +2304,7 @@
     const sec = SECTIONS[c.si], players = new Set(all.map((x) => norm(x.title))).size;
     const title = c.sub.replace(/\s+#\S+$/, "") + (c.par ? ` - ${c.par.replace(PARALLEL_WORDS, "")}` : "");
     setNav(sec.slug); setTitle(title);
-    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+    $("#app").innerHTML = `<div class="wrap coll rb-page${complete ? " rb-done" : ""} c-${sec.color || "royal"}">${sideBox}<div style="min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Set rainbow</div><h1>${esc(title)}</h1><p>${fmt(players)} players, ${fmt(all.length)} scans, in card-number order.</p></div><div class="b-row">${binderBtn()}</div>
       <div class="grid" id="grid">${all.map((x) => cardHTML(x)).join("")}</div></div></div>`;
@@ -2430,7 +2430,7 @@
     const sec = SECTIONS[c.si], title = letterSetTitle(c);
     setNav(sec.slug); setTitle(`${c.title} letters`);
     const shown = [], rows = letterRows(L, shown);
-    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+    $("#app").innerHTML = `<div class="wrap coll rb-page${complete ? " rb-done" : ""} c-${sec.color || "royal"}">${sideBox}<div style="min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Letterman set</div><h1>${esc(L.shown || L.slots.map((x) => x.letter || "·").join(""))}</h1>
       <p>${esc(L.who)} · ${esc(title)}${letterRun(L) ? ` (${esc(letterRun(L))})` : ""}: ${fmt(L.count)} of ${fmt(L.slots.length)} letters scanned${L.word ? "" : " (the full word isn't known, so missing letters past the last one I have aren't shown)"}.</p></div>
@@ -2464,6 +2464,22 @@
     const mine = new Set([...all, ...have].map(haveKey));
     return rainbowOf(c, true).filter((x) => isWant(x) && !x.one && !mine.has(haveKey(x)));
   }
+  /* Confetti burst for a finished rainbow (display only; skipped for reduced motion). */
+  const RB_CELEB = new Set();
+  function celebrate() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const old = document.getElementById("rb-confetti"); if (old) old.remove();
+    const cv = document.createElement("canvas"); cv.id = "rb-confetti"; cv.setAttribute("aria-hidden", "true");
+    const W = cv.width = innerWidth, H = cv.height = innerHeight; document.body.appendChild(cv);
+    const g = cv.getContext("2d"), cols = ["#ff5468", "#ffc446", "#50c878", "#5a96ff", "#aa6eff", "#fff"];
+    const ps = Array.from({ length: 170 }, (_, i) => ({ x: W * (i % 2 ? 0.1 : 0.9), y: H * 0.85, vx: (i % 2 ? 1 : -1) * (2 + Math.random() * 9), vy: -(8 + Math.random() * 13), w: 6 + Math.random() * 7, h: 4 + Math.random() * 5, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4, c: cols[i % cols.length] }));
+    const t0 = performance.now();
+    (function tick(t) {
+      const el = t - t0; g.clearRect(0, 0, W, H);
+      ps.forEach((p) => { p.vy += 0.32; p.vx *= 0.992; p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.globalAlpha = Math.max(0, 1 - el / 4200); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); g.restore(); });
+      if (el < 4200 && cv.isConnected) requestAnimationFrame(tick); else cv.remove();
+    })(t0);
+  }
   function rainbow(id) {
     if (!TW) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void tcdbWants().then(() => HASH().startsWith("#/rainbow/") && rainbow(id)); }
     const c = byCid(id); if (!c) return notFound();
@@ -2484,15 +2500,23 @@
     // Progress tracker (like the collection pages): versions I have (scanned or not) out of every version I know of.
     // Shown only for rainbows on TCDb (a card on my want list or in my TCDb collection), where the full count is known.
     const owned = all.length + have.length, total = owned + needs.length, rbPct = total ? (owned / total) * 100 : 0;
-    const tracked = rainbowOf(c, true).some((x) => x.th || isWant(x));
-    const prog = tracked ? `<div class="prog"><b>${needs.length ? Math.floor(rbPct) : 100}%</b><div class="bar"><i style="width:${rbPct}%"></i></div><small>${needs.length ? `${fmt(owned)} of ${fmt(total)} versions` : `All ${fmt(total)} versions`}${have.length ? ` (${fmt(all.length)} scanned)` : ""}</small></div>` : "";
+    // Complete: nothing on my want list is missing (a version I still need always shows as a "Need it" card).
+    const complete = !needs.length && owned >= 2;
+    const tracked = complete || rainbowOf(c, true).some((x) => x.th || isWant(x));
+    const prog = tracked ? `<div class="prog${complete ? " done" : ""}"><b>${complete ? 100 : Math.floor(rbPct)}%</b><div class="bar"><i style="width:${complete ? 100 : rbPct}%"></i></div><small>${complete ? `Complete: all ${fmt(total)} versions` : `${fmt(owned)} of ${fmt(total)} versions`}${have.length ? ` (${fmt(all.length)} scanned)` : ""}</small></div>${complete ? '<button type="button" class="rb-win" id="rb-win">🌈 Rainbow complete! <span>Tap to celebrate</span></button>' : ""}` : "";
+    // Left box (desktop): every version by name, checked off when I have it.
+    const verName = (x) => `${(x.par || "").trim() || "Base"}${x.one ? " 1/1" : x.serial ? " /" + x.serial : ""}`;
+    const sideBox = `<aside class="side rb-side" aria-label="Versions in this rainbow"><h4>Versions · ${fmt(owned)} of ${fmt(total)}</h4><ul>${both.map((x) => { const got = !isWant(x) || x.th; return `<li class="${got ? "got" : "need"}"><i aria-hidden="true">${got ? "✓" : ""}</i><span>${esc(verName(x))}</span><em class="sr">${got ? "have" : "need"}</em></li>`; }).join("")}</ul></aside>`;
+    // Few cards: bigger; dozens: small (desktop).
+    const n = both.length, rbMin = n <= 2 ? 400 : n <= 4 ? 300 : n <= 8 ? 230 : n <= 14 ? 190 : 168;
     setNav(sec.slug); setTitle(`${c.title} rainbow`);
-    $("#app").innerHTML = `<div class="wrap coll c-${sec.color || "royal"}"><div style="grid-column:1/-1;min-width:0">
+    $("#app").innerHTML = `<div class="wrap coll rb-page${complete ? " rb-done" : ""} c-${sec.color || "royal"}">${sideBox}<div style="min-width:0">
       <a class="back" href="#/c/${sec.slug}">← ${esc(sec.title)}</a>
       <div class="c-head"><div class="kick">Rainbow</div><h1>${esc(c.title)}</h1><p>${esc(base)} #${esc(c.sub.match(/#(\S+)$/)[1])}: ${fmt(all.length)} version${all.length === 1 ? "" : "s"} scanned${have.length ? `, ${fmt(have.length)} more I have but haven't scanned yet` : ""}${needs.length ? `, ${fmt(needs.length)} still needed` : ""}, from the rarest down.</p>${prog}</div><div class="b-row">${binderBtn()}</div>
-      <div class="grid rb-grid" id="grid">${both.map((x) => (isWant(x) || x.th ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
+      <div class="grid rb-grid" id="grid" style="--rb-min:${rbMin}px">${both.map((x) => (isWant(x) || x.th ? needHTML(x) : cardHTML(x))).join("")}</div></div></div>`;
     document.querySelectorAll("#grid .cd[data-i], #grid .cd[data-need]").forEach((el) => { const col = parColor(el.dataset.i != null ? CARDS[+el.dataset.i] : extra[+el.dataset.need]);
       if (col) { el.classList.add("par-bg"); el.style.setProperty(col.startsWith("#") ? "--pc" : "--pg", col); if (col === FLAG) el.classList.add("flag"); } });
+    if (complete) { const w = $("#rb-win"); if (w) w.addEventListener("click", celebrate); if (!RB_CELEB.has(id)) { RB_CELEB.add(id); setTimeout(celebrate, 400); } }
     state.list = all;
     state.binderItems = both.map((x) => (isWant(x) || x.th ? { empty: true, label: x.th ? "Have" : x.one ? "1/1" : x.serial ? "/" + x.serial : "Need" } : x));
   }
