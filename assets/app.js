@@ -3144,9 +3144,14 @@
     const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
     if (!a.className.match(/\bt-|has-ice/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
     a.hidden = false;
-    Object.assign(a.style, { left: im.offsetLeft + "px", top: im.offsetTop + "px", width: im.offsetWidth + "px", height: im.offsetHeight + "px" });
-    if (a.classList.contains("t-dirt")) dirt(a, im.offsetWidth, im.offsetHeight);
-    if (a.classList.contains("has-ice")) ice(a, im.offsetWidth, im.offsetHeight);
+    // Dual view (front and back side by side): the aura wraps both cards, not just the front.
+    const im2 = $("#v-img2"), both = !im2.hidden && im2.offsetWidth ? [im, im2] : [im];
+    const L = Math.min(...both.map((e) => e.offsetLeft)), T = Math.min(...both.map((e) => e.offsetTop));
+    const R = Math.max(...both.map((e) => e.offsetLeft + e.offsetWidth)), B = Math.max(...both.map((e) => e.offsetTop + e.offsetHeight));
+    const w = R - L, h = B - T;
+    Object.assign(a.style, { left: L + "px", top: T + "px", width: w + "px", height: h + "px" });
+    if (a.classList.contains("t-dirt")) dirt(a, w, h);
+    if (a.classList.contains("has-ice")) ice(a, w, h);
   }
   // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
   // Seeded by the card, so the same card always gets the same pile.
