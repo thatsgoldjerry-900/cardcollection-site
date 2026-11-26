@@ -108,8 +108,13 @@ def main():
             p["letters"] = letters[p["name"]]; n += 1
         else:
             p.pop("letters", None)
+    notes = {}
+    if os.path.exists(os.path.join(ROOT, "data", "college-notes.json")):
+        notes = json.load(open(os.path.join(ROOT, "data", "college-notes.json"), encoding="utf-8"))["players"]
+    for p in recs:
+        if p["name"] in notes: p["collegeNote"] = notes[p["name"]]
     json.dump(data, open(PLAYERS, "w", encoding="utf-8"), ensure_ascii=False)
-    print("merged letter years into", n, "player records")
+    print("merged letter years into", n, "player records; college notes", len(notes))
 
 if __name__ == "__main__":
     main()
