@@ -161,6 +161,15 @@ def main():
         mine = (p.get("sport") or "football")
         sports = {mine, *multi.get(p["name"], [])}
         got = {sp: v for sp, v in letters.get(p["name"], {}).items() if sp in sports}
+        # A football letter after his final season is another player with the same name (e.g. a 2023 letter for a 1990s player).
+        # Baseball and basketball finalYear values are not checked here, so their years are kept.
+        fy = p.get("finalYear")
+        if fy and mine == "football" and mine in got:
+            kept = [y for y in got[mine] if int(y) <= int(fy)]
+            if kept != got[mine]:
+                print("dropped letter years after final season:", p["name"], sorted(set(got[mine]) - set(kept)))
+            got[mine] = kept
+            if not kept: got.pop(mine)
         if got:
             p["letters"] = got; n += 1
         else:
