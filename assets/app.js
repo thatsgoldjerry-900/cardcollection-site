@@ -1328,7 +1328,7 @@
   /* Team logos on the team collection pages (Wikipedia, data/site-team-logos.json). Jermaine Dye's page shows his four teams' logos;
      picking one in his Team menu (or tapping its logo) leaves just that logo, and the page takes that team's colors (style.css team-*). */
   const SECTION_LOGO = { "husker-football": "nebraska", "husker-baseball": "nebraska", "husker-basketball": "nebraska", "husker-other": "nebraska", royals: "royals", lions: "lions" };
-  const SLUG_TEAMS = { "alex-gordon": [["usa", /usa/i], ["nebraska", /nebraska|husker/i], ["royals", /royals/i], ["wichita", /minor/i]], "jermaine-dye": [["braves", /braves/i], ["royals", /royals/i], ["athletics", /athletics|a's/i], ["white-sox", /white sox/i]] };
+  const SLUG_TEAMS = { "alex-gordon": [["nebraska", /nebraska|husker/i], ["usa", /usa/i], ["wichita", /minor/i], ["royals", /royals/i]], "jermaine-dye": [["braves", /braves/i], ["royals", /royals/i], ["athletics", /athletics|a's/i], ["white-sox", /white sox/i]] };
   const teamKey = (slug, t) => { const m = (SLUG_TEAMS[slug] || []).find(([, re]) => re.test(t || "")); return m ? m[0] : ""; };
   const DYE_TEAMS = { "Atlanta Braves": "braves", "Kansas City Royals": "royals", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
   const SITELOGOS = fetch("data/site-team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.teams || {}).catch(() => ({}));
