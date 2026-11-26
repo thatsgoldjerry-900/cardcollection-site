@@ -593,6 +593,12 @@
     2008
    ]
   },
+  "Zack Bowman": {
+   "football": [
+    2005,
+    2007
+   ]
+  },
   "Carl Nicks": {
    "football": [
     2006,
@@ -2038,6 +2044,13 @@
     1966
    ]
   },
+  "Walt Barnes": {
+   "football": [
+    1963,
+    1964,
+    1965
+   ]
+  },
   "Tony Jeter": {
    "football": [
     1963,
@@ -2186,6 +2199,13 @@
     1946
    ]
   },
+  "Vic Schleich": {
+   "football": [
+    1940,
+    1941,
+    1942
+   ]
+  },
   "Warren Alfson": {
    "football": [
     1938,
@@ -2208,6 +2228,13 @@
    ]
   },
   "Ray Prochaska": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Herm Rohrig": {
    "football": [
     1938,
     1939,
@@ -2249,6 +2276,13 @@
     1936
    ]
   },
+  "Les McDonald": {
+   "football": [
+    1934,
+    1935,
+    1936
+   ]
+  },
   "Gail O'Brien": {
    "football": [
     1931,
@@ -2281,6 +2315,27 @@
     1928,
     1929,
     1930
+   ]
+  },
+  "Ray Richards": {
+   "football": [
+    1927,
+    1928,
+    1929
+   ]
+  },
+  "Cliff Ashburn": {
+   "football": [
+    1926,
+    1927,
+    1928
+   ]
+  },
+  "Danny McMullen": {
+   "football": [
+    1926,
+    1927,
+    1928
    ]
   },
   "Merle Zuver": {
@@ -2318,6 +2373,13 @@
     1923
    ]
   },
+  "Herb DeWitz": {
+   "football": [
+    1921,
+    1922,
+    1923
+   ]
+  },
   "Verne Lewellen": {
    "football": [
     1921,
@@ -2335,6 +2397,13 @@
   "Fred Thomsen": {
    "football": [
     1920,
+    1922
+   ]
+  },
+  "Ad Wenke": {
+   "football": [
+    1920,
+    1921,
     1922
    ]
   },
@@ -4083,6 +4152,11 @@
     1989
    ]
   },
+  "Pete Buchanan": {
+   "football": [
+    1988
+   ]
+  },
   "Charles Fryar": {
    "football": [
     1986,
@@ -4360,6 +4434,13 @@
     1968
    ]
   },
+  "Al Kuehl": {
+   "football": [
+    1965,
+    1966,
+    1967
+   ]
+  },
   "Dennis Morrison": {
    "football": [
     1966,
@@ -4391,6 +4472,11 @@
    "football": [
     1964,
     1965,
+    1966
+   ]
+  },
+  "Lou Narish": {
+   "football": [
     1966
    ]
   },
@@ -4451,6 +4537,13 @@
     1963
    ]
   },
+  "Doug Tucker": {
+   "football": [
+    1962,
+    1963,
+    1964
+   ]
+  },
   "Ron Michka": {
    "football": [
     1961,
@@ -4468,6 +4561,13 @@
   "Mike Eger": {
    "football": [
     1958,
+    1962
+   ]
+  },
+  "Ty Robertson": {
+   "football": [
+    1960,
+    1961,
     1962
    ]
   },
@@ -4497,10 +4597,23 @@
     1961
    ]
   },
+  "Don Purcell": {
+   "football": [
+    1959,
+    1960,
+    1961
+   ]
+  },
   "Gene Ward": {
    "football": [
     1959,
     1961
+   ]
+  },
+  "Donald Olson": {
+   "football": [
+    1957,
+    1959
    ]
   },
   "Dick McCashland": {
@@ -4599,6 +4712,23 @@
   "Frank Hazard": {
    "football": [
     1943
+   ]
+  },
+  "Bert Gissler": {
+   "football": [
+    1943
+   ]
+  },
+  "Al Grubaugh": {
+   "football": [
+    1942
+   ]
+  },
+  "Al Zikmund": {
+   "football": [
+    1940,
+    1941,
+    1942
    ]
   },
   "George Abel": {
@@ -4998,6 +5128,13 @@
     1984,
     1985,
     1986
+   ]
+  },
+  "Stu Lantz": {
+   "basketball": [
+    1966,
+    1967,
+    1968
    ]
   }
  }
