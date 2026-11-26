@@ -63,6 +63,15 @@
     "#0A3161",
     "#F0384F"
    ]
+  },
+  "wichita": {
+   "name": "Wichita Wranglers",
+   "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/9/97/Wichitawranglers.png/250px-Wichitawranglers.png",
+   "logoPage": "https://en.wikipedia.org/wiki/File:Wichitawranglers.png",
+   "colors": [
+    "#004687",
+    "#BD9B60"
+   ]
   }
  }
 }
