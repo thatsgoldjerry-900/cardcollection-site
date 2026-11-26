@@ -1328,6 +1328,8 @@
   /* Team logos on the team collection pages (Wikipedia, data/site-team-logos.json). Jermaine Dye's page shows his four teams' logos;
      picking one in his Team menu (or tapping its logo) leaves just that logo, and the page takes that team's colors (style.css team-*). */
   const SECTION_LOGO = { "husker-football": "nebraska", "husker-baseball": "nebraska", "husker-basketball": "nebraska", "husker-other": "nebraska", royals: "royals", lions: "lions" };
+  const SLUG_TEAMS = { "alex-gordon": [["usa", /usa/i], ["nebraska", /nebraska|husker/i], ["royals", /royals/i]], "jermaine-dye": [["braves", /braves/i], ["royals", /royals/i], ["athletics", /athletics|a's/i], ["white-sox", /white sox/i]] };
+  const teamKey = (slug, t) => { const m = (SLUG_TEAMS[slug] || []).find(([, re]) => re.test(t || "")); return m ? m[0] : ""; };
   const DYE_TEAMS = { "Atlanta Braves": "braves", "Kansas City Royals": "royals", "Oakland Athletics": "athletics", "Chicago White Sox": "white-sox" };
   const SITELOGOS = fetch("data/site-team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.teams || {}).catch(() => ({}));
   function drawLogos(slug) {
@@ -1335,10 +1337,10 @@
     SITELOGOS.then((T) => {
       if ($("#c-logos") !== el) return;
       let keys, names = {};
-      if (slug === "jermaine-dye") {
-        const have = [...document.querySelectorAll("#tm option")].map((o) => o.value);
-        Object.entries(DYE_TEAMS).forEach(([n, k]) => have.includes(n) && (names[k] = n));
-        keys = state.team && DYE_TEAMS[state.team] ? [DYE_TEAMS[state.team]] : Object.keys(names);
+      if (SLUG_TEAMS[slug]) {
+        const have = [...document.querySelectorAll("#tm option")].map((o) => o.value).filter(Boolean);
+        SLUG_TEAMS[slug].forEach(([k]) => { const n = have.find((h) => teamKey(slug, h) === k); if (n) names[k] = n; });
+        keys = state.team && teamKey(slug, state.team) ? [teamKey(slug, state.team)] : Object.keys(names);
       } else keys = SECTION_LOGO[slug] ? [SECTION_LOGO[slug]] : [];
       keys = keys.filter((k) => T[k]);
       el.classList.toggle("solo", keys.length === 1);
@@ -2661,8 +2663,8 @@
      everything else (Nebraska pages and the general ones). The colors live in style.css (body[data-bg]). ---------- */
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
-    const dk = n === "jermaine-dye" && state.team ? DYE_TEAMS[state.team] : "";
-    document.body.dataset.bg = dk && dk !== "royals" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
+    const dk = SLUG_TEAMS[n] && state.team ? teamKey(n, state.team) : "";
+    document.body.dataset.bg = dk === "nebraska" ? "red" : dk && dk !== "royals" ? "team-" + dk : /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
       : /^lions/.test(n) ? "lions" : "red";
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
