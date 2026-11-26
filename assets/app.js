@@ -243,9 +243,9 @@
   // Filters a page leaves out: the Want List has no customs, button relics, 1 of 1s or graded cards to pick from.
   const PAGE_NO_FILTERS = { "want-list": new Set(["custom", "button", "one", "graded"]) };
   const SORTS = [["new", "Newest Added"], ["old", "Year: Oldest First"], ["recent", "Year: Newest First"], ["az", "A–Z"], ["serial", "Lowest Print Run"]];
-  // A page's own default order: Rarest Cards by print run, Detroit Lions oldest first (Ian), everything else newest added.
-  const defaultSort = (key) => ({ rarest: "serial", "c/lions": "old" })[key] || "new";
-  const state = { filters: new Set(), sort: "new", decade: "", team: "", list: [], shown: 0, q: "", where: null };
+  // A page's own default order: oldest to newest everywhere (Ian, 2026-11-26), except Rarest Cards (by print run) and Recent Additions (newest added).
+  const defaultSort = (key) => ({ rarest: "serial", recent: "new" })[key] || "old";
+  const state = { filters: new Set(), sort: "old", decade: "", team: "", list: [], shown: 0, q: "", where: null };
 
   const SET_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
   const setOrder = (a, b) => SET_COLLATOR.compare(a.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""), b.name.replace(/^\d{4}(?:-\d{2})?\s+/, ""));
@@ -459,7 +459,7 @@
     const groups = [
       ["Super Collections", "dd-menu-super", [sec("alex-gordon"), sec("jermaine-dye")]],
       ["Team Collections", "dd-menu-team", [sec("royals"), sec("lions")]],
-      ["Explore", "dd-menu-explore", [`<a href="#/customs" data-s="customs">Custom Cards</a>`, DUPES.length ? `<a href="#/duplicates" data-s="duplicates">Duplicates</a>` : "", sec("want-list"), (DATA.site.media?.items || []).length ? `<a href="#/media" data-s="media">Media</a>` : "", ...rest]],
+      ["Explore", "dd-menu-explore", [`<a href="#/recent" data-s="recent">Recent Additions</a>`, `<a href="#/customs" data-s="customs">Custom Cards</a>`, DUPES.length ? `<a href="#/duplicates" data-s="duplicates">Duplicates</a>` : "", sec("want-list"), (DATA.site.media?.items || []).length ? `<a href="#/media" data-s="media">Media</a>` : "", ...rest]],
     ].map(([t, id, items]) => [t, id, items.filter(Boolean)]).filter((g) => g[2].length);
     const btn = (t, id, bid) => `<button type="button" class="dd-btn"${bid ? ` id="${bid}"` : ""} data-menu="${id}" aria-expanded="false" aria-controls="${id}">${t} <span aria-hidden="true">▾</span></button>`;
     $("#nav").innerHTML = btn("Nebraska Cornhuskers", "dd-menu", "dd-btn") + groups.map((g) => btn(g[0], g[1])).join("");
@@ -702,7 +702,7 @@
   }
 
   function collection(slug, gslug) {
-    const virtual = slug === "customs" || slug === "all" || slug === "search" || slug === "rarest" || slug === "duplicates";
+    const virtual = slug === "customs" || slug === "all" || slug === "search" || slug === "rarest" || slug === "duplicates" || slug === "recent";
     const si = SECTIONS.findIndex((x) => x.slug === slug);
     const sec = virtual ? null : SECTIONS[si];
     if (!virtual && !sec) return notFound();
@@ -728,6 +728,10 @@
       base = DUPES.slice(); title = "Duplicates"; kick = "Whole collection";
       blurb = "Cards/Items that I have more than one copy of. A duplicate doesn't guarantee that it's available for trade, but it doesn't hurt to ask. "
         + `This list isn't complete: my full, up-to-date list of cards for trade is on <a href="https://www.tcdb.com/Profile.cfm/DyeHardFan" target="_blank" rel="noopener" style="color:var(--acc)">TCDb ↗</a>, and each player page links to that player's cards for trade.`;
+    } else if (slug === "recent") {
+      // The 120 most recently uploaded cards (the Want List isn't part of the collection).
+      base = sortList(CARDS.filter((c) => SECTIONS[c.si].kind !== "want"), "new").slice(0, 120); title = "Recent Additions"; kick = "Whole collection";
+      blurb = "The newest scans to land in my collection, most recent first.";
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
       base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
@@ -735,7 +739,7 @@
     } else {
       base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
-    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : slug === "duplicates" ? "Duplicates" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
+    setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : slug === "duplicates" ? "Duplicates" : slug === "recent" ? "Recent Additions" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = "";   // desktop: no year list in the left bar (Ian, 2026-11-25); phones keep the .mgroups strip
     const others = `<div><h4>Collections</h4><ul>${siteOrder().map((x) => x === "customs"
         ? `<li><a href="#/customs" aria-current="${slug === "customs"}">Customs<span>${fmt(CARDS.filter((c) => c.tags.has("custom")).length)}</span></a></li>`
@@ -2654,6 +2658,7 @@
     else if (a === "all") collection("all");
     else if (a === "rarest") collection("rarest");
     else if (a === "duplicates") collection("duplicates");
+    else if (a === "recent") collection("recent");
     else if (a === "checklist") checklist(b);
     else if (a === "nfl-huskers") hub();
     else if (a === "nfl-teams") nflTeams(b);
