@@ -636,6 +636,10 @@ ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Dirt relics: crumbly dirt clumps and powder piled around the card (drawn in app.js), with a soft dusty haze */
 .v-aura.t-dirt{box-shadow:0 0 40px 14px rgba(90,58,30,.45),0 0 100px 40px rgba(80,52,28,.2)}
 .v-aura canvas.v-dirt{display:none}
+/* Cracked Ice: a faint icy glow and iridescent glass shards around the card (drawn in app.js) */
+.v-aura.t-ice{box-shadow:0 0 30px 8px rgba(170,235,255,.32),0 0 80px 26px rgba(200,170,255,.14)}
+.v-aura canvas.v-ice{display:none}
+.v-aura.t-ice canvas.v-ice{display:block;position:absolute;z-index:-1;pointer-events:none}
 .v-aura.t-dirt canvas.v-dirt{display:block;position:absolute;z-index:-1;pointer-events:none}
 @keyframes aura-turn{to{--ang:360deg}}
 @keyframes aura-spin{to{transform:rotate(360deg)}}

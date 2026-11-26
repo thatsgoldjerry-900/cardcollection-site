@@ -3139,13 +3139,14 @@
     DIRT ||= new Set([...CARDS.filter((x) => SECTIONS[x.si]?.groups[x.gi]?.slug === "dirt").map((x) => x.name), ...(DATA.site.dirtRelics || [])]);
     return DIRT.has(c.name) || /\bdirt\b|\(dirty\b/i.test(c.name);
   };
-  const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : isDirt(c) ? "dirt" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
+  const auraTier = (c) => !c || c.photo ? "" : c.one ? "one" : c.serial && c.serial <= 25 ? "low" : isDirt(c) ? "dirt" : /cracked ice/i.test(c.name) ? "ice" : c.tags.has("auto") ? "auto" : HOLO.test(c.name) ? "holo" : "";
   function placeAura() {
     const a = $("#v-aura"), im = $("#v-img"), st = $("#v-stage");
     if (!a.className.match(/\bt-/) || st.classList.contains("zoom") || !im.offsetWidth) { a.hidden = true; return; }
     a.hidden = false;
     Object.assign(a.style, { left: im.offsetLeft + "px", top: im.offsetTop + "px", width: im.offsetWidth + "px", height: im.offsetHeight + "px" });
     if (a.classList.contains("t-dirt")) dirt(a, im.offsetWidth, im.offsetHeight);
+    if (a.classList.contains("t-ice")) ice(a, im.offsetWidth, im.offsetHeight);
   }
   // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
   // Seeded by the card, so the same card always gets the same pile.
@@ -3191,6 +3192,46 @@
     for (let i = 0; i < 900; i++) { const [x, y] = spot(0.9); chunk(x, y, (1 + R() * 2.5) * Math.max(0.7, sc)); }
     for (let i = 0; i < 160; i++) { const [x, y] = spot(0.6); chunk(x, y, (3 + R() * 7) * Math.max(0.7, sc)); }
     for (let i = 0; i < 26; i++) { const [x, y] = spot(0.4); chunk(x, y, (8 + R() * 9) * Math.max(0.7, sc)); }
+  }
+  // Cracked Ice: iridescent glass shards scattered around the card (drawn in app.js, like the dirt), seeded by the card.
+  // Pearly pastel facets with a bright edge; more of them near the card, fewer farther out.
+  function ice(a, w, h) {
+    let cv = a.querySelector("canvas.v-ice");
+    const key = a.dataset.seed + "|" + w + "x" + h;
+    if (cv && cv.dataset.key === key) return;
+    if (!cv) { cv = document.createElement("canvas"); cv.className = "v-ice"; a.append(cv); }
+    cv.dataset.key = key;
+    const m = Math.round(Math.min(w, h) * 0.2), W = w + 2 * m, H = h + 2 * m, dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = W * dpr; cv.height = H * dpr; Object.assign(cv.style, { left: -m + "px", top: -m + "px", width: W + "px", height: H + "px" });
+    const g = cv.getContext("2d"); g.scale(dpr, dpr);
+    let sd = [...String(a.dataset.seed + "|ice")].reduce((x, ch) => (x * 31 + ch.charCodeAt(0)) >>> 0, 7) || 1;
+    const R = () => ((sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296);
+    // A point just outside the card's edge; the farther out, the rarer (power curve).
+    const spot = (spread) => {
+      for (;;) {
+        const side = R(), d = Math.pow(R(), 1.6) * m * spread, t = R();
+        let x, y;
+        if (side < 0.25) { x = m + t * w; y = m + h + d - 6; }
+        else if (side < 0.5) { x = m + t * w; y = m + 6 - d; }
+        else if (side < 0.75) { x = m + 6 - d; y = m + t * h; }
+        else { x = m + w + d - 6; y = m + t * h; }
+        if (x > 0 && y > 0 && x < W && y < H) return [x, y];
+      }
+    };
+    const pearl = [[190, 245, 255], [205, 190, 255], [255, 205, 235], [190, 255, 225], [235, 250, 255], [175, 215, 255], [255, 235, 205]];
+    const sc = Math.max(0.7, Math.min(w, h) / 400);
+    const shard = (x, y, r) => {
+      const n = 3 + ((R() * 2) | 0), rot = R() * 6.283, pts = [];
+      for (let k = 0; k < n; k++) { const an = rot + (k / n) * 6.283 + (R() - 0.5) * 0.9, rr = r * (0.35 + R() * 0.75); pts.push([x + Math.cos(an) * rr, y + Math.sin(an) * rr]); }
+      const c1 = pearl[(R() * pearl.length) | 0], c2 = pearl[(R() * pearl.length) | 0];
+      const gr = g.createLinearGradient(x - r, y - r, x + r, y + r);
+      gr.addColorStop(0, `rgba(${c1},${0.8 + R() * 0.2})`); gr.addColorStop(0.6, `rgba(${c2},${0.7 + R() * 0.25})`); gr.addColorStop(1, `rgba(${c1},0.45)`);
+      g.fillStyle = gr; g.beginPath(); pts.forEach(([px, py], k) => (k ? g.lineTo(px, py) : g.moveTo(px, py))); g.closePath(); g.fill();
+      g.strokeStyle = "rgba(255,255,255,.6)"; g.lineWidth = 0.6; g.stroke();
+    };
+    for (let i = 0; i < 700; i++) { const [x, y] = spot(1); shard(x, y, (1.2 + R() * 2.6) * sc); }
+    for (let i = 0; i < 200; i++) { const [x, y] = spot(0.8); shard(x, y, (3.5 + R() * 4.5) * sc); }
+    for (let i = 0; i < 36; i++) { const [x, y] = spot(0.5); shard(x, y, (8 + R() * 7) * sc); }
   }
   function aura(c) {
     const a = $("#v-aura"), front = !(V.back && !isPair(c));
