@@ -1178,24 +1178,33 @@ body.ice-bg .page-bg .pb-ice{display:block}
 .cotd-big .cap{font-size:13px;color:#c3cad6;line-height:1.35}
 .cotd-big .cap b{display:block;color:#fff;font-size:14px}
 
-/* NFL Huskers timeline: one bubble per year, 1900 to today. Bubble size is linear in the count (--s = count / most); years with no Husker get no bubble. */
+/* NFL Huskers timeline: one bubble per year that had a tier 1 Husker, 1900 to today. Diameter grows with the count
+   (--s = count / most). Coaching eras sit above the bubbles; the Big Ten years sit on a second row. */
 .nfl-tl{margin:8px 0 48px}
 .nfl-tl-sub{color:#c3cad6;margin:-6px 0 14px}
-.nfl-tl-scroll{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 12px 6px;-webkit-overflow-scrolling:touch}
-.nfl-tl-strip{display:flex;width:max-content}
-.nfl-tl-col{position:relative;width:36px;flex:0 0 36px;height:120px}
-.nfl-tl-col::before{content:"";position:absolute;left:0;right:0;top:56px;height:1px;background:var(--line)}
+.nfl-tl-scroll{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 12px 8px;-webkit-overflow-scrolling:touch}
+.nfl-tl-strip{--w:44px;position:relative;width:max-content}
+.nfl-tl-eras{position:relative;height:54px}
+.nfl-tl-era{position:absolute;top:0;height:24px;box-sizing:border-box;border-radius:6px;background:rgba(215,38,46,.2);border:1px solid rgba(215,38,46,.5);color:#fff;font:12px/22px var(--f-b);padding:0 7px;white-space:nowrap;overflow:hidden}
+.nfl-tl-era.r2{top:28px;background:rgba(255,196,70,.14);border-color:rgba(255,196,70,.5)}
+.nfl-tl-era b{font-weight:700}
+.nfl-tl-era small{color:#c3cad6;margin-left:5px;font-size:11px}
+.nfl-tl-row{display:flex;width:max-content}
+.nfl-tl-col{position:relative;width:var(--w);flex:0 0 var(--w);height:180px}
+.nfl-tl-col::before{content:"";position:absolute;left:0;right:0;top:90px;height:1px;background:var(--line)}
 .nfl-tl-col.dec::before{background:#4a5263}
-.nfl-tl-b{position:absolute;left:50%;top:56px;transform:translate(-50%,-50%);width:calc(6px + 54px * var(--s));height:calc(6px + 54px * var(--s));display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff5b63,#b3151f 70%);box-shadow:0 0 0 1px rgba(255,255,255,.15),0 0 14px rgba(215,38,46,.35);color:#fff;font:700 11px/1 var(--f-m);cursor:default}
-.nfl-tl-b.big{font-size:12px}
-.nfl-tl-y{position:absolute;left:-6px;right:-6px;bottom:0;text-align:center;font:11px var(--f-m);color:#8f99a8;white-space:nowrap}
+.nfl-tl-b{position:absolute;left:50%;top:90px;transform:translate(-50%,-50%);width:calc(4px + 84px * var(--s));height:calc(4px + 84px * var(--s));display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff5b63,#b3151f 70%);box-shadow:0 0 0 1px rgba(255,255,255,.15),0 0 16px rgba(215,38,46,.4);color:#fff;font:700 13px/1 var(--f-m);cursor:default}
+.nfl-tl-b.big{font-size:15px}
+.nfl-tl-y{position:absolute;left:-8px;right:-8px;bottom:0;text-align:center;font:11px var(--f-m);color:#8f99a8;white-space:nowrap}
 .nfl-tl-col.dec .nfl-tl-y{color:#fff}
 @media (max-width:600px){
-  .nfl-tl-col{width:22px;flex-basis:22px}
-  .nfl-tl-col::before{top:44px}
-  .nfl-tl-b{top:44px;width:calc(4px + 28px * var(--s));height:calc(4px + 28px * var(--s));font-size:9px}
-  .nfl-tl-col{height:108px}
-  .nfl-tl-y{font-size:10px;left:-8px;right:-8px}
+  .nfl-tl-strip{--w:28px}
+  .nfl-tl-col{height:150px}
+  .nfl-tl-col::before,.nfl-tl-b{top:75px}
+  .nfl-tl-b{width:calc(4px + 52px * var(--s));height:calc(4px + 52px * var(--s));font-size:10px}
+  .nfl-tl-b.big{font-size:12px}
+  .nfl-tl-y{font-size:10px;left:-10px;right:-10px}
+  .nfl-tl-era{font-size:11px}
 }
 
 /* NFL team pages: "Need auto" badge where I have no autograph of the player (a blank box means I have one that isn't scanned yet) */
