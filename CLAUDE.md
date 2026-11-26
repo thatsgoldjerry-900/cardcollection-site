@@ -14,8 +14,7 @@ Read docs/CHECKLIST-DETAILS.md only when working on a feature it covers.
   in `hideNotes`.
 - **Sports focus:** Wikipedia bios keep only sports content; sentences about crimes, prison, suicide and
   similar are filtered out (scripts/build_players.py OFF_FIELD). Neutral jobs like "chief of police" are fine.
-- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page backgrounds: a color theme, a bright team-color gradient on the left (where the
-  logo and nav are) blending into the deep navy that sweeps left to right to the far side: Husker red on Nebraska and general
+- **Sources:** Wikipedia (credited, CC BY-SA), CollegeFootballData, the Nebraska record book PDF, the Nebraska Football Hall of Fame list on huskers.com (data/hall-of-fame.json), and Pro Football Archives for NFL team years missing from Ian's notes (data/team-years.json via scripts/pfa_team_years.py; credited where shown). Page backgrounds: stadium lights in one team color per page (Ian, 2026-11-26; no gradients): Husker red on Nebraska and general
   pages, Royals blue on Gordon/Dye/Royals, Honolulu blue on the Lions (assets/app.js pageBg, assets/style.css .page-bg).
   (Old photos in assets/bg/ are unused.) Do not scrape
   FootballDB or Sports Reference (link to them only). No custom-written bios. Don't republish the KC Star
