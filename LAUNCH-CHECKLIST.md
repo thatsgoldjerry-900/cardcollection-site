@@ -14,6 +14,7 @@ Full details, finished items and feature notes: docs/CHECKLIST-DETAILS.md (read 
 - [ ] Hand-match the ~49 teams without a logo (exact Wikipedia article names).
 - [ ] More Fan Day sheets (2015 Signed Page, 2009/2010 sheets, 2023 roster card).
 - [ ] When all re-uploads are done, remove "freshUploadDate" from alex-gordon, jermaine-dye, royals, husker-baseball in config/site.json.
+- [ ] GitHub shows 16 catalog-bot commits on main as Unverified (the Google robot's catalog Action). Decide whether to sign them with a key for the robot or yourself; do not re-attribute them to Anthropic.
 
 ## Before the switch
 - [ ] Read straight from the main Drive folder (`driveRoot`): match folder names to section titles, check new names/tags, no double uploads, consider "(Dirty)/(Button)/(Nameplate)" tags instead of copies.
