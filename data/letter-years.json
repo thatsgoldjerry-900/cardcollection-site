@@ -1,3247 +1,5004 @@
 {
- "source": "University of Nebraska Football Letter Winners (2023 PDF)",
+ "sources": {
+  "football": "ea0f85ba-Nebraska_Football_Letter_Winners_2026.pdf",
+  "baseball": "8cc3dcd7-Nebraska_Baseball_Letter_Winners_2024.pdf",
+  "basketball": "59e58edf-Nebraska_Mens_Basketball_Letter_Winners_2026.xlsx"
+ },
  "players": {
-  "Nate Boerkircher": [
-   2022
-  ],
-  "John Bullock": [
-   2021,
-   2022
-  ],
-  "Ty Robinson": [
-   2020,
-   2021,
-   2022
-  ],
-  "Omar Brown": [
-   2022
-  ],
-  "Brant Banks": [
-   2020,
-   2021,
-   2022
-  ],
-  "Ochaun Mathis": [
-   2022
-  ],
-  "Trey Palmer": [
-   2022
-  ],
-  "Travis Vokolek": [
-   2020,
-   2021,
-   2022
-  ],
-  "JoJo Domann": [
-   2016,
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Cam Jurgens": [
-   2019,
-   2020,
-   2021
-  ],
-  "Adrian Martinez": [
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Jordon Riley": [
-   2020,
-   2021
-  ],
-  "Casey Rogers": [
-   2019,
-   2020,
-   2021
-  ],
-  "Ben Stille": [
-   2017,
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Cam Taylor-Britt": [
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Samori Toure": [
-   2021
-  ],
-  "DiCaprio Bootle": [
-   2017,
-   2018,
-   2019,
-   2020
-  ],
-  "Matt Farniok": [
-   2017,
-   2018,
-   2019,
-   2020
-  ],
-  "Brenden Jaimes": [
-   2017,
-   2018,
-   2019,
-   2020
-  ],
-  "Luke McCaffrey": [
-   2019
-  ],
-  "Wan'Dale Robinson": [
-   2019
-  ],
-  "Jack Stoll": [
-   2017,
-   2018,
-   2019,
-   2020
-  ],
-  "Darrion Daniels": [
-   2019
-  ],
-  "Carlos Davis": [
-   2016,
-   2017,
-   2018,
-   2019
-  ],
-  "Khalil Davis": [
-   2016,
-   2017,
-   2018,
-   2019
-  ],
-  "Lamar Jackson": [
-   2016,
-   2017,
-   2018,
-   2019
-  ],
-  "Isaiah Stalbird": [
-   2019
-  ],
-  "Freedom Akinmoladun": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Luke Gifford": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Stanley Morgan Jr.": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Devine Ozigbo": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Nick Gates": [
-   2015,
-   2016,
-   2017
-  ],
-  "Joshua Kalu": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "Cethan Carter": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Maliek Collins": [
-   2013,
-   2014,
-   2015
-  ],
-  "Andy Janovich": [
-   2012,
-   2013,
-   2014,
-   2015
-  ],
-  "Alex Lewis": [
-   2014,
-   2015
-  ],
-  "Givens Price": [
-   2013,
-   2014
-  ],
-  "Zach Sterup": [
-   2012,
-   2013,
-   2014,
-   2015
-  ],
-  "Vincent Valentine": [
-   2013,
-   2014,
-   2015
-  ],
-  "Ameer Abdullah": [
-   2011,
-   2012,
-   2013,
-   2014
-  ],
-  "Zaire Anderson": [
-   2013,
-   2014
-  ],
-  "Randy Gregory": [
-   2013,
-   2014
-  ],
-  "Avery Moss": [
-   2013
-  ],
-  "Trevor Roach": [
-   2011,
-   2012,
-   2014
-  ],
-  "Jason Ankrah": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Quincy Enunwa": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Stanley Jean-Baptiste": [
-   2011,
-   2012,
-   2013
-  ],
-  "Spencer Long": [
-   2011,
-   2012,
-   2013
-  ],
-  "Brent Qvale": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Mohammed Seisay": [
-   2012,
-   2013
-  ],
-  "Jeremiah Sirles": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Rex Burkhead": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Will Compton": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Brett Maher": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Eric Martin": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Daimion Stafford": [
-   2011,
-   2012
-  ],
-  "Lavonte David": [
-   2010,
-   2011
-  ],
-  "Alfonzo Dennard": [
-   2008,
-   2009,
-   2010,
-   2011
-  ],
-  "Aaron Green": [
-   2011
-  ],
-  "Prince Amukamara": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Phillip Dillard": [
-   2005,
-   2007,
-   2008,
-   2009
-  ],
-  "DeJon Gomes": [
-   2009,
-   2010
-  ],
-  "Eric Hagg": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Roy Helu": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Alex Henery": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Ricky Henry": [
-   2009,
-   2010
-  ],
-  "Mike McNeill": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Niles Paul": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Keith Williams": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Larry Asante": [
-   2007,
-   2008,
-   2009
-  ],
-  "Chris Brooks": [
-   2008,
-   2009
-  ],
-  "Ndamukong Suh": [
-   2006,
-   2007,
-   2008,
-   2009
-  ],
-  "Barry Turner": [
-   2005,
-   2006,
-   2007,
-   2009
-  ],
-  "Cody Glenn": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Lydon Murtha": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Chris Patrick": [
-   2005,
-   2006
-  ],
-  "Zach Potter": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Matt Slauson": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Carl Nicks": [
-   2006,
-   2007
-  ],
-  "Steve Octavien": [
-   2006,
-   2007
-  ],
-  "Maurice Purify": [
-   2006,
-   2007
-  ],
-  "Stewart Bradley": [
-   2003,
-   2004,
-   2005,
-   2006
-  ],
-  "Adam Carriker": [
-   2003,
-   2004,
-   2005,
-   2006
-  ],
-  "Brandon Jackson": [
-   2004,
-   2005,
-   2006
-  ],
-  "Titus Adams": [
-   2002,
-   2003,
-   2004,
-   2005
-  ],
-  "Daniel Bullocks": [
-   2002,
-   2003,
-   2004,
-   2005
-  ],
-  "Le Kevin Smith": [
-   2002,
-   2003,
-   2004,
-   2005
-  ],
-  "Sam Koch": [
-   2003,
-   2004,
-   2005
-  ],
-  "Cory Ross": [
-   2002,
-   2003,
-   2004,
-   2005
-  ],
-  "Josh Bullocks": [
-   2002,
-   2003,
-   2004
-  ],
-  "Barrett Ruud": [
-   2001,
-   2002,
-   2003,
-   2004
-  ],
-  "Fabian Washington": [
-   2002,
-   2003,
-   2004
-  ],
-  "Ryon Bingham": [
-   2001,
-   2002,
-   2003
-  ],
-  "TJ Hollowell": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Richie Incognito": [
-   2002,
-   2003
-  ],
-  "Trevor Johnson": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Kyle Larson": [
-   2001,
-   2002,
-   2003
-  ],
-  "Jammal Lord": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Jerrell Pippens": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Demorrio Williams": [
-   2002,
-   2003
-  ],
-  "Josh Brown": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Dahrran Diedrick": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Dejuan Groce": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Chris Kelsay": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Scott Shanle": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Keyuo Craver": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Toniu Fonoti": [
-   1999,
-   2000,
-   2001
-  ],
-  "Jeremy Slechta": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Dan Alexander": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Correll Buckhalter": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Clint Finley": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Russ Hochstein": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Carlos Polk": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Dominic Raiola": [
-   1998,
-   1999,
-   2000
-  ],
-  "Kyle Vanden Bosch": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Joe Walker": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Mike Brown": [
-   1996,
-   1997,
-   1998,
-   1999
-  ],
-  "Eric Johnson": [
-   1996,
-   1997,
-   1998,
-   1999
-  ],
-  "Steve Warren": [
-   1996,
-   1997,
-   1998,
-   1999
-  ],
-  "Kris Brown": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Jay Foreman": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Sheldon Jackson": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Chad Kelsay": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Bill Lafleur": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Joel Makovicka": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Mike Rucker": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Jason Wiltz": [
-   1996,
-   1997,
-   1998
-  ],
-  "Scott Frost": [
-   1996,
-   1997
-  ],
-  "Ahman Green": [
-   1995,
-   1996,
-   1997
-  ],
-  "Jason Peter": [
-   1994,
-   1995,
-   1996,
-   1997
-  ],
-  "Eric Warfield": [
-   1995,
-   1996,
-   1997
-  ],
-  "Grant Wistrom": [
-   1994,
-   1995,
-   1996,
-   1997
-  ],
-  "Michael Booker": [
-   1994,
-   1995,
-   1996
-  ],
-  "Chris Dishman": [
-   1993,
-   1994,
-   1995,
-   1996
-  ],
-  "Jon Hesse": [
-   1994,
-   1995,
-   1996
-  ],
-  "Mike Minter": [
-   1993,
-   1994,
-   1995,
-   1996
-  ],
-  "Eric Stokes": [
-   1993,
-   1994,
-   1995,
-   1996
-  ],
-  "Jared Tomich": [
-   1994,
-   1995,
-   1996
-  ],
-  "Adam Treu": [
-   1994,
-   1995,
-   1996
-  ],
-  "Jamel Williams": [
-   1994,
-   1995,
-   1996
-  ],
-  "Doug Colman": [
-   1991,
-   1993,
-   1994,
-   1995
-  ],
-  "Aaron Graham": [
-   1992,
-   1993,
-   1994,
-   1995
-  ],
-  "Christian Peter": [
-   1993,
-   1994,
-   1995
-  ],
-  "Lawrence Phillips": [
-   1993,
-   1994,
-   1995
-  ],
-  "Tony Veland": [
-   1992,
-   1994,
-   1995
-  ],
-  "Tyrone Williams": [
-   1993,
-   1994,
-   1995
-  ],
-  "Troy Dumas": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Donta Jones": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Cory Schlesinger": [
-   1992,
-   1993,
-   1994
-  ],
-  "Brenden Stai": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Zach Wiegert": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Rob Zatechka": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Trev Alberts": [
-   1990,
-   1991,
-   1992,
-   1993
-  ],
-  "Calvin Jones": [
-   1991,
-   1992,
-   1993
-  ],
-  "John Reece": [
-   1989,
-   1991,
-   1992,
-   1993
-  ],
-  "Toby Wright": [
-   1992,
-   1993
-  ],
-  "Derek Brown": [
-   1990,
-   1991,
-   1992
-  ],
-  "Travis Hill": [
-   1989,
-   1990,
-   1991,
-   1992
-  ],
-  "Tyrone Hughes": [
-   1989,
-   1990,
-   1991,
-   1992
-  ],
-  "John Parrella": [
-   1990,
-   1991,
-   1992
-  ],
-  "Will Shields": [
-   1989,
-   1990,
-   1991,
-   1992
-  ],
-  "David White": [
-   1989,
-   1990,
-   1991,
-   1992
-  ],
-  "Tyrone Legette": [
-   1989,
-   1990,
-   1991
-  ],
-  "Johnny Mitchell": [
-   1990,
-   1991
-  ],
-  "Nate Turner": [
-   1988,
-   1989,
-   1990,
-   1991
-  ],
-  "Reggie Cooper": [
-   1987,
-   1988,
-   1989,
-   1990
-  ],
-  "Mike Croel": [
-   1987,
-   1988,
-   1989,
-   1990
-  ],
-  "Tahaun Lewis": [
-   1987,
-   1988,
-   1989
-  ],
-  "Bruce Pickens": [
-   1988,
-   1989,
-   1990
-  ],
-  "Joe Sims": [
-   1988,
-   1989,
-   1990
-  ],
-  "Kenny Walker": [
-   1989,
-   1990
-  ],
-  "Richard Bell": [
-   1987,
-   1988,
-   1989
-  ],
-  "Ken Clark": [
-   1987,
-   1988,
-   1989
-  ],
-  "Jeff Mills": [
-   1987,
-   1988,
-   1989
-  ],
-  "Kent Wells": [
-   1987,
-   1988,
-   1989
-  ],
-  "Dana Brinson": [
-   1985,
-   1986,
-   1987,
-   1988
-  ],
-  "Tim Jackson": [
-   1987,
-   1988
-  ],
-  "Lawrence Pete": [
-   1986,
-   1987,
-   1988
-  ],
-  "Tim Rother": [
-   1986,
-   1987
-  ],
-  "Broderick Thomas": [
-   1985,
-   1986,
-   1987,
-   1988
-  ],
-  "Keith Jones": [
-   1984,
-   1985,
-   1986,
-   1987
-  ],
-  "Keith Neubert": [
-   1987
-  ],
-  "Neil Smith": [
-   1985,
-   1986,
-   1987
-  ],
-  "Brian Washington": [
-   1984,
-   1985,
-   1986,
-   1987
-  ],
-  "Brian Blankenship": [
-   1983,
-   1985
-  ],
-  "Brian Davis": [
-   1985,
-   1986
-  ],
-  "Tony Holloway": [
-   1983,
-   1985,
-   1986
-  ],
-  "Marc Munford": [
-   1984,
-   1985,
-   1986
-  ],
-  "Danny Noonan": [
-   1984,
-   1985,
-   1986
-  ],
-  "Greg Orton": [
-   1983,
-   1984
-  ],
-  "Tom Welter": [
-   1985,
-   1986
-  ],
-  "Mark Behning": [
-   1982,
-   1983,
-   1984
-  ],
-  "Doug DuBose": [
-   1984,
-   1985
-  ],
-  "Todd Frain": [
-   1983,
-   1984,
-   1985
-  ],
-  "Mike Knox": [
-   1981,
-   1982,
-   1983,
-   1985
-  ],
-  "Bill Lewis": [
-   1983,
-   1984,
-   1985
-  ],
-  "Tom Rathman": [
-   1983,
-   1984,
-   1985
-  ],
-  "Jim Skow": [
-   1983,
-   1984,
-   1985
-  ],
-  "Bret Clark": [
-   1982,
-   1983,
-   1984
-  ],
-  "Jeff Smith": [
-   1982,
-   1983,
-   1984
-  ],
-  "Shane Swanson": [
-   1982,
-   1983,
-   1984
-  ],
-  "Mark Traynowicz": [
-   1982,
-   1983,
-   1984
-  ],
-  "Irving Fryar": [
-   1981,
-   1982,
-   1983
-  ],
-  "Mike Rozier": [
-   1981,
-   1982,
-   1983
-  ],
-  "Dean Steinkuhler": [
-   1981,
-   1982,
-   1983
-  ],
-  "Roger Craig": [
-   1980,
-   1981,
-   1982
-  ],
-  "Mitch Krenk": [
-   1981,
-   1982
-  ],
-  "Allen Lyday": [
-   1981,
-   1982
-  ],
-  "Bruce Mathison": [
-   1981,
-   1982
-  ],
-  "Dave Rimington": [
-   1979,
-   1980,
-   1981,
-   1982
-  ],
-  "Jamie Williams": [
-   1979,
-   1980,
-   1981,
-   1982
-  ],
-  "Toby Williams": [
-   1980,
-   1981,
-   1982
-  ],
-  "Rodney Lewis": [
-   1979,
-   1980,
-   1981
-  ],
-  "Anthony Steels": [
-   1979,
-   1980,
-   1981
-  ],
-  "Henry Waechter": [
-   1980,
-   1981
-  ],
-  "Jimmy Williams": [
-   1979,
-   1980,
-   1981
-  ],
-  "Andra Franklin": [
-   1977,
-   1978,
-   1979,
-   1980
-  ],
-  "Russell Gary": [
-   1978,
-   1979,
-   1980
-  ],
-  "Derrie Nelson": [
-   1978,
-   1979,
-   1980
-  ],
-  "Jarvis Redwine": [
-   1979,
-   1980
-  ],
-  "Bill Barnett": [
-   1977,
-   1978,
-   1979
-  ],
-  "Mark Goodspeed": [
-   1979
-  ],
-  "I.M. Hipp": [
-   1977,
-   1978,
-   1979
-  ],
-  "Rod Horn": [
-   1977,
-   1978,
-   1979
-  ],
-  "Oudious Lee": [
-   1977,
-   1978,
-   1979
-  ],
-  "Junior Miller": [
-   1977,
-   1978,
-   1979
-  ],
-  "Kelly Saalfeld": [
-   1977,
-   1978,
-   1979
-  ],
-  "Tim Smith": [
-   1977,
-   1978,
-   1979
-  ],
-  "George Andrews": [
-   1976,
-   1977,
-   1978
-  ],
-  "Ed Burns": [
-   1977
-  ],
-  "Kelvin Clark": [
-   1976,
-   1977,
-   1978
-  ],
-  "Barney Cotton": [
-   1976,
-   1977,
-   1978
-  ],
-  "Lee Kunz": [
-   1976,
-   1977,
-   1978
-  ],
-  "Jeff Lee": [
-   1977
-  ],
-  "Frank Lockett": [
-   1977,
-   1978
-  ],
-  "Wonder Monds": [
-   1973,
-   1974,
-   1975
-  ],
-  "Brett Moritz": [
-   1977
-  ],
-  "Stan Waldemore": [
-   1975,
-   1976,
-   1977
-  ],
-  "Keith Bishop": [
-   1976
-  ],
-  "Vince Ferragamo": [
-   1975,
-   1976
-  ],
-  "Mike Fultz": [
-   1974,
-   1975,
-   1976
-  ],
-  "Bob Lingenfelter": [
-   1974,
-   1975,
-   1976
-  ],
-  "Terry Luck": [
-   1974,
-   1975
-  ],
-  "Ray Phillips": [
-   1975,
-   1976
-  ],
-  "Don Westbrook": [
-   1972,
-   1973,
-   1974
-  ],
-  "Tom Alward": [
-   1972,
-   1973,
-   1974
-  ],
-  "Rik Bonness": [
-   1973,
-   1974,
-   1975
-  ],
-  "Jim Burrow": [
-   1974,
-   1975
-  ],
-  "Tony Davis": [
-   1973,
-   1974,
-   1975
-  ],
-  "John Lee": [
-   1973,
-   1974,
-   1975
-  ],
-  "Bob Martin": [
-   1973,
-   1974,
-   1975
-  ],
-  "Bob Nelson": [
-   1972,
-   1973,
-   1974
-  ],
-  "Tom Ruud": [
-   1972,
-   1973,
-   1974
-  ],
-  "Maury Damkroger": [
-   1971,
-   1972,
-   1973
-  ],
-  "John Dutton": [
-   1971,
-   1972,
-   1973
-  ],
-  "Bob Schmit": [
-   1972,
-   1973
-  ],
-  "Daryl White": [
-   1971,
-   1972,
-   1973
-  ],
-  "Joe Blahak": [
-   1970,
-   1971,
-   1972
-  ],
-  "Doug Dumler": [
-   1970,
-   1971,
-   1972
-  ],
-  "Rich Glover": [
-   1970,
-   1971,
-   1972
-  ],
-  "Willie Harper": [
-   1970,
-   1971,
-   1972
-  ],
-  "Monte Johnson": [
-   1970,
-   1971,
-   1972
-  ],
-  "Dave Mason": [
-   1969,
-   1971,
-   1972
-  ],
-  "Bill Olds": [
-   1970,
-   1971,
-   1972
-  ],
-  "Johnny Rodgers": [
-   1970,
-   1971,
-   1972
-  ],
-  "Larry Jacobson": [
-   1969,
-   1970,
-   1971
-  ],
-  "Carl Johnson": [
-   1970,
-   1971
-  ],
-  "Jeff Kinney": [
-   1969,
-   1970,
-   1971
-  ],
-  "Jerry Tagge": [
-   1969,
-   1970,
-   1971
-  ],
-  "Keith Wortman": [
-   1970,
-   1971
-  ],
-  "Bob Newton": [
-   1969,
-   1970
-  ],
-  "Joe Orduna": [
-   1967,
-   1968,
-   1970
-  ],
-  "Ken Geddes": [
-   1967,
-   1968,
-   1969
-  ],
-  "Bob Liggett": [
-   1968,
-   1969
-  ],
-  "Jim McFarland": [
-   1968,
-   1969
-  ],
-  "Frank Patrick": [
-   1967,
-   1968,
-   1969
-  ],
-  "Dick Davis": [
-   1966,
-   1967,
-   1968
-  ],
-  "Ben Gregory": [
-   1965,
-   1966,
-   1967
-  ],
-  "Wayne Meylan": [
-   1965,
-   1966,
-   1967
-  ],
-  "Jerry Patton": [
-   1965,
-   1966,
-   1967
-  ],
-  "Carel Stith": [
-   1965,
-   1966
-  ],
-  "Pete Tatman": [
-   1964,
-   1965,
-   1966
-  ],
-  "Harry Wilson": [
-   1964,
-   1965,
-   1966
-  ],
-  "Tony Jeter": [
-   1963,
-   1964,
-   1965
-  ],
-  "Freeman White": [
-   1963,
-   1964,
-   1965,
-   1989
-  ],
-  "Kent McCloughan": [
-   1962,
-   1963,
-   1964
-  ],
-  "Dennis Claridge": [
-   1961,
-   1962,
-   1963
-  ],
-  "Rudy Johnson": [
-   1961,
-   1962,
-   1963
-  ],
-  "John Kirby": [
-   1961,
-   1962,
-   1963
-  ],
-  "Willie Ross": [
-   1961,
-   1962,
-   1963
-  ],
-  "Lloyd Voss": [
-   1961,
-   1962,
-   1963
-  ],
-  "Warren Powers": [
-   1960,
-   1961,
-   1962
-  ],
-  "Bill Thornton": [
-   1960,
-   1961,
-   1962
-  ],
-  "Mick Tingelhoff": [
-   1959,
-   1960,
-   1961
-  ],
-  "Pat Fischer": [
-   1958,
-   1959,
-   1960,
-   1972,
-   1973
-  ],
-  "Ron McDole": [
-   1958,
-   1959,
-   1960
-  ],
-  "Laverne Torczon": [
-   1954,
-   1955,
-   1956
-  ],
-  "Carroll Zaruba": [
-   1957,
-   1958,
-   1959
-  ],
-  "Nick Adduci": [
-   1949,
-   1950,
-   1953
-  ],
-  "Don Boll": [
-   1950,
-   1951,
-   1952
-  ],
-  "Ed Husmann": [
-   1950,
-   1951,
-   1952
-  ],
-  "Charles Toogood": [
-   1947,
-   1948,
-   1949,
-   1950
-  ],
-  "Carl Samuelson": [
-   1946,
-   1947
-  ],
-  "Sam Vacanti": [
-   1946
-  ],
-  "Warren Alfson": [
-   1938,
-   1939,
-   1940
-  ],
-  "Harry Hopp": [
-   1938,
-   1939,
-   1940
-  ],
-  "Royal Kahler": [
-   1938,
-   1939,
-   1940
-  ],
-  "Ray Prochaska": [
-   1938,
-   1939,
-   1940
-  ],
-  "George Seeman": [
-   1936,
-   1938,
-   1939
-  ],
-  "Fred Shirey": [
-   1935,
-   1936,
-   1937
-  ],
-  "John Howell": [
-   1935,
-   1936,
-   1937
-  ],
-  "Lloyd Cardwell": [
-   1934,
-   1935,
-   1936
-  ],
-  "Sam Francis": [
-   1934,
-   1935,
-   1936
-  ],
-  "Gail O'Brien": [
-   1931,
-   1932,
-   1933
-  ],
-  "George Sauer": [
-   1931,
-   1932,
-   1933
-  ],
-  "Hugh Rhea": [
-   1929,
-   1930,
-   1931
-  ],
-  "Forrest McPherson": [
-   1930,
-   1931
-  ],
-  "Marion Broadstone": [
-   1928,
-   1929,
-   1930
-  ],
-  "Merle Zuver": [
-   1926,
-   1927,
-   1928
-  ],
-  "Glenn Presnell": [
-   1925,
-   1926,
-   1927
-  ],
-  "Joe Weir": [
-   1924,
-   1925,
-   1926
-  ],
-  "Ed Weir": [
-   1923,
-   1924,
-   1925
-  ],
-  "Joy Berquist": [
-   1921,
-   1922,
-   1923
-  ],
-  "Verne Lewellen": [
-   1921,
-   1922,
-   1923
-  ],
-  "Dave Noble": [
-   1921,
-   1922,
-   1923
-  ],
-  "Fred Thomsen": [
-   1920,
-   1922
-  ],
-  "Darin Erstad": [
-   1994
-  ],
-  "Henry Lutovsky": [
-   2022
-  ],
-  "DeShon Singleton": [
-   2022
-  ],
-  "Javin Wright": [
-   2022
-  ],
-  "Isaac Gifford": [
-   2020,
-   2021,
-   2022
-  ],
-  "Nash Hutmacher": [
-   2021,
-   2022
-  ],
-  "Tamon Lynum": [
-   2020
-  ],
-  "Quinton Newsome": [
-   2019,
-   2020,
-   2021,
-   2022
-  ],
-  "Phalen Sanford": [
-   2020,
-   2021,
-   2022
-  ],
-  "Oliver Martin": [
-   2020,
-   2021,
-   2022
-  ],
-  "Garrett Nelson": [
-   2019,
-   2020,
-   2021,
-   2022
-  ],
-  "Austin Allen": [
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Damion Daniels": [
-   2018,
-   2019,
-   2020,
-   2021
-  ],
-  "Deontai Williams": [
-   2018,
-   2020,
-   2021
-  ],
-  "Dedrick Mills": [
-   2019,
-   2020
-  ],
-  "Kade Warner": [
-   2018,
-   2019
-  ],
-  "Jerald Foster": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Tyjon Lindsey": [
-   2017
-  ],
-  "Tyler Hoppes": [
-   2016,
-   2017
-  ],
-  "Tanner Lee": [
-   2017
-  ],
-  "Luke McNitt": [
-   2015,
-   2016,
-   2017
-  ],
-  "De'Mornay Pierson-El": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "Sam Cotton": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Kevin Maurice": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Terrell Newby": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Brandon Reilly": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Jordan Westerkamp": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Daniel Davie": [
-   2012,
-   2013,
-   2014,
-   2015
-  ],
-  "Jack Gangwish": [
-   2014,
-   2015
-  ],
-  "Kenny Bell": [
-   2011,
-   2012,
-   2013,
-   2014
-  ],
-  "Josh Mitchell": [
-   2011,
-   2012,
-   2013,
-   2014
-  ],
-  "Ben Cotton": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Curenski Gilleylen": [
-   2008,
-   2009,
-   2010,
-   2011
-  ],
-  "Jermarcus Hardrick": [
-   2010,
-   2011
-  ],
-  "Marcel Jones": [
-   2008,
-   2009,
-   2010,
-   2011
-  ],
-  "Brandon Kinnie": [
-   2009,
-   2010,
-   2011
-  ],
-  "Terrence Moore": [
-   2008,
-   2009,
-   2010,
-   2011
-  ],
-  "Pierre Allen": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "D.J. Jones": [
-   2007,
-   2009,
-   2010
-  ],
-  "Adi Kunalic": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Rickey Thenarse": [
-   2006,
-   2007,
-   2008,
-   2010
-  ],
-  "Anthony West": [
-   2007,
-   2008,
-   2009,
-   2010
-  ],
-  "Matt O'Hanlon": [
-   2006,
-   2007,
-   2008,
-   2009
-  ],
-  "Marlon Lucky": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Todd Peterson": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Ty Steinkuhler": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Nate Swift": [
-   2005,
-   2006,
-   2007,
-   2008
-  ],
-  "Cortney Grixby": [
-   2004,
-   2005,
-   2006,
-   2007
-  ],
-  "Frantz Hardy": [
-   2005,
-   2006,
-   2007
-  ],
-  "Terrence Nunn": [
-   2004,
-   2005,
-   2006,
-   2007
-  ],
-  "Bo Ruud": [
-   2004,
-   2005,
-   2006,
-   2007
-  ],
-  "Barry Cryer": [
-   2005,
-   2006
-  ],
-  "Ola Dagunduro": [
-   2005,
-   2006
-  ],
-  "Matt Herian": [
-   2002,
-   2003,
-   2004,
-   2006
-  ],
-  "Jay Moore": [
-   2004,
-   2005,
-   2006
-  ],
-  "Andrew Shanle": [
-   2003,
-   2004,
-   2005,
-   2006
-  ],
-  "Seppo Evwaraye": [
-   2002,
-   2004,
-   2005
-  ],
-  "Willie Amos": [
-   2000,
-   2001,
-   2003,
-   2004
-  ],
-  "Mike Erickson": [
-   2001,
-   2002,
-   2003,
-   2004
-  ],
-  "Steve Kriewald": [
-   2001,
-   2002,
-   2003,
-   2004
-  ],
-  "Benard Thomas": [
-   2000,
-   2001,
-   2003,
-   2004
-  ],
-  "Josh Davis": [
-   2001,
-   2002,
-   2003
-  ],
-  "Pat Ricketts": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Josh Sewell": [
-   2002,
-   2003
-  ],
-  "Jon Clanton": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "John Garrison": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Aaron Golliday": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Wilson Thomas": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Jamie Burrow": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Eric Crouch": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Dave Volk": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Tracey Wistrom": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Dan Hadenfeldt": [
-   1998,
-   1999,
-   2000
-  ],
-  "Loran Kaiser": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Bobby Newcombe": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Tony Ortiz": [
-   1996,
-   1997,
-   1998,
-   1999
-  ],
-  "Luis Almanzar": [
-   1998
-  ],
-  "Vershan Jackson": [
-   1995,
-   1996,
-   1997
-  ],
-  "Fred Pollack": [
-   1994,
-   1995,
-   1996,
-   1997
-  ],
-  "Aaron Taylor": [
-   1994,
-   1995,
-   1996,
-   1997
-  ],
-  "Jon Zatechka": [
-   1994,
-   1995,
-   1996,
-   1997
-  ],
-  "Jeff Ogard": [
-   1994,
-   1995,
-   1996
-  ],
-  "Larry Townsend": [
-   1994,
-   1995
-  ],
-  "Barron Miles": [
-   1992,
-   1993,
-   1994
-  ],
-  "Ed Stewart": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Mike Anderson": [
-   1990,
-   1991,
-   1992,
-   1993
-  ],
-  "Trumane Bell": [
-   1992,
-   1993
-  ],
-  "Corey Dixon": [
-   1991,
-   1992,
-   1993
-  ],
-  "Lance Lewis": [
-   1988,
-   1990,
-   1991,
-   1992
-  ],
-  "Kenny Wilhite": [
-   1991,
-   1992
-  ],
-  "Brian Boerboom": [
-   1989,
-   1990,
-   1991
-  ],
-  "Jon Bostick": [
-   1989,
-   1990,
-   1991
-  ],
-  "Curtis Cotton": [
-   1989,
-   1990,
-   1991
-  ],
-  "Omar Soto": [
-   1990,
-   1991
-  ],
-  "Le Andre Anderson": [
-   1989,
-   1990
-  ],
-  "Pat Tyrance": [
-   1988,
-   1989,
-   1990
-  ],
-  "Gerry Gdowski": [
-   1987,
-   1988,
-   1989
-  ],
-  "Willie Griffin": [
-   1986,
-   1987,
-   1988
-  ],
-  "Steve Forch": [
-   1984,
-   1985,
-   1987
-  ],
-  "Hendley Hawkins": [
-   1985,
-   1986,
-   1987
-  ],
-  "Lee Jones": [
-   1985,
-   1986,
-   1987
-  ],
-  "John McCormick": [
-   1985,
-   1986,
-   1987
-  ],
-  "Stan Parker": [
-   1984,
-   1985,
-   1986
-  ],
-  "Chris Spachman": [
-   1984,
-   1985,
-   1986
-  ],
-  "Paul Miles": [
-   1983,
-   1984,
-   1985
-  ],
-  "Dave Burke": [
-   1982,
-   1983,
-   1984
-  ],
-  "Scott Strasburger": [
-   1982,
-   1983,
-   1984
-  ],
-  "Doug Herrmann": [
-   1981,
-   1982,
-   1983
-  ],
-  "Scott Raridon": [
-   1981,
-   1982,
-   1983
-  ],
-  "Mark Schellen": [
-   1982,
-   1983
-  ],
-  "Todd Brown": [
-   1979,
-   1980,
-   1981,
-   1982
-  ],
-  "Brad Johnson": [
-   1980,
-   1981,
-   1982,
-   1985,
-   1986
-  ],
-  "Jeff Merrell": [
-   1980,
-   1981,
-   1982
-  ],
-  "Kevin Seibel": [
-   1979,
-   1980,
-   1981,
-   1982
-  ],
-  "Dan Hurley": [
-   1979,
-   1980,
-   1981
-  ],
-  "Joe Adams": [
-   1979,
-   1980
-  ],
-  "John Noonan": [
-   1980
-  ],
-  "Jeff Quinn": [
-   1978,
-   1979,
-   1980
-  ],
-  "Randy Schleusener": [
-   1978,
-   1979,
-   1980
-  ],
-  "Kenny Brown": [
-   1975,
-   1977,
-   1978,
-   1979
-  ],
-  "John Havekost": [
-   1977,
-   1978,
-   1979
-  ],
-  "Dan Pensick": [
-   1977,
-   1978,
-   1979
-  ],
-  "Steve Lindquist": [
-   1975,
-   1976,
-   1977,
-   1978
-  ],
-  "Monte Anthony": [
-   1974,
-   1975,
-   1976,
-   1977
-  ],
-  "Tom Davis": [
-   1975,
-   1976,
-   1977
-  ],
-  "Dodie Donnell": [
-   1975,
-   1976,
-   1977
-  ],
-  "Ron Pruitt": [
-   1973,
-   1974,
-   1976
-  ],
-  "John O'Leary": [
-   1973,
-   1974,
-   1975
-  ],
-  "Marvin Crenshaw": [
-   1972,
-   1973,
-   1974
-  ],
-  "Mark Doak": [
-   1972,
-   1973,
-   1974
-  ],
-  "Dennis Pavelka": [
-   1974
-  ],
-  "John Starkebaum": [
-   1972,
-   1973,
-   1974
-  ],
-  "Zaven Yaralian": [
-   1972,
-   1973,
-   1974
-  ],
-  "Frosty Anderson": [
-   1971,
-   1972,
-   1973
-  ],
-  "Randy Borg": [
-   1971,
-   1972,
-   1973
-  ],
-  "Brent Longwell": [
-   1971,
-   1972,
-   1973
-  ],
-  "Steve Manstedt": [
-   1971,
-   1972,
-   1973
-  ],
-  "Bob Wolfe": [
-   1971,
-   1972,
-   1973
-  ],
-  "Jerry List": [
-   1970,
-   1971,
-   1972
-  ],
-  "Van Brownson": [
-   1969,
-   1970,
-   1971
-  ],
-  "Guy Ingles": [
-   1968,
-   1969,
-   1970
-  ],
-  "Jerry Murtaugh": [
-   1968,
-   1969,
-   1970
-  ],
-  "Paul Rogers": [
-   1968,
-   1969,
-   1970
-  ],
-  "Mike Wynn": [
-   1967,
-   1968,
-   1969
-  ],
-  "Monte Kiffin": [
-   1961,
-   1962,
-   1963
-  ],
-  "Charles Bryant": [
-   1953,
-   1954
-  ],
-  "Don Glantz": [
-   1953,
-   1954
-  ],
-  "Chris Mathis": [
-   1930,
-   1931,
-   1932
-  ],
-  "Bryce Benhart": [
-   2020,
-   2021,
-   2022
-  ],
-  "Brian Buschini": [
-   2022
-  ],
-  "Tommi Hill": [
-   2022
-  ],
-  "Anthony Grant": [
-   2022
-  ],
-  "Nouredin Nouili": [
-   2021
-  ],
-  "Chris Kolarevic": [
-   2021,
-   2022
-  ],
-  "Eteva Mauga-Clements": [
-   2020,
-   2021,
-   2022
-  ],
-  "Caleb Tannor": [
-   2018,
-   2019,
-   2020,
-   2021,
-   2022
-  ],
-  "Brady Weas": [
-   2022
-  ],
-  "Damian Jackson": [
-   2020,
-   2021
-  ],
-  "Cole Conrad": [
-   2016,
-   2017,
-   2018
-  ],
-  "Tanner Farmer": [
-   2016,
-   2017,
-   2018
-  ],
-  "Jordan Ober": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Antonio Reed": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Aaron Williams": [
-   2015,
-   2016,
-   2017,
-   2018
-  ],
-  "Drew Brown": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "David Knevel": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "Marcus Newby": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "Avery Roberts": [
-   2017
-  ],
-  "Kieron Williams": [
-   2014,
-   2015,
-   2016,
-   2017
-  ],
-  "Tommy Armstrong": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Josh Banderas": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Sam Hahn": [
-   2015,
-   2016
-  ],
-  "Alonzo Moore": [
-   2013,
-   2014,
-   2015,
-   2016
-  ],
-  "Michael Rose-Ivey": [
-   2013,
-   2015,
-   2016
-  ],
-  "Dylan Utter": [
-   2014,
-   2015,
-   2016
-  ],
-  "Corey Cooper": [
-   2011,
-   2012,
-   2013,
-   2014
-  ],
-  "Jonathan Rose": [
-   2013,
-   2014,
-   2015
-  ],
-  "Kevin Williams": [
-   2012,
-   2014,
-   2015,
-   2022
-  ],
-  "Jake Cotton": [
-   2011,
-   2012,
-   2013,
-   2014
-  ],
-  "Ciante Evans": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Andrew Green": [
-   2011,
-   2012,
-   2013
-  ],
-  "Taylor Martinez": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "Cole Pensick": [
-   2010,
-   2011,
-   2012,
-   2013
-  ],
-  "P.J. Mangieri": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Cameron Meredith": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Kyler Reed": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Baker Steinkuhler": [
-   2009,
-   2010,
-   2011,
-   2012
-  ],
-  "Mike Caputo": [
-   2008,
-   2009,
-   2010,
-   2011
-  ],
-  "Austin Cassidy": [
-   2009,
-   2010,
-   2011
-  ],
-  "Zac Lee": [
-   2009,
-   2010
-  ],
-  "Mike Smith": [
-   2007,
-   2008,
-   2009
-  ],
-  "Menelik Holt": [
-   2006,
-   2007,
-   2008,
-   2009
-  ],
-  "Major Culbert": [
-   2006,
-   2007,
-   2008
-  ],
-  "Joe Ganz": [
-   2006,
-   2007,
-   2008
-  ],
-  "Armando Murillo": [
-   2007,
-   2008
-  ],
-  "Brett Byford": [
-   2006,
-   2007
-  ],
-  "Kevin Dixon": [
-   2007
-  ],
-  "Tierre Green": [
-   2004,
-   2005,
-   2006,
-   2007
-  ],
-  "Sam Keller": [
-   2007
-  ],
-  "Corey McKeon": [
-   2005,
-   2006,
-   2007
-  ],
-  "Zac Taylor": [
-   2005,
-   2006
-  ],
-  "Jake Andersen": [
-   2002,
-   2003,
-   2004
-  ],
-  "Ira Cooper": [
-   2001,
-   2002,
-   2003,
-   2004
-  ],
-  "Sandro DeAngelis": [
-   2001,
-   2003,
-   2004
-  ],
-  "Lornell McPherson": [
-   2001,
-   2002,
-   2003,
-   2004
-  ],
-  "Patrick Kabongo": [
-   2000,
-   2001,
-   2002,
-   2003
-  ],
-  "Demoine Adams": [
-   1999,
-   2000,
-   2001,
-   2002
-  ],
-  "Thunder Collins": [
-   2000,
-   2001
-  ],
-  "Dion Booker": [
-   1998,
-   1999,
-   2000,
-   2001
-  ],
-  "Matt Davison": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Chace Long": [
-   2000
-  ],
-  "Jason Schwab": [
-   1997,
-   1998,
-   1999,
-   2000
-  ],
-  "Julius Jackson": [
-   1996,
-   1997,
-   1998,
-   1999
-  ],
-  "Josh Heskew": [
-   1995,
-   1996,
-   1997,
-   1998
-  ],
-  "Damon Benning": [
-   1993,
-   1994,
-   1995,
-   1996
-  ],
-  "Terrell Farley": [
-   1995,
-   1996
-  ],
-  "Brian Schuster": [
-   1994,
-   1995,
-   1996
-  ],
-  "Clinton Childs": [
-   1993,
-   1994,
-   1995
-  ],
-  "Tommie Frazier": [
-   1992,
-   1993,
-   1994,
-   1995
-  ],
-  "Mark Gilman": [
-   1992,
-   1993,
-   1994,
-   1995
-  ],
-  "Jason Jenkins": [
-   1994,
-   1995
-  ],
-  "Jeff Makovicka": [
-   1992,
-   1993,
-   1994,
-   1995
-  ],
-  "Eric Alford": [
-   1993,
-   1994
-  ],
-  "Terry Connealy": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Dwayne Harris": [
-   1992,
-   1993,
-   1994
-  ],
-  "Tom Sieler": [
-   1991,
-   1992,
-   1993,
-   1994
-  ],
-  "Lance Lundberg": [
-   1991,
-   1992,
-   1993
-  ],
-  "Terris Chorney": [
-   1990,
-   1991,
-   1992
-  ],
-  "Mickey Joseph": [
-   1988,
-   1989,
-   1990,
-   1991
-  ],
-  "Keithen McCant": [
-   1990,
-   1991
-  ],
-  "Mike Petko": [
-   1989,
-   1990,
-   1991
-  ],
-  "Mike Jefferson": [
-   1990
-  ],
-  "Chris Drennan": [
-   1987,
-   1988,
-   1989
-  ],
-  "Charles Fryar": [
-   1986,
-   1987,
-   1988
-  ],
-  "Jon Kelley": [
-   1985,
-   1986,
-   1987
-  ],
-  "Todd Millikan": [
-   1985,
-   1986,
-   1987,
-   1988
-  ],
-  "Steve Taylor": [
-   1985,
-   1986,
-   1987,
-   1988
-  ],
-  "McCathorn Clayton": [
-   1985,
-   1986,
-   1987
-  ],
-  "Keven Lightner": [
-   1985,
-   1986,
-   1987
-  ],
-  "Ken Graeber": [
-   1982,
-   1983,
-   1984
-  ],
-  "Harry Grimminger": [
-   1982,
-   1983,
-   1984
-  ],
-  "Neil Harris": [
-   1982,
-   1983,
-   1984
-  ],
-  "Turner Gill": [
-   1981,
-   1982,
-   1983
-  ],
-  "Ricky Simmons": [
-   1980,
-   1982,
-   1983
-  ],
-  "Doug Wilkening": [
-   1981,
-   1982
-  ],
-  "Mike Mandelko": [
-   1980,
-   1981,
-   1982
-  ],
-  "Randy Theiss": [
-   1980,
-   1981,
-   1982
-  ],
-  "Phil Bates": [
-   1980,
-   1981
-  ],
-  "Tom Carlstrom": [
-   1980,
-   1981
-  ],
-  "David Clark": [
-   1978,
-   1979,
-   1980
-  ],
-  "Randy Poeschl": [
-   1976,
-   1977,
-   1978
-  ],
-  "Mark Dufresne": [
-   1976,
-   1977
-  ],
-  "Greg Jorgensen": [
-   1975,
-   1976,
-   1977
-  ],
-  "Ken Spaeth": [
-   1975,
-   1976,
-   1977
-  ],
-  "Dave Butterfield": [
-   1974,
-   1975,
-   1976
-  ],
-  "Dave Gillespie": [
-   1974,
-   1975,
-   1976
-  ],
-  "Rich Costanzo": [
-   1974,
-   1975
-  ],
-  "Dean Gissler": [
-   1973,
-   1974,
-   1975
-  ],
-  "Brad Jenkins": [
-   1974,
-   1975
-  ],
-  "George Mills": [
-   1973,
-   1975
-  ],
-  "Larry Mushinskie": [
-   1973,
-   1974,
-   1975
-  ],
-  "Ritch Bahe": [
-   1972,
-   1973,
-   1974
-  ],
-  "Stan Hegener": [
-   1972,
-   1973,
-   1974
-  ],
-  "Ardell Johnson": [
-   1972,
-   1973,
-   1974
-  ],
-  "Tom Pate": [
-   1972,
-   1973,
-   1974
-  ],
-  "Ralph Powell": [
-   1972,
-   1973
-  ],
-  "Gary Dixon": [
-   1971,
-   1972
-  ],
-  "Bill Janssen": [
-   1969,
-   1971,
-   1972
-  ],
-  "Dan Schneiss": [
-   1968,
-   1969,
-   1970
-  ],
-  "Frank Vactor": [
-   1969,
-   1970
-  ],
-  "Glenn Patterson": [
-   1967,
-   1968,
-   1969
-  ],
-  "Dana Stephenson": [
-   1967,
-   1968,
-   1969
-  ],
-  "James Hawkins": [
-   1967,
-   1968
-  ],
-  "Tom Penney": [
-   1966,
-   1967,
-   1968
-  ],
-  "Dennis Morrison": [
-   1966,
-   1967
-  ],
-  "Laverne Allers": [
-   1964,
-   1965,
-   1966
-  ],
-  "Kaye Carstens": [
-   1964,
-   1965,
-   1966
-  ],
-  "Bob Churchich": [
-   1964,
-   1965,
-   1966
-  ],
-  "Ron Kirkland": [
-   1964,
-   1965,
-   1966
-  ],
-  "Lynn Senkbeil": [
-   1964,
-   1965,
-   1966
-  ],
-  "Dennis Thorell": [
-   1965,
-   1966
-  ],
-  "Charlie Winters": [
-   1965,
-   1966
-  ],
-  "James Brown": [
-   1964,
-   1965
-  ],
-  "Frank Solich": [
-   1963,
-   1964,
-   1965
-  ],
-  "John Dervin": [
-   1962,
-   1963,
-   1964
-  ],
-  "Larry Kramer": [
-   1962,
-   1963,
-   1964
-  ],
-  "Preston Love": [
-   1963,
-   1964
-  ],
-  "Joe McNulty": [
-   1963
-  ],
-  "Ron Michka": [
-   1961,
-   1962,
-   1963
-  ],
-  "Larry Tomlinson": [
-   1961,
-   1962,
-   1963
-  ],
-  "Mike Eger": [
-   1958,
-   1962
-  ],
-  "Dennis Stuewe": [
-   1960,
-   1961,
-   1962
-  ],
-  "Archie Cobb": [
-   1960
-  ],
-  "Dallas Dyer": [
-   1959,
-   1960,
-   1961
-  ],
-  "George Haney": [
-   1959,
-   1960,
-   1961
-  ],
-  "Gene Ward": [
-   1959,
-   1961
-  ],
-  "Dick McCashland": [
-   1956,
-   1957,
-   1958
-  ],
-  "Clarence Cook": [
-   1956,
-   1957
-  ],
-  "Jon McWilliams": [
-   1953,
-   1954,
-   1955
-  ],
-  "Ron Clark": [
-   1949,
-   1950,
-   1954
-  ],
-  "Ted Connor": [
-   1952,
-   1953
-  ],
-  "Jerry Minnick": [
-   1951,
-   1952,
-   1953
-  ],
-  "Ray Novak": [
-   1951,
-   1952,
-   1953
-  ],
-  "Bobby Reynolds": [
-   1950,
-   1951,
-   1952
-  ],
-  "Verl Scott": [
-   1950,
-   1951,
-   1952
-  ],
-  "Frank Simon": [
-   1949,
-   1950,
-   1951
-  ],
-  "Fran Nagle": [
-   1949,
-   1950
-  ],
-  "Tom Novak": [
-   1946,
-   1947,
-   1948,
-   1949
-  ],
-  "Jack Dedrick": [
-   1944
-  ],
-  "Frank Hazard": [
-   1943
-  ],
-  "George Abel": [
-   1939,
-   1940,
-   1941
-  ],
-  "Fred Preston": [
-   1939,
-   1940,
-   1941
-  ],
-  "Elmer Dohrmann": [
-   1935,
-   1936,
-   1937
-  ],
-  "Clair Sloan": [
-   1927,
-   1928,
-   1929
-  ],
-  "Willard Bronson": [
-   1926,
-   1927
-  ],
-  "Lloyd Grow": [
-   1926,
-   1927
-  ]
+  "Emmett Johnson": {
+   "football": [
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "Nate Boerkircher": {
+   "football": [
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "John Bullock": {
+   "football": [
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Thomas Fidone": {
+   "football": [
+    2023,
+    2024
+   ]
+  },
+  "Isaiah Neyor": {
+   "football": [
+    2024
+   ]
+  },
+  "Ty Robinson": {
+   "football": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Omar Brown": {
+   "football": [
+    2022,
+    2023
+   ]
+  },
+  "Brant Banks": {
+   "football": [
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "Ochaun Mathis": {
+   "football": [
+    2022
+   ]
+  },
+  "Trey Palmer": {
+   "football": [
+    2022
+   ]
+  },
+  "Travis Vokolek": {
+   "football": [
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "JoJo Domann": {
+   "football": [
+    2016,
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Cam Jurgens": {
+   "football": [
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Adrian Martinez": {
+   "football": [
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Jordon Riley": {
+   "football": [
+    2020,
+    2021
+   ]
+  },
+  "Casey Rogers": {
+   "football": [
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Ben Stille": {
+   "football": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Cam Taylor-Britt": {
+   "football": [
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Samori Toure": {
+   "football": [
+    2021
+   ]
+  },
+  "DiCaprio Bootle": {
+   "football": [
+    2017,
+    2018,
+    2019,
+    2020
+   ]
+  },
+  "Matt Farniok": {
+   "football": [
+    2017,
+    2018,
+    2019,
+    2020
+   ]
+  },
+  "Brenden Jaimes": {
+   "football": [
+    2017,
+    2018,
+    2019,
+    2020
+   ]
+  },
+  "Luke McCaffrey": {
+   "football": [
+    2019
+   ]
+  },
+  "Wan'Dale Robinson": {
+   "football": [
+    2019
+   ]
+  },
+  "Jack Stoll": {
+   "football": [
+    2017,
+    2018,
+    2019,
+    2020
+   ]
+  },
+  "Darrion Daniels": {
+   "football": [
+    2019
+   ]
+  },
+  "Carlos Davis": {
+   "football": [
+    2016,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Khalil Davis": {
+   "football": [
+    2016,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Lamar Jackson": {
+   "football": [
+    2016,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Isaiah Stalbird": {
+   "football": [
+    2019
+   ]
+  },
+  "Freedom Akinmoladun": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Luke Gifford": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Stanley Morgan Jr.": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Devine Ozigbo": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Nick Gates": {
+   "football": [
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Joshua Kalu": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Cethan Carter": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Maliek Collins": {
+   "football": [
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Andy Janovich": {
+   "football": [
+    2012,
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Alex Lewis": {
+   "football": [
+    2014,
+    2015
+   ]
+  },
+  "Givens Price": {
+   "football": [
+    2013,
+    2014
+   ]
+  },
+  "Zach Sterup": {
+   "football": [
+    2012,
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Vincent Valentine": {
+   "football": [
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Ameer Abdullah": {
+   "football": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Zaire Anderson": {
+   "football": [
+    2013,
+    2014
+   ]
+  },
+  "Randy Gregory": {
+   "football": [
+    2013,
+    2014
+   ]
+  },
+  "Avery Moss": {
+   "football": [
+    2013
+   ]
+  },
+  "Trevor Roach": {
+   "football": [
+    2011,
+    2012,
+    2014
+   ]
+  },
+  "Jason Ankrah": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Quincy Enunwa": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Stanley Jean-Baptiste": {
+   "football": [
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Spencer Long": {
+   "football": [
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Mohammed Seisay": {
+   "football": [
+    2012,
+    2013
+   ]
+  },
+  "Jeremiah Sirles": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Rex Burkhead": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Will Compton": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Brett Maher": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Eric Martin": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Daimion Stafford": {
+   "football": [
+    2011,
+    2012
+   ]
+  },
+  "Jared Crick": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Lavonte David": {
+   "football": [
+    2010,
+    2011
+   ]
+  },
+  "Alfonzo Dennard": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Aaron Green": {
+   "football": [
+    2011
+   ]
+  },
+  "Prince Amukamara": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Phillip Dillard": {
+   "football": [
+    2005,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "DeJon Gomes": {
+   "football": [
+    2009,
+    2010
+   ]
+  },
+  "Eric Hagg": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Roy Helu": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Alex Henery": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Ricky Henry": {
+   "football": [
+    2009,
+    2010
+   ]
+  },
+  "Mike McNeill": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Niles Paul": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Keith Williams": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Larry Asante": {
+   "football": [
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "Chris Brooks": {
+   "football": [
+    2008,
+    2009
+   ]
+  },
+  "Ndamukong Suh": {
+   "football": [
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "Barry Turner": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2009
+   ]
+  },
+  "Cody Glenn": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Lydon Murtha": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Chris Patrick": {
+   "football": [
+    2005,
+    2006
+   ]
+  },
+  "Zach Potter": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Matt Slauson": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Carl Nicks": {
+   "football": [
+    2006,
+    2007
+   ]
+  },
+  "Steve Octavien": {
+   "football": [
+    2006,
+    2007
+   ]
+  },
+  "Maurice Purify": {
+   "football": [
+    2006,
+    2007
+   ]
+  },
+  "Stewart Bradley": {
+   "football": [
+    2003,
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "Adam Carriker": {
+   "football": [
+    2003,
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "Brandon Jackson": {
+   "football": [
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "Titus Adams": {
+   "football": [
+    2002,
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Daniel Bullocks": {
+   "football": [
+    2002,
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Le Kevin Smith": {
+   "football": [
+    2002,
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Sam Koch": {
+   "football": [
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Cory Ross": {
+   "football": [
+    2002,
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Josh Bullocks": {
+   "football": [
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Barrett Ruud": {
+   "football": [
+    2001,
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Fabian Washington": {
+   "football": [
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Ryon Bingham": {
+   "football": [
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "TJ Hollowell": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Richie Incognito": {
+   "football": [
+    2002,
+    2003
+   ]
+  },
+  "Trevor Johnson": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Kyle Larson": {
+   "football": [
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Jammal Lord": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Jerrell Pippens": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Demorrio Williams": {
+   "football": [
+    2002,
+    2003
+   ]
+  },
+  "Josh Brown": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Dahrran Diedrick": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Dejuan Groce": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Chris Kelsay": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Scott Shanle": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Keyuo Craver": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Toniu Fonoti": {
+   "football": [
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Jeremy Slechta": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Erwin Swiney": {
+   "football": [
+    1997,
+    1998,
+    2000,
+    2001
+   ]
+  },
+  "Dan Alexander": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Correll Buckhalter": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Clint Finley": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Carlos Polk": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Dominic Raiola": {
+   "football": [
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Kyle Vanden Bosch": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Joe Walker": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Mike Brown": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Eric Johnson": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ],
+   "basketball": [
+    1988,
+    1989
+   ]
+  },
+  "Steve Warren": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Kris Brown": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Jay Foreman": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Sheldon Jackson": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Chad Kelsay": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Joel Makovicka": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Mike Rucker": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Jason Wiltz": {
+   "football": [
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Scott Frost": {
+   "football": [
+    1996,
+    1997
+   ]
+  },
+  "Ahman Green": {
+   "football": [
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Jason Peter": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Eric Warfield": {
+   "football": [
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Grant Wistrom": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Michael Booker": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    2023,
+    2025
+   ]
+  },
+  "Chris Dishman": {
+   "football": [
+    1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Jon Hesse": {
+   "football": [
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Mike Minter": {
+   "football": [
+    1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Eric Stokes": {
+   "football": [
+    1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Adam Treu": {
+   "football": [
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Jamel Williams": {
+   "football": [
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Doug Colman": {
+   "football": [
+    1991,
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Aaron Graham": {
+   "football": [
+    1992,
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Christian Peter": {
+   "football": [
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Lawrence Phillips": {
+   "football": [
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Tony Veland": {
+   "football": [
+    1992,
+    1994,
+    1995
+   ]
+  },
+  "Tyrone Williams": {
+   "football": [
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Troy Dumas": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Donta Jones": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Cory Schlesinger": {
+   "football": [
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Brenden Stai": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Zach Wiegert": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Rob Zatechka": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Trev Alberts": {
+   "football": [
+    1990,
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "Calvin Jones": {
+   "football": [
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "John Reece": {
+   "football": [
+    1989,
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "Toby Wright": {
+   "football": [
+    1992,
+    1993
+   ]
+  },
+  "Derek Brown": {
+   "football": [
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Travis Hill": {
+   "football": [
+    1989,
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Tyrone Hughes": {
+   "football": [
+    1989,
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "John Parrella": {
+   "football": [
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Will Shields": {
+   "football": [
+    1989,
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "David White": {
+   "football": [
+    1989,
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Tyrone Legette": {
+   "football": [
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Johnny Mitchell": {
+   "football": [
+    1990,
+    1991
+   ]
+  },
+  "Nate Turner": {
+   "football": [
+    1988,
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Reggie Cooper": {
+   "football": [
+    1987,
+    1988,
+    1989,
+    1990
+   ]
+  },
+  "Mike Croel": {
+   "football": [
+    1987,
+    1988,
+    1989,
+    1990
+   ]
+  },
+  "Tahaun Lewis": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Bruce Pickens": {
+   "football": [
+    1988,
+    1989,
+    1990
+   ]
+  },
+  "Joe Sims": {
+   "football": [
+    1988,
+    1989,
+    1990
+   ]
+  },
+  "Kenny Walker": {
+   "football": [
+    1989,
+    1990
+   ]
+  },
+  "Richard Bell": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Ken Clark": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Jeff Mills": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Kent Wells": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Dana Brinson": {
+   "football": [
+    1985,
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Tim Jackson": {
+   "football": [
+    1987,
+    1988
+   ]
+  },
+  "Lawrence Pete": {
+   "football": [
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Tim Rother": {
+   "football": [
+    1986,
+    1987
+   ]
+  },
+  "Broderick Thomas": {
+   "football": [
+    1985,
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Keith Jones": {
+   "football": [
+    1984,
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Keith Neubert": {
+   "football": [
+    1987
+   ]
+  },
+  "Neil Smith": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Brian Washington": {
+   "football": [
+    1984,
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Brian Blankenship": {
+   "football": [
+    1983,
+    1985
+   ]
+  },
+  "Brian Davis": {
+   "football": [
+    1985,
+    1986
+   ]
+  },
+  "Tony Holloway": {
+   "football": [
+    1983,
+    1985,
+    1986
+   ]
+  },
+  "Marc Munford": {
+   "football": [
+    1984,
+    1985,
+    1986
+   ]
+  },
+  "Danny Noonan": {
+   "football": [
+    1984,
+    1985,
+    1986
+   ]
+  },
+  "Greg Orton": {
+   "football": [
+    1983,
+    1984
+   ]
+  },
+  "Tom Welter": {
+   "football": [
+    1985,
+    1986
+   ]
+  },
+  "Mark Behning": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Doug DuBose": {
+   "football": [
+    1984,
+    1985
+   ]
+  },
+  "Todd Frain": {
+   "football": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Mike Knox": {
+   "football": [
+    1981,
+    1982,
+    1983,
+    1985
+   ]
+  },
+  "Bill Lewis": {
+   "football": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Tom Rathman": {
+   "football": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Jim Skow": {
+   "football": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Bret Clark": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Jeff Smith": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Shane Swanson": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Mark Traynowicz": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Irving Fryar": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Mike Rozier": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Dean Steinkuhler": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Roger Craig": {
+   "football": [
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Mitch Krenk": {
+   "football": [
+    1981,
+    1982
+   ]
+  },
+  "Allen Lyday": {
+   "football": [
+    1981,
+    1982
+   ]
+  },
+  "Bruce Mathison": {
+   "football": [
+    1981,
+    1982
+   ]
+  },
+  "Dave Rimington": {
+   "football": [
+    1979,
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Jamie Williams": {
+   "football": [
+    1979,
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Toby Williams": {
+   "football": [
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Rodney Lewis": {
+   "football": [
+    1979,
+    1980,
+    1981
+   ]
+  },
+  "Anthony Steels": {
+   "football": [
+    1979,
+    1980,
+    1981
+   ]
+  },
+  "Henry Waechter": {
+   "football": [
+    1980,
+    1981
+   ]
+  },
+  "Jimmy Williams": {
+   "football": [
+    1979,
+    1980,
+    1981
+   ]
+  },
+  "Andra Franklin": {
+   "football": [
+    1977,
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Russell Gary": {
+   "football": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Derrie Nelson": {
+   "football": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Jarvis Redwine": {
+   "football": [
+    1979,
+    1980
+   ]
+  },
+  "Bill Barnett": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Mark Goodspeed": {
+   "football": [
+    1979
+   ]
+  },
+  "I.M. Hipp": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Rod Horn": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Oudious Lee": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Junior Miller": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Kelly Saalfeld": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Tim Smith": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "George Andrews": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Ed Burns": {
+   "football": [
+    1977
+   ]
+  },
+  "Kelvin Clark": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Barney Cotton": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Lee Kunz": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Jeff Lee": {
+   "football": [
+    1977
+   ]
+  },
+  "Frank Lockett": {
+   "football": [
+    1977,
+    1978
+   ]
+  },
+  "Wonder Monds": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Brett Moritz": {
+   "football": [
+    1977
+   ]
+  },
+  "Stan Waldemore": {
+   "football": [
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Keith Bishop": {
+   "football": [
+    1976
+   ]
+  },
+  "Vince Ferragamo": {
+   "football": [
+    1975,
+    1976
+   ]
+  },
+  "Mike Fultz": {
+   "football": [
+    1974,
+    1975,
+    1976
+   ]
+  },
+  "Bob Lingenfelter": {
+   "football": [
+    1974,
+    1975,
+    1976
+   ]
+  },
+  "Terry Luck": {
+   "football": [
+    1974,
+    1975
+   ]
+  },
+  "Ray Phillips": {
+   "football": [
+    1975,
+    1976
+   ]
+  },
+  "Don Westbrook": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Tom Alward": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Rik Bonness": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Jim Burrow": {
+   "football": [
+    1974,
+    1975
+   ]
+  },
+  "Tony Davis": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "John Lee": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Bob Martin": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Bob Nelson": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Tom Ruud": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Maury Damkroger": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "John Dutton": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Bob Schmit": {
+   "football": [
+    1972,
+    1973
+   ]
+  },
+  "Daryl White": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Joe Blahak": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Doug Dumler": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Rich Glover": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Willie Harper": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Monte Johnson": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Dave Mason": {
+   "football": [
+    1969,
+    1971,
+    1972
+   ]
+  },
+  "Bill Olds": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Johnny Rodgers": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Larry Jacobson": {
+   "football": [
+    1969,
+    1970,
+    1971
+   ]
+  },
+  "Carl Johnson": {
+   "football": [
+    1970,
+    1971
+   ]
+  },
+  "Jeff Kinney": {
+   "football": [
+    1969,
+    1970,
+    1971
+   ]
+  },
+  "Jerry Tagge": {
+   "football": [
+    1969,
+    1970,
+    1971
+   ]
+  },
+  "Keith Wortman": {
+   "football": [
+    1970,
+    1971
+   ]
+  },
+  "Bob Newton": {
+   "football": [
+    1969,
+    1970
+   ]
+  },
+  "Joe Orduna": {
+   "football": [
+    1967,
+    1968,
+    1970
+   ]
+  },
+  "Ken Geddes": {
+   "football": [
+    1967,
+    1968,
+    1969
+   ]
+  },
+  "Bob Liggett": {
+   "football": [
+    1968,
+    1969
+   ]
+  },
+  "Jim McFarland": {
+   "football": [
+    1968,
+    1969
+   ]
+  },
+  "Frank Patrick": {
+   "football": [
+    1967,
+    1968,
+    1969
+   ]
+  },
+  "Dick Davis": {
+   "football": [
+    1966,
+    1967,
+    1968
+   ]
+  },
+  "Ben Gregory": {
+   "football": [
+    1965,
+    1966,
+    1967
+   ]
+  },
+  "Wayne Meylan": {
+   "football": [
+    1965,
+    1966,
+    1967
+   ]
+  },
+  "Jerry Patton": {
+   "football": [
+    1965,
+    1966,
+    1967
+   ]
+  },
+  "Carel Stith": {
+   "football": [
+    1965,
+    1966
+   ]
+  },
+  "Pete Tatman": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Harry Wilson": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Tony Jeter": {
+   "football": [
+    1963,
+    1964,
+    1965
+   ]
+  },
+  "Freeman White": {
+   "football": [
+    1963,
+    1964,
+    1965,
+    1989
+   ]
+  },
+  "Kent McCloughan": {
+   "football": [
+    1962,
+    1963,
+    1964
+   ]
+  },
+  "Dennis Claridge": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Rudy Johnson": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "John Kirby": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Willie Ross": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Lloyd Voss": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Warren Powers": {
+   "football": [
+    1960,
+    1961,
+    1962
+   ]
+  },
+  "Bill Thornton": {
+   "football": [
+    1960,
+    1961,
+    1962
+   ]
+  },
+  "Mick Tingelhoff": {
+   "football": [
+    1959,
+    1960,
+    1961
+   ]
+  },
+  "Pat Fischer": {
+   "football": [
+    1958,
+    1959,
+    1960,
+    1972,
+    1973
+   ]
+  },
+  "Ron McDole": {
+   "football": [
+    1958,
+    1959,
+    1960
+   ]
+  },
+  "Laverne Torczon": {
+   "football": [
+    1954,
+    1955,
+    1956
+   ]
+  },
+  "Carroll Zaruba": {
+   "football": [
+    1957,
+    1958,
+    1959
+   ]
+  },
+  "Nick Adduci": {
+   "football": [
+    1949,
+    1950,
+    1953
+   ]
+  },
+  "Don Boll": {
+   "football": [
+    1950,
+    1951,
+    1952
+   ]
+  },
+  "Ed Husmann": {
+   "football": [
+    1950,
+    1951,
+    1952
+   ]
+  },
+  "Charles Toogood": {
+   "football": [
+    1947,
+    1948,
+    1949,
+    1950
+   ]
+  },
+  "Carl Samuelson": {
+   "football": [
+    1946,
+    1947
+   ]
+  },
+  "Sam Vacanti": {
+   "football": [
+    1946
+   ]
+  },
+  "Warren Alfson": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Harry Hopp": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Royal Kahler": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "Ray Prochaska": {
+   "football": [
+    1938,
+    1939,
+    1940
+   ]
+  },
+  "George Seeman": {
+   "football": [
+    1936,
+    1938,
+    1939
+   ]
+  },
+  "Fred Shirey": {
+   "football": [
+    1935,
+    1936,
+    1937
+   ]
+  },
+  "John Howell": {
+   "football": [
+    1935,
+    1936,
+    1937
+   ]
+  },
+  "Lloyd Cardwell": {
+   "football": [
+    1934,
+    1935,
+    1936
+   ]
+  },
+  "Sam Francis": {
+   "football": [
+    1934,
+    1935,
+    1936
+   ]
+  },
+  "Gail O'Brien": {
+   "football": [
+    1931,
+    1932,
+    1933
+   ]
+  },
+  "George Sauer": {
+   "football": [
+    1931,
+    1932,
+    1933
+   ]
+  },
+  "Hugh Rhea": {
+   "football": [
+    1929,
+    1930,
+    1931
+   ]
+  },
+  "Forrest McPherson": {
+   "football": [
+    1930,
+    1931
+   ]
+  },
+  "Marion Broadstone": {
+   "football": [
+    1928,
+    1929,
+    1930
+   ]
+  },
+  "Merle Zuver": {
+   "football": [
+    1926,
+    1927,
+    1928
+   ]
+  },
+  "Glenn Presnell": {
+   "football": [
+    1925,
+    1926,
+    1927
+   ]
+  },
+  "Joe Weir": {
+   "football": [
+    1924,
+    1925,
+    1926
+   ]
+  },
+  "Ed Weir": {
+   "football": [
+    1923,
+    1924,
+    1925
+   ]
+  },
+  "Joy Berquist": {
+   "football": [
+    1921,
+    1922,
+    1923
+   ]
+  },
+  "Verne Lewellen": {
+   "football": [
+    1921,
+    1922,
+    1923
+   ]
+  },
+  "Dave Noble": {
+   "football": [
+    1921,
+    1922,
+    1923
+   ]
+  },
+  "Fred Thomsen": {
+   "football": [
+    1920,
+    1922
+   ]
+  },
+  "Dane Key": {
+   "football": [
+    2025
+   ]
+  },
+  "Henry Lutovsky": {
+   "football": [
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "Dasan McCullough": {
+   "football": [
+    2025
+   ]
+  },
+  "DeShon Singleton": {
+   "football": [
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "Ceyair Wright": {
+   "football": [
+    2024,
+    2025
+   ]
+  },
+  "Javin Wright": {
+   "football": [
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "Jahmal Banks": {
+   "football": [
+    2024
+   ]
+  },
+  "Isaac Gifford": {
+   "football": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Nash Hutmacher": {
+   "football": [
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Ben Scott": {
+   "football": [
+    2023,
+    2024
+   ]
+  },
+  "Tamon Lynum": {
+   "football": [
+    2020,
+    2023
+   ]
+  },
+  "Quinton Newsome": {
+   "football": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+   ]
+  },
+  "Phalen Sanford": {
+   "football": [
+    2020,
+    2021,
+    2022,
+    2023
+   ]
+  },
+  "Oliver Martin": {
+   "football": [
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "Garrett Nelson": {
+   "football": [
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "Austin Allen": {
+   "football": [
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Damion Daniels": {
+   "football": [
+    2018,
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Deontai Williams": {
+   "football": [
+    2018,
+    2020,
+    2021
+   ]
+  },
+  "Dedrick Mills": {
+   "football": [
+    2019,
+    2020
+   ]
+  },
+  "Kade Warner": {
+   "football": [
+    2018,
+    2019
+   ]
+  },
+  "Jerald Foster": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Tyjon Lindsey": {
+   "football": [
+    2017
+   ]
+  },
+  "Tyler Hoppes": {
+   "football": [
+    2016,
+    2017
+   ]
+  },
+  "Tanner Lee": {
+   "football": [
+    2017
+   ]
+  },
+  "Luke McNitt": {
+   "football": [
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "De'Mornay Pierson-El": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Sam Cotton": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Kevin Maurice": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Terrell Newby": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Brandon Reilly": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Jordan Westerkamp": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Daniel Davie": {
+   "football": [
+    2012,
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Jack Gangwish": {
+   "football": [
+    2014,
+    2015
+   ]
+  },
+  "Kenny Bell": {
+   "football": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Josh Mitchell": {
+   "football": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Ben Cotton": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Curenski Gilleylen": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Jermarcus Hardrick": {
+   "football": [
+    2010,
+    2011
+   ]
+  },
+  "Marcel Jones": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Brandon Kinnie": {
+   "football": [
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Terrence Moore": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Pierre Allen": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "D.J. Jones": {
+   "football": [
+    2007,
+    2009,
+    2010
+   ]
+  },
+  "Adi Kunalic": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Rickey Thenarse": {
+   "football": [
+    2006,
+    2007,
+    2008,
+    2010
+   ]
+  },
+  "Anthony West": {
+   "football": [
+    2007,
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Matt O'Hanlon": {
+   "football": [
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "Marlon Lucky": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Todd Peterson": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Ty Steinkuhler": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Nate Swift": {
+   "football": [
+    2005,
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Cortney Grixby": {
+   "football": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Frantz Hardy": {
+   "football": [
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Terrence Nunn": {
+   "football": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Bo Ruud": {
+   "football": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Barry Cryer": {
+   "football": [
+    2005,
+    2006
+   ]
+  },
+  "Ola Dagunduro": {
+   "football": [
+    2005,
+    2006
+   ]
+  },
+  "Matt Herian": {
+   "football": [
+    2002,
+    2003,
+    2004,
+    2006
+   ]
+  },
+  "Jay Moore": {
+   "football": [
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "Andrew Shanle": {
+   "football": [
+    2003,
+    2004,
+    2005,
+    2006
+   ]
+  },
+  "Seppo Evwaraye": {
+   "football": [
+    2002,
+    2004,
+    2005
+   ]
+  },
+  "Willie Amos": {
+   "football": [
+    2000,
+    2001,
+    2003,
+    2004
+   ]
+  },
+  "Mike Erickson": {
+   "football": [
+    2001,
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Steve Kriewald": {
+   "football": [
+    2001,
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Benard Thomas": {
+   "football": [
+    2000,
+    2001,
+    2003,
+    2004
+   ]
+  },
+  "Josh Davis": {
+   "football": [
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Pat Ricketts": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Josh Sewell": {
+   "football": [
+    2002,
+    2003
+   ]
+  },
+  "Jon Clanton": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "John Garrison": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Aaron Golliday": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Wilson Thomas": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Jamie Burrow": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Eric Crouch": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Dave Volk": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Tracey Wistrom": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Dan Hadenfeldt": {
+   "football": [
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Loran Kaiser": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Bobby Newcombe": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Tony Ortiz": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Luis Almanzar": {
+   "football": [
+    1998
+   ]
+  },
+  "Vershan Jackson": {
+   "football": [
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Fred Pollack": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Aaron Taylor": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Jon Zatechka": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Jeff Ogard": {
+   "football": [
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Larry Townsend": {
+   "football": [
+    1994,
+    1995
+   ]
+  },
+  "Barron Miles": {
+   "football": [
+    1992,
+    1993,
+    1994,
+    2023
+   ]
+  },
+  "Ed Stewart": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Mike Anderson": {
+   "football": [
+    1990,
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "Trumane Bell": {
+   "football": [
+    1992,
+    1993
+   ]
+  },
+  "Corey Dixon": {
+   "football": [
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "Lance Lewis": {
+   "football": [
+    1988,
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Kenny Wilhite": {
+   "football": [
+    1991,
+    1992
+   ]
+  },
+  "Brian Boerboom": {
+   "football": [
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Jon Bostick": {
+   "football": [
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Omar Soto": {
+   "football": [
+    1990,
+    1991
+   ]
+  },
+  "Le Andre Anderson": {
+   "football": [
+    1989,
+    1990
+   ]
+  },
+  "Pat Tyrance": {
+   "football": [
+    1988,
+    1989,
+    1990
+   ]
+  },
+  "Gerry Gdowski": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Willie Griffin": {
+   "football": [
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Steve Forch": {
+   "football": [
+    1984,
+    1985,
+    1987
+   ]
+  },
+  "Hendley Hawkins": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Lee Jones": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "John McCormick": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Stan Parker": {
+   "football": [
+    1984,
+    1985,
+    1986
+   ]
+  },
+  "Chris Spachman": {
+   "football": [
+    1984,
+    1985,
+    1986
+   ]
+  },
+  "Paul Miles": {
+   "football": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Dave Burke": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Scott Strasburger": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Doug Herrmann": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Scott Raridon": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Mark Schellen": {
+   "football": [
+    1982,
+    1983
+   ]
+  },
+  "Todd Brown": {
+   "football": [
+    1979,
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Brad Johnson": {
+   "football": [
+    1980,
+    1981,
+    1982,
+    1985,
+    1986
+   ]
+  },
+  "Jeff Merrell": {
+   "football": [
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Kevin Seibel": {
+   "football": [
+    1979,
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Dan Hurley": {
+   "football": [
+    1979,
+    1980,
+    1981
+   ]
+  },
+  "Joe Adams": {
+   "football": [
+    1979,
+    1980
+   ]
+  },
+  "John Noonan": {
+   "football": [
+    1980
+   ]
+  },
+  "Jeff Quinn": {
+   "football": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Randy Schleusener": {
+   "football": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Kenny Brown": {
+   "football": [
+    1975,
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "John Havekost": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Dan Pensick": {
+   "football": [
+    1977,
+    1978,
+    1979
+   ]
+  },
+  "Steve Lindquist": {
+   "football": [
+    1975,
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Monte Anthony": {
+   "football": [
+    1974,
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Tom Davis": {
+   "football": [
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Dodie Donnell": {
+   "football": [
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Ron Pruitt": {
+   "football": [
+    1973,
+    1974,
+    1976
+   ]
+  },
+  "John O'Leary": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Marvin Crenshaw": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Mark Doak": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Dennis Pavelka": {
+   "football": [
+    1974
+   ]
+  },
+  "John Starkebaum": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Zaven Yaralian": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Frosty Anderson": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Brent Longwell": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Steve Manstedt": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Bob Wolfe": {
+   "football": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Jerry List": {
+   "football": [
+    1970,
+    1971,
+    1972
+   ]
+  },
+  "Van Brownson": {
+   "football": [
+    1969,
+    1970,
+    1971
+   ]
+  },
+  "Guy Ingles": {
+   "football": [
+    1968,
+    1969,
+    1970
+   ]
+  },
+  "Jerry Murtaugh": {
+   "football": [
+    1968,
+    1969,
+    1970
+   ]
+  },
+  "Paul Rogers": {
+   "football": [
+    1968,
+    1969,
+    1970
+   ]
+  },
+  "Mike Green": {
+   "football": [
+    1968,
+    1969
+   ]
+  },
+  "Mike Wynn": {
+   "football": [
+    1967,
+    1968,
+    1969
+   ]
+  },
+  "Monte Kiffin": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Charles Bryant": {
+   "football": [
+    1953,
+    1954
+   ]
+  },
+  "Don Glantz": {
+   "football": [
+    1953,
+    1954
+   ]
+  },
+  "Chris Mathis": {
+   "football": [
+    1930,
+    1931,
+    1932
+   ]
+  },
+  "Heinrich Haarberg": {
+   "football": [
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "Bryce Benhart": {
+   "football": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Alex Bullock": {
+   "football": [
+    2023,
+    2024
+   ]
+  },
+  "Brian Buschini": {
+   "football": [
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Tommi Hill": {
+   "football": [
+    2022,
+    2023,
+    2024
+   ]
+  },
+  "Micah Mazzccua": {
+   "football": [
+    2024
+   ]
+  },
+  "MJ Sherman": {
+   "football": [
+    2023,
+    2024
+   ]
+  },
+  "Anthony Grant": {
+   "football": [
+    2022,
+    2023
+   ]
+  },
+  "Billy Kemp": {
+   "football": [
+    2023
+   ]
+  },
+  "Nouredin Nouili": {
+   "football": [
+    2021,
+    2023
+   ]
+  },
+  "Marco Ortiz": {
+   "football": [
+    2023
+   ]
+  },
+  "Chris Kolarevic": {
+   "football": [
+    2021,
+    2022
+   ]
+  },
+  "Eteva Mauga-Clements": {
+   "football": [
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "Caleb Tannor": {
+   "football": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+   ]
+  },
+  "Brady Weas": {
+   "football": [
+    2022
+   ]
+  },
+  "Damian Jackson": {
+   "football": [
+    2020,
+    2021
+   ]
+  },
+  "Cole Conrad": {
+   "football": [
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Tanner Farmer": {
+   "football": [
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Jordan Ober": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Antonio Reed": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Aaron Williams": {
+   "football": [
+    2015,
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Drew Brown": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "David Knevel": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Marcus Newby": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Avery Roberts": {
+   "football": [
+    2017
+   ]
+  },
+  "Kieron Williams": {
+   "football": [
+    2014,
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Tommy Armstrong": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Josh Banderas": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Sam Hahn": {
+   "football": [
+    2015,
+    2016
+   ]
+  },
+  "Alonzo Moore": {
+   "football": [
+    2013,
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Michael Rose-Ivey": {
+   "football": [
+    2013,
+    2015,
+    2016
+   ]
+  },
+  "Dylan Utter": {
+   "football": [
+    2014,
+    2015,
+    2016
+   ]
+  },
+  "Corey Cooper": {
+   "football": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Jonathan Rose": {
+   "football": [
+    2013,
+    2014,
+    2015
+   ]
+  },
+  "Kevin Williams": {
+   "football": [
+    2012,
+    2014,
+    2015,
+    2022
+   ]
+  },
+  "Jake Cotton": {
+   "football": [
+    2011,
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Ciante Evans": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Andrew Green": {
+   "football": [
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Taylor Martinez": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "Cole Pensick": {
+   "football": [
+    2010,
+    2011,
+    2012,
+    2013
+   ]
+  },
+  "P.J. Mangieri": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Cameron Meredith": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Kyler Reed": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Baker Steinkuhler": {
+   "football": [
+    2009,
+    2010,
+    2011,
+    2012
+   ]
+  },
+  "Mike Caputo": {
+   "football": [
+    2008,
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Austin Cassidy": {
+   "football": [
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Zac Lee": {
+   "football": [
+    2009,
+    2010
+   ]
+  },
+  "Mike Smith": {
+   "football": [
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "Menelik Holt": {
+   "football": [
+    2006,
+    2007,
+    2008,
+    2009
+   ]
+  },
+  "Major Culbert": {
+   "football": [
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Joe Ganz": {
+   "football": [
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Armando Murillo": {
+   "football": [
+    2007,
+    2008
+   ]
+  },
+  "Lance Brandenburgh": {
+   "football": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Brett Byford": {
+   "football": [
+    2006,
+    2007
+   ]
+  },
+  "Kevin Dixon": {
+   "football": [
+    2007
+   ]
+  },
+  "Tierre Green": {
+   "football": [
+    2004,
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Sam Keller": {
+   "football": [
+    2007
+   ]
+  },
+  "Corey McKeon": {
+   "football": [
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Zac Taylor": {
+   "football": [
+    2005,
+    2006
+   ]
+  },
+  "Jake Andersen": {
+   "football": [
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Ira Cooper": {
+   "football": [
+    2001,
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Sandro DeAngelis": {
+   "football": [
+    2001,
+    2003,
+    2004
+   ]
+  },
+  "Lornell McPherson": {
+   "football": [
+    2001,
+    2002,
+    2003,
+    2004
+   ]
+  },
+  "Patrick Kabongo": {
+   "football": [
+    2000,
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Demoine Adams": {
+   "football": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Thunder Collins": {
+   "football": [
+    2000,
+    2001
+   ]
+  },
+  "Dion Booker": {
+   "football": [
+    1998,
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Matt Davison": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Chace Long": {
+   "football": [
+    2000
+   ]
+  },
+  "Jason Schwab": {
+   "football": [
+    1997,
+    1998,
+    1999,
+    2000
+   ]
+  },
+  "Julius Jackson": {
+   "football": [
+    1996,
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Josh Heskew": {
+   "football": [
+    1995,
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Jeff Lake": {
+   "football": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Damon Benning": {
+   "football": [
+    1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Terrell Farley": {
+   "football": [
+    1995,
+    1996
+   ]
+  },
+  "Brian Schuster": {
+   "football": [
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Clinton Childs": {
+   "football": [
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Tommie Frazier": {
+   "football": [
+    1992,
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Mark Gilman": {
+   "football": [
+    1992,
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Jason Jenkins": {
+   "football": [
+    1994,
+    1995
+   ]
+  },
+  "Jeff Makovicka": {
+   "football": [
+    1992,
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Eric Alford": {
+   "football": [
+    1993,
+    1994
+   ]
+  },
+  "Terry Connealy": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Dwayne Harris": {
+   "football": [
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Tom Sieler": {
+   "football": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Lance Lundberg": {
+   "football": [
+    1991,
+    1992,
+    1993
+   ]
+  },
+  "Terris Chorney": {
+   "football": [
+    1990,
+    1991,
+    1992
+   ]
+  },
+  "Mickey Joseph": {
+   "football": [
+    1988,
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Keithen McCant": {
+   "football": [
+    1990,
+    1991
+   ]
+  },
+  "Mike Petko": {
+   "football": [
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Mike Jefferson": {
+   "football": [
+    1990
+   ]
+  },
+  "Chris Drennan": {
+   "football": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Charles Fryar": {
+   "football": [
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Jon Kelley": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Todd Millikan": {
+   "football": [
+    1985,
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "Steve Taylor": {
+   "football": [
+    1985,
+    1986,
+    1987,
+    1988
+   ]
+  },
+  "McCathorn Clayton": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Keven Lightner": {
+   "football": [
+    1985,
+    1986,
+    1987
+   ]
+  },
+  "Ken Graeber": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Harry Grimminger": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Neil Harris": {
+   "football": [
+    1982,
+    1983,
+    1984
+   ]
+  },
+  "Turner Gill": {
+   "football": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Ricky Simmons": {
+   "football": [
+    1980,
+    1982,
+    1983
+   ]
+  },
+  "Doug Wilkening": {
+   "football": [
+    1981,
+    1982
+   ]
+  },
+  "Randy Theiss": {
+   "football": [
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Phil Bates": {
+   "football": [
+    1980,
+    1981
+   ]
+  },
+  "Tom Carlstrom": {
+   "football": [
+    1980,
+    1981
+   ]
+  },
+  "David Clark": {
+   "football": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Randy Poeschl": {
+   "football": [
+    1976,
+    1977,
+    1978
+   ]
+  },
+  "Mark Dufresne": {
+   "football": [
+    1976,
+    1977
+   ]
+  },
+  "Greg Jorgensen": {
+   "football": [
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Ken Spaeth": {
+   "football": [
+    1975,
+    1976,
+    1977
+   ]
+  },
+  "Dave Butterfield": {
+   "football": [
+    1974,
+    1975,
+    1976
+   ]
+  },
+  "Dave Gillespie": {
+   "football": [
+    1974,
+    1975,
+    1976
+   ]
+  },
+  "Rich Costanzo": {
+   "football": [
+    1974,
+    1975
+   ]
+  },
+  "Dean Gissler": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Brad Jenkins": {
+   "football": [
+    1974,
+    1975
+   ]
+  },
+  "George Mills": {
+   "football": [
+    1973,
+    1975
+   ]
+  },
+  "Larry Mushinskie": {
+   "football": [
+    1973,
+    1974,
+    1975
+   ]
+  },
+  "Ritch Bahe": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Stan Hegener": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Ardell Johnson": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Tom Pate": {
+   "football": [
+    1972,
+    1973,
+    1974
+   ]
+  },
+  "Ralph Powell": {
+   "football": [
+    1972,
+    1973
+   ]
+  },
+  "Gary Dixon": {
+   "football": [
+    1971,
+    1972
+   ]
+  },
+  "Bill Janssen": {
+   "football": [
+    1969,
+    1971,
+    1972
+   ]
+  },
+  "Dan Schneiss": {
+   "football": [
+    1968,
+    1969,
+    1970
+   ]
+  },
+  "Frank Vactor": {
+   "football": [
+    1969,
+    1970
+   ]
+  },
+  "Sherwin Jarmon": {
+   "football": [
+    1968,
+    1969
+   ]
+  },
+  "Glenn Patterson": {
+   "football": [
+    1967,
+    1968,
+    1969
+   ]
+  },
+  "Dana Stephenson": {
+   "football": [
+    1967,
+    1968,
+    1969
+   ]
+  },
+  "James Hawkins": {
+   "football": [
+    1967,
+    1968
+   ]
+  },
+  "Tom Penney": {
+   "football": [
+    1966,
+    1967,
+    1968
+   ]
+  },
+  "Dennis Morrison": {
+   "football": [
+    1966,
+    1967
+   ]
+  },
+  "Laverne Allers": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Kaye Carstens": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Bob Churchich": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Ron Kirkland": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Lynn Senkbeil": {
+   "football": [
+    1964,
+    1965,
+    1966
+   ]
+  },
+  "Dennis Thorell": {
+   "football": [
+    1965,
+    1966
+   ]
+  },
+  "Charlie Winters": {
+   "football": [
+    1965,
+    1966
+   ]
+  },
+  "James Brown": {
+   "football": [
+    1964,
+    1965
+   ]
+  },
+  "Frank Solich": {
+   "football": [
+    1963,
+    1964,
+    1965
+   ]
+  },
+  "John Dervin": {
+   "football": [
+    1962,
+    1963,
+    1964
+   ]
+  },
+  "Larry Kramer": {
+   "football": [
+    1962,
+    1963,
+    1964
+   ]
+  },
+  "Preston Love": {
+   "football": [
+    1963,
+    1964
+   ]
+  },
+  "Joe McNulty": {
+   "football": [
+    1963
+   ]
+  },
+  "Ron Michka": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Larry Tomlinson": {
+   "football": [
+    1961,
+    1962,
+    1963
+   ]
+  },
+  "Mike Eger": {
+   "football": [
+    1958,
+    1962
+   ]
+  },
+  "Dennis Stuewe": {
+   "football": [
+    1960,
+    1961,
+    1962
+   ]
+  },
+  "Archie Cobb": {
+   "football": [
+    1960
+   ]
+  },
+  "Dallas Dyer": {
+   "football": [
+    1959,
+    1960,
+    1961
+   ]
+  },
+  "George Haney": {
+   "football": [
+    1959,
+    1960,
+    1961
+   ]
+  },
+  "Gene Ward": {
+   "football": [
+    1959,
+    1961
+   ]
+  },
+  "Dick McCashland": {
+   "football": [
+    1956,
+    1957,
+    1958
+   ]
+  },
+  "Clarence Cook": {
+   "football": [
+    1956,
+    1957
+   ]
+  },
+  "Jon McWilliams": {
+   "football": [
+    1953,
+    1954,
+    1955
+   ]
+  },
+  "Ron Clark": {
+   "football": [
+    1949,
+    1950,
+    1954
+   ]
+  },
+  "Ted Connor": {
+   "football": [
+    1952,
+    1953
+   ]
+  },
+  "Jerry Minnick": {
+   "football": [
+    1951,
+    1952,
+    1953
+   ]
+  },
+  "Ray Novak": {
+   "football": [
+    1951,
+    1952,
+    1953
+   ]
+  },
+  "Bobby Reynolds": {
+   "football": [
+    1950,
+    1951,
+    1952
+   ]
+  },
+  "Verl Scott": {
+   "football": [
+    1950,
+    1951,
+    1952
+   ]
+  },
+  "Frank Simon": {
+   "football": [
+    1949,
+    1950,
+    1951
+   ]
+  },
+  "Fran Nagle": {
+   "football": [
+    1949,
+    1950
+   ]
+  },
+  "Tom Novak": {
+   "football": [
+    1946,
+    1947,
+    1948,
+    1949
+   ]
+  },
+  "Jack Dedrick": {
+   "football": [
+    1944
+   ]
+  },
+  "Jack Pesek": {
+   "football": [
+    1946,
+    1947
+   ]
+  },
+  "Frank Hazard": {
+   "football": [
+    1943
+   ]
+  },
+  "George Abel": {
+   "football": [
+    1939,
+    1940,
+    1941
+   ]
+  },
+  "Fred Preston": {
+   "football": [
+    1939,
+    1940,
+    1941
+   ]
+  },
+  "Elmer Dohrmann": {
+   "football": [
+    1935,
+    1936,
+    1937
+   ]
+  },
+  "Clair Sloan": {
+   "football": [
+    1927,
+    1928,
+    1929
+   ]
+  },
+  "Willard Bronson": {
+   "football": [
+    1926,
+    1927
+   ]
+  },
+  "Brice Matthews": {
+   "baseball": [
+    2021,
+    2022,
+    2023
+   ]
+  },
+  "Spencer Schwellenbach": {
+   "baseball": [
+    2019,
+    2020,
+    2021
+   ]
+  },
+  "Cade Povich": {
+   "baseball": [
+    2020,
+    2021
+   ]
+  },
+  "Matt Waldron": {
+   "baseball": [
+    2016,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Nate Fisher": {
+   "baseball": [
+    2015,
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Jake Meyers": {
+   "baseball": [
+    2015,
+    2016,
+    2017
+   ]
+  },
+  "Aaron Bummer": {
+   "baseball": [
+    2012,
+    2013,
+    2014
+   ]
+  },
+  "Cody Asche": {
+   "baseball": [
+    2009,
+    2010,
+    2011
+   ]
+  },
+  "Michael Mariot": {
+   "baseball": [
+    2008,
+    2009,
+    2010
+   ]
+  },
+  "Dan Jennings": {
+   "baseball": [
+    2006,
+    2007,
+    2008
+   ]
+  },
+  "Thad Weber": {
+   "baseball": [
+    2007,
+    2008
+   ]
+  },
+  "Steve Edlefsen": {
+   "baseball": [
+    2006,
+    2007
+   ]
+  },
+  "Andrew Brown": {
+   "baseball": [
+    2006
+   ]
+  },
+  "Tony Watson": {
+   "baseball": [
+    2005,
+    2006,
+    2007
+   ]
+  },
+  "Joba Chamberlain": {
+   "baseball": [
+    2005,
+    2006
+   ]
+  },
+  "Zach Kroenke": {
+   "baseball": [
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Brian Duensing": {
+   "baseball": [
+    2002,
+    2003,
+    2005
+   ]
+  },
+  "Alex Gordon": {
+   "baseball": [
+    2003,
+    2004,
+    2005
+   ]
+  },
+  "Drew Anderson": {
+   "baseball": [
+    2001,
+    2002,
+    2003
+   ]
+  },
+  "Shane Komine": {
+   "baseball": [
+    1999,
+    2000,
+    2001,
+    2002
+   ]
+  },
+  "Adam Stern": {
+   "baseball": [
+    1999,
+    2000,
+    2001
+   ]
+  },
+  "Dan Johnson": {
+   "baseball": [
+    2000,
+    2001
+   ]
+  },
+  "Adam Shabala": {
+   "baseball": [
+    1999,
+    2000
+   ]
+  },
+  "Jamal Strong": {
+   "baseball": [
+    1999,
+    2000
+   ]
+  },
+  "Ken Harvey": {
+   "baseball": [
+    1997,
+    1998,
+    1999
+   ]
+  },
+  "Todd Sears": {
+   "baseball": [
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Darin Erstad": {
+   "baseball": [
+    1993,
+    1994,
+    1995
+   ]
+  },
+  "Troy Brohawn": {
+   "baseball": [
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Marc Sagmoen": {
+   "baseball": [
+    1992,
+    1993
+   ]
+  },
+  "Kevin Jordan": {
+   "baseball": [
+    1990
+   ]
+  },
+  "Ken Ramos": {
+   "baseball": [
+    1987,
+    1988,
+    1989
+   ]
+  },
+  "Eric Helfand": {
+   "baseball": [
+    1988
+   ]
+  },
+  "Kip Gross": {
+   "baseball": [
+    1986
+   ]
+  },
+  "Bill McGuire": {
+   "baseball": [
+    1983,
+    1984,
+    1985
+   ]
+  },
+  "Bob Sebra": {
+   "baseball": [
+    1981,
+    1982,
+    1983
+   ]
+  },
+  "Steve Stanicek": {
+   "baseball": [
+    1980,
+    1981,
+    1982
+   ]
+  },
+  "Tim Burke": {
+   "baseball": [
+    1978,
+    1979,
+    1980
+   ]
+  },
+  "Pete O'Brien": {
+   "baseball": [
+    1978,
+    1979
+   ]
+  },
+  "Ryan Kurosaki": {
+   "baseball": [
+    1971,
+    1972,
+    1973
+   ]
+  },
+  "Gary Neibauer": {
+   "baseball": [
+    1965,
+    1966
+   ]
+  },
+  "Stan Bahnsen": {
+   "baseball": [
+    1965
+   ]
+  },
+  "Dwight Siebler": {
+   "baseball": [
+    1957,
+    1958
+   ]
+  },
+  "Bob Cerv": {
+   "baseball": [
+    1947,
+    1948,
+    1949,
+    1950
+   ]
+  },
+  "Bryce McGowens": {
+   "basketball": [
+    2022
+   ]
+  },
+  "Dalano Banton": {
+   "basketball": [
+    2021
+   ]
+  },
+  "Jack McVeigh": {
+   "basketball": [
+    2016,
+    2017,
+    2018
+   ]
+  },
+  "Isaiah Roby": {
+   "basketball": [
+    2017,
+    2018,
+    2019
+   ]
+  },
+  "Andrew White III": {
+   "basketball": [
+    2016
+   ]
+  },
+  "Tyronn Lue": {
+   "basketball": [
+    1996,
+    1997,
+    1998
+   ]
+  },
+  "Mikki Moore": {
+   "basketball": [
+    1994,
+    1995,
+    1996,
+    1997
+   ]
+  },
+  "Tony Farmer": {
+   "basketball": [
+    1991
+   ]
+  },
+  "Erick Strickland": {
+   "basketball": [
+    1993,
+    1994,
+    1995,
+    1996
+   ]
+  },
+  "Eric Piatkowski": {
+   "basketball": [
+    1991,
+    1992,
+    1993,
+    1994
+   ]
+  },
+  "Rich King": {
+   "basketball": [
+    1988,
+    1989,
+    1990,
+    1991
+   ]
+  },
+  "Dave Hoppen": {
+   "basketball": [
+    1983,
+    1984,
+    1985,
+    1986
+   ]
+  }
  }
 }
