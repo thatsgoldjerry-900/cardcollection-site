@@ -1,0 +1,6 @@
+{
+  "_help": "Player name on our site -> the name as the Letter Winners list has it, for a player the list can't match by name. Used by scripts/build_letter_years.py, same sport only.",
+  "players": {
+    "Al Bloodgood": "Elbert L. Bloodgood"
+  }
+}

@@ -106,6 +106,9 @@ def from_xlsx(path):
 
 def main():
     args = sys.argv[1:]
+    ALIASES = {}
+    if os.path.exists(os.path.join(ROOT, "data", "letter-aliases.json")):
+        ALIASES = json.load(open(os.path.join(ROOT, "data", "letter-aliases.json"), encoding="utf-8"))["players"]
     players = json.load(open(PLAYERS, encoding="utf-8"))["players"]
     plist = list(players.values()) if isinstance(players, dict) else players
     if any(a.startswith("--") for a in args):
@@ -125,6 +128,8 @@ def main():
             for p in plist:
                 if (p.get("sport") or "football") != sport: continue
                 yrs = by.get(norm(p["name"]))
+                if not yrs and p["name"] in ALIASES:
+                    yrs = by.get(norm(ALIASES[p["name"]]))
                 if not yrs:
                     yrs = fuzzy(norm(p["name"]), by_last)
                 if not yrs and '"' in p["name"]:
