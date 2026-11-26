@@ -2596,12 +2596,12 @@
       <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span></div></${x.tcdb ? "a" : "div"}>`;
     setNav("chase-" + slug); setTitle(ch.title);
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
-      <div class="c-head"><div class="kick">Nebraska chase</div><h1>${esc(ch.title)}</h1><div class="c-logos" id="c-logos"></div><p class="c-logo-cr" id="c-logo-cr"></p><p id="ch-sum"></p><div class="prog" id="ch-prog"></div></div>
+      <div class="c-head"><div class="kick">Nebraska chase</div><div class="c-title-row"><h1>${esc(ch.title)}</h1><div class="c-logos" id="c-logos"></div></div><p id="ch-sum"></p><div class="prog" id="ch-prog"></div></div>
       <div class="chips ch-chips">${SPORTS.length > 1 ? `<span class="ch-grp" role="group" aria-label="Sport">${[["", "All sports"], ...SPORTS].map(([k, l]) => `<button type="button" class="chip" data-g="sport" data-v="${k}" aria-pressed="${!k}">${l}</button>`).join("")}</span>` : ""}
         <span class="ch-grp" role="group" aria-label="College or pro">${[["", "College & pro"], ["college", "College"], ["pro", "Pro"]].map(([k, l]) => `<button type="button" class="chip" data-g="level" data-v="${k}" aria-pressed="${!k}">${l}</button>`).join("")}</span>
         <span class="ch-grp"><button type="button" class="chip" data-g="auto" data-v="1" aria-pressed="false">Autographs</button></span></div>
       <div class="b-row">${binderBtn()}</div><div class="grid" id="grid"></div>
-      <p class="lt-tip">The want list and the cards I haven't scanned come from my TCDb lists. Tap a card for its details.</p></div></div>`;
+      <p class="lt-tip">The want list and the cards I haven't scanned come from my TCDb lists. Tap a card for its details.</p><p class="c-logo-cr" id="c-logo-cr"></p></div></div>`;
     // Progress, counts and cards for the chosen filters (sport, college or pro, autographs), redrawn on every tap.
     drawLogos("husker-football");
     const f = { sport: "", level: "", auto: "" };

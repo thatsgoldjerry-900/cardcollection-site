@@ -1440,6 +1440,7 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .c-title .c-logos{margin:0}.c-title .c-logo{width:64px;height:64px;padding:10px;border-radius:12px}.c-title .c-logos.solo .c-logo{width:72px;height:72px}
 .c-title .c-logo.multi{width:auto;height:64px;min-width:64px}.c-title .c-logos.solo .c-logo.multi{height:72px}
 
+.c-title-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}.c-title-row h1{margin:0}.c-title-row .c-logos{margin:0}.c-title-row .c-logo,.c-title-row .c-logos.solo .c-logo{width:72px;height:72px;padding:10px;border-radius:12px}.c-title-row .c-logo.multi{width:auto;height:72px}
 .c-logo-cr{font-size:11.5px;color:var(--mu);margin:36px 0 8px}.c-logo-cr:empty{display:none}.c-logo-cr a{color:inherit}
 @media (max-width:700px){.c-logo{width:64px;height:64px;padding:10px;border-radius:12px}.c-logos.solo .c-logo{width:84px;height:84px}}
 
