@@ -1554,7 +1554,7 @@
   /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
   const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
     [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
-  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro, noteTeams = [] }) {
+  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro, neb, noteTeams = [] }) {
     const NOW = new Date().getFullYear(), spans = [], marks = [], undated = [];
     // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
     const teamOf = (name) => (NFLTEAMS_LIST || []).find((t) => t.names.some((n) => name.toLowerCase().startsWith(n.toLowerCase())));
@@ -1562,8 +1562,11 @@
     const NEB = { logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" };
     const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
     // College: Nebraska and any other school, else his final Nebraska season.
-    schools.forEach(([n, y]) => { const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
-    (info.playingCollege || []).forEach(([y, n]) => { const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
+    // Nebraska is drawn from the page's Nebraska years (neb), so the bar matches the stat box and Hall of Fame card.
+    const nebV = yrs(neb || "");
+    if (nebV.length) spans.push({ lane: "c", a: nebV[0], b: nebV[nebV.length - 1], label: "Nebraska", neb: true });
+    schools.forEach(([n, y]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
+    (info.playingCollege || []).forEach(([y, n]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
     if (!spans.some((x) => x.neb) && +(info.year || info.finalYear)) marks.push({ y: +(info.year || info.finalYear), label: "Final Nebraska season", kind: "c" });
     // Pro stops from Wikipedia ("Detroit Lions (2001–2014)", "*" = offseason / practice squad).
     careerLines.forEach((e) => {
@@ -1751,8 +1754,10 @@
       // Nebraska years: Wikipedia's range when its last year agrees with my final season; otherwise (or with no range) my final season only.
       const myFinal = info.year || info.finalYear, wikiNeb = (schools.find(([n]) => /nebraska/i.test(n)) || [])[1] || "";
       const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
+      // One Nebraska range per page: the stat box, the Hall of Fame card and the career timeline all read this value.
+      const nebStr = (info.collegeNote && info.collegeNote.nebraska) || nebYears(useWiki ? wikiNeb : "", ((info.letters || {})[sport]) || []);
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", useWiki ? "" : myFinal],
-        ["Nebraska years", (info.collegeNote && info.collegeNote.nebraska) || nebYears(useWiki ? wikiNeb : "", ((info.letters || {})[sport]) || [])],
+        ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
         ...Object.entries(info.letters || {}).filter(([sp]) => sp !== sport).map(([sp, ys]) => [`Nebraska ${sp} years`, yearRanges([...new Set(ys)].sort((x, y) => x - y))]),
         [useWiki || myFinal ? "Also played at" : "College", (info.collegeNote && info.collegeNote.also) || schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
@@ -1835,7 +1840,7 @@
               <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
               <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
-              <b>Class of ${esc(String(hof.class))}</b><span>${hof.role ? esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role) + " · " : ""}${hof.years ? "Nebraska " + esc(String(hof.years).replace(/-/g, "–")) : "Nebraska"}</span>
+              <b>Class of ${esc(String(hof.class))}</b><span>${hof.role ? esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role) + " · " : ""}${nebStr || hof.years ? "Nebraska " + esc(String(nebStr || hof.years).replace(/-/g, "–")) : "Nebraska"}</span>
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
             <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
@@ -1847,7 +1852,7 @@
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
           noteTeams: NFLTEAMS_LIST ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs, pfa: e.pfa }))); })() : [],
-          draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
+          neb: nebStr, draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
         <div class="pl-grid">
 
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
