@@ -645,6 +645,8 @@
       <div class="nfl-tl-scroll" id="nfl-tl-scroll"><div class="nfl-tl-strip" id="nfl-tl-strip" role="list"></div></div>
     </section>`;
   }
+  // Eras: Nebraska head coaches' tenures as bands above the bubbles, and the Big Ten years on a second row.
+  const ERAS = [["Devaney", 1962, 1972], ["Osborne", 1973, 1997], ["Solich", 1998, 2003], ["Callahan", 2004, 2007], ["Pelini", 2008, 2014], ["Riley", 2015, 2017], ["Frost", 2018, 2022], ["Big Ten", 2011, null]];
   function drawTimeline() {
     const strip = $("#nfl-tl-strip"); if (!strip || !CHECK) return;
     const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers"), i = l ? l.columns.indexOf("Last Year") : -1;
@@ -652,14 +654,16 @@
     const n = {};
     l.groups.flatMap((g) => g.rows).forEach((r) => { const y = parseInt(r[i], 10); if (y) n[y] = (n[y] || 0) + 1; });
     const max = Math.max(1, ...Object.values(n)), y1 = new Date().getFullYear();
-    let h = "";
+    const eras = ERAS.map(([nm, a, b]) => { const end = b || y1, big = nm === "Big Ten";
+      return `<span class="nfl-tl-era${big ? " r2" : ""}" style="left:calc(var(--w) * ${a - 1900});width:calc(var(--w) * ${end - a + 1})" title="${big ? "Big Ten" : nm + " era"}, ${a}–${b || "today"}"><b>${big ? "Big Ten" : nm}</b><small>${a}–${b || ""}</small></span>`; }).join("");
+    let cols = "";
     for (let y = 1900; y <= y1; y++) {
       const k = n[y] || 0, one = `${y}: ${k} Husker${k === 1 ? "" : "s"}`;
-      h += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}" role="listitem">
+      cols += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}">
         ${k ? `<span class="nfl-tl-b${k >= 5 ? " big" : ""}" style="--s:${(k / max).toFixed(3)}" title="${one}" aria-label="${one}">${k >= 5 ? k : ""}</span>` : ""}
         <span class="nfl-tl-y">${y % 10 === 0 ? y : ""}</span></div>`;
     }
-    strip.innerHTML = h;
+    strip.innerHTML = `<div class="nfl-tl-eras">${eras}</div><div class="nfl-tl-row" role="list">${cols}</div>`;
     const sc = $("#nfl-tl-scroll"); if (sc) sc.scrollLeft = sc.scrollWidth;
   }
 
