@@ -1,0 +1,296 @@
+{
+ "teams": {
+  "Vancouver Grizzlies": {
+   "logo": "https://thumb.wikimedia.org/wikipedia/en/thumb/1/1e/Vancouver_Grizzlies_logo.svg/250px-Vancouver_Grizzlies_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "page": "https://en.wikipedia.org/wiki/Vancouver_Grizzlies"
+  },
+  "Washington Senators": {
+   "logo": null,
+   "page": "https://en.wikipedia.org/wiki/Washington_Senators"
+  }
+ },
+ "players": {
+  "Brice Matthews": [
+   "Houston Astros"
+  ],
+  "Spencer Schwellenbach": [
+   "Atlanta Braves"
+  ],
+  "Cade Povich": [
+   "Baltimore Orioles"
+  ],
+  "Matt Waldron": [
+   "San Diego Padres",
+   "Toronto Blue Jays",
+   "Washington Nationals"
+  ],
+  "Nate Fisher": [
+   "New York Mets"
+  ],
+  "Jake Meyers": [
+   "Houston Astros"
+  ],
+  "Aaron Bummer": [
+   "Chicago White Sox",
+   "Atlanta Braves",
+   "Kansas City Royals"
+  ],
+  "Cody Asche": [
+   "Philadelphia Phillies",
+   "Chicago White Sox",
+   "Baltimore Orioles",
+   "Detroit Tigers"
+  ],
+  "Michael Mariot": [
+   "Kansas City Royals",
+   "Philadelphia Phillies",
+   "Cincinnati Reds"
+  ],
+  "Dan Jennings": [
+   "Miami Marlins",
+   "Chicago White Sox",
+   "Tampa Bay Rays",
+   "Milwaukee Brewers",
+   "Washington Nationals"
+  ],
+  "Thad Weber": [
+   "Detroit Tigers",
+   "San Diego Padres",
+   "Toronto Blue Jays"
+  ],
+  "Steve Edlefsen": [
+   "San Francisco Giants"
+  ],
+  "Andrew Brown": [
+   "St. Louis Cardinals",
+   "Colorado Rockies",
+   "New York Mets"
+  ],
+  "Tony Watson": [
+   "Pittsburgh Pirates",
+   "Los Angeles Dodgers",
+   "San Francisco Giants",
+   "Los Angeles Angels"
+  ],
+  "Joba Chamberlain": [
+   "New York Yankees",
+   "Detroit Tigers",
+   "Kansas City Royals",
+   "Cleveland Indians"
+  ],
+  "Zach Kroenke": [
+   "Arizona Diamondbacks"
+  ],
+  "Brian Duensing": [
+   "Minnesota Twins",
+   "Baltimore Orioles",
+   "Chicago Cubs"
+  ],
+  "Alex Gordon": [
+   "Kansas City Royals"
+  ],
+  "Adam Moore": [
+   "Seattle Mariners",
+   "Kansas City Royals",
+   "San Diego Padres",
+   "Cleveland Indians",
+   "Tampa Bay Rays"
+  ],
+  "Drew Anderson": [
+   "Milwaukee Brewers"
+  ],
+  "Shane Komine": [
+   "Oakland Athletics"
+  ],
+  "Adam Stern": [
+   "Boston Red Sox",
+   "Baltimore Orioles",
+   "Milwaukee Brewers"
+  ],
+  "Dan Johnson": [
+   "Oakland Athletics",
+   "Tampa Bay Rays",
+   "Chicago White Sox",
+   "Baltimore Orioles",
+   "Toronto Blue Jays",
+   "St. Louis Cardinals"
+  ],
+  "Adam Shabala": [
+   "San Francisco Giants"
+  ],
+  "Jamal Strong": [
+   "Seattle Mariners"
+  ],
+  "Ken Harvey": [
+   "Kansas City Royals"
+  ],
+  "Todd Sears": [
+   "Minnesota Twins",
+   "San Diego Padres"
+  ],
+  "Darin Erstad": [
+   "Los Angeles Angels",
+   "Chicago White Sox",
+   "Houston Astros"
+  ],
+  "Troy Brohawn": [
+   "Arizona Diamondbacks",
+   "San Francisco Giants",
+   "Los Angeles Dodgers"
+  ],
+  "Marc Sagmoen": [
+   "Texas Rangers"
+  ],
+  "Kevin Jordan": [
+   "Philadelphia Phillies"
+  ],
+  "Ken Ramos": [
+   "Houston Astros"
+  ],
+  "Eric Helfand": [
+   "Oakland Athletics"
+  ],
+  "Kip Gross": [
+   "Cincinnati Reds",
+   "Los Angeles Dodgers",
+   "Boston Red Sox",
+   "Houston Astros"
+  ],
+  "Bill McGuire": [
+   "Seattle Mariners"
+  ],
+  "Bob Sebra": [
+   "Texas Rangers",
+   "Montreal Expos",
+   "Philadelphia Phillies",
+   "Cincinnati Reds",
+   "Milwaukee Brewers"
+  ],
+  "Steve Stanicek": [
+   "Milwaukee Brewers",
+   "Philadelphia Phillies"
+  ],
+  "Tim Burke": [
+   "Montreal Expos",
+   "New York Mets",
+   "New York Yankees"
+  ],
+  "Pete O'Brien": [
+   "Texas Rangers",
+   "Cleveland Indians",
+   "Seattle Mariners"
+  ],
+  "Ryan Kurosaki": [
+   "St. Louis Cardinals"
+  ],
+  "Buddy Hunter": [
+   "Boston Red Sox"
+  ],
+  "Gary Neibauer": [
+   "Atlanta Braves",
+   "Philadelphia Phillies"
+  ],
+  "Stan Bahnsen": [
+   "New York Yankees",
+   "Chicago White Sox",
+   "Oakland Athletics",
+   "Montreal Expos",
+   "California Angels",
+   "Philadelphia Phillies"
+  ],
+  "Dave McDonald": [
+   "New York Yankees",
+   "Montreal Expos"
+  ],
+  "Dwight Siebler": [
+   "Minnesota Twins"
+  ],
+  "Bob Cerv": [
+   "New York Yankees",
+   "Kansas City Athletics",
+   "Los Angeles Angels",
+   "Houston Colt .45s"
+  ],
+  "Ad Liska": [
+   "Washington Senators",
+   "Philadelphia Phillies"
+  ],
+  "Bryce McGowens": [
+   "Charlotte Hornets",
+   "Portland Trail Blazers",
+   "New Orleans Pelicans"
+  ],
+  "Dalano Banton": [
+   "Toronto Raptors",
+   "Boston Celtics",
+   "Portland Trail Blazers",
+   "LA Clippers"
+  ],
+  "Jack McVeigh": [
+   "Houston Rockets"
+  ],
+  "Isaiah Roby": [
+   "Oklahoma City Thunder",
+   "San Antonio Spurs"
+  ],
+  "Andrew White III": [
+   "Atlanta Hawks"
+  ],
+  "Tyronn Lue": [
+   "Los Angeles Lakers",
+   "Washington Wizards",
+   "Orlando Magic",
+   "Houston Rockets",
+   "Atlanta Hawks",
+   "Dallas Mavericks",
+   "Milwaukee Bucks"
+  ],
+  "Mikki Moore": [
+   "Detroit Pistons",
+   "Boston Celtics",
+   "Atlanta Hawks",
+   "Utah Jazz",
+   "LA Clippers",
+   "Seattle SuperSonics",
+   "New Jersey Nets",
+   "Sacramento Kings",
+   "Golden State Warriors"
+  ],
+  "Tony Farmer": [
+   "Charlotte Hornets",
+   "Golden State Warriors"
+  ],
+  "Erick Strickland": [
+   "Dallas Mavericks",
+   "New York Knicks",
+   "Vancouver Grizzlies",
+   "Boston Celtics",
+   "Indiana Pacers",
+   "Milwaukee Bucks"
+  ],
+  "Eric Piatkowski": [
+   "LA Clippers",
+   "Houston Rockets",
+   "Chicago Bulls",
+   "Phoenix Suns"
+  ],
+  "Rich King": [
+   "Seattle SuperSonics"
+  ],
+  "Eric Johnson": [
+   "Utah Jazz"
+  ],
+  "Dave Hoppen": [
+   "Milwaukee Bucks",
+   "Golden State Warriors",
+   "Charlotte Hornets",
+   "Philadelphia 76ers",
+   "New Jersey Nets"
+  ],
+  "Stu Lantz": [
+   "Detroit Pistons",
+   "New Orleans Jazz",
+   "Los Angeles Lakers"
+  ]
+ }
+}
