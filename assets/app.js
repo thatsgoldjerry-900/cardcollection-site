@@ -978,7 +978,7 @@
     $("#app").innerHTML = `<div class="wrap ck c-husker">
       <div class="${showcase.length ? "ck-top" : ""}"><div class="c-head">
         <div class="kick">Autograph checklist · updated from my collection spreadsheet</div>
-        <h1>${esc(page.label)}</h1><div class="c-logos" id="c-logos"></div><p class="c-logo-cr" id="c-logo-cr"></p>
+        <div class="c-title"><h1>${esc(page.label)}</h1><div class="c-logos" id="c-logos"></div></div>
         ${page.path === "" && DATA.site.nflListStory ? `<div class="story short">${DATA.site.nflListStory.map((t) => `<p>${esc(t)}</p>`).join("")}<button type="button" class="story-more" onclick="this.parentNode.classList.remove('short')">Read the full story</button></div>` : ""}
         <p>${esc(page.blurb)} Green means it's in my collection. If you can help with anyone marked <b>Need</b>, I'd love to hear from you.</p>
         <div class="prog"><b>${pct.toFixed(2)}%</b><div class="bar"><i style="width:${pct}%"></i></div><small>${fmt(y)} of ${fmt(n)} signed</small></div>
@@ -997,7 +997,7 @@
           <div class="ck-table" id="ck-table"></div>
         </div>
         ${typeRows.length ? `<aside class="ck-side"><h4>What they signed</h4>${typeRows.map(([t, c]) => `<div class="ty"><span>${esc(t)}</span><span class="tn">${fmt(c)}</span><div class="bar"><i style="width:${(c / tmax) * 100}%"></i></div></div>`).join("")}</aside>` : ""}
-      </div></div>`;
+      </div><p class="c-logo-cr" id="c-logo-cr"></p></div>`;
     drawLogos("husker-football");
     $("#ck-sort").addEventListener("change", (e) => { CK.sort = e.target.value; CK.dir = 1; table(); });
     $("#ck-table").addEventListener("click", (e) => { const b = e.target.closest("[data-sort]"); if (!b) return;
@@ -1369,9 +1369,9 @@
       const rows = teams.map((t) => ({ t, n: idx[t.slug].length, t1: idx[t.slug].filter((e) => e.tier === 1).length })).sort((a, b) => b.n - a.n || a.t.name.localeCompare(b.t.name));
       if (!slug) {
         setTitle("Huskers by NFL Team");
-        $("#app").innerHTML = `<div class="wrap tm"><div class="c-head"><div class="kick">NFL Huskers</div><h1>Huskers by NFL Team</h1><div class="c-logos" id="c-logos"></div><p class="c-logo-cr" id="c-logo-cr"></p>
+        $("#app").innerHTML = `<div class="wrap tm"><div class="c-head"><div class="kick">NFL Huskers</div><div class="c-title"><h1>Huskers by NFL Team</h1><div class="c-logos" id="c-logos"></div></div>
           <p>Every Nebraska Cornhusker on my NFL lists, by the franchise he was with. Past team names count toward today's franchise (St. Louis Rams → Los Angeles Rams).</p></div>
-          <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" style="${teamVars(t)}" href="#/nfl-teams/${t.slug}">${teamLogo(t, "tm-logo")}<b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div></div>`;
+          <div class="tm-grid">${rows.map(({ t, n, t1 }) => `<a class="tm-tile" style="${teamVars(t)}" href="#/nfl-teams/${t.slug}">${teamLogo(t, "tm-logo")}<b>${esc(t.name)}</b><span>${fmt(n)} Husker${n === 1 ? "" : "s"}${t1 ? ` · ${fmt(t1)} played in games` : ""}</span></a>`).join("")}</div><p class="c-logo-cr" id="c-logo-cr"></p></div>`;
         drawLogos("husker-football");
         return;
       }
@@ -1407,7 +1407,7 @@
       const all = allPlayers().map((p) => ({ ...p, page: wiki.has(p.slug), group: GROUP[p.listSlug] || "more", sig: !!sigs[p.slug] }));
       const have = all.filter((p) => p.have).length, nsig = all.filter((p) => p.sig).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
-        <div class="c-head"><div class="kick">Nebraska Cornhuskers</div><h1>Husker Bios</h1><div class="c-logos" id="c-logos"></div><p class="c-logo-cr" id="c-logo-cr"></p>
+        <div class="c-head"><div class="kick">Nebraska Cornhuskers</div><div class="c-title"><h1>Husker Bios</h1><div class="c-logos" id="c-logos"></div></div>
           <p>A page for every Nebraska Cornhusker who made the pros, plus a few more I've made custom cards of. Each one tells his story: his Nebraska and pro careers, stats, Hall of Fame honors, a career timeline, my own write-ups from custom cards, and the cards and autographs I have of him.</p>
           <div class="hub-stats"><span><b>${fmt(all.length)}</b> bios</span><span><b>${fmt(nsig)}</b> neon signatures</span></div></div>
         <div class="tools">
@@ -1416,7 +1416,7 @@
             <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["most", "Most NFL games"], ["fewest", "Fewest NFL games"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
             <span class="count" id="hub-count"></span></div>
         </div>
-        <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div></div>`;
+        <ol class="hub-list" id="hub-list"></ol><div class="sentinel" id="hub-more"></div><p class="c-logo-cr" id="c-logo-cr"></p></div>`;
       drawLogos("husker-football");
       const apply = () => {
         let q = HUB.q; HUB.fixed = null;
