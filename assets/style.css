@@ -1211,3 +1211,6 @@ body[data-bg="red"] .side h4{color:#d9c9a8}
   body[data-bg="red"] .top{background:#e41c38}
   body[data-bg="red"] .mbar{background:#e41c38;border-bottom:2px solid var(--cream)}
 }
+
+/* Nebraska and general pages: a thick cream border around the filters box, so the scarlet-and-cream look carries below the title bar */
+body[data-bg="red"] .side{border:3px solid var(--cream);border-radius:14px;padding:14px 12px;background:rgba(14,11,12,.88)}
