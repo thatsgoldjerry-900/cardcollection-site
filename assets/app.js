@@ -1056,13 +1056,17 @@
       signed: (a, b) => (!a.r[si]) - (!b.r[si]) || String(a.r[si] || "").localeCompare(String(b.r[si] || "")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k,
       have: (a, b) => ((a.r[ai] === "Yes") - (b.r[ai] === "Yes")) || (num(b.r[yi]) - num(a.r[yi])) || a.k - b.k }[CK.sort];
     const sortRows = (rows) => rows.map((r, k) => ({ r, k })).sort((a, b) => cmp(a, b) * CK.dir).map((x) => x.r);
+    // MLB and NBA lists are short, so each player's default card (his bio's picture) gets a column before the scans.
+    const photos = ["baseball", "basketball"].includes(SPORT_OF_LIST[l.slug]);
     const body = l.groups.map((g) => {
       const rows = sortRows(g.rows.filter((r) => passes(r, q)));
       count += rows.length; if (!rows.length) return "";
-      return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
+      return (g.title ? `<tr class="grp"><th colspan="${shown.length + 2 + (photos ? 1 : 0)}">${esc(g.title)}</th></tr>` : "") + rows.map((r) => {
         const have = r[ai] === "Yes", scans = have ? scansFor(r[0], SPORT_OF_LIST[l.slug]) : [];
+        const hero = have && photos ? bestScan(r[0], SPORT_OF_LIST[l.slug]) : null, heroK = hero ? Math.max(0, scans.indexOf(hero)) : 0;
         return `<tr class="${have ? "have" : "need"}"${scans.length ? ` data-peek="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}"` : ""}><td><span class="st ${have ? "have" : "need"}">${have ? "Have" : "Need"}</span>${(l.notes || {})[r[0]] ? `<button type="button" class="nt-btn nt-m" data-note="${esc(r[0])}" aria-expanded="false" aria-label="Why ${esc(r[0])} is on this list">i</button>` : ""}</td>
           ${shown.map((i, k) => `<td class="${k === 0 ? "nm" : ""}${opt(cols[i])}">${k === 0 ? (hasPages ? `<a class="pl-link" href="#/player/${slugFor(l.slug, r[i])}">${hl(r[i], fixedQ || CK.q)}</a>` : hl(r[i], fixedQ || CK.q)) + ((l.notes || {})[r[i]] ? ` <button type="button" class="nt-btn nt-d" data-note="${esc(r[i])}" aria-expanded="false" aria-label="Why ${esc(r[i])} is on this list" title="Why he's on this list">i</button>` : "") : esc(r[i])}</td>`).join("")}
+          ${photos ? `<td class="ph">${hero ? `<button type="button" class="ck-ph" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}" data-k="${heroK}" aria-label="View ${esc(r[0])}'s card: ${esc(hero.title || hero.name)}"><img alt="" loading="lazy" src="${img(hero.id, hero.rk, 240)}" onload="thumbFit(this)"></button>` : ""}</td>` : ""}
           <td class="sc">${scans.length ? `<button type="button" class="btn sm" data-scan="${esc(r[0])}" data-sport="${SPORT_OF_LIST[l.slug]}">${scans.length === 1 ? "Scan" : scans.length + " scans"}</button>` : ""}</td></tr>`;
       }).join("");
     }).join("");
@@ -1071,7 +1075,7 @@
     // Arrows show the direction on screen: Year and Games start highest first (▼), Last name A–Z (▲).
     const down = (key) => (key === "year" || key === "games" ? CK.dir > 0 : CK.dir < 0);
     const th = (text, key, cls = "") => `<th class="${cls}"${key ? ` aria-sort="${CK.sort === key ? (down(key) ? "descending" : "ascending") : "none"}"` : ""}>${key ? `<button type="button" class="th-sort${CK.sort === key ? " on" : ""}" data-sort="${key}">${esc(text)}<span aria-hidden="true">${CK.sort === key ? (down(key) ? " ▼" : " ▲") : " ↕"}</span></button>` : esc(text)}</th>`;
-    $("#ck-table").innerHTML = (fixedQ ? `<p class="fixnote">No one matched “${esc(CK.q)}”, so these are results for <b>${esc(fixedQ)}</b>.</p>` : "") + (count ? `<table><thead><tr>${th("Status", "have")}${shown.map((i) => th(label(cols[i]), SORT_OF[cols[i]], opt(cols[i]).trim())).join("")}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`);
+    $("#ck-table").innerHTML = (fixedQ ? `<p class="fixnote">No one matched “${esc(CK.q)}”, so these are results for <b>${esc(fixedQ)}</b>.</p>` : "") + (count ? `<table><thead><tr>${th("Status", "have")}${shown.map((i) => th(label(cols[i]), SORT_OF[cols[i]], opt(cols[i]).trim())).join("")}${photos ? `<th class="ph">Card</th>` : ""}<th></th></tr></thead><tbody>${body}</tbody></table>` : `<p class="empty">Nobody matches. Try another name or switch to Everyone.</p>`);
   }
   // My research note on why a player is on the Tier 2 or Tier 3 list opens in a row under his name.
   const noteHTML = (t) => t.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim()).replace(/\n/g, "<br>")}</p>`).join("");
@@ -1109,7 +1113,7 @@
   document.addEventListener("click", (e) => {
     if (!peek.hidden) hidePeek();
     const b = e.target.closest("[data-scan]"); if (!b) return;
-    const list = scansFor(b.dataset.scan, b.dataset.sport || "football"); if (list.length) openViewer(0, list);
+    const list = scansFor(b.dataset.scan, b.dataset.sport || "football"); if (list.length) openViewer(+b.dataset.k || 0, list);
   });
 
   /* ---------- NFL Tier 1 Huskers: list with autographs, and a page per player ---------- */
