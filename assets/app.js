@@ -622,19 +622,45 @@
     </section>`;
   }
 
-  // Card of the day (desktop home): one official card, same all day. Nebraska or Alex Gordon only, and only cards with a
-  // TCDb-style name (year, set, #number), never customs, programs, schedules, index cards, posters, oversize or letters.
+  // Card of the day: one card from the best of the best, the same all day. The top of the rarest list: 1 of 1s and
+  // numbered /5 or less, never customs, programs, schedules, index cards, posters, oversize or letters.
   const COTD_BAD = /custom|program|schedule|index|poster|postcard|fathead|magazine|ticket|newspaper|letter|\b\d+x\d+\b|box (?:loader|topper)|checklist|\bsold\b/i;
   function cardOfDay() {
-    const ok = (c) => /^(?:husker-|alex-gordon$)/.test(SECTIONS[c.si].slug) && !c.tags.has("custom") && !c.photo
+    const ok = (c) => !c.tags.has("custom") && !c.photo && (c.one || (c.serial && c.serial <= 5))
       && /^(?:19|20)\d\d(?:-\d\d)?\s.+#\S+/.test(c.name) && !COTD_BAD.test(c.name);
     const pool = CARDS.filter(ok); if (!pool.length) return "";
     const d = new Date(), day = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
     let h = day; h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16;
     const c = pool[(h >>> 0) % pool.length];
-    return `<aside class="cotd" aria-label="Card of the day"><span class="kick">Card of the day</span>
-      <a class="cotd-card" href="#/card/${cid(c)}" aria-label="${esc(c.name)}"><img alt="" src="${img(c.id, c.rk, 400)}"></a>
+    return `<aside class="cotd-big" aria-label="Card of the day"><span class="kick">Card of the day</span>
+      <a class="cotd-card" href="#/card/${cid(c)}" aria-label="${esc(c.name)}"><img alt="" src="${img(c.id, c.rk, 1200)}"></a>
       <div class="cap"><b>${esc(c.title)}</b>${esc(c.sub)}${c.par ? `<br><span class="par">${esc(c.par)}</span>` : ""}</div></aside>`;
+  }
+
+  // Timeline: one bubble per year, 1900 to today, sized by how many NFL Huskers (tier 1 list) last played for Nebraska that year.
+  function nflTimelineHTML() {
+    return `<section class="nfl-tl" aria-label="NFL Huskers by year">
+      <div class="sec-h"><h2>NFL Huskers by year</h2></div>
+      <p class="nfl-tl-sub">Each bubble is a year, sized by how many NFL Huskers last played for Nebraska that year.</p>
+      <div class="nfl-tl-scroll" id="nfl-tl-scroll"><div class="nfl-tl-strip" id="nfl-tl-strip" role="list"></div></div>
+    </section>`;
+  }
+  function drawTimeline() {
+    const strip = $("#nfl-tl-strip"); if (!strip || !CHECK) return;
+    const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers"), i = l ? l.columns.indexOf("Last Year") : -1;
+    if (i < 0) return;
+    const n = {};
+    l.groups.flatMap((g) => g.rows).forEach((r) => { const y = parseInt(r[i], 10); if (y) n[y] = (n[y] || 0) + 1; });
+    const max = Math.max(1, ...Object.values(n)), y1 = new Date().getFullYear();
+    let h = "";
+    for (let y = 1900; y <= y1; y++) {
+      const k = n[y] || 0, one = `${y}: ${k} Husker${k === 1 ? "" : "s"}`;
+      h += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}" role="listitem">
+        ${k ? `<span class="nfl-tl-b${k >= 5 ? " big" : ""}" style="--s:${Math.sqrt(k / max).toFixed(3)}" title="${one}" aria-label="${one}">${k >= 5 ? k : ""}</span>` : ""}
+        <span class="nfl-tl-y">${y % 10 === 0 ? y : ""}</span></div>`;
+    }
+    strip.innerHTML = h;
+    const sc = $("#nfl-tl-scroll"); if (sc) sc.scrollLeft = sc.scrollWidth;
   }
 
   function home() {
@@ -662,6 +688,7 @@
         <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
     }
     $("#app").innerHTML = `<div class="wrap">
+      ${cardOfDay()}${nflTimelineHTML()}
       <section class="hero">
         <div>
           <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
@@ -669,7 +696,6 @@
           <div class="pills">${(() => { const f = (s.media?.items || []).find((it) => it.featured) || (s.media?.items || [])[0];
             return f ? `<a class="pill pill-feat" href="${esc(f.url)}" target="_blank" rel="noopener"><b>Featured:</b> ${esc(f.title)} ↗</a><a class="pill pill-in" href="#/media">All media &amp; interviews →</a>` : ""; })()}${s.links.map((l) => `<a class="pill${/tcdb\.com/i.test(l.url) ? " pill-tcdb" : ""}" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("")}</div>
         </div>
-        ${cardOfDay()}
         <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
       </section>
       <section class="stats" aria-label="Collection stats">
@@ -695,6 +721,7 @@
     state.list = newest;
     // Live from the checklist: share of NFL Huskers whose autograph is in the collection.
     loadCheckQuiet().then(() => {
+      drawTimeline();
       const t = allPlayers().filter((p) => p.listSlug === "nfl-tier-1-huskers"), el = $("#stat-nfl");
       if (!el || !t.length) return;
       el.querySelector(".sn").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.querySelector(".bar i").style.width = el.querySelector(".sn").textContent; el.hidden = false;
