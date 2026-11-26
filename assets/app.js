@@ -1344,6 +1344,7 @@
       } else keys = SECTION_LOGO[slug] ? [SECTION_LOGO[slug]] : [];
       keys = keys.filter((k) => T[k]);
       el.classList.toggle("solo", keys.length === 1 && !T[keys[0]].logos);
+      if (el.parentElement) el.parentElement.classList.toggle("logo-r", !SLUG_TEAMS[slug] && keys.length > 0);
       el.innerHTML = keys.map((k) => { const t = T[k], img = (t.logos || [t]).map((l) => `<img alt="${esc(l.name)} logo" src="${esc(l.logo)}" onerror="this.remove()">`).join("");
         if (!names[k]) return `<span class="c-logo" title="${esc(t.name)}">${img}</span>`;
         return `<button type="button" class="c-logo${T[k].logos ? " multi" : ""}" data-team="${esc(names[k])}" title="${state.team ? "Show all teams" : "Show only " + esc(t.name)}" aria-label="${state.team ? "Show all teams" : "Show only " + esc(t.name)}">${img}</button>`; }).join("");
