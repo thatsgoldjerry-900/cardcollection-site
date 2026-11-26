@@ -2632,11 +2632,11 @@
     window.scrollTo(0, 0);
     track();
   }
-  /* ---------- Page backgrounds (Ian, 2026-11-25; color theme in place of the photos): stadium lights in one team color per page. Royals blue on Alex Gordon, Jermaine Dye and Royals pages, Honolulu blue on the Lions page, Husker red on
+  /* ---------- Page backgrounds (Ian, 2026-11-25; color theme in place of the photos): stadium lights in one team color per page. Royals blue on Alex Gordon, Jermaine Dye and Royals pages (not the Nebraska chase pages like Cracked Ice), Honolulu blue on the Lions page, Husker red on
      everything else (Nebraska pages and the general ones). The colors live in style.css (body[data-bg]). ---------- */
   function pageBg(a) {
     const n = (NAV_NOW || "").replace(/^c\//, "");
-    document.body.dataset.bg = /^(alex-gordon|jermaine-dye|royals|chase-)/.test(n) || a === "dye-career" ? "royals"
+    document.body.dataset.bg = /^(alex-gordon|jermaine-dye|royals)/.test(n) || a === "dye-career" ? "royals"
       : /^lions/.test(n) ? "lions" : "red";
   }
   /* ---------- Analytics: GoatCounter (no cookies), when config analytics.goatcounter has my site code ---------- */
