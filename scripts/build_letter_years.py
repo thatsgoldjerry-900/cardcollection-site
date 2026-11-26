@@ -106,9 +106,10 @@ def from_xlsx(path):
 
 def main():
     args = sys.argv[1:]
-    ALIASES = {}
+    ALIASES, MULTI = {}, {}
     if os.path.exists(os.path.join(ROOT, "data", "letter-aliases.json")):
-        ALIASES = json.load(open(os.path.join(ROOT, "data", "letter-aliases.json"), encoding="utf-8"))["players"]
+        cfg = json.load(open(os.path.join(ROOT, "data", "letter-aliases.json"), encoding="utf-8"))
+        ALIASES, MULTI = cfg.get("players", {}), cfg.get("multiSport", {})
     players = json.load(open(PLAYERS, encoding="utf-8"))["players"]
     plist = list(players.values()) if isinstance(players, dict) else players
     if any(a.startswith("--") for a in args):
@@ -126,7 +127,8 @@ def main():
             for k, v in by.items():
                 by_last.setdefault(k.split(" ")[-1], []).append((k, v))
             for p in plist:
-                if (p.get("sport") or "football") != sport: continue
+                # A player is matched in his own sport, and in another sport when listed under multiSport.
+                if (p.get("sport") or "football") != sport and sport not in MULTI.get(p["name"], []): continue
                 yrs = by.get(norm(p["name"]))
                 if not yrs and p["name"] in ALIASES:
                     al = ALIASES[p["name"]]
@@ -153,7 +155,7 @@ def main():
     n = 0
     multi = {}
     if os.path.exists(os.path.join(ROOT, "data", "letter-aliases.json")):
-        multi = json.load(open(os.path.join(ROOT, "data", "letter-aliases.json"), encoding="utf-8")).get("multiSport", {})
+        multi = MULTI
     for p in recs:
         # Each record gets its own sport's years. Another sport counts only for a player listed under multiSport (same person).
         mine = (p.get("sport") or "football")
