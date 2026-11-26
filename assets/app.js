@@ -2595,6 +2595,8 @@
     const tile = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
       <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span></div></${x.tcdb ? "a" : "div"}>`;
     setNav("chase-" + slug); setTitle(ch.title);
+    // The shard wallpaper goes on the Cracked Ice page (set here too, since the page can render before pageBg runs).
+    document.body.classList.toggle("ice-bg", slug === "cracked-ice"); if (slug === "cracked-ice") iceWall();
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
       <div class="c-head"><div class="kick">Nebraska chase</div><div class="c-title-row"><h1>${esc(ch.title)}</h1><div class="c-logos" id="c-logos"></div></div><p id="ch-sum"></p><div class="prog" id="ch-prog"></div></div>
       <div class="chips ch-chips">${SPORTS.length > 1 ? `<span class="ch-grp" role="group" aria-label="Sport">${[["", "All sports"], ...SPORTS].map(([k, l]) => `<button type="button" class="chip" data-g="sport" data-v="${k}" aria-pressed="${!k}">${l}</button>`).join("")}</span>` : ""}
