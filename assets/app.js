@@ -3173,7 +3173,10 @@
     const w = R - L, h = B - T;
     Object.assign(a.style, { left: L + "px", top: T + "px", width: w + "px", height: h + "px" });
     if (a.classList.contains("t-dirt")) dirt(a, w, h);
-    if (a.classList.contains("has-ice")) ice(a, w, h);
+    // Between the two cards (dual view), the shards fill the gap instead of showing the dark stage.
+    let gap = null;
+    if (both.length === 2) { const g0 = Math.min(im.offsetLeft + im.offsetWidth, im2.offsetLeft + im2.offsetWidth) - L, g1 = Math.max(im.offsetLeft, im2.offsetLeft) - L; if (g1 > g0) gap = [g0, g1]; }
+    if (a.classList.contains("has-ice")) ice(a, w, h, gap);
   }
   // Dirt: crumbly clumps and fine powder drawn on a canvas around the card (behind it; the scan stays clean).
   // Seeded by the card, so the same card always gets the same pile.
@@ -3233,9 +3236,10 @@
   }
   // Cracked Ice: iridescent glass shards scattered around the card (drawn in app.js, like the dirt), seeded by the card.
   // Pearly pastel facets with a bright edge; more of them near the card, fewer farther out.
-  function ice(a, w, h) {
+  // gap (dual view): [x0, x1] across the middle of the aura, between the front and back, filled with the same shards.
+  function ice(a, w, h, gap) {
     let cv = a.querySelector("canvas.v-ice");
-    const key = a.dataset.seed + "|" + w + "x" + h;
+    const key = a.dataset.seed + "|" + w + "x" + h + "|" + (gap ? gap.join(",") : "");
     if (cv && cv.dataset.key === key) return;
     if (!cv) { cv = document.createElement("canvas"); cv.className = "v-ice"; a.append(cv); }
     cv.dataset.key = key;
@@ -3261,6 +3265,11 @@
     for (let i = 0; i < 700; i++) { const [x, y] = spot(1); shard(x, y, (1.2 + R() * 2.6) * sc); }
     for (let i = 0; i < 200; i++) { const [x, y] = spot(0.8); shard(x, y, (3.5 + R() * 4.5) * sc); }
     for (let i = 0; i < 36; i++) { const [x, y] = spot(0.5); shard(x, y, (8 + R() * 7) * sc); }
+    if (gap && gap[1] > gap[0]) {
+      const n = Math.round(((gap[1] - gap[0]) * h) / 1500);
+      for (let i = 0; i < n; i++) shard(m + gap[0] + R() * (gap[1] - gap[0]), m + R() * h, (1.2 + R() * 3.2) * sc);
+      for (let i = 0; i < Math.round(n / 12); i++) shard(m + gap[0] + R() * (gap[1] - gap[0]), m + R() * h, (4 + R() * 5) * sc);
+    }
   }
   function aura(c) {
     const a = $("#v-aura"), front = !(V.back && !isPair(c));
