@@ -855,7 +855,7 @@
   }
   // Searching a name also offers that player's NFL Huskers page.
   function playerMatches(q, asked = q) {
-    if (norm(q).length < 3) return;
+    if (norm(q).length < 2) return;
     loadCheckQuiet().then(() => {
       const box = $("#pmatch"); if (!box || state.q !== asked) return;
       const find = (t) => { const words = norm(t).split(" ").filter(Boolean);
@@ -923,7 +923,7 @@
   // Autograph list sorting: Year (the list's own order, the default), last name, NFL games played, or need/have (needs first).
   const CK_SORTS = [["year", "Year"], ["name", "Last name"], ["games", "Games played"], ["have", "Need / Have"], ["signed", "Signed on"]];
   const lastName = (n) => { const w = String(n).replace(/["“][^"”]*["”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").replace(/[.,]/g, " ").trim().split(/\s+/); return (w[w.length - 1] + " " + w.slice(0, -1).join(" ")).toLowerCase(); };
-  const norm = (t) => String(t).toLowerCase().replace(/["“”][^"“”]*["“”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+  const norm = (t) => String(t).toLowerCase().replace(/\b([a-z])\.(?=[a-z](?:\.|\b))/g, "$1").replace(/["“”][^"“”]*["“”]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
   // same name in different sports (e.g. Eric Johnson, football and basketball) never share cards.
   const scanIndex = {};
