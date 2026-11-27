@@ -1155,7 +1155,7 @@
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
   // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
-  let HOF = null, HOFN = null, CHOF = null, CHOFN = null, PROHOF = {};
+  let HOF = null, HOFN = null, CHOF = null, CHOFN = null, PROHOF = {}, PROHOFURL = {};
   const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
     .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
   function hofFor(info, college) {
@@ -1177,7 +1177,7 @@
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
-    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (CHOF = d.college || []), (PROHOF = d.pro || {}))));
+    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (CHOF = d.college || []), (PROHOF = d.pro || {}), (PROHOFURL = d.proPaths || {}))));
     if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = withCardBios(d))));
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
@@ -1868,7 +1868,7 @@
       // Hall of Fame honors sit in the right-hand column (with any reference images), not as wide cards in the middle.
       const honorsHTML = `${pro ? `<section class="hof pro"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
               <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
-              <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
+              <a href="https://www.profootballhof.com/players/${encodeURIComponent((PROHOFURL[slug] || slug))}" target="_blank" rel="noopener">${esc(info.name)} at the Pro Football Hall of Fame ↗</a></div></section>` : ""}
             ${chof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">College Football Hall of Fame</div>
               <b>Class of ${esc(String(chof.class))}</b>${chof.role ? `<span>Inducted as a coach</span>` : ""}
               <a href="https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame" target="_blank" rel="noopener">Nebraska inductees (Wikipedia) ↗</a></div></section>` : ""}
