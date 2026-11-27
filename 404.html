@@ -13,7 +13,7 @@
   // this same address. Anything that looks like a file (or an old Google Sites address) gets the "not found" page.
   (function () {
     var rel = location.pathname.slice(BASE.length);
-    if (rel && !/\.[a-z0-9]+$/i.test(rel) && /^(c|player|player-cards|search|card|rainbow|set|letters|word|checklist|player-pages|husker-bios|nfl-teams|media|stats|rarest|duplicates|customs|all|picks|about|dye-career|random)(\/|$)/.test(rel))
+    if (rel && !/\.[a-z0-9]+$/i.test(rel) && /^(c|cards|chase|recent|husker-bios|nfl-huskers|player|player-cards|search|card|rainbow|set|letters|word|checklist|player-pages|husker-bios|nfl-teams|media|stats|rarest|duplicates|customs|all|picks|about|dye-career|random)(\/|$)/.test(rel))
       location.replace(BASE + "#/" + rel.replace(/\/$/, "") + location.search);
   })();
 </script>
