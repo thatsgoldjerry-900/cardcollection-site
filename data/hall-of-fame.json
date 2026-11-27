@@ -1897,5 +1897,9 @@
    "role": "Coach"
   }
  ],
- "_collegeSource": "https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame"
+ "_collegeSource": "https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame",
+ "proPaths": {
+  "link-lyman": "william-roy-link-lyman",
+  "bob-brown": "bob-boomer-brown"
+ }
 }
