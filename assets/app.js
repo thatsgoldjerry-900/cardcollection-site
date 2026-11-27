@@ -1887,7 +1887,7 @@
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${tcdbHTML}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
-            <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
+            <div class="pl-name"><h1>${esc(((DATA.site.playerDisplayNames || {})[info.name]) || info.name)}</h1>${signatureHTML(slug, info.name)}</div>
             <div class="pl-badges">${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${((DATA.site.playerExtras || {})[slug] || {}).about ? `<p class="pl-about">${esc(DATA.site.playerExtras[slug].about)}</p>` : ""}

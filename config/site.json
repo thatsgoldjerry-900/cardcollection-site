@@ -1040,6 +1040,10 @@
       "Lester McDonald"
     ]
   },
+  "playerDisplayNames": {
+    "_help": "Name shown as the player page heading when it differs from the list name (list name: shown name).",
+    "Les McDonald": "Lester McDonald"
+  },
   "backFor": {
     "_help": "Back scans that belong to fronts with different names (back file name without extension: [front names]).",
     "2021 Damian Jackson Autograph Custom Back": [
