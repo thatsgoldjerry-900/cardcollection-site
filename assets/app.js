@@ -2538,7 +2538,7 @@
         // A complete set gets a celebration frame and badge (around the cards, never on them).
         const full = L.word && !miss.length;
         return `<section class="lt-set${full ? " lt-done" : ""}"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(title)}</a>${full ? `<span class="lt-badge"><i aria-hidden="true">★</i>Complete set<b>${fmt(L.slots.length)}/${fmt(L.slots.length)}</b></span>` : ""}</h3>
-          <p>${L.word ? `Spells ${esc(L.shown || L.word)} · ` : ""}${letterRun(L) ? `${esc(letterRun(L))} · ` : ""}${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
+          <p>${letterRun(L) ? `${esc(letterRun(L))} · ` : ""}${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
           <div class="lt-rows">${letterRows(L, shown)}</div></section>`; }).join("")}</section>`;
     }).join("");
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
