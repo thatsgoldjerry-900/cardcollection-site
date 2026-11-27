@@ -1861,7 +1861,7 @@
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
-            <div class="pl-badges">${pro ? `<span class="hof-badge pro">${HOF_ICON} Pro Football Hall of Fame</span>` : ""}${hof ? `<span class="hof-badge">${HOF_ICON} Nebraska Hall of Fame</span>` : ""}<span class="st ${info.have ? "have" : "need"}">${info.have ? "In my collection" : "Need"}</span>${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            <div class="pl-badges">${pro ? `<span class="hof-badge pro">${HOF_ICON} Pro Football Hall of Fame</span>` : ""}${hof ? `<span class="hof-badge">${HOF_ICON} Nebraska Hall of Fame</span>` : ""}${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${(() => { const T = DATA.site.tcdb || {}, pid = (T.players || {})[slug]; if (!pid) return "";
               const fill = (u) => u.replace("{pid}", pid).replace("{name}", encodeURIComponent(info.name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""))).replace("{member}", encodeURIComponent(T.member || ""));
