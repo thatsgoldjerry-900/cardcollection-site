@@ -645,9 +645,7 @@
       <div class="nfl-tl-scroll" id="nfl-tl-scroll"><div class="nfl-tl-strip" id="nfl-tl-strip" role="list"></div></div>
     </section>`;
   }
-  // Eras: Nebraska head coaches' tenures as bands above the bubbles, and the Big Ten years on a second row.
-  const ERAS = [["Devaney", 1962, 1972], ["Osborne", 1973, 1997], ["Solich", 1998, 2003], ["Callahan", 2004, 2007], ["Pelini", 2008, 2014], ["Riley", 2015, 2017], ["Frost", 2018, 2022]];
-  // Conferences (Wikipedia, Conference affiliations): one row, none overlapping.
+  // Conferences (Wikipedia, Conference affiliations) as bands above the bubbles. None overlap.
   const CONFS = [["Missouri Valley", 1907, 1918], ["Big Eight", 1921, 1995], ["Big 12", 1996, 2010], ["Big Ten", 2011, null]];
   const T0 = 1915;   // the timeline starts here
   function drawTimeline() {
@@ -656,15 +654,16 @@
     if (i < 0) return;
     const n = {};
     l.groups.flatMap((g) => g.rows).forEach((r) => { const y = parseInt(r[i], 10); if (y) n[y] = (n[y] || 0) + 1; });
-    const max = Math.max(1, ...Object.values(n)), y1 = new Date().getFullYear();
-    const band = (nm, a0, b, row) => { const a = Math.max(a0, T0), end = b || y1;
-      return `<span class="nfl-tl-era${row ? " r2" : ""}" style="left:calc(var(--w) * ${a - T0});width:calc(var(--w) * ${end - a + 1})" title="${nm}, ${a}–${b || "today"}"><b>${nm}</b><small>${a}–${b || ""}</small></span>`; };
-    const eras = ERAS.map(([nm, a, b]) => band(nm + " era", a, b, false)).join("") + CONFS.filter(([, , b]) => !b || b >= T0).map(([nm, a, b]) => band(nm, a, b, true)).join("");
+    const max = Math.max(1, ...Object.values(n)), y1 = new Date().getFullYear(), N = y1 - T0 + 1;
+    strip.style.setProperty("--n", N);
+    const band = (nm, a0, b) => { const a = Math.max(a0, T0), end = b || y1;
+      return `<span class="nfl-tl-era" style="left:${((a - T0) / N * 100).toFixed(3)}%;width:${((end - a + 1) / N * 100).toFixed(3)}%" title="${nm}, ${a}–${b || "today"}"><b>${nm === "Missouri Valley" ? "Mo. Valley" : nm}</b><small>${a}–${b || ""}</small></span>`; };
+    const eras = CONFS.filter(([, , b]) => !b || b >= T0).map(([nm, a, b]) => band(nm, a, b)).join("");
     let cols = "";
     for (let y = T0; y <= y1; y++) {
       const k = n[y] || 0, one = `${y}: ${k} Husker${k === 1 ? "" : "s"}`;
       cols += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}">
-        ${k ? `<span class="nfl-tl-b${k >= 5 ? " big" : ""}" style="--s:${(k / max).toFixed(3)}" title="${one}" aria-label="${one}">${k >= 5 ? k : ""}</span>` : ""}
+        ${k ? `<span class="nfl-tl-b" style="--s:${(k / max).toFixed(3)}" title="${one}" aria-label="${one}"></span>` : ""}
         <span class="nfl-tl-y">${y % 10 === 0 ? y : ""}</span></div>`;
     }
     strip.innerHTML = `<div class="nfl-tl-eras">${eras}</div><div class="nfl-tl-row" role="list">${cols}</div>`;
