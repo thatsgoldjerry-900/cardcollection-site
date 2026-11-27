@@ -1203,7 +1203,7 @@ body[data-bg="lions"]{--tint:0,0,0}
 .pm-ph.pm-wide{width:auto;aspect-ratio:auto;background:none;padding:0}
 .pm-ph.pm-wide img{width:auto;height:36px;border-radius:3px;object-fit:contain}
 
-/* Nebraska and general pages (Ian, 2026-11-26): Husker scarlet and cream on black. Bright scarlet title bar with a cream line,
+/* Nebraska and general pages (Ian, 2026-11-26): Husker scarlet and cream on black. Dark title bar (the same as every page),
    black page with scarlet lights edged in cream, black filter bar with a scarlet line and cream chips. Royals and Lions pages
    keep their blue looks. No maroon: the scarlet is Nebraska's real #e41c38. */
 body[data-bg="red"]{--bg:#0b0b0c;--tint:228,28,56;--cream:#f5f1e7;background:#0b0b0c}
@@ -1212,7 +1212,7 @@ body[data-bg="red"] .pb-lit{background:
   radial-gradient(ellipse 60% 520px at 6% -40px,rgba(228,28,56,.55),transparent 75%),
   radial-gradient(ellipse 55% 420px at 94% -60px,rgba(245,241,231,.12),transparent 70%),
   radial-gradient(ellipse 60% 520px at 94% -40px,rgba(228,28,56,.42),transparent 75%)}
-body[data-bg="red"] .top{background:#e41c38;border-bottom:3px solid var(--cream);box-shadow:0 8px 24px -16px rgba(0,0,0,.9)}
+body[data-bg="red"] .top{background:rgba(19,26,37,.95);border-bottom:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 8px 24px -16px rgba(0,0,0,.9)}
 body[data-bg="red"] .logo,body[data-bg="red"] .logo span{color:#fff}
 body[data-bg="red"] .logo span{color:var(--cream)}
 body[data-bg="red"] .nav a,body[data-bg="red"] .dd-btn{color:#ffe3e6}
@@ -1234,7 +1234,7 @@ body[data-bg="red"] .side a:hover{background:rgba(245,241,231,.1)}
 body[data-bg="red"] .side a[aria-current="true"]{background:rgba(245,241,231,.13);color:#fff;box-shadow:inset 3px 0 var(--cream)}
 body[data-bg="red"] .side h4{color:#d9c9a8}
 @media (max-width:860px){
-  body[data-bg="red"] .top{background:#e41c38}
+  body[data-bg="red"] .top{background:rgba(19,26,37,.95)}
   body[data-bg="red"] .mbar{background:#e41c38;border-bottom:2px solid var(--cream)}
 }
 
