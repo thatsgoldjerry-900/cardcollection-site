@@ -1542,3 +1542,6 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .pb-go{position:absolute;opacity:0;pointer-events:none}
 @media(min-width:900px){.pl-grid .pb-sec{grid-column:span 2}}
 .tl-bar .tl-t{overflow:hidden;text-overflow:ellipsis}
+/* "For trade" link in TCDb green (TCDb color-codes for-trade items green) */
+.btn.tcdb.trade{background:#2a8f45;border-color:#2a8f45}
+.btn.tcdb.trade:hover{background:#34a853;border-color:#34a853}
