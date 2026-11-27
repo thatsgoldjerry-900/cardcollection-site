@@ -1898,6 +1898,7 @@
               ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
               : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
             : `<p class="muted">Not available yet.</p>`}</section>`}
+          ${(DATA.site.proballers?.ids || {})[slug] ? `<section class="wide-sec pb-sec"><h2>Pro stats</h2><div class="pb-wrap"><div class="proballers-widget-player-player-unit" data-proballers-player-id="${esc(String((DATA.site.proballers.ids || {})[slug]))}" data-proballers-locale="en" data-proballers-base-url="https://widgets.proballers.com"><a href="https://www.proballers.com/" target="_blank" rel="noopener">See stats on Proballers</a></div></div><p class="note">Stats widget from <a href="https://www.proballers.com/" target="_blank" rel="noopener">ProBallers</a>.</p><img alt="" width="1" height="1" class="pb-go" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" onload="loadProballers()"></section>` : ""}
           ${coaching ? `<section><h2>Coaching career</h2><ul class="plain">${coaching}</ul></section>` : ""}
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
@@ -2235,6 +2236,13 @@
   }
 
   // Player-list thumbnails: a horizontal card gets a horizontal frame of its own shape (same height, wider), shown whole.
+  // ProBallers Player Unit widget: load its script once, then draw every widget on the page (the SPA adds pages after load).
+  window.loadProballers = () => {
+    const go = () => { try { window.PbPlayerPlayerUnitWidget && window.PbPlayerPlayerUnitWidget.render(); } catch (e) {} };
+    if (window.PbPlayerPlayerUnitWidget) return go();
+    if (window.__pbLoading) return; window.__pbLoading = true;
+    const sc = document.createElement("script"); sc.src = "https://widgets.proballers.com/dist/player-player-unit-widget-v1.0.js"; sc.onload = go; document.head.appendChild(sc);
+  };
   window.thumbFit = (im) => { const w = im.naturalWidth, h = im.naturalHeight, f = im.parentNode;
     if (w > h * 1.05) { f.classList.add("land"); f.style.aspectRatio = `${w} / ${h}`; } im.classList.add("ok"); };
   // List-page fan: a horizontal card stays upright in a frame of its own shape (no bars, nothing trimmed), made wider
