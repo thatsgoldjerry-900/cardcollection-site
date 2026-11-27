@@ -2611,8 +2611,8 @@
     const both = [...all, ...extra].sort((a, b) => (b.one - a.one) || rarity(a) - rarity(b) || a.name.localeCompare(b.name));
     // A TCDb want list card links to its TCDb page (opens in a new tab).
     // "Have it": a TCDb collection card I have but haven't scanned yet.
-    const needHTML = (x) => `<${x.tcdb ? `a href="https://www.tcdb.com/ViewCard.cfm/sid/${x.tcdb.split("/").map(encodeURIComponent).join("/cid/")}" target="_blank" rel="noopener" title="See it on TCDb"` : "div"} class="cd need-cd${x.tcdb ? " need-tcdb" : ""}${x.th ? " have-cd" : ""}" data-need="${extra.indexOf(x)}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
-      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}${x.tcdb ? `<br><span class="need-link">${x.th ? "Not scanned yet · TCDb ↗" : "On my TCDb want list ↗"}</span>` : ""}</div></${x.tcdb ? "a" : "div"}>`;
+    const needHTML = (x) => `<div class="cd need-cd${x.th ? " have-cd" : ""}" data-need="${extra.indexOf(x)}" aria-label="${x.th ? "Have, not scanned yet" : "Need"}: ${esc(x.name)}"><div class="ph"><div class="need-stamp"><b>${x.th ? "Have it" : "Need it"}</b>${x.one ? "<small>1 of 1</small>" : x.serial ? `<small>/${x.serial}</small>` : ""}</div></div>
+      <div class="cap"><b>${esc(x.title)}</b>${esc(x.sub)}${x.par ? `<br><span class="par">${esc(x.par)}</span>` : ""}</div></div>`;
     // The rainbow's name: the set, plus its insert name with the colors taken off ("Five Star - Golden Graphs").
     // Only when every version shares it (no plain base card among them).
     const pars = all.map((x) => (x.par || "").replace(PARALLEL_WORDS, "").trim());
