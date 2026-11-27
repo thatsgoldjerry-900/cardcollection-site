@@ -1826,7 +1826,7 @@
         .filter((e) => e.player === slug).sort((a, b) => !!a.group - !!b.group);
       const haveKey = new Set(facts.map(([k]) => k.toLowerCase())), kind = (k) => (/stat/i.test(k) ? "stats" : k.toLowerCase()), best = new Map();
       mine.forEach((e) => (e.facts || []).filter((r) => r.length === 2).forEach(([k, v]) => {
-        if (haveKey.has(k.toLowerCase())) return;
+        if (haveKey.has(k.toLowerCase()) || /^nebraska class$/i.test(k.trim())) return;
         const b = best.get(kind(k)); if (!b || String(v).length > String(b[1]).length) best.set(kind(k), [k, v, true]); }));
       facts.push(...best.values());
       const cardStats = mine.map((e) => e.stats).filter((st) => st && (st.rows || []).length > 1);
