@@ -1481,3 +1481,26 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .rb-done .rb-grid .cd .ph{box-shadow:0 0 0 1px rgba(255,196,70,.5),0 0 18px rgba(255,196,70,.22)}
 #rb-confetti{position:fixed;inset:0;width:100vw;height:100vh;z-index:49;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.prog.done .bar i{animation:none}}
+
+/* Homepage tiles: two full-screen doors. Each sticks to the top; the next slides up over it. */
+.wrap-tiles{max-width:none;padding:0}
+.tile-full{position:sticky;top:0;height:100vh;height:100svh;min-height:560px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:56px 6vw;background:var(--tile-bg);color:var(--tile-fg);overflow:hidden;box-shadow:0 -20px 50px rgba(0,0,0,.5)}
+.tile-copy{max-width:560px}
+.tile-copy h1{font:800 clamp(56px,8.5vw,128px)/.92 var(--f-b);letter-spacing:-.02em;margin:.12em 0 .3em;color:inherit}
+.tile-copy p{font-size:18px;line-height:1.45;color:inherit;opacity:.92;margin:0 0 26px}
+.tile-k{font:12px var(--f-m);letter-spacing:.14em;text-transform:uppercase;margin:0!important;opacity:.85!important}
+.tile-btn{display:inline-block;padding:14px 24px;border-radius:999px;background:var(--tile-fg);color:var(--tile-bg);font-weight:700;text-decoration:none}
+.tile-feat{display:block;margin-top:16px;color:inherit;text-decoration:underline;text-underline-offset:4px}
+.tile-art{margin:0;display:grid;place-items:center;min-height:0;height:100%}
+.tile-card{padding:0;width:100%}
+.tile-card .cotd-card{width:min(400px,80%)}
+.tile-players .tile-art{position:relative;height:100%}
+.tile-players .tile-art img{width:100%;height:100%;max-height:78vh;object-fit:cover;border-radius:14px;box-shadow:0 24px 50px -24px rgba(0,0,0,.85)}
+.tile-players .tile-art figcaption{position:absolute;right:14px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;font:12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+@media (max-width:760px){
+  .tile-full{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:18px;padding:28px 16px;min-height:0}
+  .tile-copy h1{font-size:clamp(48px,15vw,72px)}
+  .tile-copy p{font-size:16px;margin-bottom:18px}
+  .tile-card .cotd-card{width:min(260px,70vw)}
+  .tile-players .tile-art img{max-height:none}
+}
