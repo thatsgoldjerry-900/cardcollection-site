@@ -637,39 +637,6 @@
       <div class="cap"><b>${esc(c.title)}</b>${esc(c.sub)}${c.par ? `<br><span class="par">${esc(c.par)}</span>` : ""}</div></aside>`;
   }
 
-  // Timeline: one bubble per year, 1900 to today, sized by how many NFL Huskers (tier 1 list) last played for Nebraska that year.
-  function nflTimelineHTML() {
-    return `<section class="nfl-tl" aria-label="NFL Huskers by year">
-      <div class="sec-h"><h2>NFL Huskers by year</h2></div>
-      <p class="nfl-tl-sub">Each bubble is a year that had an NFL Husker, sized by how many last played for Nebraska that year. Years with none have no bubble.</p>
-      <div class="nfl-tl-scroll" id="nfl-tl-scroll"><div class="nfl-tl-strip" id="nfl-tl-strip" role="list"></div></div>
-    </section>`;
-  }
-  // Conferences (Wikipedia, Conference affiliations) as bands above the bubbles. None overlap.
-  const CONFS = [["Missouri Valley", 1907, 1918], ["Big Eight", 1921, 1995], ["Big 12", 1996, 2010], ["Big Ten", 2011, null]];
-  const T0 = 1915;   // the timeline starts here
-  function drawTimeline() {
-    const strip = $("#nfl-tl-strip"); if (!strip || !CHECK) return;
-    const l = CHECK.lists.find((x) => x.slug === "nfl-tier-1-huskers"), i = l ? l.columns.indexOf("Last Year") : -1;
-    if (i < 0) return;
-    const n = {};
-    l.groups.flatMap((g) => g.rows).forEach((r) => { const y = parseInt(r[i], 10); if (y) n[y] = (n[y] || 0) + 1; });
-    const max = Math.max(1, ...Object.values(n)), y1 = new Date().getFullYear(), N = y1 - T0 + 1;
-    strip.style.setProperty("--n", N);
-    const band = (nm, a0, b) => { const a = Math.max(a0, T0), end = b || y1;
-      return `<span class="nfl-tl-era" style="left:${((a - T0) / N * 100).toFixed(3)}%;width:${((end - a + 1) / N * 100).toFixed(3)}%" title="${nm}, ${a}–${b || "today"}"><b>${nm === "Missouri Valley" ? "Mo. Valley" : nm}</b><small>${a}–${b || ""}</small></span>`; };
-    const eras = CONFS.filter(([, , b]) => !b || b >= T0).map(([nm, a, b]) => band(nm, a, b)).join("");
-    let cols = "";
-    for (let y = T0; y <= y1; y++) {
-      const k = n[y] || 0, one = `${y}: ${k} Husker${k === 1 ? "" : "s"}`;
-      cols += `<div class="nfl-tl-col${y % 10 === 0 ? " dec" : ""}">
-        ${k ? `<span class="nfl-tl-b" style="--s:${(k / max).toFixed(3)}" title="${one}" aria-label="${one}"></span>` : ""}
-        <span class="nfl-tl-y">${y % 10 === 0 ? y : ""}</span></div>`;
-    }
-    strip.innerHTML = `<div class="nfl-tl-eras">${eras}</div><div class="nfl-tl-row" role="list">${cols}</div>`;
-    const sc = $("#nfl-tl-scroll"); if (sc) sc.scrollLeft = sc.scrollWidth;
-  }
-
   function home() {
     setNav(null); setTitle("");
     const s = DATA.site;
@@ -695,7 +662,7 @@
         <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
     }
     $("#app").innerHTML = `<div class="wrap">
-      ${cardOfDay()}${nflTimelineHTML()}
+      ${cardOfDay()}
       <section class="hero">
         <div>
           <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
@@ -728,7 +695,6 @@
     state.list = newest;
     // Live from the checklist: share of NFL Huskers whose autograph is in the collection.
     loadCheckQuiet().then(() => {
-      drawTimeline();
       const t = allPlayers().filter((p) => p.listSlug === "nfl-tier-1-huskers"), el = $("#stat-nfl");
       if (!el || !t.length) return;
       el.querySelector(".sn").textContent = ((t.filter((p) => p.have).length / t.length) * 100).toFixed(2) + "%"; el.querySelector(".bar i").style.width = el.querySelector(".sn").textContent; el.hidden = false;
