@@ -1215,7 +1215,7 @@ body[data-bg="red"] .pb-lit{background:
 body[data-bg="red"] .top{background:rgba(19,26,37,.95);border-bottom:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 8px 24px -16px rgba(0,0,0,.9)}
 body[data-bg="red"] .logo,body[data-bg="red"] .logo span{color:#fff}
 body[data-bg="red"] .logo span{color:var(--cream)}
-body[data-bg="red"] .nav a,body[data-bg="red"] .dd-btn{color:#ffe3e6}
+body[data-bg="red"] .nav a,body[data-bg="red"] .dd-btn{color:#fff}
 body[data-bg="red"] .nav a:hover,body[data-bg="red"] .dd-btn:hover,body[data-bg="red"] .dd-btn[aria-expanded="true"]{color:#fff;background:rgba(255,255,255,.2)}
 body[data-bg="red"] .nav a[aria-current="page"],body[data-bg="red"] .dd-btn.on{color:#fff;background:rgba(255,255,255,.26)}
 body[data-bg="red"] .top .search{background:rgba(0,0,0,.28);border-color:rgba(245,241,231,.4)}
