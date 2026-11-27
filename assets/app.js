@@ -1782,9 +1782,9 @@
       const wikiLast = Math.max(0, ...(wikiNeb.match(/(?:19|20)\d{2}/g) || []).map(Number)), useWiki = wikiLast && (!myFinal || +myFinal === wikiLast);
       // One Nebraska range per page: the stat box, the Hall of Fame card and the career timeline all read this value.
       const nebStr = (info.collegeNote && info.collegeNote.nebraska) || nebYears(useWiki ? wikiNeb : "", ((info.letters || {})[sport]) || []);
-      // The final-season box repeats the Nebraska years when they end in that season, so it shows only when they don't.
+      // The final season is the Nebraska range's last year (Ian, 2026-11-26), so the box shows only when there is no range. The spreadsheet's Last Year can be a pro year.
       const nebLast = Math.max(0, ...(nebStr.match(/(?:19|20)\d{2}/g) || []).map(Number));
-      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", myFinal && +myFinal !== nebLast ? myFinal : ""],
+      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
         ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
         ...Object.entries(info.letters || {}).filter(([sp]) => sp !== sport).map(([sp, ys]) => [`Nebraska ${sp} years`, yearRanges([...new Set(ys)].sort((x, y) => x - y))]),
