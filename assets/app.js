@@ -1623,7 +1623,7 @@
     }
     if (hof) marks.push({ y: +hof.class, label: "Nebraska Hall of Fame", kind: "h" });
     if (pro) marks.push({ y: +pro, label: "Pro Football Hall of Fame", kind: "hp" });
-    if (spans.length + marks.length + undated.length < 2) return "";
+    if (spans.length + marks.length + undated.length < 2 && !spans.some((x) => x.neb)) return "";   // a lone Nebraska bar still shows (Ian: years show as a bar, not only text)
     const all = [...spans.flatMap((x) => [x.a, x.b]), ...marks.map((x) => x.y)].filter((y) => y > 1850 && y <= NOW + 1);
     if (!all.length) return "";
     // Positions are percentages, so a short career fills the width; long careers get a minimum spacing and scroll.
