@@ -1590,7 +1590,7 @@
     // The Hall of Fame list's years are a check, not shown: the Nebraska bar is widened to cover them.
     const nebV = yrs(neb || "").concat(hof && hof.years ? yrs(hof.years) : []);
     if (!yrs(neb || "").length) nebV.length = 0;
-    if (nebV.length) spans.push({ lane: "c", a: nebV[0], b: nebV[nebV.length - 1], label: "Nebraska", neb: true });
+    if (nebV.length) spans.push({ lane: "c", a: Math.min(...nebV), b: Math.max(...nebV), label: "Nebraska", neb: true });
     schools.forEach(([n, y]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
     (info.playingCollege || []).forEach(([y, n]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
     if (!spans.some((x) => x.neb) && +(info.year || info.finalYear)) marks.push({ y: +(info.year || info.finalYear), label: "Final Nebraska season", kind: "c" });
