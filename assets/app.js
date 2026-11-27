@@ -199,7 +199,7 @@
         if ((fix.add || []).includes(name)) p.tags.add(tag);
         if ((fix.remove || []).includes(name)) p.tags.delete(tag);
       }
-      return { i, id, rk, name, si, gi, added, backId, backRk, team, fb: !!fromBase, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() };
+      return { i, id, rk, name, si, gi, added, backId, backRk, team, fb: !!fromBase, ...p, hay: (name + " " + SECTIONS[si].title + " " + SECTIONS[si].groups[gi].label).toLowerCase() + (name.includes(".") ? " " + name.replace(/\./g, "").toLowerCase() : "") };
     };
     CARDS = json.cards.map(mk);
     setTimeout(tcdbWants, 1500);   // TCDb want list cards for rainbow pages, after the first screen is up
@@ -411,7 +411,7 @@
   function parseQuery(q) {
     // "=Jermaine Dye": exactly that player's own cards (used by the players ranking, so its counts match).
     if (q.startsWith("=")) { const who = q.slice(1).trim().toLowerCase(); return { words: [], tests: [(x) => plainTitle(x).toLowerCase() === who], said: [`only ${q.slice(1).trim()}`] }; }
-    let t = q.toLowerCase().replace(/[“”]/g, '"').replace(/\bone of (one|1)\b|\b1 of 1\b/g, "1/1");
+    let t = q.toLowerCase().replace(/[“”]/g, '"').replace(/\b([a-z])\.(?=[a-z]\b)/g, "$1").replace(/\b([a-z]{2})\.(?=\s|$)/g, "$1").replace(/\bone of (one|1)\b|\b1 of 1\b/g, "1/1");
     const tests = [], said = [];
     // Print runs: "under /50", "/25 or less", "numbered to 10 or lower", "less than 100", "below /99"
     t = t.replace(/\b(?:under|below|less than|lower than|up to|at most)\s*\/?\s*(\d+)\b|\/(\d+)\s*(?:or\s*(?:less|lower|under|below))|(?:numbered|#'?d)\s*(?:to\s*)?\/?(\d+)\s*or\s*(?:less|lower)/g, (m, a, b, c) => {
@@ -970,6 +970,7 @@
     const p = PLAYERS && (PLAYERS.players || []).find((x) => x.name === name);
     const m = p && ((p.wiki || {}).intro || "").match(/^([A-Z][^(,]{2,60}?)\s*\(/); if (m) names.push(m[1].replace(/["“][^"”]*["”]/g, " "));
     const words = new Set(names.flatMap((n) => norm(n).split(" ")).filter(Boolean));
+    names.forEach((n) => { if (n.includes(".")) norm(n.replace(/\./g, "")).split(" ").forEach((w) => w && words.add(w)); });   // "T.J." also matches "TJ"
     [...words].forEach((w) => (NICKS.get(w) || []).forEach((x) => words.add(x)));
     const hay = " " + [...words].join(" ") + " " + names.join(" ").toLowerCase() + " ";
     if (PLAYERS) ALIAS_CACHE.set(name, hay);
