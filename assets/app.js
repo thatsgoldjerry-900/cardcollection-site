@@ -683,7 +683,7 @@
       const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
       const step = Math.max(1, Math.floor(list.length / 4)), four = [0, 1, 2, 3].map((k) => list[k * step]).filter(Boolean);
       return `<a class="tile c-gold" href="#/customs"><div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
-        <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
+        <h3>Customs</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
     }
     const nCust = CARDS.filter((c) => c.tags.has("custom")).length;
     $("#app").innerHTML = `<div class="wrap cards-landing">
