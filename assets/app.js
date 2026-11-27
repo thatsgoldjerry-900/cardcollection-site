@@ -1918,7 +1918,7 @@
           ${refHTML}
         </div>
         ${(football || sport === "basketball") && !info.card ? careerTimeline({ pfaCareer: football && !!TEAMCAREERS[slug], info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
-          schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)).concat(alsoSchools.filter(([n]) => !schools.some(([m]) => m === n))), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1 || (r.length === 2 && /^\d{4}/.test(r[0]) && !/nebraska/i.test(r[1]))).map((r) => (r.length === 1 ? r[0] : `${r[1].replace(/\s*\n[\s\S]*/, "").trim()} (${r[0]})`))
+          schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)).concat(alsoSchools.filter(([n]) => !schools.some(([m]) => m === n))), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1 || (football && r.length === 2 && /^\d{4}/.test(r[0]) && !/nebraska/i.test(r[1]))).map((r) => (r.length === 1 ? r[0] : `${r[1].replace(/\s*\n[\s\S]*/, "").trim()} (${r[0]})`))
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`))
             // Older pages list a plain "Football" table of [years, team]: playing stops come first, coaching rows follow (marked "(line)", "(assistant)" or after one).
             .concat(football && !(sec["Playing career"] || []).length && !(sec["Career history"] || []).length && !(sec["Football"] || []).some((r) => r.length === 2 && /\d{4}/.test(r[0])) ? TEAMCAREERS[slug] || [] : [])
