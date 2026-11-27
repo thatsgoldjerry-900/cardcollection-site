@@ -637,7 +637,30 @@
       <div class="cap"><b>${esc(c.title)}</b>${esc(c.sub)}${c.par ? `<br><span class="par">${esc(c.par)}</span>` : ""}</div></aside>`;
   }
 
+  // Homepage: two full-screen doors. Each section sticks to the top and the next one slides up over it.
   function home() {
+    setNav(null); setTitle("");
+    const gordon = CARDS.find((c) => /#297 Alex Gordon Full$/.test(c.name));
+    const cardArt = gordon ? `<div class="cotd-big tile-card"><a class="cotd-card" href="#/card/${cid(gordon)}" aria-label="${esc(gordon.name)}"><img alt="" src="${img(gordon.id, gordon.rk, 1200)}"></a></div>` : "";
+    $("#app").innerHTML = `<div class="wrap-tiles">
+      <section class="tile-full tile-cards" style="--tile-bg:#004687;--tile-fg:#bd9b60">
+        <div class="tile-copy"><p class="tile-k">Trading cards</p><h1>The Cards</h1>
+          <p>Every card in the collection, from the card of the day to the newest scans.</p>
+          <a class="tile-btn" href="#/cards">Explore the cards →</a>
+          ${gordon ? `<a class="tile-feat" href="#/card/${cid(gordon)}">See the 2006 Alex Gordon Full RC →</a>` : ""}</div>
+        <div class="tile-art">${cardArt}</div>
+      </section>
+      <section class="tile-full tile-players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
+        <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
+          <p>Nebraska players who went on to the NFL, MLB, NBA and beyond.</p>
+          <a class="tile-btn" href="#/nfl-huskers">Meet the players →</a></div>
+        <figure class="tile-art"><img src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)"><figcaption>Illustrative</figcaption></figure>
+      </section>
+    </div>`;
+  }
+
+  // The cards page: the card of the day, the collection stats and the collection tiles.
+  function cardsHome() {
     setNav(null); setTitle("");
     const s = DATA.site;
     const newest = sortList(CARDS, "new").slice(0, 40);
@@ -2693,6 +2716,7 @@
     if (a !== "search") { state.q = ""; $("#q").value = ""; }
     NAV_NOW = null;   // each page sets its own (the background below goes by it)
     if (!a) home();
+    else if (a === "cards") cardsHome();
     else if (a === "c") collection(b, c);
     else if (a === "customs") collection("customs");
     else if (a === "all") collection("all");
@@ -2711,7 +2735,7 @@
     else if (a === "set") setPage(b);
     else if (a === "letters") (b ? lettersPage(b) : allLettersPage());
     else if (a === "word") go("#/letters", true);   // the old one-word letterman pages are gone; their links go to all letterman sets
-    else if (a === "random") { home(); history.replaceState(null, "", toURL("#/")); setTimeout(() => $("#dice").click(), 50); }
+    else if (a === "random") { cardsHome(); history.replaceState(null, "", toURL("#/")); setTimeout(() => $("#dice").click(), 50); }
     else if (a === "dye-career") dyeCareer();
     else if (a === "player") player(b);
     else if (a === "player-cards") playerCardsPage(b);
