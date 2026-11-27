@@ -654,7 +654,8 @@
         <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
           <p>Nebraska players who went on to the NFL, MLB, NBA and beyond.</p>
           <a class="tile-btn" href="#/nfl-huskers">Meet the players →</a></div>
-        <figure class="tile-art"><img src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)"><figcaption>Illustrative</figcaption></figure>
+        <img class="tile-bg" src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)">
+        <span class="tile-tag">Illustrative</span>
       </section>
     </div>`;
   }
