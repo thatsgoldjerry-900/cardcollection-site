@@ -1155,14 +1155,14 @@
   const HUB = { q: "", show: "all", sort: "scans", shown: 0, rows: [] };
   // Nebraska Football Hall of Fame (data/hall-of-fame.json, from huskers.com). A player matches on his name
   // (nicknames, Jr. and punctuation aside) and, for players, Nebraska years that line up with his.
-  let HOF = null, HOFN = null, PROHOF = {};
+  let HOF = null, HOFN = null, CHOF = null, CHOFN = null, PROHOF = {};
   const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
     .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
-  function hofFor(info) {
-    const me = hofName(info.name); if (!me.length || !HOF) return null;
+  function hofFor(info, college) {
+    const me = hofName(info.name), LIST = college ? CHOF : HOF; if (!me.length || !LIST) return null;
     const last = +(info.finalYear || info.year) || 0;
-    HOFN = HOFN || HOF.map((h) => [hofName(h.name), h]);
-    return (HOFN.find(([n, h]) => {
+    const idx = college ? (CHOFN = CHOFN || LIST.map((h) => [hofName(h.name), h])) : (HOFN = HOFN || LIST.map((h) => [hofName(h.name), h]));
+    return (idx.find(([n, h]) => {
       const same = n.join(" ") === me.join(" ") || (n[0] === me[0] && n[n.length - 1] === me[me.length - 1]);
       if (!same) return false;
       const ys = (String(h.years || "").match(/\d{2,4}/g) || []).map(Number), a = ys[0], b = ys.length > 1 ? ys[ys.length - 1] : a;
@@ -1177,7 +1177,7 @@
   function loadHub(then) {
     const need = [];
     if (!CHECK) need.push(fetch("data/lists/husker-pros.json").then((r) => { if (!r.ok) throw 0; return r.json(); }).then((d) => (CHECK = d)));
-    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (PROHOF = d.pro || {}))));
+    if (!HOF) need.push(fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => ((HOF = d.members || []), (CHOF = d.college || []), (PROHOF = d.pro || {}))));
     if (!PLAYERS) need.push(fetch("data/players.json").then((r) => (r.ok ? r.json() : { players: [] })).catch(() => ({ players: [] })).then((d) => (PLAYERS = withCardBios(d))));
     if (!need.length) return then();
     $("#app").innerHTML = `<p class="loading">Loading…</p>`;
@@ -1766,7 +1766,7 @@
       const p = (PLAYERS.players || []).find((x) => x.slug === slug);
       const row = allPlayers().find((x) => x.slug === slug);
       if (!p && !row) return notFound();
-      const info = { ...(row || {}), ...(p || {}), ...live(row) }, w = (p && p.wiki) || null, hof = hofFor(info), pro = PROHOF[slug];
+      const info = { ...(row || {}), ...(p || {}), ...live(row) }, w = (p && p.wiki) || null, hof = hofFor(info), chof = hofFor(info, true), pro = PROHOF[slug];
       if (!TEAMIDX_NICK && NFLTEAMS_LIST) TEAMIDX_NICK = new RegExp(`\\b(${NFLTEAMS_LIST.flatMap((t) => t.nick).join("|")})\\b`);
       const football = (info.sport || "football") === "football";
       setTitle(info.name);
@@ -1869,17 +1869,20 @@
       const honorsHTML = `${pro ? `<section class="hof pro"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
               <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
               <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
+            ${chof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">College Football Hall of Fame</div>
+              <b>Class of ${esc(String(chof.class))}</b>${chof.role ? `<span>Inducted as a coach</span>` : ""}
+              <a href="https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame" target="_blank" rel="noopener">Nebraska inductees (Wikipedia) ↗</a></div></section>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
               <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}`;
-      const refHTML = refs.length || pro || hof ? `<aside class="pl-refs" aria-label="Honors and reference images">${honorsHTML}${refs.map((r) => `<button type="button" class="pl-ref" data-ref="${esc(r.id)}" data-ref-name="${esc(info.name)}" aria-label="Open ${esc(r.name)}">
+      const refHTML = refs.length || pro || hof || chof ? `<aside class="pl-refs" aria-label="Honors and reference images">${honorsHTML}${refs.map((r) => `<button type="button" class="pl-ref" data-ref="${esc(r.id)}" data-ref-name="${esc(info.name)}" aria-label="Open ${esc(r.name)}">
         <img alt="${esc(r.name)}" loading="lazy" src="${img(r.id, r.rk, 900)}"></button>`).join("")}</aside>` : "";
       const tcdbHTML = (() => { const T = DATA.site.tcdb || {}, pid = (T.players || {})[slug]; if (!pid) return "";
               const fill = (u) => u.replace("{pid}", pid).replace("{name}", encodeURIComponent(info.name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""))).replace("{member}", encodeURIComponent(T.member || ""));
               return `<div class="tcdb-row">${T.collectionUrl ? `<a class="btn tcdb" href="${esc(fill(T.collectionUrl))}" target="_blank" rel="noopener">View my full ${esc(info.name)} collection on TCDb ↗</a>` : ""}${T.tradeUrl ? `<a class="btn tcdb trade" href="${esc(fill(T.tradeUrl))}" target="_blank" rel="noopener">View my ${esc(info.name)} cards for trade ↗</a>` : ""}</div>`; })();
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
-        <div class="pl-top${refs.length || pro || hof ? " has-refs" : ""}">
+        <div class="pl-top${refs.length || pro || hof || chof ? " has-refs" : ""}">
           <div class="pl-card">${!hero && fanDayOf(slug) ? `<div class="pl-ph fd-hero">${fanDayCrop(fanDayOf(slug), info.name)}</div><small>${esc(fdLabel(fanDayOf(slug).c))}</small>` : hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${tcdbHTML}</div>
           <div class="pl-main">

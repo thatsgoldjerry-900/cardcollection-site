@@ -1747,5 +1747,155 @@
   "mick-tingelhoff": 2015,
   "will-shields": 2015,
   "roger-craig": 2026
- }
+ },
+ "college": [
+  {
+   "name": "Ed Weir",
+   "class": 1951,
+   "years": "1923-1925"
+  },
+  {
+   "name": "George Sauer",
+   "class": 1954,
+   "years": "1931-1933"
+  },
+  {
+   "name": "Guy Chamberlin",
+   "class": 1962,
+   "years": "1913-1915"
+  },
+  {
+   "name": "Clarence Swanson",
+   "class": 1973,
+   "years": "1918-1920"
+  },
+  {
+   "name": "Sam Francis",
+   "class": 1977,
+   "years": "1934-1936"
+  },
+  {
+   "name": "Bobby Reynolds",
+   "class": 1984,
+   "years": "1950-1952"
+  },
+  {
+   "name": "Forrest Behm",
+   "class": 1988,
+   "years": "1938-1940"
+  },
+  {
+   "name": "Wayne Meylan",
+   "class": 1991,
+   "years": "1965-1967"
+  },
+  {
+   "name": "Bob Brown",
+   "class": 1993,
+   "years": "1961-1963"
+  },
+  {
+   "name": "Rich Glover",
+   "class": 1995,
+   "years": "1970-1972"
+  },
+  {
+   "name": "Dave Rimington",
+   "class": 1997,
+   "years": "1979-1982"
+  },
+  {
+   "name": "Johnny Rodgers",
+   "class": 2000,
+   "years": "1970-1972"
+  },
+  {
+   "name": "Mike Rozier",
+   "class": 2006,
+   "years": "1981-1983"
+  },
+  {
+   "name": "Grant Wistrom",
+   "class": 2009,
+   "years": "1994-1997"
+  },
+  {
+   "name": "Will Shields",
+   "class": 2011,
+   "years": "1989-1992"
+  },
+  {
+   "name": "Tommie Frazier",
+   "class": 2013,
+   "years": "1992-1995"
+  },
+  {
+   "name": "Trev Alberts",
+   "class": 2015,
+   "years": "1990-1993"
+  },
+  {
+   "name": "Aaron Taylor",
+   "class": 2018,
+   "years": "1994-1997"
+  },
+  {
+   "name": "Eric Crouch",
+   "class": 2020,
+   "years": "1998-2001"
+  },
+  {
+   "name": "Zach Wiegert",
+   "class": 2022,
+   "years": "1991-1994"
+  },
+  {
+   "name": "Ndamukong Suh",
+   "class": 2026,
+   "years": "2005-2009"
+  },
+  {
+   "name": "Dana X. Bible",
+   "class": 1951,
+   "years": "1926-1936",
+   "role": "Coach"
+  },
+  {
+   "name": "Fielding H. Yost",
+   "class": 1951,
+   "years": "1898",
+   "role": "Coach"
+  },
+  {
+   "name": "Biff Jones",
+   "class": 1954,
+   "years": "1937-1941",
+   "role": "Coach"
+  },
+  {
+   "name": "Edward N. Robinson",
+   "class": 1955,
+   "years": "1896-1897",
+   "role": "Coach"
+  },
+  {
+   "name": "Bob Devaney",
+   "class": 1981,
+   "years": "1962-1972",
+   "role": "Coach"
+  },
+  {
+   "name": "Tom Osborne",
+   "class": 1998,
+   "years": "1973-1997",
+   "role": "Coach"
+  },
+  {
+   "name": "Frank Solich",
+   "class": 2024,
+   "years": "1998-2003",
+   "role": "Coach"
+  }
+ ],
+ "_collegeSource": "https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame"
 }
