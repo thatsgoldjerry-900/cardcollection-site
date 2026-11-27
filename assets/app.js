@@ -1161,7 +1161,9 @@
   const hofName = (n) => String(n || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/["“][^"”]*["”]/g, " ")
     .replace(/\b(jr|sr|ii|iii|iv)\b\.?/gi, " ").toLowerCase().replace(/[^a-z ]/g, "").split(/\s+/).filter(Boolean);
   function hofFor(info, college) {
-    const me = hofName(info.name), LIST = college ? CHOF : HOF; if (!me.length || !LIST) return null;
+    const LIST = college ? CHOF : HOF, AL = (DATA && DATA.site.playerAliases) || {};
+    const alt = (AL[info.name] || []).map((n) => hofFor({ ...info, name: n }, college)).find(Boolean);
+    const me = hofName(info.name); if (!me.length || !LIST) return null;
     const last = +(info.finalYear || info.year) || 0;
     const idx = college ? (CHOFN = CHOFN || LIST.map((h) => [hofName(h.name), h])) : (HOFN = HOFN || LIST.map((h) => [hofName(h.name), h]));
     return (idx.find(([n, h]) => {
@@ -1171,7 +1173,7 @@
       if (h.role || !last || !a) return n.join(" ") === me.join(" ") || !h.role;
       const end = b < 100 ? Math.floor(a / 100) * 100 + b + (b < a % 100 ? 100 : 0) : b;
       return last >= a - 1 && last <= end + 1;
-    }) || [])[1] || null;
+    }) || [])[1] || alt || null;
   }
   // Small Hall of Fame marks after a name in player lists: bronze for Canton, gold for Nebraska.
   const hofMarks = (x) => (PROHOF[x.slug] ? `<i class="hof-mk pro" title="Pro Football Hall of Fame">${HOF_ICON}</i>` : "")
@@ -1288,7 +1290,8 @@
   // from the card's own sport first. Cards with two or more listed players get no link.
   function bioFor(c) {
     const m = c.name.match(/\(\s*hand signed by ([^)]+)\)/i), t = " " + norm(m ? m[1] : c.title || c.name) + " ";
-    const hits = allPlayers().filter((p) => norm(p.name).includes(" ") && t.includes(" " + norm(p.name) + " "));
+    const AL = (DATA && DATA.site.playerAliases) || {}, alias = (p) => (AL[p.name] || []).map(norm);
+    const hits = allPlayers().filter((p) => norm(p.name).includes(" ") && [norm(p.name), ...alias(p)].some((x) => t.includes(" " + x + " ")));
     const names = new Set(hits.map((p) => norm(p.name)).filter((n) => ![...hits].some((q) => norm(q.name) !== n && norm(q.name).includes(n))));
     if (names.size !== 1) return null;
     const sl = (SECTIONS[c.si] || {}).slug || "", sport = (sl.match(/^husker-(\w+)/) || [])[1];
@@ -1887,7 +1890,7 @@
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${tcdbHTML}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
-            <div class="pl-name"><h1>${esc(((DATA.site.playerDisplayNames || {})[info.name]) || info.name)}</h1>${signatureHTML(slug, info.name)}</div>
+            <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
             <div class="pl-badges">${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${((DATA.site.playerExtras || {})[slug] || {}).about ? `<p class="pl-about">${esc(DATA.site.playerExtras[slug].about)}</p>` : ""}
