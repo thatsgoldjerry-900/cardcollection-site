@@ -1784,11 +1784,15 @@
       const nebStr = (info.collegeNote && info.collegeNote.nebraska) || nebYears(useWiki ? wikiNeb : "", ((info.letters || {})[sport]) || []);
       // The final season is the Nebraska range's last year (Ian, 2026-11-26), so the box shows only when there is no range. The spreadsheet's Last Year can be a pro year.
       const nebLast = Math.max(0, ...(nebStr.match(/(?:19|20)\d{2}/g) || []).map(Number));
+      // Hand-written "also" line (data/college-notes.json): its schools join the timeline, and a school with an alsoLinks URL is linked.
+      const alsoNote = (info.collegeNote && info.collegeNote.also) || "", alsoLinks = (info.collegeNote && info.collegeNote.alsoLinks) || {};
+      const alsoSchools = [...alsoNote.matchAll(/([^(),]+?)\s*\(([^)]*)\)/g)].map((m) => [m[1].trim(), m[2].trim()]).filter(([n]) => !/nebraska/i.test(n));
+      const alsoHtml = alsoNote && Object.keys(alsoLinks).length ? { html: alsoNote.split(/,\s*(?![^()]*\))/).map((part) => { const n = Object.keys(alsoLinks).find((k) => part.startsWith(k)); return n ? `<a href="${esc(alsoLinks[n])}" target="_blank" rel="noopener">${esc(n)}</a>${esc(part.slice(n.length))}` : esc(part); }).join(", ") } : "";
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
         ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
         ...Object.entries(info.letters || {}).filter(([sp]) => sp !== sport).map(([sp, ys]) => [`Nebraska ${sp} years`, yearRanges([...new Set(ys)].sort((x, y) => x - y))]),
-        [useWiki || myFinal ? "Also played at" : "College", (info.collegeNote && info.collegeNote.also) || schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
+        [useWiki || myFinal ? "Also played at" : "College", alsoHtml || (info.collegeNote && info.collegeNote.also) || schools.filter(([n]) => !/nebraska/i.test(n)).map(([n, y]) => `${n} (${y})`).join(", ")],
         ["NFL draft", (pick("NFL draft") || [])[1]], ["NBA draft", (pick("NBA draft") || [])[1]], ["MLB draft", (pick("MLB draft") || [])[1]],
         [debut ? debut[0] : "", debut ? (debut[1][0] || [])[0] : ""],
         ["NFL games", football ? info.games || info.nflGames : ""], ["Born", (pick("Born") || [])[1] || line(/^Born:\s*/)],
@@ -1870,14 +1874,14 @@
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
               <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
-            <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+            <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${v && v.html ? v.html : esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : info.card ? "" : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
           </div>
           ${refHTML}
         </div>
         ${football && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
-          schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
+          schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)).concat(alsoSchools.filter(([n]) => !schools.some(([m]) => m === n))), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
           noteTeams: NFLTEAMS_LIST ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs, pfa: e.pfa }))); })() : [],
           neb: nebStr, draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
