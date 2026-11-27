@@ -1628,8 +1628,9 @@
     // Bars that would overlap go on another row.
     const rowsFor = (items, a, b) => { const ends = []; return items.map((it) => { let r = ends.findIndex((e) => e < a(it)); if (r < 0) r = ends.length; ends[r] = b(it); return r; }); };
     const bars = (lane) => { const it = spans.filter((x) => x.lane === lane).sort((x, y) => x.a - y.a), rows = rowsFor(it, (x) => x.a, (x) => x.b);
-      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.neb ? NEB : x.eraLogo || x.team)}${esc(x.label)}</div>`).join("")
+      return it.map((x, k) => `<div class="tl-bar ${lane}${x.neb ? " neb" : ""}${x.soft ? " soft" : ""}" style="left:${px(x.a)}%;width:calc(${px(x.b + 1) - px(x.a)}% - 3px);top:${rows[k] * 30}px" title="${esc(x.label)} (${x.a}${x.b > x.a ? "–" + x.b : ""})${x.soft ? ", offseason / practice squad" : ""}${x.fromNote ? " (from my research notes)" : x.pfa ? " (year from Pro Football Archives)" : ""}">${logo(x.neb ? NEB : x.eraLogo || x.team)}<span class="tl-t">${esc(x.label)}</span></div>`).join("")
         + `<i class="tl-h" style="height:${(Math.max(-1, ...rows) + 1) * 30}px"></i>`; };
+    requestAnimationFrame(() => tlFit(document.querySelector(".tl-sec")));
     const gap = Math.max(2, Math.ceil(n / 6)), ms = marks.slice().sort((x, y) => x.y - y.y), mrows = rowsFor(ms, (x) => x.y, (x) => x.y + gap);
     const cap = mrows.length ? Math.max(...mrows) + 1 : 0;
     return `<section class="wide-sec tl-sec"><h2>Career timeline</h2><div class="tl-scroll"><div class="tl" style="min-width:${n * 12 + 60}px">
@@ -1640,6 +1641,23 @@
     </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
     <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? `, <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""} and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
   }
+  // Bars too short for their name: keep the bar true to the years and put the name just right of it, then stack bars by pixel overlap so no names collide.
+  function tlFit(sec) {
+    if (!sec) return;
+    sec.querySelectorAll(".tl-track").forEach((tr) => {
+      const W = tr.clientWidth; if (!W) return;
+      const bars = [...tr.querySelectorAll(".tl-bar")]; bars.forEach((b) => b.classList.remove("out"));
+      bars.forEach((b) => { const t = b.querySelector(".tl-t"); if (t && (t.scrollWidth > t.clientWidth + 1 || b.scrollWidth > b.clientWidth + 1)) b.classList.add("out"); });
+      const items = bars.map((b) => { const l = parseFloat(b.style.left) / 100 * W, w = b.offsetWidth, t = b.querySelector(".tl-t"), tw = b.classList.contains("out") && t ? t.scrollWidth + 10 : 0;
+        b.classList.remove("outl"); const left = tw && l + w + tw > W && l - tw > 0;   // no room on the right (end of the timeline): name goes on the left
+        if (left) b.classList.add("outl");
+        return { b, l: left ? l - tw : l, r: l + Math.max(w, 0) + (left ? 0 : tw) }; }).sort((x, y) => x.l - y.l);
+      const ends = [];
+      items.forEach((it) => { let r = ends.findIndex((e) => e + 4 < it.l); if (r < 0) r = ends.length; ends[r] = it.r; it.b.style.top = r * 30 + "px"; });
+      const h = tr.querySelector(".tl-h"); if (h) h.style.height = Math.max(1, ends.length) * 30 + "px";
+    });
+  }
+  if (!window._tlResize) { window._tlResize = 1; let tm; window.addEventListener("resize", () => { clearTimeout(tm); tm = setTimeout(() => tlFit(document.querySelector(".tl-sec")), 150); }); }
   let TEAMIDX_NICK = null;
   const HOF_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v3a5 5 0 0 1-10 0V4zM7 5H4v1a3 3 0 0 0 3 3M17 5h3v1a3 3 0 0 1-3 3M12 12v4M8 20h8M9 20l1-4h4l1 4"/></svg>`;
   // Signature showcase (config "signatures", Ian's request): the signature's ink lifted out of one autograph scan and shown
