@@ -675,7 +675,7 @@
       const four = [0, 1, 2, 3].map((k) => pick[k * step]).filter(Boolean);
       return `<a class="tile c-${sec.color}" href="#/c/${sec.slug}">
         <div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
-        <h3>${esc(sec.title)}</h3>
+        <h3>${esc(sec.title.replace(/\s*Cards & Autos$/i, ""))}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
         <div class="tm"><span>${fmt(list.length)} scans</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
     }).join("");
