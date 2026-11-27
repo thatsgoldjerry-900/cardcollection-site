@@ -2173,11 +2173,11 @@
   function placeRings() {
     const sp = $("#b-stage .b-spread"); if (!sp) return;
     sp.querySelector(".b-mech")?.remove();
-    const r0 = sp.getBoundingClientRect(), two = sp.classList.contains("two");
+    const r0 = sp.getBoundingClientRect(), two = sp.classList.contains("two"), zf = (sp.offsetWidth && r0.width / sp.offsetWidth) || 1;   // the binder is zoomed on big windows: measure in its own (unzoomed) pixels
     const pages = [...sp.children].filter((x) => x.classList.contains("b-page") && !x.classList.contains("b-ghost"));
     if (!pages.length || (two && pages.length < 2)) return;
-    const hole = (pg, k) => { const h = pg.querySelectorAll(".b-hole")[k].getBoundingClientRect(); return [h.left + h.width / 2 - r0.left, h.top + h.height / 2 - r0.top, h.width]; };
-    const W = r0.width, H = r0.height, t = Math.max(7, Math.min(11, W / 90));
+    const hole = (pg, k) => { const h = pg.querySelectorAll(".b-hole")[k].getBoundingClientRect(); return [(h.left + h.width / 2 - r0.left) / zf, (h.top + h.height / 2 - r0.top) / zf, h.width / zf]; };
+    const W = r0.width / zf, H = r0.height / zf, t = Math.max(7, Math.min(11, W / 90));
     const plateX = two ? W / 2 : 30, plateW = Math.max(16, t * 2.1);
     const ys = HOLES.map((_, k) => hole(pages[0], k)[1]), top = Math.max(22, ys[0] - (ys[1] - ys[0]) * 0.55), bot = Math.min(H - 22, ys[2] + (ys[1] - ys[0]) * 0.55);
     let svg = `<svg class="b-mech" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><defs>
