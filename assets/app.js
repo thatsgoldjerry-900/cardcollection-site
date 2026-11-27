@@ -1578,7 +1578,7 @@
   /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
   const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
     [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
-  function careerTimeline({ info, schools, careerLines, draft, note, hof, pro, neb, noteTeams = [] }) {
+  function careerTimeline({ info, schools, careerLines, draft, draftLabel = "NFL draft", note, hof, pro, neb, noteTeams = [] }) {
     const NOW = new Date().getFullYear(), spans = [], marks = [], undated = [];
     // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
     const teamOf = (name) => (NFLTEAMS_LIST || []).find((t) => t.names.some((n) => name.toLowerCase().startsWith(n.toLowerCase())));
@@ -1610,7 +1610,7 @@
       else if (!undated.includes(t)) undated.push(t);
     });
     const d = String(draft || "").match(/((?:19|20)\d{2})\s*[:/]?\s*(.*)/);
-    if (d) marks.push({ y: +d[1], label: "NFL draft", sub: d[2].replace(/(\d+)(?:st|nd|rd|th) round,?\s*/i, "Rd $1, ").replace(/(\d+)(?:st|nd|rd|th) overall pick/i, "#$1").replace(/,\s*$/, ""), kind: "d" });
+    if (d) marks.push({ y: +d[1], label: draftLabel, sub: d[2].replace(/(\d+)(?:st|nd|rd|th) round,?\s*/i, "Rd $1, ").replace(/(\d+)(?:st|nd|rd|th) overall pick/i, "#$1").replace(/,\s*$/, ""), kind: "d" });
     // Dated moments from my research notes ("Released by the Broncos on 8/24/94"), one per sentence.
     if (note && TEAMIDX_NICK) {
       note.split(/(?<=[.!?])\s+|\n+/).forEach((sent) => {
@@ -1882,11 +1882,13 @@
           </div>
           ${refHTML}
         </div>
-        ${football && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
+        ${(football || sport === "basketball") && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)).concat(alsoSchools.filter(([n]) => !schools.some(([m]) => m === n))), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
-            .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`)),
-          noteTeams: NFLTEAMS_LIST ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs, pfa: e.pfa }))); })() : [],
-          neb: nebStr, draft: (pick("NFL draft") || [])[1], note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof, pro }) : ""}
+            .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`))
+            // Basketball: Wikipedia's career history rows are [years, team]; "→" marks a G League assignment (drawn as a lighter bar).
+            .concat(football ? [] : [...(sec["Career history"] || []), ...(sec["Playing"] || [])].filter((r) => r.length === 2 && /\d{4}/.test(r[0])).map(([y, t]) => `${t.replace(/^→/, "").trim()} (${y.replace(/\s*[;\n]\s*/g, ", ")})${/^→/.test(t) ? "*" : ""}`)),
+          noteTeams: NFLTEAMS_LIST && football ? (() => { const idx = teamIndex(NFLTEAMS_LIST); return NFLTEAMS_LIST.flatMap((t) => (idx[t.slug] || []).filter((e) => e.x.slug === slug).map((e) => ({ t, yrs: e.yrs, pfa: e.pfa }))); })() : [],
+          neb: nebStr, draft: (pick(football ? "NFL draft" : "NBA draft") || [])[1], draftLabel: football ? "NFL draft" : "NBA draft", note: (() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug); return l && (l.notes || {})[row.name]; })(), hof: football ? hof : null, pro: football ? pro : null }) : ""}
         <div class="pl-grid">
 
           ${statKey ? `<section><h2>${esc(statKey.replace(/\s*\n.*$/s, "").replace(/\s+as of.*$/i, ""))}</h2><table class="kv">${sec[statKey].filter((r) => r.length === 2).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table></section>` : ""}
