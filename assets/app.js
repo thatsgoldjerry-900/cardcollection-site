@@ -1869,7 +1869,7 @@
       const honorsHTML = `${pro ? `<a class="hof pro hof-link" href="https://www.profootballhof.com/players/${encodeURIComponent((PROHOFURL[slug] || slug))}" target="_blank" rel="noopener" aria-label="${esc(info.name)} at the Pro Football Hall of Fame"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
               <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span></div></a>` : ""}
             ${chof ? `<a class="hof hof-link" href="${esc(chof.url || "https://www.cfbhall.com/inductees/")}" target="_blank" rel="noopener" aria-label="${esc(info.name)} at the College Football Hall of Fame"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">College Football Hall of Fame</div>
-              <b>Class of ${esc(String(chof.class))}</b>${chof.role ? `<span>Inducted as a coach</span>` : ""}</div></a>` : ""}
+              <b>Class of ${esc(String(chof.class))}</b><span>${chof.role ? "Inducted as a coach · " : ""}Atlanta, Georgia</span></div></a>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
               <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}`;
