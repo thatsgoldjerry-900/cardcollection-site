@@ -1545,3 +1545,8 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 /* "For trade" link in TCDb green (TCDb color-codes for-trade items green) */
 .btn.tcdb.trade{background:#198754;border-color:#198754}
 .btn.tcdb.trade:hover{background:#20a165;border-color:#20a165}
+
+.hof-link{text-decoration:none;color:inherit;transition:transform .15s,border-color .15s}
+.hof-link:hover,.hof-link:focus-visible{transform:translateY(-2px);border-color:#f0c35a}
+.hof.pro.hof-link:hover,.hof.pro.hof-link:focus-visible{border-color:#e3a86b}
+.hof-link .hof-k::after{content:" ↗";letter-spacing:0}
