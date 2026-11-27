@@ -1235,7 +1235,7 @@ body[data-bg="red"] .side a[aria-current="true"]{background:rgba(245,241,231,.13
 body[data-bg="red"] .side h4{color:#d9c9a8}
 @media (max-width:860px){
   body[data-bg="red"] .top{background:rgba(19,26,37,.95)}
-  body[data-bg="red"] .mbar{background:#e41c38;border-bottom:2px solid var(--cream)}
+  body[data-bg="red"] .mbar{background:rgba(19,26,37,.95);border-bottom:1px solid var(--line)}
 }
 
 /* Nebraska and general pages: a thick cream border around the filters box, so the scarlet-and-cream look carries below the title bar */
