@@ -655,6 +655,12 @@
         <img class="tile-bg" src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)">
         <span class="tile-tag">Illustrative</span>
       </section>
+      <section class="tile-full tile-chase" style="--tile-bg:#c9a46a;--tile-fg:#2a1a08">
+        <div class="tile-copy"><h1>The Chase</h1>
+          <p>One autograph of every Husker to play in the NFL</p>
+          <a class="tile-btn" href="#/checklist">See the chase →</a></div>
+        <img class="tile-bg" src="assets/home-chase.jpg" alt="">
+      </section>
     </div>`;
   }
 
