@@ -1317,10 +1317,10 @@
   // Rams; "*" marks an offseason or practice-squad stint) and from the teams named in my research notes.
   let NFLTEAMS = null, TEAMIDX = null, NFLTEAMS_LIST = null;
   // Team years from Pro Football Archives, for teams my notes name without a year (data/team-years.json).
-  let TEAMYEARS = {}, TEAMLOGOS = {};   // TEAMLOGOS: logos by team name of the time (data/team-logos.json)
+  let TEAMYEARS = {}, TEAMCAREERS = {}, TEAMLOGOS = {};   // TEAMLOGOS: logos by team name of the time (data/team-logos.json)
   const nflTeamData = () => NFLTEAMS || (NFLTEAMS = Promise.all([
     fetch("data/nfl-teams.json").then((r) => (r.ok ? r.json() : { teams: [] })).then((d) => d.teams || []).catch(() => []),
-    fetch("data/team-years.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMYEARS = d.players || {})).catch(() => {}),
+    fetch("data/team-years.json").then((r) => (r.ok ? r.json() : {})).then((d) => { TEAMYEARS = d.players || {}; TEAMCAREERS = d.careers || {}; }).catch(() => {}),
     fetch("data/team-logos.json").then((r) => (r.ok ? r.json() : {})).then((d) => (TEAMLOGOS = d.byName || {})).catch(() => {})]).then(([t]) => t));
   // The year a research note gives for a team: the nearest date after the team's name in that sentence
   // ("Released by the Broncos on 8/24/94", "the Raiders in '92"), else the nearest one before it
@@ -1575,7 +1575,7 @@
   /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
   const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
     [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
-  function careerTimeline({ info, schools, careerLines, draft, draftLabel = "NFL draft", note, hof, pro, neb, noteTeams = [] }) {
+  function careerTimeline({ pfaCareer, info, schools, careerLines, draft, draftLabel = "NFL draft", note, hof, pro, neb, noteTeams = [] }) {
     const NOW = new Date().getFullYear(), spans = [], marks = [], undated = [];
     // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
     const teamOf = (name) => (NFLTEAMS_LIST || []).find((t) => t.names.some((n) => name.toLowerCase().startsWith(n.toLowerCase())));
@@ -1636,7 +1636,7 @@
       ${spans.some((x) => x.lane === "p") ? `<div class="tl-lane"><b class="tl-k">Pro</b><div class="tl-track">${bars("p")}</div></div>` : ""}
       ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}>${x.kind === "c" ? `<i class="tl-n">${logo(NEB)}</i>` : "<i></i>"}<span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
     </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
-    <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? ` and <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""}. Swipe sideways for more years.</p></section>`;
+    <p class="note">From Wikipedia, my research notes${pfaCareer || spans.some((x) => x.pfa) ? ` and <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""}. Swipe sideways for more years.</p></section>`;
   }
   // Bars too short for their name are widened just enough to hold it (the start year stays true; a bar at the far right is nudged left), then stacked by pixel overlap so bars never collide.
   function tlFit(sec) {
@@ -1897,10 +1897,11 @@
           </div>
           ${refHTML}
         </div>
-        ${(football || sport === "basketball") && !info.card ? careerTimeline({ info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
+        ${(football || sport === "basketball") && !info.card ? careerTimeline({ pfaCareer: football && !!TEAMCAREERS[slug], info: { ...info, playingCollege: useWiki || !myFinal ? (sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && /nebraska/i.test(r[1])) : [] },
           schools: schools.filter(([n]) => useWiki || !/nebraska/i.test(n)).concat(alsoSchools.filter(([n]) => !schools.some(([m]) => m === n))), careerLines: [...sec["Career history"] || [], ...sec["Playing"] || []].filter((r) => r.length === 1).map((r) => r[0])
             .concat((sec["Playing career"] || []).filter((r) => r.length === 2 && /\d{4}/.test(r[0]) && !/nebraska/i.test(r[1])).map(([y, t]) => `${t.trim()} (${y})`))
             // Older pages list a plain "Football" table of [years, team]: playing stops come first, coaching rows follow (marked "(line)", "(assistant)" or after one).
+            .concat(football && !(sec["Playing career"] || []).length && !(sec["Career history"] || []).length && !(sec["Football"] || []).some((r) => r.length === 2 && /\d{4}/.test(r[0])) ? TEAMCAREERS[slug] || [] : [])
             .concat(football && !(sec["Playing career"] || []).length && !(sec["Career history"] || []).length ? (() => { const out = []; for (const r of sec["Football"] || []) { if (r.length !== 2 || !/^\d{4}/.test(r[0])) continue; if (/\(/.test(r[1])) break; if (!/nebraska/i.test(r[1])) out.push(`${r[1].trim()} (${r[0]})`); } return out; })() : [])
             // Basketball: Wikipedia's career history rows are [years, team]; "→" marks a G League assignment (drawn as a lighter bar).
             .concat(football ? [] : [...(sec["Career history"] || []), ...(sec["Playing"] || [])].filter((r) => r.length === 2 && /\d{4}/.test(r[0])).map(([y, t]) => `${t.replace(/^→/, "").trim()} (${y.replace(/\s*[;\n]\s*/g, ", ")})${/^→/.test(t) ? "*" : ""}`)),
