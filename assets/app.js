@@ -685,14 +685,28 @@
       return `<a class="tile c-gold" href="#/customs"><div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <h3>Custom Cards</h3><div class="tm"><span>${fmt(list.length)} scans</span><span>${PHOTOS.length ? PHOTOS.length + " photos with players" : ""}</span></div></a>`;
     }
-    $("#app").innerHTML = `<div class="wrap">
-      ${cardOfDay()}
-      <section class="hero">
-        <div>
-          <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
+    const nCust = CARDS.filter((c) => c.tags.has("custom")).length;
+    $("#app").innerHTML = `<div class="wrap cards-landing">
+      <header class="cl-head">
+        <div><span class="kick">${fmt(CARDS.length)} scans · ${fmt(ones)} one-of-ones</span>
+          <h1>The Cards</h1>
+          <p>Legends remembered through cardboard treasures. Pick a collection to dive in, or jump straight to something below.</p></div>
+        <nav class="cl-quick" aria-label="Quick links">
+          <a href="#/all">Everything</a><a href="#/recent">Newest</a><a href="#/rarest">Rarest</a>${nCust ? `<a href="#/customs">Customs</a>` : ""}<a href="#/letters">Letterman sets</a>${DUPES.length ? `<a href="#/duplicates">Duplicates</a>` : ""}<a href="#/stats">Stats</a><a href="#/random">Surprise me</a>
+        </nav>
+      </header>
+      <div class="sec-h"><h2>Collections</h2></div>
+      <section class="tiles" style="margin-bottom:48px">${tiles}</section>
+      <div class="cl-feature">
+        ${cardOfDay()}
+        <div class="cl-feature-r">
+          <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
+          <section class="mq" aria-label="Newest additions">
+            <div class="mq-track" style="--dur:${newest.length * 4}s">${newest.map((c) => cardHTML(c)).join("")}<div class="mq-dup" aria-hidden="true">${newest.map((c) => cardHTML(c)).join("")}</div></div>
+          </section>
         </div>
-        <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
-      </section>
+      </div>
+      <div class="sec-h"><h2>Progress &amp; stats</h2></div>
       <section class="stats" aria-label="Collection stats">
         <a class="stat link has-logo c-husker" id="stat-nfl" href="#/checklist" hidden><b><i class="sn"></i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/120px-Nebraska_Cornhuskers_logo.svg.png" onerror="this.remove()"></b><span>NFL Husker Chase →</span><div class="bar"><i style="width:0"></i></div></a>
         ${SECTIONS.filter((x) => x.progress).map((x) => `<a class="stat link has-logo ${x.slug === "alex-gordon" || x.slug === "jermaine-dye" ? "c-royal c-gold-bar" : "c-royal"}" href="#/c/${x.slug}"><b><i class="sn">${pctText(x)}</i><img class="stat-logo" alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Kansas_City_Royals_Primary_Logo.svg/120px-Kansas_City_Royals_Primary_Logo.svg.png" onerror="this.remove()"></b><span>${esc(x.title)} Chase →</span><div class="bar"><i style="width:${parseFloat(pctText(x)) || 0}%"></i></div></a>`).join("")}
@@ -701,15 +715,15 @@
         <a class="stat link" href="#/letters"><b><img class="stat-ic" alt="" src="assets/letterman-icon.webp" width="76" height="36"></b><span>Letterman Sets →</span></a>
         <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
+      <div class="sec-h"><h2>New here?</h2></div>
       ${startHere()}
-      <div class="band">
-      <div class="sec-h"><h2>Newest additions</h2><a href="#/all">Browse everything →</a></div>
-      <section class="mq" aria-label="Newest additions">
-        <div class="mq-track" style="--dur:${newest.length * 4}s">${newest.map((c) => cardHTML(c)).join("")}<div class="mq-dup" aria-hidden="true">${newest.map((c) => cardHTML(c)).join("")}</div></div>
+      <section class="hero cl-about">
+        <div>
+          <h1><span class="nw">Alex Gordon</span> &amp; <span class="nw">Jermaine Dye</span> <em class="nw">super collector</em></h1>
+        </div>
+        <figure class="hero-ph"><img alt="Alex Gordon (left) and Ian Badeer (right) in Nebraska gear" src="assets/hero.webp" srcset="assets/hero-560.webp 560w, assets/hero.webp 1024w" sizes="(max-width: 800px) 320px, 560px"></figure>
       </section>
-      </div>
-      <div class="sec-h"><h2>Collections</h2></div>
-      <section class="tiles" style="margin-bottom:64px">${tiles}</section>
+      <div style="height:56px"></div>
     </div>`;
     // The copy only exists so the loop looks seamless; keep it out of keyboard tab order.
     document.querySelectorAll(".mq-dup .cd").forEach((b) => (b.tabIndex = -1));
