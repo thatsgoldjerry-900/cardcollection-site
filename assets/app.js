@@ -1876,7 +1876,7 @@
         <img alt="${esc(r.name)}" loading="lazy" src="${img(r.id, r.rk, 900)}"></button>`).join("")}</aside>` : "";
       const tcdbHTML = (() => { const T = DATA.site.tcdb || {}, pid = (T.players || {})[slug]; if (!pid) return "";
               const fill = (u) => u.replace("{pid}", pid).replace("{name}", encodeURIComponent(info.name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""))).replace("{member}", encodeURIComponent(T.member || ""));
-              return `<div class="tcdb-row"><span class="tcdb-badge tcdb-mark" aria-hidden="true">TCDb</span>${T.collectionUrl ? `<a class="btn tcdb" href="${esc(fill(T.collectionUrl))}" target="_blank" rel="noopener">View my full ${esc(info.name)} collection on TCDb ↗</a>` : ""}${T.tradeUrl ? `<a class="btn tcdb" href="${esc(fill(T.tradeUrl))}" target="_blank" rel="noopener">View my ${esc(info.name)} cards for trade ↗</a>` : ""}</div>`; })();
+              return `<div class="tcdb-row">${T.collectionUrl ? `<a class="btn tcdb" href="${esc(fill(T.collectionUrl))}" target="_blank" rel="noopener">View my full ${esc(info.name)} collection on TCDb ↗</a>` : ""}${T.tradeUrl ? `<a class="btn tcdb" href="${esc(fill(T.tradeUrl))}" target="_blank" rel="noopener">View my ${esc(info.name)} cards for trade ↗</a>` : ""}</div>`; })();
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
         <div class="pl-top${refs.length || pro || hof ? " has-refs" : ""}">
