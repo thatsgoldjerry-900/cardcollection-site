@@ -1871,7 +1871,7 @@
               <a href="https://www.profootballhof.com/players/${encodeURIComponent((PROHOFURL[slug] || slug))}" target="_blank" rel="noopener">${esc(info.name)} at the Pro Football Hall of Fame ↗</a></div></section>` : ""}
             ${chof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">College Football Hall of Fame</div>
               <b>Class of ${esc(String(chof.class))}</b>${chof.role ? `<span>Inducted as a coach</span>` : ""}
-              <a href="https://en.wikipedia.org/wiki/List_of_Nebraska_Cornhuskers_in_the_College_Football_Hall_of_Fame" target="_blank" rel="noopener">Nebraska inductees (Wikipedia) ↗</a></div></section>` : ""}
+              <a href="${esc(chof.url || "https://www.cfbhall.com/inductees/")}" target="_blank" rel="noopener">${esc(info.name)} at the College Football Hall of Fame ↗</a></div></section>` : ""}
             ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
               <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
               <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}`;
