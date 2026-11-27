@@ -641,14 +641,12 @@
   function home() {
     setNav(null); setTitle("");
     const gordon = CARDS.find((c) => /#297 Alex Gordon Full$/.test(c.name));
-    const cardArt = gordon ? `<div class="cotd-big tile-card"><a class="cotd-card" href="#/card/${cid(gordon)}" aria-label="${esc(gordon.name)}"><img alt="" src="${img(gordon.id, gordon.rk, 1200)}"></a></div>` : "";
     $("#app").innerHTML = `<div class="wrap-tiles">
-      <section class="tile-full tile-cards" style="--tile-bg:#004687;--tile-fg:#bd9b60">
-        <div class="tile-copy"><p class="tile-k">Trading cards</p><h1>The Cards</h1>
-          <p>Every card in the collection, from the card of the day to the newest scans.</p>
-          <a class="tile-btn" href="#/cards">Explore the cards →</a>
-          ${gordon ? `<a class="tile-feat" href="#/card/${cid(gordon)}">See the 2006 Alex Gordon Full RC →</a>` : ""}</div>
-        <div class="tile-art">${cardArt}</div>
+      <section class="tile-full tile-cards" style="--tile-bg:#0b0d10;--tile-fg:#ffffff">
+        <div class="tile-copy"><h1>The Cards</h1>
+          <p>Legends remembered through cardboard treasures</p>
+          <a class="tile-btn" href="#/cards">Explore the cards →</a></div>
+        <img class="tile-bg" src="assets/home-cards.jpg" alt="">
       </section>
       <section class="tile-full tile-players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
         <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
