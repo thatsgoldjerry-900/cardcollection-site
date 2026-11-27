@@ -1584,9 +1584,8 @@
     const yrs = (str) => (String(str).match(/(?:19|20)\d{2}|present/g) || []).map((y) => (y === "present" ? NOW : +y));
     // College: Nebraska and any other school, else his final Nebraska season.
     // Nebraska is drawn from the page's Nebraska years (neb), so the bar matches the stat box and Hall of Fame card.
-    // The Hall of Fame list's years are a check, not shown: the Nebraska bar is widened to cover them.
-    const nebV = yrs(neb || "").concat(hof && hof.years ? yrs(hof.years) : []);
-    if (!yrs(neb || "").length) nebV.length = 0;
+    // The timeline covers playing years only: no Hall of Fame markers, and the Hall of Fame years never widen the bar.
+    const nebV = yrs(neb || "");
     if (nebV.length) spans.push({ lane: "c", a: Math.min(...nebV), b: Math.max(...nebV), label: "Nebraska", neb: true });
     schools.forEach(([n, y]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
     (info.playingCollege || []).forEach(([y, n]) => { if (nebV.length && /nebraska/i.test(n)) return; const v = yrs(y); if (v.length && !spans.some((x) => x.lane === "c" && x.label === n)) spans.push({ lane: "c", a: v[0], b: v[v.length - 1], label: n, neb: /nebraska/i.test(n) }); });
@@ -1618,8 +1617,6 @@
         marks.push({ y, label: w[1], sub: team, full: sent.trim(), kind: "n" });
       });
     }
-    if (hof) marks.push({ y: +hof.class, label: "Nebraska Hall of Fame", kind: "h" });
-    if (pro) marks.push({ y: +pro, label: "Pro Football Hall of Fame", kind: "hp" });
     if (spans.length + marks.length + undated.length < 2 && !spans.some((x) => x.neb)) return "";   // a lone Nebraska bar still shows (Ian: years show as a bar, not only text)
     const all = [...spans.flatMap((x) => [x.a, x.b]), ...marks.map((x) => x.y)].filter((y) => y > 1850 && y <= NOW + 1);
     if (!all.length) return "";
@@ -1639,7 +1636,7 @@
       ${spans.some((x) => x.lane === "p") ? `<div class="tl-lane"><b class="tl-k">Pro</b><div class="tl-track">${bars("p")}</div></div>` : ""}
       ${ms.length ? `<div class="tl-marks" style="height:${cap * 46}px">${ms.map((x, k) => `<div class="tl-m ${x.kind}${px(x.y) > 62 ? " r" : ""}" style="left:calc(${px(x.y) + 50 / n}% - 6px);top:${mrows[k] * 46}px"${x.full ? ` title="${esc(x.full)}"` : ""}>${x.kind === "c" ? `<i class="tl-n">${logo(NEB)}</i>` : "<i></i>"}<span><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ""}<small>${x.y}</small></span></div>`).join("")}</div>` : ""}
     </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
-    <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? `, <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""} and the Hall of Fame lists. Swipe sideways for more years.</p></section>`;
+    <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? ` and <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""}. Swipe sideways for more years.</p></section>`;
   }
   // Bars too short for their name: keep the bar true to the years and put the name just right of it, then stack bars by pixel overlap so no names collide.
   function tlFit(sec) {
