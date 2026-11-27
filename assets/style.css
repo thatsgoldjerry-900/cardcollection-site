@@ -1548,3 +1548,8 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tl-bar.out.soft .tl-t{color:#b9c8ee}
 .tl-bar .tl-t{overflow:hidden;text-overflow:ellipsis}
 .tl-bar.out.outl .tl-t{left:auto;right:100%;margin-left:0;margin-right:6px}
+
+/* Hall of Fame honors in the right-hand column (player pages) */
+.pl-refs .hof{margin:0;padding:12px 14px;gap:12px}
+.pl-refs .hof-ic{width:42px;height:42px}.pl-refs .hof-ic svg{width:22px;height:22px}
+.pl-refs .hof b{font-size:16px}

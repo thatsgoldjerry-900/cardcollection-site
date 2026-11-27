@@ -1863,17 +1863,24 @@
       }).join("");
       // Reference images (e.g. a photo compilation) in a column on the right of the profile; tap to open larger.
       const refs = refsFor(info.name);
-      const refHTML = refs.length ? `<aside class="pl-refs" aria-label="Reference images">${refs.map((r) => `<button type="button" class="pl-ref" data-ref="${esc(r.id)}" data-ref-name="${esc(info.name)}" aria-label="Open ${esc(r.name)}">
+      // Hall of Fame honors sit in the right-hand column (with any reference images), not as wide cards in the middle.
+      const honorsHTML = `${pro ? `<section class="hof pro"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
+              <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
+              <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
+            ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
+              <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
+              <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}`;
+      const refHTML = refs.length || pro || hof ? `<aside class="pl-refs" aria-label="Honors and reference images">${honorsHTML}${refs.map((r) => `<button type="button" class="pl-ref" data-ref="${esc(r.id)}" data-ref-name="${esc(info.name)}" aria-label="Open ${esc(r.name)}">
         <img alt="${esc(r.name)}" loading="lazy" src="${img(r.id, r.rk, 900)}"></button>`).join("")}</aside>` : "";
       $("#app").innerHTML = `<div class="wrap pl c-husker">
         <a class="back" href="${back}">← ${esc(backLabel)}</a>
-        <div class="pl-top${refs.length ? " has-refs" : ""}">
+        <div class="pl-top${refs.length || pro || hof ? " has-refs" : ""}">
           <div class="pl-card">${!hero && fanDayOf(slug) ? `<div class="pl-ph fd-hero">${fanDayCrop(fanDayOf(slug), info.name)}</div><small>${esc(fdLabel(fanDayOf(slug).c))}</small>` : hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}</div>
           <div class="pl-main">
             <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
-            <div class="pl-badges">${pro ? `<span class="hof-badge pro">${HOF_ICON} Pro Football Hall of Fame</span>` : ""}${hof ? `<span class="hof-badge">${HOF_ICON} Nebraska Hall of Fame</span>` : ""}${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
+            <div class="pl-badges">${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
             ${(() => { const T = DATA.site.tcdb || {}, pid = (T.players || {})[slug]; if (!pid) return "";
               const fill = (u) => u.replace("{pid}", pid).replace("{name}", encodeURIComponent(info.name.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""))).replace("{member}", encodeURIComponent(T.member || ""));
@@ -1882,12 +1889,6 @@
             ${playerMedia(slug).map((m) => `<a class="statlink watch" href="${esc(m.url)}" target="_blank" rel="noopener">▶ Watch: ${esc(m.title)} ↗</a>`).join("")}
             ${(() => { const l = row && CHECK.lists.find((x) => x.slug === row.listSlug), t = l && (l.notes || {})[row.name];
               return t ? `<section class="why"><h2>Why he's on the ${esc((row.backLabel || "").replace(/ Huskers Autograph List$/, ""))} list</h2>${noteHTML(t)}</section>` : ""; })()}
-            ${pro ? `<section class="hof pro"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Pro Football Hall of Fame</div>
-              <b>${pro >= new Date().getFullYear() ? "Class of" : "Inducted"} ${esc(String(pro))}</b><span>Canton, Ohio</span>
-              <a href="https://www.profootballhof.com/" target="_blank" rel="noopener">Pro Football Hall of Fame ↗</a></div></section>` : ""}
-            ${hof ? `<section class="hof"><div class="hof-ic">${HOF_ICON}</div><div><div class="hof-k">Nebraska Football Hall of Fame</div>
-              <b>Class of ${esc(String(hof.class))}</b>${hof.role ? `<span>${esc(hof.role === "Coach" ? "Inducted as a coach" : hof.role)}</span>` : ""}
-              <a href="https://huskers.com/nebraska-football-hall-of-fame" target="_blank" rel="noopener">Full Hall of Fame at huskers.com ↗</a></div></section>` : ""}
             <dl class="facts">${facts.map(([k, v, star]) => `<div><dt>${esc(k)}${star ? ' <span class="star" title="From my custom card">★</span>' : ""}</dt><dd>${v && v.html ? v.html : esc(v)}</dd></div>`).join("")}</dl>
             ${ianBio ? `<div class="bio ian">${textHTML(ianBio)}<p class="note">★ From my custom card, written by me.</p></div>` : ""}
             ${w && w.intro ? `<div class="bio">${w.intro.split("\n\n").map((t) => `<p>${esc(t)}</p>`).join("")}</div>` : info.card ? "" : `<p class="muted">${p && p.checked ? "No biography available for this player yet." : "Biography coming soon."}</p>`}
