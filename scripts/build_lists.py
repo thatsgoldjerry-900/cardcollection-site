@@ -128,6 +128,7 @@ def extract_side_by_side(xlsx_bytes, spec):
         full = titles[s0]
         m = re.match(r"^(.*?)\s*\((.*)\)\s*$", full)
         title, sub = (m.group(1), m.group(2)) if m else (full, "")
+        pr_state = {}
         groups, cur, links, notes, proballers = [], {"title": "", "rows": []}, {}, {}, {}
         for ri in range(spec["headerRow"], len(rows)):
             r = rows[ri]
@@ -143,8 +144,13 @@ def extract_side_by_side(xlsx_bytes, spec):
             pr = spec.get("proballersRange")
             if pr and pr["list"] == slug_of(title) and int(pr["rows"].split(":")[0]) <= ri + 1 <= int(pr["rows"].split(":")[1]):
                 ci = openpyxl.utils.column_index_from_string(pr["column"]) - 1
-                m = re.search(r"proballers\.com/(?:[a-z]{2}/)?basketball/player/(\d+)", link_at(ri, ci) or (r[ci] if ci < len(r) else ""), re.I)
+                if "formulas" not in pr_state: pr_state["formulas"] = openpyxl.load_workbook(io.BytesIO(xlsx_bytes), data_only=False)[spec["tab"]]
+                fcell = pr_state["formulas"].cell(row=ri + 1, column=ci + 1)
+                srcs = [link_at(ri, ci), r[ci] if ci < len(r) else "", str(fcell.value or ""), (fcell.hyperlink.location or "") if fcell.hyperlink else ""]
+                m = next((m for m in (re.search(r"proballers\.com/[^\s\"]*?/(?:player|joueur|jugador)/(\d+)", t, re.I) for t in srcs) if m), None)
                 if m: proballers[vals[0]] = int(m.group(1))     # only the number is kept
+                # Structure only (the log is public): which kind of cell held the link, never the address itself.
+                print(f"ProBallers cell row {ri + 1}: hyperlink={'yes' if link_at(ri, ci) else 'no'} text={'yes' if (r[ci] if ci < len(r) else '') else 'no'} formula={'yes' if str(fcell.value or '').startswith('=') else 'no'} id={'yes' if m else 'no'}", file=sys.stderr)
         groups.append(cur)
         groups = [g for g in groups if g["rows"]]
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
