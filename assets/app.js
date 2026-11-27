@@ -1905,10 +1905,10 @@
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}
         </div>
-        ${moreHuskers(slug, info, p) || playerNav(slug, info)}
         ${pc.length ? `<p class="pc-link"><a href="#/c/${SECTIONS[pcIdx].slug}">See all ${fmt(pc.length)} scans in my ${esc(SECTIONS[pcIdx].title)} collection →</a></p>` : ""}
         ${scans.length > 1 ? `<h2 class="more-h">More of ${esc(info.name)} in my collection</h2><div class="grid small">${sortList(scans, "old").map((c) => cardHTML(c)).join("")}</div>` : ""}
         ${(() => { const n = playerCards(info.name).length; return n ? `<p class="pc-link"><a href="#/player-cards/${esc(slug)}">See ${n === 1 ? "the 1 scan" : `all ${fmt(n)} scans`} of ${esc(info.name)} in my collection →</a></p>` : ""; })()}
+        ${moreHuskers(slug, info, p) || playerNav(slug, info)}
         <p class="ck-plain"><a href="${/^(nfl-tier-|pro-football)/.test(info.listSlug || p?.list || "") ? "nfl-huskers" : "players"}/${esc(slug)}.html">Plain version of this page to share or cite →</a></p>
         <p class="credit">${w ? `Biography and facts adapted from <a href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.` : ""}${w && w.pfr && w.pfr !== statsLink ? ` Full pro stats at <a href="${esc(w.pfr)}" target="_blank" rel="noopener">Pro Football Reference</a>.` : ""} Autograph status from my collection records.</p>
         <section class="fix-req"><h2>See something wrong?</h2><p>If anything on this page is incorrect or missing, let me know. Please include what should change and a link or source that shows it.</p>
