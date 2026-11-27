@@ -1638,17 +1638,19 @@
     </div></div>${undated.length ? `<div class="tl-undated"><b>With these teams</b> <span>(year not in my notes)</span>${undated.map((t) => `<a class="tl-team" href="#/nfl-teams/${t.slug}">${logo(t)}${esc(t.name)}</a>`).join("")}</div>` : ""}
     <p class="note">From Wikipedia, my research notes${spans.some((x) => x.pfa) ? ` and <a href="https://www.profootballarchives.com/" target="_blank" rel="noopener">Pro Football Archives</a>` : ""}. Swipe sideways for more years.</p></section>`;
   }
-  // Bars too short for their name: keep the bar true to the years and put the name just right of it, then stack bars by pixel overlap so no names collide.
+  // Bars too short for their name are widened just enough to hold it (the start year stays true; a bar at the far right is nudged left), then stacked by pixel overlap so bars never collide.
   function tlFit(sec) {
     if (!sec) return;
     sec.querySelectorAll(".tl-track").forEach((tr) => {
       const W = tr.clientWidth; if (!W) return;
-      const bars = [...tr.querySelectorAll(".tl-bar")]; bars.forEach((b) => b.classList.remove("out"));
-      bars.forEach((b) => { const t = b.querySelector(".tl-t"); if (t && (t.scrollWidth > t.clientWidth + 1 || b.scrollWidth > b.clientWidth + 1)) b.classList.add("out"); });
-      const items = bars.map((b) => { const l = parseFloat(b.style.left) / 100 * W, w = b.offsetWidth, t = b.querySelector(".tl-t"), tw = b.classList.contains("out") && t ? t.scrollWidth + 10 : 0;
-        b.classList.remove("outl"); const left = tw && l + w + tw > W && l - tw > 0;   // no room on the right (end of the timeline): name goes on the left
-        if (left) b.classList.add("outl");
-        return { b, l: left ? l - tw : l, r: l + Math.max(w, 0) + (left ? 0 : tw) }; }).sort((x, y) => x.l - y.l);
+      const items = [...tr.querySelectorAll(".tl-bar")].map((b) => {
+        if (!b.dataset.l) b.dataset.l = parseFloat(b.style.left);
+        b.style.minWidth = ""; b.style.left = b.dataset.l + "%";
+        const t = b.querySelector(".tl-t"), w = b.offsetWidth, need = t && t.scrollWidth > t.clientWidth + 1 ? w + (t.scrollWidth - t.clientWidth) + 1 : w;
+        let l = b.dataset.l / 100 * W;
+        if (need > w) { b.style.minWidth = need + "px"; if (l + need > W) { l = Math.max(0, W - need); b.style.left = l + "px"; } }
+        return { b, l, r: l + need };
+      }).sort((x, y) => x.l - y.l);
       const ends = [];
       items.forEach((it) => { let r = ends.findIndex((e) => e + 4 < it.l); if (r < 0) r = ends.length; ends[r] = it.r; it.b.style.top = r * 30 + "px"; });
       const h = tr.querySelector(".tl-h"); if (h) h.style.height = Math.max(1, ends.length) * 30 + "px";

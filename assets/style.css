@@ -1541,20 +1541,4 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .pb-sec .pb-wrap iframe{display:block;width:100%;height:370px;border:0}
 .pb-go{position:absolute;opacity:0;pointer-events:none}
 @media(min-width:900px){.pl-grid .pb-sec{grid-column:span 2}}
-
-/* Timeline bars too short for their name: the name sits just right of the bar (assets/app.js tlFit). */
-.tl-bar.out{overflow:visible}
-.tl-bar.out .tl-t{position:absolute;left:100%;margin-left:6px;color:#dbe4f7;font-weight:600;white-space:nowrap}
-.tl-bar.out.soft .tl-t{color:#b9c8ee}
 .tl-bar .tl-t{overflow:hidden;text-overflow:ellipsis}
-.tl-bar.out.outl .tl-t{left:auto;right:100%;margin-left:0;margin-right:6px}
-
-/* Hall of Fame honors in the right-hand column (player pages) */
-.pl-refs .hof{margin:0;padding:12px 14px;gap:12px}
-.pl-refs .hof-ic{width:42px;height:42px}.pl-refs .hof-ic svg{width:22px;height:22px}
-.pl-refs .hof b{font-size:16px}
-
-/* TCDb links sit under the card window on the left of the player page */
-.pl-card .tcdb-row{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:14px}
-.pl-card .tcdb-row .tcdb-badge{align-self:flex-start}
-.pl-card .tcdb-row .btn{text-align:center}
