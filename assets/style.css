@@ -1514,7 +1514,7 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tile-tag{position:absolute;right:16px;bottom:14px;z-index:1;background:rgba(0,0,0,.6);color:#fff;font:12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
 @media (max-width:760px){
   .tile-players{align-items:start;padding-top:40px}
-  .tile-players .tile-bg{object-position:30% center}
+  .tile-players .tile-bg{top:auto;bottom:0;height:64%;object-position:43% 50%}
   .tile-players::before{background:linear-gradient(180deg,rgba(40,0,6,.75) 0,rgba(40,0,6,.35) 45%,transparent 70%)}
   .tile-players .tile-copy{max-width:none}
   .tile-players .tile-copy h1,.tile-cards .tile-copy h1{font-size:clamp(40px,12vw,60px)}
