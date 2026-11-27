@@ -75,7 +75,7 @@ main{min-height:calc(70vh / var(--z));outline:none}
 .tile .fan img:nth-child(1){transform:rotate(-7deg)}.tile .fan img:nth-child(2){transform:rotate(-2deg) translateY(-6px)}
 .tile .fan img:nth-child(3){transform:rotate(3deg) translateY(-8px)}.tile .fan img:nth-child(4){transform:rotate(8deg) translateY(-2px)}
 .tile:hover .fan img{transform:none}
-.tile h3{font-size:24px}
+.tile h3{font-size:24px;font-family:"Schibsted Grotesk",var(--f-d);font-weight:800;letter-spacing:-.01em}
 .tile .tm{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mu);font-family:var(--f-m)}
 .bar{height:6px;background:var(--panel-2);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--tc,var(--acc));border-radius:99px}
