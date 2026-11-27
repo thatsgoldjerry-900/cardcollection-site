@@ -924,7 +924,9 @@
       scanIndex[sport] = si < 0 ? [] : CARDS.filter((c) => c.si === si || (SECTIONS[c.si].customs && SECTIONS[si].slug.startsWith("husker-"))).map((c) => [" " + norm(who(c)) + " ", c]);
     }
     const n = norm(name); if (n.split(" ").length < 2) return [];
-    return scanIndex[sport].filter(([t]) => t.includes(" " + n + " ")).map(([, c]) => c);
+    // Cards filed under another name for him (config/site.json "playerAliases": "Les McDonald" → "Lester McDonald").
+    const ns = [n, ...(((DATA && DATA.site.playerAliases) || {})[name] || []).map(norm)];
+    return scanIndex[sport].filter(([t]) => ns.some((x) => t.includes(" " + x + " "))).map(([, c]) => c);
   }
   // One page per published list. #/checklist (no suffix) stays the NFL page so old links keep working.
   const CK_PAGES = [
