@@ -2521,28 +2521,29 @@
     lettersOf(first);   // builds LETTERS
     const sets = [...LETTERS.values()].map((cards) => ({ L: lettersOf(cards[0]), c: cards[0] })).filter((x) => x.L);
     setNav(SECTIONS[first.si].slug); setTitle("All letterman sets");
-    const byWord = new Map();
-    sets.forEach((x) => { const w = x.L.word ? (x.L.shown || x.L.word) : ""; byWord.set(w, [...(byWord.get(w) || []), x]); });
-    // Words with the most sets first; sets whose full word isn't known last.
-    const words = [...byWord.keys()].sort((p, q) => (!p - !q) || byWord.get(q).length - byWord.get(p).length || p.localeCompare(q));
+    // One group per player, newest set first; players ordered by their newest set (ties by name).
+    const byWho = new Map();
+    sets.forEach((x) => byWho.set(x.L.who, [...(byWho.get(x.L.who) || []), x]));
+    byWho.forEach((l) => l.sort((p, q) => (q.c.year || 0) - (p.c.year || 0) || letterSetTitle(p.c).localeCompare(letterSetTitle(q.c))));
+    const words = [...byWho.keys()].sort((p, q) => (byWho.get(q)[0].c.year || 0) - (byWho.get(p)[0].c.year || 0) || p.localeCompare(q));
     const done = sets.filter((x) => x.L.word && x.L.count === x.L.slots.length).length;
     const need = sets.reduce((n, x) => n + (x.L.word ? x.L.slots.length - x.L.count : 0), 0);
     const shown = [], binder = [];
     const body = words.map((w) => {
-      const list = byWord.get(w).sort((p, q) => (p.c.year || 0) - (q.c.year || 0) || p.L.who.localeCompare(q.L.who));
-      return `<section class="lt-group"><h2>${w ? esc(w) : "Other sets"} <small>${fmt(list.length)} set${list.length === 1 ? "" : "s"}</small></h2>${list.map(({ L, c }) => {
+      const list = byWho.get(w);
+      return `<section class="lt-group"><h2>${esc(w)} <small>${fmt(list.length)} set${list.length === 1 ? "" : "s"}</small></h2>${list.map(({ L, c }) => {
         const title = letterSetTitle(c);
         const miss = L.word ? L.slots.filter((x) => !x.cards.length).map((x) => x.letter) : [];
         binder.push(...L.slots.flatMap((x) => (x.cards.length ? x.cards : [{ empty: true, label: x.letter || "?" }])));
         // A complete set gets a celebration frame and badge (around the cards, never on them).
         const full = L.word && !miss.length;
-        return `<section class="lt-set${full ? " lt-done" : ""}"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(L.who)}</a>${full ? `<span class="lt-badge"><i aria-hidden="true">★</i>Complete set<b>${fmt(L.slots.length)}/${fmt(L.slots.length)}</b></span>` : ""}</h3>
-          <p>${esc(title)}${letterRun(L) ? ` · ${esc(letterRun(L))}` : ""} · ${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
+        return `<section class="lt-set${full ? " lt-done" : ""}"><h3><a href="#/letters/${encodeURIComponent(cid(c))}">${esc(title)}</a>${full ? `<span class="lt-badge"><i aria-hidden="true">★</i>Complete set<b>${fmt(L.slots.length)}/${fmt(L.slots.length)}</b></span>` : ""}</h3>
+          <p>${L.word ? `Spells ${esc(L.shown || L.word)} · ` : ""}${letterRun(L) ? `${esc(letterRun(L))} · ` : ""}${fmt(L.count)} of ${fmt(L.slots.length)}${L.word && !miss.length ? " · complete ✓" : miss.length ? ` · <b class="lt-need">Need: ${miss.map(esc).join(", ")}</b>` : ""}</p>
           <div class="lt-rows">${letterRows(L, shown)}</div></section>`; }).join("")}</section>`;
     }).join("");
     $("#app").innerHTML = `<div class="wrap coll c-husker"><div style="grid-column:1/-1;min-width:0">
       <div class="c-head"><div class="kick">Letterman sets</div><h1>All letterman sets</h1>
-      <p>${fmt(sets.length)} sets, ${fmt(done)} complete, ${fmt(need)} letter${need === 1 ? "" : "s"} still needed. Grouped by the word each set spells; tap a name for that set's page.</p></div>
+      <p>${fmt(sets.length)} sets, ${fmt(done)} complete, ${fmt(need)} letter${need === 1 ? "" : "s"} still needed. Grouped by player, newest first; tap a set's name for its page.</p></div>
       <div class="b-row">${binderBtn()}</div><div class="lt-words">${body}</div><p class="lt-tip">Tap a card for its details. "Need" boxes are letters I'm still looking for.</p></div></div>`;
     state.list = shown; state.binderItems = binder;
   }
