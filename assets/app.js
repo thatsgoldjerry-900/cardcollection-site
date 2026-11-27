@@ -1594,6 +1594,7 @@
   /* ---------- Career timeline (player pages): college and pro stops as bars, events as marks, left to right ---------- */
   const EVENT_WORDS = [[/\bsigned\b/i, "Signed"], [/\bdrafted\b/i, "Drafted"], [/\b(released|cut)\b/i, "Released"], [/\bwaived\b/i, "Waived"], [/\bclaimed\b/i, "Claimed"],
     [/\btraded\b/i, "Traded"], [/practice squad/i, "Practice squad"], [/active roster/i, "Active roster"], [/injured reserve|\bIR\b/, "Injured reserve"], [/preseason/i, "Preseason"], [/\bretired\b/i, "Retired"]];
+  const titlePos = (t) => String(t || "").replace(/(^|[\s/(-])([a-z])/g, (m, a, b) => a + b.toUpperCase());   // "Left fielder" → "Left Fielder"
   function careerTimeline({ pfaCareer, info, schools, careerLines, draft, draftLabel = "NFL draft", note, hof, pro, neb, noteTeams = [] }) {
     const NOW = new Date().getFullYear(), spans = [], marks = [], undated = [];
     // NFL team for a career-history name ("St. Louis Rams" → the Rams), for its logo.
@@ -1823,7 +1824,7 @@
       const alsoHtml = alsoNote && Object.keys(alsoLinks).length ? { html: alsoNote.split(/,\s*(?![^()]*\))/).map((part) => { const n = Object.keys(alsoLinks).find((k) => part.startsWith(k)); return n ? `<a href="${esc(alsoLinks[n])}" target="_blank" rel="noopener">${esc(n)}</a>${esc(part.slice(n.length))}` : esc(part); }).join(", ") } : "";
       // ProBallers id: the spreadsheet's ProBallers column (config/private-lists.json proballersRange), else config/site.json proballers.ids.
       const pbId = (DATA.site.proballers?.ids || {})[slug] || (((CHECK.lists.find((x) => x.slug === (row && row.listSlug)) || {}).proballers || {})[(row && row.name) || info.name]);
-      const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
+      const facts = [["Position", titlePos(info.position || (pick("Position") || [])[1] || bbPos)], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
         ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
         ...Object.entries(info.letters || {}).filter(([sp]) => sp !== sport).map(([sp, ys]) => [`Nebraska ${sp} years`, yearRanges([...new Set(ys)].sort((x, y) => x - y))]),
@@ -1903,7 +1904,7 @@
           <div class="pl-card">${!hero && fanDayOf(slug) ? `<div class="pl-ph fd-hero">${fanDayCrop(fanDayOf(slug), info.name)}</div><small>${esc(fdLabel(fanDayOf(slug).c))}</small>` : hero ? `<button type="button" class="pl-ph${scans.includes(hero) ? "" : " cd"}" ${scans.includes(hero) ? `data-scan="${esc(info.name)}" data-sport="${sport}"` : `data-i="${hero.i}"`}><img alt="${esc(hero.name)}" src="${img(hero.id, hero.rk, 900)}" onload="fitFrame(this)"></button><small>${esc(hero.name)}</small>`
             : `<div class="pl-ph none"><span class="st ${info.have ? "have" : "need"}">${info.have ? "Have" : "Need"}</span><p>${info.have ? `${info.signed ? `Signed ${esc(info.signed.toLowerCase())}. ` : ""}Scan coming soon.` : "I'm still looking for this autograph. Can you help?"}</p>${info.have ? "" : contactHTML("I can help with this autograph", `${info.name} autograph`, `Hi Ian,\n\nI saw you're looking for a ${info.name} autograph. I might be able to help:\n\n`, info.name)}</div>`}${tcdbHTML}</div>
           <div class="pl-main">
-            <div class="kick">${esc(info.position || bbPos || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
+            <div class="kick">${esc(titlePos(info.position || bbPos) || (football ? "Nebraska Cornhusker" : `Nebraska Cornhuskers ${info.sport}`))}</div>
             <div class="pl-name"><h1>${esc(info.name)}</h1>${signatureHTML(slug, info.name)}</div>
             <div class="pl-badges">${info.have ? "" : `<span class="st need">Need</span>`}${info.have && info.signed ? `<span class="pill">Signed ${esc(info.signed.toLowerCase())}</span>` : ""}</div>
             ${statsLink ? `<a class="statlink" href="${esc(statsLink)}" target="_blank" rel="noopener">Career stats at ${esc(siteName(statsLink))} ↗</a>` : ""}
