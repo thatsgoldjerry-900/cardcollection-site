@@ -713,7 +713,6 @@
         <a class="stat link" href="#/stats"><b>📊</b><span>Scanned Collection Stats →</span></a>
         <a class="stat link" href="#/rarest"><b>💎</b><span>Rarest Cards →</span></a>
         <a class="stat link" href="#/letters"><b><img class="stat-ic" alt="" src="assets/letterman-icon.webp" width="76" height="36"></b><span>Letterman Sets →</span></a>
-        <div class="stat"><b>${fmt(CARDS.length)}</b><span>cards scanned</span></div>
       </section>
       <div class="sec-h"><h2>New here?</h2></div>
       ${startHere()}
