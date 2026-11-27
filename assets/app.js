@@ -1788,6 +1788,8 @@
       const alsoNote = (info.collegeNote && info.collegeNote.also) || "", alsoLinks = (info.collegeNote && info.collegeNote.alsoLinks) || {};
       const alsoSchools = [...alsoNote.matchAll(/([^(),]+?)\s*\(([^)]*)\)/g)].map((m) => [m[1].trim(), m[2].trim()]).filter(([n]) => !/nebraska/i.test(n));
       const alsoHtml = alsoNote && Object.keys(alsoLinks).length ? { html: alsoNote.split(/,\s*(?![^()]*\))/).map((part) => { const n = Object.keys(alsoLinks).find((k) => part.startsWith(k)); return n ? `<a href="${esc(alsoLinks[n])}" target="_blank" rel="noopener">${esc(n)}</a>${esc(part.slice(n.length))}` : esc(part); }).join(", ") } : "";
+      // ProBallers id: the spreadsheet's ProBallers column (config/private-lists.json proballersRange), else config/site.json proballers.ids.
+      const pbId = (DATA.site.proballers?.ids || {})[slug] || (((CHECK.lists.find((x) => x.slug === (row && row.listSlug)) || {}).proballers || {})[(row && row.name) || info.name]);
       const facts = [["Position", info.position || (pick("Position") || [])[1] || bbPos], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
         ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
@@ -1898,7 +1900,7 @@
               ? `Seasons he led Nebraska in a category, from the <a href="https://huskers.com/football-history-and-records" target="_blank" rel="noopener">Nebraska Football Record Book</a> (huskers.com). Full stats for this era aren't in my data source yet.`
               : p.collegeSource === "games" ? "From CollegeFootballData.com (season totals added up from game box scores)." : "From CollegeFootballData.com."}</p>`
             : `<p class="muted">Not available yet.</p>`}</section>`}
-          ${(DATA.site.proballers?.ids || {})[slug] ? `<section class="wide-sec pb-sec"><h2>Pro stats</h2><div class="pb-wrap"><div class="proballers-widget-player-player-unit" data-proballers-player-id="${esc(String((DATA.site.proballers.ids || {})[slug]))}" data-proballers-locale="en" data-proballers-base-url="https://widgets.proballers.com"><a href="https://www.proballers.com/" target="_blank" rel="noopener">See stats on Proballers</a></div></div><p class="note">Stats widget from <a href="https://www.proballers.com/" target="_blank" rel="noopener">ProBallers</a>.</p><img alt="" width="1" height="1" class="pb-go" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" onload="loadProballers()"></section>` : ""}
+          ${pbId ? `<section class="wide-sec pb-sec"><h2>Pro stats</h2><div class="pb-wrap"><div class="proballers-widget-player-player-unit" data-proballers-player-id="${esc(String(pbId))}" data-proballers-locale="en" data-proballers-base-url="https://widgets.proballers.com"><a href="https://www.proballers.com/" target="_blank" rel="noopener">See stats on Proballers</a></div></div><p class="note">Stats widget from <a href="https://www.proballers.com/" target="_blank" rel="noopener">ProBallers</a>.</p><img alt="" width="1" height="1" class="pb-go" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" onload="loadProballers()"></section>` : ""}
           ${coaching ? `<section><h2>Coaching career</h2><ul class="plain">${coaching}</ul></section>` : ""}
           ${teams ? `<section><h2>Pro teams</h2><ul class="plain">${teams}</ul></section>` : ""}
           ${awards ? `<section><h2>Awards and highlights</h2><ul class="plain">${awards}</ul></section>` : ""}

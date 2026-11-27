@@ -69,6 +69,11 @@ def private_out(t):
     return "\n\n".join(paras)
 
 
+def slug_of(title):
+    import re
+    return re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+
+
 def extract_side_by_side(xlsx_bytes, spec):
     """Several lists laid out side by side: list titles on titleRow, column titles on headerRow.
     Each list ends at its first blank row; a row with only a name is a subheading."""
@@ -123,7 +128,7 @@ def extract_side_by_side(xlsx_bytes, spec):
         full = titles[s0]
         m = re.match(r"^(.*?)\s*\((.*)\)\s*$", full)
         title, sub = (m.group(1), m.group(2)) if m else (full, "")
-        groups, cur, links, notes = [], {"title": "", "rows": []}, {}, {}
+        groups, cur, links, notes, proballers = [], {"title": "", "rows": []}, {}, {}, {}
         for ri in range(spec["headerRow"], len(rows)):
             r = rows[ri]
             vals = [r[i] if i < len(r) else "" for i in cols]
@@ -135,6 +140,11 @@ def extract_side_by_side(xlsx_bytes, spec):
             cur["rows"].append(vals)
             if link_at(ri, cols[0]): links[vals[0]] = link_at(ri, cols[0])
             if note_at(ri, cols[0]): notes[vals[0]] = note_at(ri, cols[0])
+            pr = spec.get("proballersRange")
+            if pr and pr["list"] == slug_of(title) and int(pr["rows"].split(":")[0]) <= ri + 1 <= int(pr["rows"].split(":")[1]):
+                ci = openpyxl.utils.column_index_from_string(pr["column"]) - 1
+                m = re.search(r"proballers\.com/(?:[a-z]{2}/)?basketball/player/(\d+)", link_at(ri, ci) or (r[ci] if ci < len(r) else ""), re.I)
+                if m: proballers[vals[0]] = int(m.group(1))     # only the number is kept
         groups.append(cur)
         groups = [g for g in groups if g["rows"]]
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
@@ -146,6 +156,7 @@ def extract_side_by_side(xlsx_bytes, spec):
         lists.append({"slug": slug, "title": title, "subtitle": sub,
                       "columns": [headers[i] for i in cols], "groups": groups,
                       "links": {n: u for n, u in links.items() if n in kept},
+                      **({"proballers": {n: i for n, i in proballers.items() if n in kept}} if proballers else {}),
                       # Notes on the player-name cells, only for lists approved in "notesLists".
                       **({"notes": {n: t for n, t in notes.items() if n in kept and n not in spec.get("hideNotes", [])}} if slug in spec.get("notesLists", []) else {})})
     return {"title": rows[0][0] if rows and rows[0] else spec["name"], "lists": lists}

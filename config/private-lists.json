@@ -25,7 +25,13 @@
       "_notes": "\"notesLists\": lists whose player-name cell notes are published (Tier 2 and Tier 3 only). \"hideNotes\": players whose note is never published.",
       "hideNotes": [
         "Thunder Collins"
-      ]
+      ],
+      "_proballers": "Ian, 2026-11-27: the ProBallers player link in AK14:AK27 on the Main tab, one per NBA Husker row. Only the number in the proballers.com address is published (the site's Pro stats widget).",
+      "proballersRange": {
+        "list": "basketball-nba",
+        "column": "AK",
+        "rows": "14:27"
+      }
     },
     {
       "name": "inventory-stats",
