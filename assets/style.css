@@ -1553,3 +1553,8 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .pl-refs .hof{margin:0;padding:12px 14px;gap:12px}
 .pl-refs .hof-ic{width:42px;height:42px}.pl-refs .hof-ic svg{width:22px;height:22px}
 .pl-refs .hof b{font-size:16px}
+
+/* TCDb links sit under the card window on the left of the player page */
+.pl-card .tcdb-row{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:14px}
+.pl-card .tcdb-row .tcdb-badge{align-self:flex-start}
+.pl-card .tcdb-row .btn{text-align:center}
