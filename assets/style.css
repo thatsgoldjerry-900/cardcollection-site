@@ -1484,7 +1484,7 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 
 /* Homepage tiles: two full-screen doors. Each sticks to the top; the next slides up over it. */
 .wrap-tiles{max-width:none;padding:0}
-.tile-full{position:sticky;top:0;height:100vh;height:100svh;min-height:560px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:56px 6vw;background:var(--tile-bg);color:var(--tile-fg);overflow:hidden;box-shadow:0 -20px 50px rgba(0,0,0,.5)}
+.tile-full{text-decoration:none;cursor:pointer;position:sticky;top:0;height:100vh;height:100svh;min-height:560px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:56px 6vw;background:var(--tile-bg);color:var(--tile-fg);overflow:hidden;box-shadow:0 -20px 50px rgba(0,0,0,.5)}
 .tile-copy{max-width:560px}
 .tile-copy h1{font:800 clamp(56px,8.5vw,128px)/.92 var(--f-b);letter-spacing:-.02em;margin:.12em 0 .3em;color:inherit}
 .tile-copy p{font-size:18px;line-height:1.45;color:inherit;opacity:.92;margin:0 0 26px}
@@ -1511,6 +1511,7 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tile-players::before,.tile-cards::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(40,0,6,.7) 0,rgba(40,0,6,.35) 32%,transparent 48%)}
 .tile-players .tile-copy{max-width:27vw}
 .tile-players .tile-copy h1{font-size:clamp(44px,5.8vw,104px)}
+.tile-full:focus-visible{outline:3px solid currentColor;outline-offset:-10px}
 .tile-tag{position:absolute;right:16px;bottom:14px;z-index:1;background:rgba(0,0,0,.6);color:#fff;font:12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
 @media (max-width:760px){
   .tile-players{align-items:start;padding-top:40px}

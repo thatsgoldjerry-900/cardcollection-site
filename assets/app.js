@@ -640,27 +640,23 @@
   // Homepage: two full-screen doors. Each section sticks to the top and the next one slides up over it.
   function home() {
     setNav(null); setTitle("");
-    const gordon = CARDS.find((c) => /#297 Alex Gordon Full$/.test(c.name));
     $("#app").innerHTML = `<div class="wrap-tiles">
-      <section class="tile-full tile-cards" style="--tile-bg:#0b0d10;--tile-fg:#ffffff">
+      <a class="tile-full tile-cards" href="#/cards" aria-label="The Cards" style="--tile-bg:#0b0d10;--tile-fg:#ffffff">
         <div class="tile-copy"><h1>The Cards</h1>
-          <p>Legends remembered through cardboard treasures</p>
-          <a class="tile-btn" href="#/cards">Explore the cards →</a></div>
+          <p>Legends remembered through cardboard treasures</p></div>
         <img class="tile-bg" src="assets/home-cards.jpg" alt="">
-      </section>
-      <section class="tile-full tile-players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
+      </a>
+      <a class="tile-full tile-players" href="#/nfl-huskers" aria-label="The Players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
         <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
-          <p>Nebraska players who went on to the NFL, MLB, NBA and beyond.</p>
-          <a class="tile-btn" href="#/nfl-huskers">Meet the players →</a></div>
+          <p>Nebraska players who went on to the NFL, MLB, NBA and beyond.</p></div>
         <img class="tile-bg" src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)">
         <span class="tile-tag">Illustrative</span>
-      </section>
-      <section class="tile-full tile-chase" style="--tile-bg:#c9a46a;--tile-fg:#2a1a08">
+      </a>
+      <a class="tile-full tile-chase" href="#/checklist" aria-label="The Chase" style="--tile-bg:#c9a46a;--tile-fg:#2a1a08">
         <div class="tile-copy"><h1>The Chase</h1>
-          <p>One autograph of every Husker to play in the NFL</p>
-          <a class="tile-btn" href="#/checklist">See the chase →</a></div>
+          <p>One autograph of every Husker to play in the NFL</p></div>
         <img class="tile-bg" src="assets/home-chase.jpg" alt="">
-      </section>
+      </a>
     </div>`;
   }
 
