@@ -1189,7 +1189,7 @@
       const ys = (String(h.years || "").match(/\d{2,4}/g) || []).map(Number), a = ys[0], b = ys.length > 1 ? ys[ys.length - 1] : a;
       if (h.role || !last || !a) return n.join(" ") === me.join(" ") || !h.role;
       const end = b < 100 ? Math.floor(a / 100) * 100 + b + (b < a % 100 ? 100 : 0) : b;
-      return last >= a - 1 && last <= end + 1;
+      return last >= a - 1 && last <= end + (n.join(" ") === me.join(" ") ? 8 : 1);
     }) || [])[1] || alt || null;
   }
   // Small Hall of Fame marks after a name in player lists: bronze for Canton, gold for Nebraska.

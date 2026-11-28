@@ -1599,7 +1599,8 @@
       "Robert Martin"
     ],
     "David Humm": [
-      "David Henry Humm"
+      "David Henry Humm",
+      "Dave Humm"
     ],
     "Bob Nelson": [
       "Robert Lee Nelson",
@@ -1828,7 +1829,8 @@
       "Theodore Doyle"
     ],
     "John Howell": [
-      "John Searl Howell"
+      "John Searl Howell",
+      "Johnny Howell"
     ],
     "Lloyd Cardwell": [
       "Lloyd Raymond Cardwell"
@@ -1936,7 +1938,8 @@
     ],
     "Link Lyman": [
       "William Lyman",
-      "William Roy Lyman"
+      "William Roy Lyman",
+      "Roy Lyman"
     ],
     "Edson \"Ed\" Shaw": [
       "Edson Shaw",
@@ -2238,6 +2241,21 @@
     ],
     "Lloyd Grow": [
       "Lloyd Eugene Grow"
+    ],
+    "Donald Olson": [
+      "Don Olson"
+    ],
+    "Ty Robertson": [
+      "Tyrone Robertson"
+    ],
+    "Viscount \"Vike\" Francis": [
+      "Vike Francis"
+    ],
+    "Charles Toogood": [
+      "Charlie Toogood"
+    ],
+    "Clete Fischer": [
+      "Cletus Fischer"
     ]
   },
   "backFor": {
@@ -4140,7 +4158,9 @@
       "title": "Nebraska Cracked Ice",
       "match": "cracked ice",
       "blurb": "Every Husker Cracked Ice parallel I'm chasing: the ones in my collection and the ones I still need.",
-      "skip": ["2016 David Lee Limited Edition Cracked Ice #NNO Johnny Rodgers 1 of 1"],
+      "skip": [
+        "2016 David Lee Limited Edition Cracked Ice #NNO Johnny Rodgers 1 of 1"
+      ],
       "exclude": "\\b(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\s+cracked ice\\b|\\bcracked ice\\s+(red|blue|green|gold|purple|pink|orange|burgundy|black|navy|silver|bronze|teal|aqua|yellow|white|maroon|emerald|ruby|sapphire|platinum|camo)\\b|\\bgreen crystals\\b"
     },
     {
