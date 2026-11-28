@@ -2345,7 +2345,7 @@
     const stRows = all.filter((r) => !r.proStatsExempt), csRows = all.filter((r) => r.final >= 1962);
     const sport = (rows, ok) => ["football", "baseball", "basketball"].map((s) => { const g = rows.filter((r) => r.sport === s); return g.length ? bar(s[0].toUpperCase() + s.slice(1), g.filter(ok).length, g.length) : ""; }).join("");
     // Hall of Fame: Nebraska and College members matched to a player page; Canton members that have a page.
-    const hofDone = () => { const mk = (list, college) => { const pl = list.filter((m) => !m.role), got = pl.filter((m) => all.some((r) => hofFor({ name: r.name, finalYear: r.final }, college) === m)); return { pl, got, miss: pl.filter((m) => !got.includes(m)) }; };
+    const hofDone = () => { const mk = (list, college) => { const pl = list.filter((m) => !m.role), hit = new Set(all.map((r) => hofFor({ name: r.name, finalYear: r.final }, college))), got = pl.filter((m) => hit.has(m)); return { pl, got, miss: pl.filter((m) => !got.includes(m)) }; };
       const slugs = new Set(all.map((r) => r.slug)), proAll = Object.keys(PROHOF || {}); return { neb: mk(HOF || [], false), col: mk(CHOF || [], true), pro: [proAll.filter((x) => slugs.has(x)), proAll] }; };
     const hofLoad = HOF ? Promise.resolve() : fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => { HOF = d.members || []; CHOF = d.college || []; PROHOF = d.pro || {}; PROHOFURL = d.proPaths || {}; });
     // Signatures: neon signatures on the site versus players I have an autograph of.
