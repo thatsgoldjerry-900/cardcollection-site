@@ -227,7 +227,7 @@
     NEW_CUTOFF = dates[Math.min(dates.length - 1, 1)] || ""; // cards from the two most recent "drops" count as new
     const d30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
     if (NEW_CUTOFF < d30) NEW_CUTOFF = dates[0];
-    $("#q").placeholder = phoneBar.matches ? "Search cards" : `Search ${fmt(CARDS.length)} scans… try “Triple Threads”`;
+    $("#q").placeholder = phoneBar.matches ? "Search cards" : `Search ${fmt(ownedCount())} scans… try “Triple Threads”`;
     renderNav(); renderFoot(); route();
   }
 
@@ -284,6 +284,9 @@
      own browser; #/picks shows them, and a shared link (#/picks/<ids>) shows the same cards to anyone. ---------- */
   const PICK_MAX = 50, PICK_KEY = "ian-picks";
   const pickId = (c) => cid(c).slice(-8);   // the end of the scan's Drive ID: short and unique across the collection
+  // Want List items are other people's photos of cards I'm after, not scans of my cards: they're called "items" and left out of every count and stat.
+  const isOwnedScan = (c) => !c.photo && !(SECTIONS[c.si] && SECTIONS[c.si].kind === "want");
+  const ownedCount = () => CARDS.filter(isOwnedScan).length;
   const canPick = (c) => c && !c.photo && SECTIONS[c.si] && SECTIONS[c.si].kind !== "want";
   let PICKS = (() => { try { return JSON.parse(localStorage.getItem(PICK_KEY) || "[]").filter((x) => typeof x === "string").slice(0, PICK_MAX); } catch (e) { return []; } })();
   const isPicked = (c) => PICKS.includes(pickId(c));
@@ -526,7 +529,7 @@
   function placeSearch() {
     if (phoneBar.matches) $("#mbar").insertBefore(searchForm, $("#mb-dice"));
     else headDice.parentNode.insertBefore(searchForm, $("#picks-link"));
-    $("#q").placeholder = phoneBar.matches ? "Search cards" : typeof CARDS !== "undefined" && CARDS && CARDS.length ? `Search ${fmt(CARDS.length)} scans… try “Triple Threads”` : "Search 9,000+ cards… try “Triple Threads”";
+    $("#q").placeholder = phoneBar.matches ? "Search cards" : typeof CARDS !== "undefined" && CARDS && CARDS.length ? `Search ${fmt(ownedCount())} scans… try “Triple Threads”` : "Search 9,000+ cards… try “Triple Threads”";
   }
   phoneBar.addEventListener("change", placeSearch); placeSearch();
   $("#mb-dice").addEventListener("click", () => $("#dice").click());
@@ -677,7 +680,7 @@
         <div class="fan">${four.map((c) => `<img loading="lazy" alt="" src="${img(c.id, c.rk, 240)}">`).join("")}</div>
         <h3>${esc(sec.title.replace(/\s*Cards & Autos$/i, ""))}</h3>
         ${sec.progress ? `<div class="bar"><i style="width:${sec.progress}%"></i></div>` : ""}
-        <div class="tm"><span>${fmt(list.length)} scans</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
+        <div class="tm"><span>${fmt(list.length)} ${sec.kind === "want" ? "items" : "scans"}</span><span>${sec.progress ? pctText(sec) + " complete" : sec.groups.length > 1 ? sec.groups.length + " groups" : ""}</span></div></a>`;
     }).join("");
     function customsTile() {   // Customs isn't a Drive section (cards are tagged custom), so it gets its own tile
       const list = CARDS.filter((c) => c.tags.has("custom")); if (!list.length) return "";
@@ -688,7 +691,7 @@
     const nCust = CARDS.filter((c) => c.tags.has("custom")).length;
     $("#app").innerHTML = `<div class="wrap cards-landing">
       <header class="cl-head">
-        <div><span class="kick">${fmt(CARDS.length)} scans · ${fmt(ones)} one-of-ones</span>
+        <div><span class="kick">${fmt(ownedCount())} scans · ${fmt(ones)} one-of-ones</span>
           <h1>The Cards</h1>
           <p>Legends remembered through cardboard treasures. Pick a collection to dive in, or jump straight to something below.</p></div>
         <nav class="cl-quick" aria-label="Quick links">
@@ -768,10 +771,10 @@
       blurb = "The newest scans to land in my collection, most recent first.";
     } else if (slug === "rarest") {
       // Rarest cards: every numbered card, lowest print run first (1/1s, then /2, /3 …).
-      base = CARDS.filter((c) => c.one || c.serial || c.printRun); title = "Rarest Cards"; kick = "Whole collection";
+      base = CARDS.filter((c) => isOwnedScan(c) && (c.one || c.serial || c.printRun)); title = "Rarest Cards"; kick = "Whole collection";
       blurb = "Every numbered card I've scanned, rarest first: one-of-ones, then /2, /3 and up.";
     } else {
-      base = CARDS; title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
+      base = slug === "search" ? CARDS : CARDS.filter(isOwnedScan); title = state.q ? (state.q.startsWith("=") ? `${esc(state.q.slice(1))}’s cards` : `Results for “${esc(state.q)}”`) : "Every card"; kick = "Whole collection";
     }
     setTitle(slug === "search" ? `Search: ${state.q}` : slug === "all" ? "Every card" : slug === "rarest" ? "Rarest Cards" : slug === "duplicates" ? "Duplicates" : slug === "recent" ? "Recent Additions" : (sec ? sec.title : title) + (gi >= 0 ? ` (${groups[gi].label})` : ""));
     const side = "";   // desktop: no year list in the left bar (Ian, 2026-11-25); phones keep the .mgroups strip
@@ -811,7 +814,7 @@
       if (state.team) list = list.filter((c) => c.team === state.team);   // the Team menu (team subfolders in Drive)
       state.list = sortList(list, state.sort); state.shown = 0;
       $("#grid").innerHTML = state.list.length ? "" : `<p class="empty">${slug === "customs" && state.filters.has("nonsport") ? "Non-sport customs, like my Sonic the Hedgehog cards, are coming soon." : state.filters.size ? "No cards match. Try removing a filter or a search word." : `No cards match “${esc(state.q)}”. Try a player (Alex Gordon), a set (Triple Threads) or a year (2013).`}</p>`;
-      $("#count").textContent = `${fmt(state.list.length)} scan${state.list.length === 1 ? "" : "s"}`;
+      $("#count").textContent = `${fmt(state.list.length)} ${sec && sec.kind === "want" ? "item" : "scan"}${state.list.length === 1 ? "" : "s"}`;
       more();
     };
     $(".chips").addEventListener("change", (e) => {
@@ -2271,7 +2274,7 @@
   // Every player in the scans, most cards first (#/stats/players). Each row opens a search for that player.
   function statsPlayers() {
     setNav(""); setTitle("Players by number of scans");
-    const m = new Map(); CARDS.forEach((c) => { if (c.photo || !c.title) return; const n = plainTitle(c); if (n) m.set(n, (m.get(n) || 0) + 1); });
+    const m = new Map(); CARDS.forEach((c) => { if (!isOwnedScan(c) || !c.title) return; const n = plainTitle(c); if (n) m.set(n, (m.get(n) || 0) + 1); });
     const rows = [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])), max = rows.length ? rows[0][1] : 1;
     $("#app").innerHTML = `<div class="wrap stp"><a class="back" href="#/stats">← Scanned Collection Stats</a>
       <div class="c-head"><div class="kick">Scanned Collection Stats</div><h1>Players by number of scans</h1><p>${fmt(rows.length)} players, most scans first. These are the cards scanned into the site, not every card I own. Tap a player to see his scans.</p></div>
@@ -2307,7 +2310,7 @@
   /* ---------- Collection stats (#/stats) ---------- */
   function statsPage() {
     setNav(""); setTitle("Scanned Collection Stats");
-    const cards = CARDS.filter((c) => !c.photo), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
+    const cards = CARDS.filter(isOwnedScan), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
     const bar = (label, n, max, href) => `<li>${href ? `<a href="${href}">` : "<span>"}<b>${esc(label)}</b><i style="--w:${max ? (n / max) * 100 : 0}%"></i><em>${fmt(n)}</em>${href ? "</a>" : "</span>"}</li>`;
     // By card year
     const byYear = new Map(); cards.forEach((c) => c.year < 9999 && byYear.set(c.year, (byYear.get(c.year) || 0) + 1));
@@ -2326,7 +2329,7 @@
       .map(([l, f, q]) => [l, cards.filter(f).length, "#/search/" + q]);
     const tmax = Math.max(1, ...tiers.map((t) => t[1]));
     // By collection
-    const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x)).sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
+    const secs = SECTIONS.map((x, i) => [x, sectionCards(i).length]).filter(([x, n]) => n && shown(x) && x.kind !== "want").sort((a, b) => b[1] - a[1]), smax = Math.max(1, ...secs.map((x) => x[1]));
     // Leaderboards
     const rb = new Map(); cards.forEach((c) => { const k = !isWant(c) && rainbowKey(c); if (k) (rb.get(k) || rb.set(k, []).get(k)).push(c); });
     const rainbows = [...rb.values()].filter((l) => l.length > 2).sort((a, b) => b.length - a.length).slice(0, 10);
