@@ -2308,6 +2308,46 @@
       ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}</div>`;
   }
   /* ---------- Collection stats (#/stats) ---------- */
+  /* ---------- Website completeness tracker (#/tracker, not linked from the menus) ----------
+     Player numbers come from data/tracker.json (scripts/scrape_tracker.js + scripts/build_tracker.py read what each player page shows);
+     rainbows are counted live from the scans and the TCDb collection. */
+  function trackerPage() {
+    setNav(""); setTitle("Site completeness tracker");
+    if (!TW) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void tcdbWants().then(() => HASH().startsWith("#/tracker") && trackerPage()); }
+    if (!window.TRK) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>';
+      return void fetch("data/tracker.json").then((r) => r.json()).catch(() => ({ players: [] })).then((d) => { window.TRK = d; HASH().startsWith("#/tracker") && trackerPage(); }); }
+    const D = window.TRK, all = D.players.filter((r) => !r.coach), pc = (n, t) => (t ? Math.floor((n / t) * 100) : 0);
+    const bar = (label, n, t, note = "") => `<div class="tk-bar"><div class="tk-top"><b>${esc(label)}</b><span>${fmt(n)} of ${fmt(t)} · <strong>${pc(n, t)}%</strong></span></div><div class="bar"><i style="width:${t ? (n / t) * 100 : 0}%"></i></div>${note ? `<small>${note}</small>` : ""}</div>`;
+    const byList = (rows, ok) => [...new Set(rows.map((r) => r.list))].sort().map((l) => { const g = rows.filter((r) => r.list === l); return bar(l, g.filter(ok).length, g.length); }).join("");
+    const names = (rows, why) => rows.length ? `<details class="tk-more"><summary>${fmt(rows.length)} to go</summary><ul>${rows.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a>${why ? ` <em>${esc(why(r))}</em>` : ""}</li>`).join("")}</ul></details>` : "";
+    // Rainbows: every group with a scan; versions I have scanned vs versions in my TCDb collection I haven't scanned yet.
+    const rb = [];
+    RAINBOWS || rainbowOf(CARDS[0] || {});
+    [...RAINBOWS.values()].forEach((l) => { const c = l.find((x) => !x.tw && !x.th && !isWant(x)); if (!c) return;
+      const a = rainbowOf(c), h = rainbowHave(c, a), nd = rainbowNeeds(c, a, h); if (!a.length || a.length + h.length + nd.length < 2) return;
+      rb.push({ c, scanned: a.length, unscanned: h.length, need: nd.length }); });
+    const rbS = rb.reduce((n, x) => n + x.scanned, 0), rbU = rb.reduce((n, x) => n + x.unscanned, 0), rbFull = rb.filter((x) => !x.unscanned).length;
+    const rbOpen = rb.filter((x) => x.unscanned).sort((x, y) => y.unscanned - x.unscanned);
+    const bios = all, bioOk = (r) => r.bio;
+    const tlOk = (r) => r.neb && r.pro && !r.undated, tlWhy = (r) => [!r.neb && "no Nebraska bar", !r.pro && "no pro teams", r.undated && "team without a year"].filter(Boolean).join(", ");
+    const logoRows = all.filter((r) => r.logoBars), logoHave = logoRows.reduce((n, r) => n + r.logoHave, 0), logoAll = logoRows.reduce((n, r) => n + r.logoBars, 0);
+    const miss = new Map(); all.forEach((r) => r.logoMiss.forEach((t) => miss.set(t, (miss.get(t) || 0) + 1)));
+    const stRows = all.filter((r) => !r.proStatsExempt), csRows = all.filter((r) => r.final >= 1962);
+    const sport = (rows, ok) => ["football", "baseball", "basketball"].map((s) => { const g = rows.filter((r) => r.sport === s); return g.length ? bar(s[0].toUpperCase() + s.slice(1), g.filter(ok).length, g.length) : ""; }).join("");
+    $("#app").innerHTML = `<div class="wrap stp tk">
+      <div class="c-head"><div class="kick">Behind the scenes</div><h1>Site completeness</h1><p>What's finished and what's still missing across the player pages and rainbows. Player numbers were last counted ${esc(D.built || "")}; rainbows are live.</p></div>
+      <section class="st-box"><h2>Rainbows</h2>
+        ${bar("Versions scanned (of the versions I own)", rbS, rbS + rbU, `${fmt(rbU)} owned version${rbU === 1 ? "" : "s"} still have no scan`)}
+        ${bar("Rainbows with every owned version scanned", rbFull, rb.length)}
+        ${rbOpen.length ? `<details class="tk-more"><summary>${fmt(rbOpen.length)} rainbows with unscanned versions</summary><ul>${rbOpen.map((x) => `<li><a href="#/rainbow/${encodeURIComponent(cid(x.c))}">${esc(x.c.title)}</a> <em>${esc(x.c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())} · ${x.unscanned} to scan</em></li>`).join("")}</ul></details>` : ""}</section>
+      <section class="st-box"><h2>Bio pages</h2>${bar("Players with a bio", bios.filter(bioOk).length, bios.length, "Players on the NFL Tier 1–3, MLB and NBA lists, coach-only bios left out.")}${byList(bios, bioOk)}${names(bios.filter((r) => !r.bio))}</section>
+      <section class="st-box"><h2>Career timelines</h2>${bar("Complete timelines", all.filter(tlOk).length, all.length, "Complete = a Nebraska bar, at least one pro team, and every team has its years.")}${byList(all, tlOk)}${names(all.filter((r) => !tlOk(r)), tlWhy)}</section>
+      <section class="st-box"><h2>Pro team logos on timelines</h2>${bar("Pro stops with a logo", logoHave, logoAll, "Minor league and non-NBA international teams aren't counted.")}
+        ${miss.size ? `<details class="tk-more"><summary>${fmt(miss.size)} teams missing a logo</summary><ul>${[...miss].sort((x, y) => y[1] - x[1]).map(([t, n]) => `<li>${esc(t)} <em>${n} player${n === 1 ? "" : "s"}</em></li>`).join("")}</ul></details>` : ""}</section>
+      <section class="st-box"><h2>Pro stats</h2>${bar("Players showing pro stats", stRows.filter((r) => r.proStats).length, stRows.length, "Left out: linemen, long snappers and players with no pro games.")}${sport(stRows, (r) => r.proStats)}${names(stRows.filter((r) => !r.proStats), (r) => r.pos)}</section>
+      <section class="st-box"><h2>College stats</h2>${bar("Players showing college stats", csRows.filter((r) => r.collegeStats).length, csRows.length, "Players whose final season was 1962 or later.")}${sport(csRows, (r) => r.collegeStats)}${names(csRows.filter((r) => !r.collegeStats), (r) => r.sport)}</section>
+    </div>`;
+  }
   function statsPage() {
     setNav(""); setTitle("Scanned Collection Stats");
     const cards = CARDS.filter(isOwnedScan), N = cards.length, pct = (n) => (N ? (n / N) * 100 : 0);
@@ -2791,6 +2831,7 @@
     else if (a === "media") media();
     else if (a === "about") aboutPage();
     else if (a === "picks") picksPage(b || "");
+    else if (a === "tracker") trackerPage();
     else if (a === "stats") (b === "players" ? statsPlayers() : statsPage());
     else if (a === "rainbow") rainbow(b);
     else if (a === "chase") chasePage(b);

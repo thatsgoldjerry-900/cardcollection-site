@@ -1575,3 +1575,10 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
   .cl-feature .cotd-big .cotd-card{width:min(340px,86vw)}
   .cl-feature-r .mq{margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut)}
 }
+
+/* Completeness tracker */
+.tk .tk-bar{margin:0 0 14px}.tk .tk-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;margin-bottom:5px}.tk .tk-top span{color:var(--mu)}.tk .tk-top strong{color:var(--fg)}
+.tk .bar{height:12px;border-radius:7px;background:var(--line);overflow:hidden}.tk .bar i{display:block;height:100%;background:var(--acc);border-radius:7px}
+.tk .tk-bar small{display:block;color:var(--mu);font-size:12.5px;margin-top:4px}
+.tk .tk-more{margin:8px 0 0;font-size:14px}.tk .tk-more summary{cursor:pointer;color:var(--acc)}
+.tk .tk-more ul{list-style:none;margin:8px 0 0;padding:0;max-height:340px;overflow:auto;columns:2 240px;column-gap:18px}.tk .tk-more li{padding:2px 0;break-inside:avoid}.tk .tk-more em{color:var(--mu);font-style:normal;font-size:12.5px}
