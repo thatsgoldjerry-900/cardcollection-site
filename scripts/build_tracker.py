@@ -55,7 +55,9 @@ for p in P:
     fin = p.get('finalYear') or 0
     try: fin = int(fin)
     except: fin = 0
-    oline = bool(OLINE.search(pos)) and not DLINE.search(pos)
+    # offensive linemen only (guards, centers, offensive tackles, long snappers); a player who also lists another position is not exempt
+    oline = all(OLINE.search(x) and not DLINE.search(x) for x in re.split(r'[,/]', pos) if x.strip()) if pos.strip() else False
+    notT1 = p['sport'] == 'football' and LISTS.get(p['list'], p['list']) != 'NFL Tier 1'
     rows.append({
         'slug': p['slug'], 'name': p['name'], 'list': LISTS.get(p['list'], p['list']), 'sport': p['sport'], 'pos': pos, 'final': fin,
         'coach': co, 'bio': bool((p.get('wiki') or {}).get('intro')),
@@ -69,7 +71,7 @@ for p in P:
             (f'letter years end {lt}, Wikipedia says {wl[0]}' if wl[0] and lt and lt != wl[0] else ''),
         ) if x])(wiki_neb_last(p), fin, max([0] + list((p.get('letters') or {}).get(p['sport']) or []))),
         'stale': bool(re.search(r'\b(is an American|plays|is a (?:professional|free agent))', ((p.get('wiki') or {}).get('intro') or '')[:300]) and 0 < last_pro_year(pg) < NOW - 1 and p['sport'] == 'football' and not re.search(r'\bformer\b', ((p.get('wiki') or {}).get('intro') or '')[:200])),
-        'proStatsExempt': 'lineman / long snapper' if oline else ('0 pro games' if g == '0' else ''),
+        'proStatsExempt': 'not NFL Tier 1' if notT1 else 'lineman / long snapper' if oline else ('0 pro games' if g == '0' else ''),
     })
 NFLN = {n.lower() for t in json.load(open('data/nfl-teams.json'))['teams'] for n in t['names']}
 CFL = re.compile(r'Alouettes|Argonauts|Stampeders|Roughriders|Blue Bombers|Tiger-Cats|Eskimos|Elks|Redblacks|Renegades|Rough Riders|Ottawa|BC Lions|Lions \(CFL\)|Hamilton|Saskatchewan|Edmonton|Calgary|Winnipeg|Montreal|Toronto Argonauts|Shreveport|Sacramento Gold|Baltimore Stallions|Las Vegas Posse|Memphis Mad Dogs|San Antonio Texans|Birmingham Barracudas', re.I)
