@@ -13,7 +13,8 @@
         "nfl-tier-2-huskers",
         "pro-football-huskers",
         "baseball-mlb",
-        "basketball-nba"
+        "basketball-nba",
+        "college-huskers"
       ],
       "skipGroups": [
         "Baseball - Minors/College"
@@ -22,6 +23,7 @@
         "nfl-tier-2-huskers",
         "pro-football-huskers"
       ],
+      "_college": "Ian, 2026-11-28: the College Huskers list (W14:AA325 on the Main tab: Player, Career Notes, Last Year, Signed, Autograph) is published so college-only Huskers get player pages. Cell notes (comments) are not published for it.",
       "_notes": "\"notesLists\": lists whose player-name cell notes are published (Tier 2 and Tier 3 only). \"hideNotes\": players whose note is never published.",
       "hideNotes": [
         "Thunder Collins"

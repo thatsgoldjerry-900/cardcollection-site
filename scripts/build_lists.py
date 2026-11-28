@@ -159,8 +159,8 @@ def extract_side_by_side(xlsx_bytes, spec):
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
         if spec.get("onlyLists") and slug not in spec["onlyLists"]:
             # Structure only (the log is public): which lists exist, their column titles and row counts. Never names or values.
-            STRUCT.append({'slug': slug, 'startColumn': openpyxl.utils.get_column_letter(s0 + 1), 'columns': [headers[i] for i in cols], 'rows': sum(len(g['rows']) for g in groups) + len(cur['rows'])})
-            print(f'Not published: list "{slug}" starts at column {openpyxl.utils.get_column_letter(s0 + 1)}, columns {[headers[i] for i in cols]}, {sum(len(g["rows"]) for g in groups) + len(cur["rows"])} rows.', file=sys.stderr)
+            STRUCT.append({'slug': slug, 'startColumn': openpyxl.utils.get_column_letter(s0 + 1), 'columns': [headers[i] for i in cols], 'rows': sum(len(g['rows']) for g in groups)})
+            print(f'Not published: list "{slug}" starts at column {openpyxl.utils.get_column_letter(s0 + 1)}, columns {[headers[i] for i in cols]}, {sum(len(g["rows"]) for g in groups)} rows.', file=sys.stderr)
             continue                                  # private list: never published
         skipg = set(spec.get("skipGroups", []))
         groups = [g for g in groups if g["title"] not in skipg]
