@@ -56,7 +56,7 @@ for p in P:
     try: fin = int(fin)
     except: fin = 0
     # offensive linemen only (guards, centers, offensive tackles, long snappers); a player who also lists another position is not exempt
-    oline = all(OLINE.search(x) and not DLINE.search(x) for x in re.split(r'[,/]', pos) if x.strip()) if pos.strip() else False
+    oline = p['sport'] == 'football' and all(OLINE.search(x) and not DLINE.search(x) for x in re.split(r'[,/]', pos) if x.strip()) if pos.strip() else False
     notT1 = p['sport'] == 'football' and LISTS.get(p['list'], p['list']) != 'NFL Tier 1'
     rows.append({
         'slug': p['slug'], 'name': p['name'], 'list': LISTS.get(p['list'], p['list']), 'sport': p['sport'], 'pos': pos, 'final': fin,
