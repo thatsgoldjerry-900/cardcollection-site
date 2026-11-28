@@ -2362,6 +2362,15 @@
     const trend = `<section class="st-box"><h2>Progress over time</h2>${hist.length < 2 ? `<p class="muted">First snapshot is ${esc(last ? last.date : D.built)}. Each time the numbers are refreshed, this shows what moved.</p>` : ""}
       <ul class="tk-trend">${Object.entries(NAMES).filter(([k]) => last && last.m[k]).map(([k, l]) => { const [n, t] = last.m[k], pn = prev && prev.m[k] ? prev.m[k] : null, dl = pn ? n - pn[0] : null;
         return `<li><span>${esc(l)}</span><b>${pc(n, t)}%</b><em class="${dl > 0 ? "up" : dl < 0 ? "down" : ""}">${dl == null ? "new" : (dl > 0 ? "+" : "") + fmt(dl)}</em>${spark(hist.filter((h) => h.m[k]).map((h) => h.m[k][1] ? h.m[k][0] / h.m[k][1] : 0))}</li>`; }).join("")}</ul></section>`;
+    // Overall score: the average completion of the measured items (signatures left out, they can't reach 100%).
+    const SCORE_KEYS = ["bios", "timelines", "logos", "proStats", "collegeStats", "phoneOk", "dataChecks", "years", "crawl", "previews", "setup", "namesClean", "links", "rainbowScans", "hof", "tcdb"];
+    const scoreOf = (h) => { const v = SCORE_KEYS.filter((k) => h.m[k] && h.m[k][1]).map((k) => h.m[k][0] / h.m[k][1]); return v.length ? Math.round((v.reduce((x, y) => x + y, 0) / v.length) * 100) : null; };
+    const scores = hist.map((h) => ({ date: h.date, s: scoreOf(h) })).filter((x) => x.s != null), nowS = scores.length ? scores[scores.length - 1].s : null;
+    const scoreChart = (() => { if (scores.length < 2) return `<p class="muted tk-sc-note">The graph starts filling in tomorrow. It adds one point each day the numbers are refreshed.</p>`;
+      const w = 420, h = 110, lo = Math.max(0, Math.min(...scores.map((x) => x.s)) - 5), hi = Math.min(100, Math.max(...scores.map((x) => x.s)) + 5), st = w / (scores.length - 1);
+      const pts = scores.map((x, i) => `${(i * st).toFixed(1)},${(h - 4 - ((x.s - lo) / (hi - lo || 1)) * (h - 8)).toFixed(1)}`).join(" ");
+      return `<svg class="tk-sc-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="Score by day, ${scores[0].s} to ${nowS}"><polyline fill="none" stroke="currentColor" stroke-width="3" vector-effect="non-scaling-stroke" points="${pts}"/></svg><div class="tk-sc-axis"><span>${esc(scores[0].date)}</span><span>${lo}–${hi}</span><span>${esc(scores[scores.length - 1].date)}</span></div>`; })();
+    const scoreBox = nowS == null ? "" : `<section class="st-box tk-score"><div class="tk-sc-num"><b>${nowS}</b><span>/ 100</span><em>Site completeness score</em></div><div class="tk-sc-graph">${scoreChart}</div></section>`;
     const extra = () => { const H = hofDone(), hp = (g) => bar(g.label, g.got.length, g.pl.length), hm = (g) => (g.miss.length ? `<details class="tk-more"><summary>${fmt(g.miss.length)} without a page</summary><ul>${g.miss.map((m) => `<li>${esc(m.name)} <em>class of ${m.class}</em></li>`).join("")}</ul></details>` : "");
       return `<section class="st-box"><h2>Hall of Fame</h2>${bar("Nebraska Football Hall of Fame players with a page", H.neb.got.length, H.neb.pl.length, "Coach inductees aren't counted.")}${hm(H.neb)}
         ${bar("College Football Hall of Fame players with a page", H.col.got.length, H.col.pl.length, "Player pages show this honor; lists don't have a College mark yet.")}${hm(H.col)}
@@ -2370,6 +2379,7 @@
         ${sigOpen.length ? `<details class="tk-more"><summary>${fmt(sigOpen.length)} autograph players without one</summary><ul>${sigOpen.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a></li>`).join("")}</ul></details>` : ""}</section>`; };
     $("#app").innerHTML = `<div class="wrap stp tk">
       <div class="c-head"><div class="kick">Behind the scenes</div><h1>Site completeness</h1><p>What's finished and what's still missing across the player pages and rainbows. Player numbers were last counted ${esc(D.built || "")}; rainbows are live.</p></div>
+      ${scoreBox}
       <section class="st-box"><h2>Rainbows</h2>
         ${bar("Versions scanned (of the versions I own)", rbS, rbS + rbU, `${fmt(rbU)} owned version${rbU === 1 ? "" : "s"} still have no scan`)}
         ${bar("Rainbows with every owned version scanned", rbFull, rb.length)}
