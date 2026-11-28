@@ -74,6 +74,9 @@ def slug_of(title):
     return re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
 
 
+STRUCT = []   # structure of unpublished lists (titles, column headings, row counts), saved to data/lists-structure.json
+
+
 def extract_side_by_side(xlsx_bytes, spec):
     """Several lists laid out side by side: list titles on titleRow, column titles on headerRow.
     Each list ends at its first blank row; a row with only a name is a subheading."""
@@ -156,6 +159,7 @@ def extract_side_by_side(xlsx_bytes, spec):
         slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
         if spec.get("onlyLists") and slug not in spec["onlyLists"]:
             # Structure only (the log is public): which lists exist, their column titles and row counts. Never names or values.
+            STRUCT.append({'slug': slug, 'startColumn': openpyxl.utils.get_column_letter(s0 + 1), 'columns': [headers[i] for i in cols], 'rows': sum(len(g['rows']) for g in groups) + len(cur['rows'])})
             print(f'Not published: list "{slug}" starts at column {openpyxl.utils.get_column_letter(s0 + 1)}, columns {[headers[i] for i in cols]}, {sum(len(g["rows"]) for g in groups) + len(cur["rows"])} rows.', file=sys.stderr)
             continue                                  # private list: never published
         skipg = set(spec.get("skipGroups", []))
@@ -234,6 +238,7 @@ def main():
             continue
         result = (extract_side_by_side(data, spec) if spec.get("layout") == "side-by-side"
                   else extract_ranges(data, spec) if spec.get("layout") == "ranges" else extract(data, spec))
+        if STRUCT: json.dump(STRUCT, open(os.path.join(ROOT, "data", "lists-structure.json"), "w"), indent=1)
         path = os.path.join(OUT_DIR, spec["name"] + ".json")
         old = open(path).read() if os.path.exists(path) else None
         new = json.dumps(result, ensure_ascii=False, indent=0)
