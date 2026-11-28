@@ -42,6 +42,7 @@ LISTS_INFO = {
                              "a roster in season, and Huskers who played pro football in other leagues."),
     "baseball-mlb": ("players", None, "MLB Huskers", "Nebraska Cornhuskers who reached Major League Baseball."),
     "basketball-nba": ("players", None, "NBA Huskers", "Nebraska Cornhuskers who reached the NBA."),
+    "college-huskers": ("players", None, "College Huskers", "Nebraska Cornhuskers I track who played college football at Nebraska."),
 }
 SCAN_SECTION = {"football": "husker-football", "baseball": "husker-baseball", "basketball": "husker-basketball"}
 CATS = [("passing", "Passing", ["COMPLETIONS", "ATT", "PCT", "YDS", "YPA", "TD", "INT"]), ("rushing", "Rushing", ["CAR", "YDS", "YPC", "LONG", "TD"]),
@@ -249,7 +250,7 @@ def player_page(p, row, info, l, idx, updated):
     src = (l.get("links") or {}).get(row[0], "")
     w = p.get("wiki") or {}
     pos = p.get("position") or ""
-    yr = f" (last season {year})" if year else ""
+    yr = f" (last season {year})" if year.isdigit() else ""
     if p["list"] == "nfl-tier-1-huskers":
         g = f"{games} NFL game{'' if str(games) == '1' else 's'}" if games else "the NFL"
         lead = f"{name} played college football at Nebraska{yr} and appeared in {g}."
@@ -257,13 +258,15 @@ def player_page(p, row, info, l, idx, updated):
         lead = f"{name} played college football at Nebraska{yr} and reached the NFL{f' ({path})' if path else ''}, but never appeared in a regular-season or postseason game."
     elif p["list"] == "pro-football-huskers":
         lead = f"{name} played college football at Nebraska{yr}.{f' Path to pro football: {path}.' if path else ''}"
+    elif p["list"] == "college-huskers":
+        lead = f"{name} plays college football at Nebraska." if year == "Active" else f"{name} played college football at Nebraska{yr}."
     elif sport == "baseball":
         lead = f"{name} played baseball at Nebraska{yr} and reached Major League Baseball."
     else:
         lead = f"{name} played basketball at Nebraska{yr} and reached the NBA."
     if pos and sport == "football": lead = lead.replace(" played college football", f", a {pos.lower()}, played college football", 1)
-    facts = [("Position", pos), ("Last Nebraska season", year)] + ([("NFL games", games)] if "NFL Games Played" in c else []) + \
-            ([("Career notes", path)] if path and p["list"] != "nfl-tier-1-huskers" else [("Other leagues / notes", path)] if path else [])
+    facts = [("Position", pos), ("Last Nebraska season", "Current roster" if year == "Active" else year)] + ([("NFL games", games)] if "NFL Games Played" in c else []) + \
+            ([("Career notes", path)] if path and p["list"] not in ("nfl-tier-1-huskers", "college-huskers") else [("Other leagues / notes", path)] if path else [])
     sec = w.get("sections") or {}
     for head in ("Personal information", "Career information", "MLB debut", "Last MLB appearance", "MLB statistics", "NBA statistics"):
         facts += [(r[0], r[1]) for r in sec.get(head, []) if len(r) == 2]

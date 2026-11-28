@@ -4,7 +4,7 @@ Everything is computed from what the player pages actually show. Rainbows are co
 import json, re, collections
 P = json.load(open('data/players.json'))['players']
 T = json.load(open('data/tracker-pages.json'))
-LISTS = {'nfl-tier-1-huskers': 'NFL Tier 1', 'nfl-tier-2-huskers': 'NFL Tier 2', 'pro-football-huskers': 'NFL Tier 3', 'baseball-mlb': 'MLB', 'basketball-nba': 'NBA'}
+LISTS = {'nfl-tier-1-huskers': 'NFL Tier 1', 'nfl-tier-2-huskers': 'NFL Tier 2', 'pro-football-huskers': 'NFL Tier 3', 'baseball-mlb': 'MLB', 'basketball-nba': 'NBA', 'college-huskers': 'College'}
 OLINE = re.compile(r'\b(center|guard|offensive (?:tackle|lineman|guard)|tackle|long snapper|snapper|lineman)\b', re.I)
 DLINE = re.compile(r'defensive|nose', re.I)
 # Not shown as missing: MLB minor league teams and non-NBA international basketball clubs (Ian). A pro stop with these words is skipped.
@@ -97,7 +97,7 @@ SIGS = len([k for k in (json.load(open('config/site.json')).get('signatures') or
 pl_ = [r for r in rows if not r['coach']]
 metrics = {
     'bios': [sum(r['bio'] for r in pl_), len(pl_)],
-    'timelines': [sum(r['neb'] and r['pro'] and not r['undated'] for r in pl_), len(pl_)],
+    'timelines': [sum(r['neb'] and ((r['pro'] and not r['undated']) or r['list'] == 'College') for r in pl_), len(pl_)],
     'logos': [sum(r['logoHave'] for r in pl_), sum(r['logoBars'] for r in pl_)],
     'proStats': [sum(r['proStats'] for r in pl_ if not r['proStatsExempt']), sum(1 for r in pl_ if not r['proStatsExempt'])],
     'collegeStats': [sum(r['collegeStats'] for r in pl_ if r['final'] >= 1962), sum(1 for r in pl_ if r['final'] >= 1962)],
@@ -125,7 +125,7 @@ pl = [r for r in rows if not r['coach']]
 print(len(rows), 'players;', len(rows) - len(pl), 'coach-only')
 print('bios', sum(r['bio'] for r in pl), '/', len(pl))
 tl = [r for r in pl if r['pro'] or r['tl']]
-print('timeline complete', sum(r['neb'] and r['pro'] and not r['undated'] for r in pl), '/', len(pl))
+print('timeline complete', sum(r['neb'] and ((r['pro'] and not r['undated']) or r['list'] == 'College') for r in pl), '/', len(pl))
 print('logos', sum(r['logoHave'] for r in pl), '/', sum(r['logoBars'] for r in pl))
 st = [r for r in pl if not r['proStatsExempt']]
 print('pro stats', sum(r['proStats'] for r in st), '/', len(st), collections.Counter(r['proStatsExempt'] for r in pl))

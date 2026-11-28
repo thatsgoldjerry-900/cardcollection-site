@@ -106,6 +106,9 @@ SPORTS = [
      "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
     {"sport": "football", "list": "pro-football-huskers", "word": "football", "key": "tier-3",
      "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
+    # College-only Huskers (Ian, 2026-11-28): last so everyone else keeps their page address.
+    {"sport": "football", "list": "college-huskers", "word": "football", "key": "college",
+     "suffixes": ["(American football)", "(gridiron football)", "(American football, born 1900s)"]},
 ]
 # Order and slug suffixes must match SPORT_LISTS in assets/app.js.
 

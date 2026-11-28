@@ -929,7 +929,7 @@
   // A player's scans come only from their own sport's Nebraska section, so two Huskers with the
   // same name in different sports (e.g. Eric Johnson, football and basketball) never share cards.
   const scanIndex = {};
-  const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "nfl-tier-2-huskers": "football", "pro-football-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball" };
+  const SPORT_OF_LIST = { "nfl-tier-1-huskers": "football", "nfl-tier-2-huskers": "football", "pro-football-huskers": "football", "baseball-mlb": "baseball", "basketball-nba": "basketball", "college-huskers": "football" };
   function scansFor(name, sport = "football") {
     if (!scanIndex[sport]) {
       // A sport ("football" → my Nebraska football section) or a section slug ("royals", for cardPlayers).
@@ -1277,7 +1277,9 @@
     ["baseball", "baseball-mlb", "MLB", "#/checklist/mlb", "MLB Huskers Autograph List", "baseball"],
     ["basketball", "basketball-nba", "NBA", "#/checklist/nba", "NBA Huskers Autograph List", "basketball"],
     ["football", "nfl-tier-2-huskers", "NFL Tier 2", "#/checklist/tier-2", "NFL Tier 2 Huskers Autograph List", "tier-2"],
-    ["football", "pro-football-huskers", "Pro Football", "#/checklist/tier-3", "NFL Tier 3 Huskers Autograph List", "tier-3"]];
+    ["football", "pro-football-huskers", "Pro Football", "#/checklist/tier-3", "NFL Tier 3 Huskers Autograph List", "tier-3"],
+    // College-only Huskers (Ian, 2026-11-28): a page each, but no list page of their own.
+    ["football", "college-huskers", "College", "#/nfl-huskers", "Husker Bios", "college"]];
   let ALL = null;
   function allPlayers() {
     if (ALL) return ALL;
@@ -1290,7 +1292,7 @@
         if (used.has(slug)) slug += "-" + suffix;
         used.add(slug);
         ALL.push({ sport, league, listSlug, back, backLabel, name, slug, year: r[c["Last Year"]], have: r[c["Autograph"]] === "Yes",
-          games: c["NFL Games Played"] >= 0 ? r[c["NFL Games Played"]] : "", notes: c["Career Notes"] >= 0 ? r[c["Career Notes"]] : "",
+          games: c["NFL Games Played"] >= 0 ? r[c["NFL Games Played"]] : "", notes: c["Career Notes"] >= 0 && listSlug !== "college-huskers" ? r[c["Career Notes"]] : "",
           signed: c["Signed"] >= 0 ? r[c["Signed"]] : "", link: (l.links || {})[r[0]] || "" });
       });
     });
@@ -1467,15 +1469,15 @@
     loadHub(() => {
       // Every bio: NFL Tier 1, 2 and 3, MLB, NBA, and the Huskers I've made custom cards of (config cardPlayers).
       const wiki = new Set((PLAYERS.players || []).filter((p) => p.wiki).map((p) => p.slug)), sigs = DATA.site.signatures || {};
-      const GROUP = { "nfl-tier-1-huskers": "nfl", "nfl-tier-2-huskers": "pro", "pro-football-huskers": "pro", "baseball-mlb": "mlb", "basketball-nba": "nba" };
+      const GROUP = { "nfl-tier-1-huskers": "nfl", "nfl-tier-2-huskers": "pro", "pro-football-huskers": "pro", "baseball-mlb": "mlb", "basketball-nba": "nba", "college-huskers": "college" };
       const all = allPlayers().map((p) => ({ ...p, page: wiki.has(p.slug), group: GROUP[p.listSlug] || "more", sig: !!sigs[p.slug] }));
       const have = all.filter((p) => p.have).length, nsig = all.filter((p) => p.sig).length;
       $("#app").innerHTML = `<div class="wrap hub c-husker">
         <div class="c-head"><div class="kick">Nebraska Cornhuskers</div><div class="c-title"><h1>Husker Bios</h1><div class="c-logos" id="c-logos"></div></div>
-          <p>A page for every Nebraska Cornhusker who made the pros, plus a few more I've made custom cards of. Each one tells his story: his Nebraska and pro careers, stats, Hall of Fame honors, a career timeline, my own write-ups from custom cards, and the cards and autographs I have of him.</p>
+          <p>A page for every Nebraska Cornhusker who made the pros, every college Husker I'm tracking, plus a few more I've made custom cards of. Each one tells his story: his Nebraska and pro careers, stats, Hall of Fame honors, a career timeline, my own write-ups from custom cards, and the cards and autographs I have of him.</p>
           <div class="hub-stats"><span><b>${fmt(all.length)}</b> bios</span><span><b>${fmt(nsig)}</b> neon signatures</span></div></div>
         <div class="tools">
-          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["nfl", "NFL"], ["pro", "Other pro football"], ["mlb", "MLB"], ["nba", "NBA"], ["more", "More Huskers"], ["sig", "Neon signatures"]].filter(([k]) => k === "all" || k === "sig" || all.some((p) => p.group === k)).map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
+          <div class="chips" role="group" aria-label="Show">${[["all", "Everyone"], ["nfl", "NFL"], ["pro", "Other pro football"], ["college", "College only"], ["mlb", "MLB"], ["nba", "NBA"], ["more", "More Huskers"], ["sig", "Neon signatures"]].filter(([k]) => k === "all" || k === "sig" || all.some((p) => p.group === k)).map(([k, t]) => `<button type="button" class="chip" data-show="${k}" aria-pressed="${HUB.show === k}">${t}</button>`).join("")}</div>
           <div class="tools-r"><label class="sr" for="hub-q">Find a player</label><input id="hub-q" class="ck-q" type="search" placeholder="Find a player" value="${esc(HUB.q)}">
             <label class="sr" for="hub-sort">Sort</label><select id="hub-sort">${[["scans", "With autographs first"], ["new", "Newest first"], ["old", "Oldest first"], ["most", "Most NFL games"], ["fewest", "Fewest NFL games"], ["az", "A–Z"]].map(([k, t]) => `<option value="${k}"${HUB.sort === k ? " selected" : ""}>${t}</option>`).join("")}</select>
             <span class="count" id="hub-count"></span></div>
@@ -1514,7 +1516,7 @@
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="thumbFit(this)"></button>`
              : fanDayOf(p.slug) ? `<button type="button" class="hub-ph land fd" data-i="${fanDayOf(p.slug).c.i}" aria-label="View ${esc(p.name)}'s autograph on ${esc(fanDayOf(p.slug).c.name)}">${fdThumb(p.slug)}</button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
-        <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
+        <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", college: "College", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
           <div class="hub-meta2">${p.have ? `<span class="st have">Autograph</span>` : ""}${p.sig ? `<span class="pill">Neon signature</span>` : ""}</div></div></li>`;
     }).join(""));
   }
@@ -2339,7 +2341,7 @@
     const rbS = rb.reduce((n, x) => n + x.scanned, 0), rbU = rb.reduce((n, x) => n + x.unscanned, 0), rbFull = rb.filter((x) => !x.unscanned).length;
     const rbOpen = rb.filter((x) => x.unscanned).sort((x, y) => y.unscanned - x.unscanned);
     const bios = all, bioOk = (r) => r.bio;
-    const tlOk = (r) => r.neb && r.pro && !r.undated, tlWhy = (r) => [!r.neb && "no Nebraska bar", !r.pro && "no pro teams", r.undated && "team without a year"].filter(Boolean).join(", ");
+    const tlOk = (r) => r.neb && ((r.pro && !r.undated) || r.list === "College"), tlWhy = (r) => [!r.neb && "no Nebraska bar", !r.pro && r.list !== "College" && "no pro teams", r.undated && "team without a year"].filter(Boolean).join(", ");
     const logoRows = all.filter((r) => r.logoBars), logoHave = logoRows.reduce((n, r) => n + r.logoHave, 0), logoAll = logoRows.reduce((n, r) => n + r.logoBars, 0);
     const miss = new Map(); all.forEach((r) => r.logoMiss.forEach((t) => miss.set(t, (miss.get(t) || 0) + 1)));
     const stRows = all.filter((r) => !r.proStatsExempt), csRows = all.filter((r) => r.final >= 1962);
@@ -2385,7 +2387,7 @@
         ${bar("Rainbows with every owned version scanned", rbFull, rb.length)}
         ${rbOpen.length ? `<details class="tk-more"><summary>${fmt(rbOpen.length)} rainbows with unscanned versions</summary><ul>${rbOpen.map((x) => `<li><a href="#/rainbow/${encodeURIComponent(cid(x.c))}">${esc(x.c.title)}</a> <em>${esc(x.c.sub.replace(/\s+#\S+$/, "").replace(PARALLEL_WORDS, "").trim())} · ${x.unscanned} to scan</em></li>`).join("")}</ul></details>` : ""}</section>
       <section class="st-box"><h2>Bio pages</h2>${bar("Players with a bio", bios.filter(bioOk).length, bios.length, "Players on the NFL Tier 1–3, MLB and NBA lists, coach-only bios left out.")}${byList(bios, bioOk)}${names(bios.filter((r) => !r.bio))}</section>
-      <section class="st-box"><h2>Career timelines</h2>${bar("Complete timelines", all.filter(tlOk).length, all.length, "Complete = a Nebraska bar, at least one pro team, and every team has its years.")}${byList(all, tlOk)}${names(all.filter((r) => !tlOk(r)), tlWhy)}</section>
+      <section class="st-box"><h2>Career timelines</h2>${bar("Complete timelines", all.filter(tlOk).length, all.length, "Complete = a Nebraska bar and, for players who went pro, every team has its years. College-only players need just the Nebraska bar.")}${byList(all, tlOk)}${names(all.filter((r) => !tlOk(r)), tlWhy)}</section>
       <section class="st-box"><h2>Pro team logos on timelines</h2>${bar("Pro stops with a logo", logoHave, logoAll, "Minor league and non-NBA international teams aren't counted.")}
         ${(() => { const lt = D.logoTeams || []; if (!lt.length) return ""; const cats = [...new Set(lt.map((x) => x.cat))].sort((a, b) => (a === "NFL" ? -1 : b === "NFL" ? 1 : a.localeCompare(b)));
           return cats.map((c) => { const g = lt.filter((x) => x.cat === c); return `<details class="tk-more"><summary>${fmt(g.length)} ${esc(c)} team${g.length === 1 ? "" : "s"} missing a logo</summary><ul>${g.map((x) => `<li>${esc(x.team)} <em>${x.n} player${x.n === 1 ? "" : "s"}</em></li>`).join("")}</ul></details>`; }).join(""); })()}</section>
