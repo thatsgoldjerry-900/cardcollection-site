@@ -9,19 +9,7 @@
    "Signed",
    "Autograph"
   ],
-  "rows": 102
- },
- {
-  "slug": "college-huskers",
-  "startColumn": "W",
-  "columns": [
-   "Player",
-   "Career Notes",
-   "Last Year",
-   "Signed",
-   "Autograph"
-  ],
-  "rows": 622
+  "rows": 51
  },
  {
   "slug": "husker-coaches",
@@ -33,7 +21,7 @@
    "Signed",
    "Autograph"
   ],
-  "rows": 80
+  "rows": 40
  },
  {
   "slug": "basketball-non-nba-wnba",
@@ -43,6 +31,6 @@
    "Last Year",
    "Autograph"
   ],
-  "rows": 62
+  "rows": 31
  }
 ]
