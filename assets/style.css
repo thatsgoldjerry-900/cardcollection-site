@@ -1502,8 +1502,8 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 }
 /* The Players: the illustration fills the whole tile; the text sits on the left, clear of the figure. */
 .tile-players,.tile-cards,.tile-chase{grid-template-columns:1fr;position:sticky;overflow:hidden;isolation:isolate}
-.tile-cards .tile-bg,.tile-chase .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center;z-index:-2}
-.tile-players .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center;z-index:-2}
+.tile-cards .tile-bg,.tile-chase .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;z-index:-2}
+.tile-players .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% center;z-index:-2}
 .tile-cards::before{background:linear-gradient(90deg,rgba(0,0,0,.6) 0,rgba(0,0,0,.2) 35%,transparent 55%)}
 .tile-cards .tile-copy{max-width:36vw}
 .tile-cards .tile-copy h1{font-size:clamp(56px,7vw,120px)}
