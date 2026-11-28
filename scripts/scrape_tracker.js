@@ -11,9 +11,10 @@ async function grab(pg, p) {
   await pg.waitForTimeout(250);
   const r = await pg.evaluate(() => {
     const h2 = [...document.querySelectorAll("h2")].map((h) => h.innerText.trim());
-    const bars = (c) => [...document.querySelectorAll(".tl-bar." + c)].map((e) => ({ t: e.title.replace(/\s*\(year .*|\s*\(from my.*/, ""), logo: !!e.querySelector("img"), soft: e.classList.contains("soft") }));
+    const bars = (c) => [...document.querySelectorAll(".tl-bar." + c)].map((e) => ({ t: e.title.replace(/\s*\(year .*|\s*\(from my.*/, ""), logo: !!e.querySelector("img"), soft: e.classList.contains("soft"), pfa: /Pro Football Archives/.test(e.title) }));
     const fact = (k) => { const el = [...document.querySelectorAll("dt,.fact-k,.pf-k,b,th,td")].find((e) => e.innerText.trim().toLowerCase() === k.toLowerCase()); const n = el && (el.nextElementSibling || el.parentElement.nextElementSibling); return n ? n.innerText.trim() : ""; };
-    return { h2, tl: h2.some((h) => /career timeline/i.test(h)), c: bars("c"), p: bars("p"), neb: !!document.querySelector(".tl-bar.neb"), undated: !!document.querySelector(".tl-undated"),
+    return { h2, tl: h2.some((h) => /career timeline/i.test(h)), c: bars("c"), p: bars("p"), neb: !!document.querySelector(".tl-bar.neb"), undated: !!document.querySelector(".tl-undated"), undatedTeams: [...document.querySelectorAll(".tl-undated .tl-team")].map((e) => e.innerText.trim()),
+      badName: [...new Set((document.body.innerText.match(/super[- ]?collections?/gi) || []).filter((m) => !/^Super Collections?$/.test(m)))],
       position: fact("Position"), games: fact("NFL games"), text: (document.querySelector("main,#app,body") || document.body).innerText.length };
   });
   r.wide = await phoneOverflow(pg);
@@ -42,6 +43,20 @@ const ROUTES = ["", "cards", "stats", "stats/players", "letters", "nfl-huskers",
   const pg = await b.newPage({ viewport: { width: 1300, height: 900 } }); await pg.route("**/*", (r) => (r.request().resourceType() === "image" ? r.abort() : r.continue()));
   out._pages = {};
   for (const rt of ROUTES) { await pg.goto(BASE + "#/" + rt, { waitUntil: "domcontentloaded" }); await pg.waitForTimeout(rt === "tracker" ? 4000 : 1800); out._pages[rt || "home"] = await phoneOverflow(pg); }
+  // Accessibility (axe-core, if installed) on the site pages plus every 30th player, and load weight / time per page (images load here, so a slow or blocked image host shows up).
+  let axeSrc = ""; try { axeSrc = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8"); } catch (e) {}
+  const sample = players.filter((_, k) => k % 30 === 0).map((p) => "player/" + p.slug), targets = [...ROUTES.filter((r) => r !== "tracker").map((r) => r), ...sample];
+  out._a11y = {}; out._perf = {}; out._names = {};
+  const ap = await b.newPage({ viewport: { width: 1300, height: 900 } });
+  for (const rt of targets) {
+    try {
+      const t0 = Date.now(); await ap.goto(BASE + "#/" + rt, { waitUntil: "domcontentloaded" }); await ap.reload({ waitUntil: "domcontentloaded" });
+      await ap.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {}); const ms = Date.now() - t0;
+      out._perf[rt || "home"] = await ap.evaluate((ms) => { const r = performance.getEntriesByType("resource"); const kind = (e) => (e.initiatorType === "img" || /\.(png|jpe?g|webp|gif|svg)|googleusercontent|drive/.test(e.name) ? "img" : "other");
+        return { ms, files: r.length, other: r.filter((e) => kind(e) === "other").reduce((n, e) => n + (e.transferSize || e.encodedBodySize || 0), 0), img: r.filter((e) => kind(e) === "img").reduce((n, e) => n + (e.transferSize || e.encodedBodySize || 0), 0), imgs: r.filter((e) => kind(e) === "img").length }; }, ms);
+      if (axeSrc) { await ap.evaluate(axeSrc); const res = await ap.evaluate(() => axe.run(document, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa"] } }).then((x) => x.violations.map((v) => ({ id: v.id, impact: v.impact, help: v.help, n: v.nodes.length })))); out._a11y[rt || "home"] = res; }
+    } catch (e) { out._perf[rt || "home"] = { error: String(e).slice(0, 60) }; }
+  }
   const pl = await b.newPage({ viewport: { width: 1300, height: 900 } }); await pl.route("**/*", (r) => (r.request().resourceType() === "image" ? r.abort() : r.continue()));
   await pl.goto(BASE + "#/tracker"); await pl.waitForFunction(() => window.TRK_LIVE && window.TRK_LIVE.hof && window.TRK_LIVE.tcdb, null, { timeout: 90000 }).catch(() => {}); out._live = await pl.evaluate(() => window.TRK_LIVE || null);
   fs.writeFileSync("data/tracker-pages.json", JSON.stringify(out)); await b.close();

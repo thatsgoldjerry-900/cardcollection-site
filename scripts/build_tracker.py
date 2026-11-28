@@ -62,6 +62,7 @@ for p in P:
         'tl': bool(pg.get('tl')), 'neb': bool(pg.get('neb')), 'pro': len(pg.get('p', [])), 'undated': bool(pg.get('undated')),
         'logoMiss': sorted({b['t'].split(' (')[0].strip() for b in pb if not b['logo']}), 'logoHave': sum(1 for b in pb if b['logo']), 'logoBars': len(pb),
         'games': g, 'proStats': proStatsShown, 'collegeStats': collegeStatsShown,
+        'undatedTeams': pg.get('undatedTeams', []), 'pfaBars': sum(1 for x in pg.get('p', []) if x.get('pfa')), 'badName': pg.get('badName', []),
         'have': bool(p.get('have')), 'wide': pg.get('wide'),
         'check': (lambda wl, fin_, lt: [x for x in (
             (f'Wikipedia says Nebraska ended {wl[0]}, my final year is {fin_}' if wl[0] and fin_ and wl[0] != fin_ else ''),
@@ -70,6 +71,24 @@ for p in P:
         'stale': bool(re.search(r'\b(is an American|plays|is a (?:professional|free agent))', ((p.get('wiki') or {}).get('intro') or '')[:300]) and 0 < last_pro_year(pg) < NOW - 1 and p['sport'] == 'football' and not re.search(r'\bformer\b', ((p.get('wiki') or {}).get('intro') or '')[:200])),
         'proStatsExempt': 'lineman / long snapper' if oline else ('0 pro games' if g == '0' else ''),
     })
+NFLN = {n.lower() for t in json.load(open('data/nfl-teams.json'))['teams'] for n in t['names']}
+CFL = re.compile(r'Alouettes|Argonauts|Stampeders|Roughriders|Blue Bombers|Tiger-Cats|Eskimos|Elks|Redblacks|Renegades|Rough Riders|Ottawa|BC Lions|Lions \(CFL\)|Hamilton|Saskatchewan|Edmonton|Calgary|Winnipeg|Montreal|Toronto Argonauts|Shreveport|Sacramento Gold|Baltimore Stallions|Las Vegas Posse|Memphis Mad Dogs|San Antonio Texans|Birmingham Barracudas', re.I)
+def league(t):
+    n = t.lower()
+    if any(n.startswith(x) for x in NFLN) or n in NFLN: return 'NFL'
+    if CFL.search(t): return 'CFL'
+    if re.search(r'USFL|XFL|UFL|Stallions|Generals|Gamblers|Panthers|Bandits|Breakers|Maulers|Showboats|Invaders|Outlaws|Wranglers|Express|Blitz|Wizards|Thunderbolts|Fire|Dragons|Hawks', t): return 'USFL/XFL/UFL'
+    return 'Other'
+lm = collections.Counter(); lcat = {}
+for r in rows:
+    if r['coach']: continue
+    for t in r['logoMiss']: lm[t] += 1; lcat[t] = league(t)
+logoTeams = [{'team': t, 'cat': lcat[t], 'n': n} for t, n in lm.most_common()]
+def jl(f):
+    try: return json.load(open(f))
+    except Exception: return None
+extra = {'logoTeams': logoTeams, 'launch': jl('data/launch-checks.json'), 'links': jl('data/link-check.json'),
+         'a11y': T.get('_a11y') or {}, 'perf': T.get('_perf') or {}}
 live = T.get('_live') or {}
 pages = {k: v for k, v in (T.get('_pages') or {}).items() if v}
 SIGS = len([k for k in (json.load(open('config/site.json')).get('signatures') or {}) if not k.startswith('_')])
@@ -84,13 +103,22 @@ metrics = {
     'phoneOk': [len(pl_) + len(T.get('_pages') or {}) - sum(1 for r in pl_ if r['wide']) - len(pages), len(pl_) + len(T.get('_pages') or {})],
     'dataChecks': [len(pl_) - sum(1 for r in pl_ if r['check']), len(pl_)],
 }
+L = extra['launch'] or {}
+yrs = [r for r in pl_ if r['pro'] or r['undatedTeams']]
+metrics['years'] = [sum(1 for r in yrs if not r['undatedTeams']), len(yrs)]
+if L:
+    metrics['crawl'] = [L['crawl']['inSitemap'], L['crawl']['total']]
+    metrics['previews'] = [L['previews']['ok'], L['previews']['pages']]
+    metrics['setup'] = [sum(1 for _, ok in L['setup'] if ok), len(L['setup'])]
+    metrics['namesClean'] = [L['names']['cards'] - L['names']['withNotes'], L['names']['cards']]
+if extra['links']: metrics['links'] = [extra['links']['ok'], extra['links']['total'] - extra['links']['unchecked']]
 for k, v in live.items(): metrics[k] = v   # rainbows, tcdb, hof: [done, total] counted in the browser
 today = __import__('datetime').date.today().isoformat()
 try: hist = json.load(open('data/tracker-history.json'))
 except Exception: hist = []
 hist = [h for h in hist if h['date'] != today] + [{'date': today, 'm': metrics}]
 json.dump(hist, open('data/tracker-history.json', 'w'), separators=(',', ':'))
-open('data/tracker.json', 'w').write(json.dumps({'built': today, 'players': rows, 'pages': pages, 'sigs': SIGS, 'history': hist}, separators=(',', ':')))
+open('data/tracker.json', 'w').write(json.dumps({'built': today, 'players': rows, 'pages': pages, 'sigs': SIGS, **extra, 'history': hist}, separators=(',', ':')))
 pl = [r for r in rows if not r['coach']]
 print(len(rows), 'players;', len(rows) - len(pl), 'coach-only')
 print('bios', sum(r['bio'] for r in pl), '/', len(pl))
