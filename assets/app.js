@@ -647,7 +647,7 @@
       <a class="tile-full tile-cards" href="#/cards" aria-label="The Cards" style="--tile-bg:#0b0d10;--tile-fg:#ffffff">
         <div class="tile-copy"><h1>The Cards</h1>
           <p>Legends remembered through cardboard treasures</p></div>
-        <img class="tile-bg" src="assets/home-cards.jpg" alt="">
+        <img class="tile-bg" src="assets/home-cards.jpg?v=2" alt="">
       </a>
       <a class="tile-full tile-players" href="#/nfl-huskers" aria-label="The Players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
         <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
