@@ -2305,7 +2305,8 @@
     const linkify = (t) => esc(t).replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (_, x, u) => `<a href="${u}" target="_blank" rel="noopener">${x}</a>`);
     const secs = ((DATA.site.sharing || {}).sections || []);
     $("#app").innerHTML = `<div class="wrap about"><div class="c-head"><h1>About &amp; sharing</h1></div>
-      ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}</div>`;
+      ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}
+      <section class="about-sec"><h2>How complete is this site?</h2><p>The <a href="#/tracker">site completeness tracker</a> shows how much of the site is finished: bios, career timelines, team logos, stats, rainbows, Hall of Fame pages and more, with what's still missing. It refreshes itself every day.</p></section></div>`;
   }
   /* ---------- Collection stats (#/stats) ---------- */
   // TCDb collection cards (data/tcdb/*-collection.json) that have a scan, matched like rainbow versions.

@@ -41,6 +41,8 @@ def last_pro_year(pg):
     return max(ys) if ys else 0
 
 NOW = __import__('datetime').date.today().year
+bad = sum(1 for v in T.values() if isinstance(v, dict) and (v.get('error') or not v.get('h2')))
+if bad > len(P) * 0.1: raise SystemExit(f'{bad} pages did not load; keeping the last tracker numbers')
 rows = []
 for p in P:
     pg = T.get(p['slug'], {}); pos = pos_of(p, pg)
