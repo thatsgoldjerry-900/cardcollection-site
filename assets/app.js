@@ -462,7 +462,7 @@
     const groups = [
       ["Super Collections", "dd-menu-super", [sec("alex-gordon"), sec("jermaine-dye")]],
       ["Team Collections", "dd-menu-team", [sec("royals"), sec("lions")]],
-      ["Explore", "dd-menu-explore", [`<a href="#/recent" data-s="recent">Recent Additions</a>`, `<a href="#/customs" data-s="customs">Custom Cards</a>`, DUPES.length ? `<a href="#/duplicates" data-s="duplicates">Duplicates</a>` : "", sec("want-list"), (DATA.site.media?.items || []).length ? `<a href="#/media" data-s="media">Media</a>` : "", ...rest]],
+      ["Explore", "dd-menu-explore", [`<a href="#/recent" data-s="recent">Recent Additions</a>`, `<a href="#/customs" data-s="customs">Custom Cards</a>`, DUPES.length ? `<a href="#/duplicates" data-s="duplicates">Duplicates</a>` : "", sec("want-list"), (DATA.site.media?.items || []).length ? `<a href="#/media" data-s="media">Media</a>` : "", `<a href="#/tracker" data-s="tracker">Site Completeness</a>`, ...rest]],
     ].map(([t, id, items]) => [t, id, items.filter(Boolean)]).filter((g) => g[2].length);
     const btn = (t, id, bid) => `<button type="button" class="dd-btn"${bid ? ` id="${bid}"` : ""} data-menu="${id}" aria-expanded="false" aria-controls="${id}">${t} <span aria-hidden="true">▾</span></button>`;
     $("#nav").innerHTML = btn("Nebraska Cornhuskers", "dd-menu", "dd-btn") + groups.map((g) => btn(g[0], g[1])).join("");
@@ -2305,8 +2305,7 @@
     const linkify = (t) => esc(t).replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (_, x, u) => `<a href="${u}" target="_blank" rel="noopener">${x}</a>`);
     const secs = ((DATA.site.sharing || {}).sections || []);
     $("#app").innerHTML = `<div class="wrap about"><div class="c-head"><h1>About &amp; sharing</h1></div>
-      ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}
-      <section class="about-sec"><h2>How complete is this site?</h2><p>The <a href="#/tracker">site completeness tracker</a> shows how much of the site is finished: bios, career timelines, team logos, stats, rainbows, Hall of Fame pages and more, with what's still missing. It refreshes itself every day.</p></section></div>`;
+      ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}</div>`;
   }
   /* ---------- Collection stats (#/stats) ---------- */
   // TCDb collection cards (data/tcdb/*-collection.json) that have a scan, matched like rainbow versions.
@@ -2319,11 +2318,11 @@
       out.push({ label, got, total, skip });
     }
     return out; })());
-  /* ---------- Website completeness tracker (#/tracker, not linked from the menus) ----------
+  /* ---------- Website completeness tracker (#/tracker, in the Explore menu) ----------
      Player numbers come from data/tracker.json (scripts/scrape_tracker.js + scripts/build_tracker.py read what each player page shows);
      rainbows are counted live from the scans and the TCDb collection. */
   function trackerPage() {
-    setNav(""); setTitle("Site completeness tracker");
+    setNav("tracker"); setTitle("Site completeness tracker");
     if (!TW) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>'; return void tcdbWants().then(() => HASH().startsWith("#/tracker") && trackerPage()); }
     if (!window.TRK) { $("#app").innerHTML = '<div class="wrap"><p class="muted">Loading…</p></div>';
       return void fetch("data/tracker.json").then((r) => r.json()).catch(() => ({ players: [] })).then((d) => { window.TRK = d; HASH().startsWith("#/tracker") && trackerPage(); }); }
