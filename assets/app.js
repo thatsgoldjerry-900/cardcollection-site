@@ -2308,6 +2308,16 @@
       ${secs.map((s) => `<section class="about-sec"><h2>${esc(s.title)}</h2><p>${linkify(s.text)}</p></section>`).join("")}</div>`;
   }
   /* ---------- Collection stats (#/stats) ---------- */
+  // TCDb collection cards (data/tcdb/*-collection.json) that have a scan, matched like rainbow versions.
+  let TCOV = null;
+  const tcdbCoverage = () => TCOV || (TCOV = (async () => {
+    const have = new Set(CARDS.filter((c) => !isWant(c)).map((c) => { const k = rainbowKey(c); return k ? k + "|" + haveKey(c) : ""; }).filter(Boolean)), out = [];
+    for (const [f, label] of [["football", "Football"], ["baseball", "Baseball"], ["basketball", "Basketball"], ["multi-sport", "Multi-sport"], ["misc-sports", "Other sports"]]) {
+      const d = await fetch(`data/tcdb/${f}-collection.json`).then((r) => (r.ok ? r.json() : {})).catch(() => ({})); let got = 0, total = 0, skip = 0;
+      (d.cards || []).forEach(([name]) => { const x = parse(name.replace(/\s+VAR(?:VAR)?:.*$/, "").trim()), k = x && x.tags ? rainbowKey(x) : null; if (!k) { skip++; return; } total++; if (have.has(k + "|" + haveKey(x))) got++; });
+      out.push({ label, got, total, skip });
+    }
+    return out; })());
   /* ---------- Website completeness tracker (#/tracker, not linked from the menus) ----------
      Player numbers come from data/tracker.json (scripts/scrape_tracker.js + scripts/build_tracker.py read what each player page shows);
      rainbows are counted live from the scans and the TCDb collection. */
@@ -2334,6 +2344,30 @@
     const miss = new Map(); all.forEach((r) => r.logoMiss.forEach((t) => miss.set(t, (miss.get(t) || 0) + 1)));
     const stRows = all.filter((r) => !r.proStatsExempt), csRows = all.filter((r) => r.final >= 1962);
     const sport = (rows, ok) => ["football", "baseball", "basketball"].map((s) => { const g = rows.filter((r) => r.sport === s); return g.length ? bar(s[0].toUpperCase() + s.slice(1), g.filter(ok).length, g.length) : ""; }).join("");
+    // Hall of Fame: Nebraska and College members matched to a player page; Canton members that have a page.
+    const hofDone = () => { const mk = (list, college) => { const pl = list.filter((m) => !m.role), got = pl.filter((m) => all.some((r) => hofFor({ name: r.name, finalYear: r.final }, college) === m)); return { pl, got, miss: pl.filter((m) => !got.includes(m)) }; };
+      const slugs = new Set(all.map((r) => r.slug)), proAll = Object.keys(PROHOF || {}); return { neb: mk(HOF || [], false), col: mk(CHOF || [], true), pro: [proAll.filter((x) => slugs.has(x)), proAll] }; };
+    const hofLoad = HOF ? Promise.resolve() : fetch("data/hall-of-fame.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((d) => { HOF = d.members || []; CHOF = d.college || []; PROHOF = d.pro || {}; PROHOFURL = d.proPaths || {}; });
+    // Signatures: neon signatures on the site versus players I have an autograph of.
+    const sigs = Object.keys((DATA.site.signatures || {})).filter((k) => !k.startsWith("_")), sigSet = new Set(sigs), haveRows = all.filter((r) => r.have);
+    const sigOpen = haveRows.filter((r) => !sigSet.has(r.slug));
+    const dataChecks = all.filter((r) => r.check && r.check.length), stale = all.filter((r) => r.stale);
+    const wide = all.filter((r) => r.wide), pgWide = Object.entries(D.pages || {});
+    const metric = (k, label, d, t) => ({ k, label, d, t });
+    const spark = (vals) => { if (vals.length < 2) return ""; const lo = Math.min(...vals), hi = Math.max(...vals), w = 90, h = 22, st = vals.length > 1 ? w / (vals.length - 1) : w;
+      return `<svg class="tk-spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="currentColor" stroke-width="2" points="${vals.map((v, i) => `${(i * st).toFixed(1)},${(h - 2 - (hi === lo ? 0.5 : (v - lo) / (hi - lo)) * (h - 4)).toFixed(1)}`).join(" ")}"/></svg>`; };
+    const NAMES = { bios: "Bio pages", timelines: "Complete timelines", logos: "Pro logos", proStats: "Pro stats", collegeStats: "College stats", signatures: "Neon signatures (of players with an autograph)", phoneOk: "Pages that fit a phone", dataChecks: "Players with no data warnings",
+      rainbowScans: "Rainbow versions scanned", hof: "Hall of Fame players with a page", tcdb: "TCDb collection cards scanned" };
+    const hist = D.history || [], last = hist[hist.length - 1], prev = hist[hist.length - 2];
+    const trend = `<section class="st-box"><h2>Progress over time</h2>${hist.length < 2 ? `<p class="muted">First snapshot is ${esc(last ? last.date : D.built)}. Each time the numbers are refreshed, this shows what moved.</p>` : ""}
+      <ul class="tk-trend">${Object.entries(NAMES).filter(([k]) => last && last.m[k]).map(([k, l]) => { const [n, t] = last.m[k], pn = prev && prev.m[k] ? prev.m[k] : null, dl = pn ? n - pn[0] : null;
+        return `<li><span>${esc(l)}</span><b>${pc(n, t)}%</b><em class="${dl > 0 ? "up" : dl < 0 ? "down" : ""}">${dl == null ? "new" : (dl > 0 ? "+" : "") + fmt(dl)}</em>${spark(hist.filter((h) => h.m[k]).map((h) => h.m[k][1] ? h.m[k][0] / h.m[k][1] : 0))}</li>`; }).join("")}</ul></section>`;
+    const extra = () => { const H = hofDone(), hp = (g) => bar(g.label, g.got.length, g.pl.length), hm = (g) => (g.miss.length ? `<details class="tk-more"><summary>${fmt(g.miss.length)} without a page</summary><ul>${g.miss.map((m) => `<li>${esc(m.name)} <em>class of ${m.class}</em></li>`).join("")}</ul></details>` : "");
+      return `<section class="st-box"><h2>Hall of Fame</h2>${bar("Nebraska Football Hall of Fame players with a page", H.neb.got.length, H.neb.pl.length, "Coach inductees aren't counted.")}${hm(H.neb)}
+        ${bar("College Football Hall of Fame players with a page", H.col.got.length, H.col.pl.length, "Player pages show this honor; lists don't have a College mark yet.")}${hm(H.col)}
+        ${bar("Pro Football Hall of Fame players with a page", H.pro[0].length, H.pro[1].length)}</section>
+      <section class="st-box"><h2>Neon signatures</h2>${bar("Players with a neon signature", sigs.length, haveRows.length, "Of players I have an autograph from. Only complete, clean signatures qualify, so this won't reach 100%.")}
+        ${sigOpen.length ? `<details class="tk-more"><summary>${fmt(sigOpen.length)} autograph players without one</summary><ul>${sigOpen.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a></li>`).join("")}</ul></details>` : ""}</section>`; };
     $("#app").innerHTML = `<div class="wrap stp tk">
       <div class="c-head"><div class="kick">Behind the scenes</div><h1>Site completeness</h1><p>What's finished and what's still missing across the player pages and rainbows. Player numbers were last counted ${esc(D.built || "")}; rainbows are live.</p></div>
       <section class="st-box"><h2>Rainbows</h2>
@@ -2346,7 +2380,20 @@
         ${miss.size ? `<details class="tk-more"><summary>${fmt(miss.size)} teams missing a logo</summary><ul>${[...miss].sort((x, y) => y[1] - x[1]).map(([t, n]) => `<li>${esc(t)} <em>${n} player${n === 1 ? "" : "s"}</em></li>`).join("")}</ul></details>` : ""}</section>
       <section class="st-box"><h2>Pro stats</h2>${bar("Players showing pro stats", stRows.filter((r) => r.proStats).length, stRows.length, "Left out: linemen, long snappers and players with no pro games.")}${sport(stRows, (r) => r.proStats)}${names(stRows.filter((r) => !r.proStats), (r) => r.pos)}</section>
       <section class="st-box"><h2>College stats</h2>${bar("Players showing college stats", csRows.filter((r) => r.collegeStats).length, csRows.length, "Players whose final season was 1962 or later.")}${sport(csRows, (r) => r.collegeStats)}${names(csRows.filter((r) => !r.collegeStats), (r) => r.sport)}</section>
+      <div id="tk-hof">${(HOF && CHOF) ? extra() : ""}</div>
+      <section class="st-box"><h2>TCDb collection scanned</h2><div id="tk-tcdb"><p class="muted">Counting…</p></div></section>
+      <section class="st-box"><h2>Data checks</h2>${bar("Players with no warnings", all.length - dataChecks.length, all.length, "Wikipedia's Nebraska years versus my final year and the letter years.")}
+        ${dataChecks.length ? `<details class="tk-more"><summary>${fmt(dataChecks.length)} year mismatches</summary><ul>${dataChecks.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a> <em>${esc(r.check.join("; "))}</em></li>`).join("")}</ul></details>` : ""}
+        ${stale.length ? `<details class="tk-more"><summary>${fmt(stale.length)} bios that may be out of date</summary><ul>${stale.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a> <em>intro reads as current, last pro year is old</em></li>`).join("")}</ul></details>` : ""}</section>
+      <section class="st-box"><h2>Phone check</h2>${bar("Pages that fit a 390px screen", all.length + pgWide.length - wide.length - pgWide.filter(([, v]) => v).length, all.length + pgWide.length, "Player pages and the main site pages, measured when the numbers were last counted.")}
+        ${wide.length + pgWide.filter(([, v]) => v).length ? `<details class="tk-more"><summary>${fmt(wide.length + pgWide.filter(([, v]) => v).length)} pages too wide</summary><ul>${pgWide.filter(([, v]) => v).map(([k, v]) => `<li><a href="#/${esc(k === "home" ? "" : k)}">${esc(k)}</a> <em>${v.px}px over · ${esc(v.el)}</em></li>`).join("")}${wide.map((r) => `<li><a href="#/player/${esc(r.slug)}">${esc(r.name)}</a> <em>${r.wide.px}px over · ${esc(r.wide.el)}</em></li>`).join("")}</ul></details>` : ""}</section>
+      ${trend}
     </div>`;
+    // Live numbers for the history (the scraper reads window.TRK_LIVE).
+    const live = { rainbowScans: [rbS, rbS + rbU] }; window.TRK_LIVE = live;
+    hofLoad.then(() => { const H = hofDone(); live.hof = [H.neb.got.length + H.col.got.length + H.pro[0].length, H.neb.pl.length + H.col.pl.length + H.pro[1].length]; $("#tk-hof").innerHTML = extra(); });
+    tcdbCoverage().then((res) => { live.tcdb = [res.reduce((n, x) => n + x.got, 0), res.reduce((n, x) => n + x.total, 0)];
+      const el = $("#tk-tcdb"); if (el) el.innerHTML = res.map((x) => bar(x.label, x.got, x.total, x.skip ? `${fmt(x.skip)} more can't be matched by number (no set card number).` : "")).join("") + `<p class="muted">Matched by year, set, card number, player and parallel against my scans.</p>`; });
   }
   function statsPage() {
     setNav(""); setTitle("Scanned Collection Stats");

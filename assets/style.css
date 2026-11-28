@@ -1582,3 +1582,6 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tk .tk-bar small{display:block;color:var(--mu);font-size:12.5px;margin-top:4px}
 .tk .tk-more{margin:8px 0 0;font-size:14px}.tk .tk-more summary{cursor:pointer;color:var(--acc)}
 .tk .tk-more ul{list-style:none;margin:8px 0 0;padding:0;max-height:340px;overflow:auto;columns:2 240px;column-gap:18px}.tk .tk-more li{padding:2px 0;break-inside:avoid}.tk .tk-more em{color:var(--mu);font-style:normal;font-size:12.5px}
+.tk .tk-trend{list-style:none;margin:0;padding:0}.tk .tk-trend li{display:grid;grid-template-columns:1fr auto auto 90px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.tk .tk-trend li:first-child{border-top:0}.tk .tk-trend b{min-width:42px;text-align:right}.tk .tk-trend em{font-style:normal;min-width:34px;text-align:right;color:var(--mu)}.tk .tk-trend .up{color:#50c878}.tk .tk-trend .down{color:#ff5468}
+.tk .tk-spark{color:var(--acc)}@media(max-width:520px){.tk .tk-trend li{grid-template-columns:1fr auto auto}.tk .tk-spark{display:none}}
