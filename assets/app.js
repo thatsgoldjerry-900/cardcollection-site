@@ -873,7 +873,7 @@
       box.innerHTML = `<div class="pmatch"><h4>Husker Bios</h4><div class="pm-list">${hits.map((p) => {
         const sc = p.have ? bestScan(p.name, p.sport) : null;
         return `<a class="pm" href="#/player/${p.slug}">${pmPh(sc, p.slug)}
-          <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.tagline ? esc(p.tagline) : `${p.league} Husker`}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}</small></span><span class="pm-go">→</span></a>`;
+          <span class="pm-t"><b>${hl(p.name, q)}${hofMarks(p)}</b><small>${p.tagline ? esc(p.tagline) : `${p.league} Husker`}${p.year ? ` · ${/^\d/.test(p.year) ? "Nebraska through " + esc(p.year) : "On the Nebraska roster"}` : ""}</small></span><span class="pm-go">→</span></a>`;
       }).join("")}</div></div>`;
     }).catch(() => {});
   }
@@ -1516,7 +1516,7 @@
         ${sc ? `<button type="button" class="hub-ph" data-scan="${esc(p.name)}" aria-label="View ${esc(p.name)}'s autograph"><img loading="lazy" alt="" src="${img(sc.id, sc.rk, 240)}" onload="thumbFit(this)"></button>`
              : fanDayOf(p.slug) ? `<button type="button" class="hub-ph land fd" data-i="${fanDayOf(p.slug).c.i}" aria-label="View ${esc(p.name)}'s autograph on ${esc(fanDayOf(p.slug).c.name)}">${fdThumb(p.slug)}</button>`
              : `<div class="hub-ph none">${p.have ? esc(p.signed || "Signed") : "Need"}</div>`}
-        <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", college: "College", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · Nebraska through ${esc(p.year)}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
+        <div class="hub-info">${nm}<div class="hub-meta">${esc({ nfl: "NFL", pro: "Pro football", college: "College", mlb: "MLB", nba: "NBA", more: p.tagline || (p.position ? "Nebraska · " + p.position : "Nebraska") }[p.group])}${p.year ? ` · ${/^\d/.test(p.year) ? "Nebraska through " + esc(p.year) : "On the Nebraska roster"}` : ""}${p.games ? ` · ${esc(p.games)} NFL game${parseInt(p.games) === 1 ? "" : "s"}` : ""}${p.group === "nfl" && p.notes ? ` · ${esc(p.notes)}` : ""}</div>
           <div class="hub-meta2">${p.have ? `<span class="st have">Autograph</span>` : ""}${p.sig ? `<span class="pill">Neon signature</span>` : ""}</div></div></li>`;
     }).join(""));
   }
@@ -1545,7 +1545,7 @@
       .sort((a, b) => (b.sameGroup - a.sameGroup) || (a.gap - b.gap)).slice(0, 6).map((o) => o.x);
     const card = (x) => { const sc = x.have ? bestScan(x.name, x.sport) : null;
       return `<a class="pm" href="#/player/${x.slug}"><span class="pm-ph">${sc ? `<img alt="" loading="lazy" src="${img(sc.id, sc.rk, 160)}" onload="thumbFit(this)">` : ""}</span>
-        <span class="pm-t"><b>${esc(x.name)}${hofMarks(x)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · Nebraska through ${esc(x.year)}` : ""}</small></span><span class="pm-go">→</span></a>`; };
+        <span class="pm-t"><b>${esc(x.name)}${hofMarks(x)}</b><small>${esc(pos(x) || x.league + " Husker")}${x.year ? ` · ${/^\d/.test(x.year) ? "Nebraska through " + esc(x.year) : "On the Nebraska roster"}` : ""}</small></span><span class="pm-go">→</span></a>`; };
     return `<section class="more-huskers"><h2 class="more-h">More Huskers like ${esc(info.name)}</h2><div class="pm-list">${like.map(card).join("")}</div>${playerNav(slug, info)}</section>`;
   }
   // Previous / next player, in the order of the list you opened him from (as sorted and filtered there:
@@ -1829,7 +1829,7 @@
       const alsoHtml = alsoNote && Object.keys(alsoLinks).length ? { html: alsoNote.split(/,\s*(?![^()]*\))/).map((part) => { const n = Object.keys(alsoLinks).find((k) => part.startsWith(k)); return n ? `<a href="${esc(alsoLinks[n])}" target="_blank" rel="noopener">${esc(n)}</a>${esc(part.slice(n.length))}` : esc(part); }).join(", ") } : "";
       // ProBallers id: the spreadsheet's ProBallers column (config/private-lists.json proballersRange), else config/site.json proballers.ids.
       const pbId = (DATA.site.proballers?.ids || {})[slug] || (((CHECK.lists.find((x) => x.slug === (row && row.listSlug)) || {}).proballers || {})[(row && row.name) || info.name]);
-      const facts = [["Position", titlePos(info.position || (pick("Position") || [])[1] || bbPos)], ["Final season at Nebraska", !nebLast && myFinal ? myFinal : ""],
+      const facts = [["Position", titlePos(info.position || (pick("Position") || [])[1] || bbPos)], [myFinal === "Active" ? "Nebraska roster" : "Final season at Nebraska", !nebLast && myFinal ? (myFinal === "Active" ? "Current" : myFinal) : ""],
         ["Nebraska years", nebStr],
         // A player who lettered in another sport too (multiSport in data/letter-aliases.json): a timeline for each.
         ...Object.entries(info.letters || {}).filter(([sp]) => sp !== sport).map(([sp, ys]) => [`Nebraska ${sp} years`, yearRanges([...new Set(ys)].sort((x, y) => x - y))]),
