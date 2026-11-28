@@ -1,1 +1,48 @@
-[]
+[
+ {
+  "slug": "arena-indoor-semi-pro-football-huskers",
+  "startColumn": "R",
+  "columns": [
+   "Player",
+   "Career Notes",
+   "Last Year",
+   "Signed",
+   "Autograph"
+  ],
+  "rows": 102
+ },
+ {
+  "slug": "college-huskers",
+  "startColumn": "W",
+  "columns": [
+   "Player",
+   "Career Notes",
+   "Last Year",
+   "Signed",
+   "Autograph"
+  ],
+  "rows": 622
+ },
+ {
+  "slug": "husker-coaches",
+  "startColumn": "AB",
+  "columns": [
+   "Coach",
+   "Role & Notes",
+   "Years as Coach",
+   "Signed",
+   "Autograph"
+  ],
+  "rows": 80
+ },
+ {
+  "slug": "basketball-non-nba-wnba",
+  "startColumn": "AN",
+  "columns": [
+   "Player",
+   "Last Year",
+   "Autograph"
+  ],
+  "rows": 62
+ }
+]
