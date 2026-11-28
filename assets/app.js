@@ -652,13 +652,13 @@
       <a class="tile-full tile-players" href="#/nfl-huskers" aria-label="The Players" style="--tile-bg:#e0283f;--tile-fg:#fff8e7">
         <div class="tile-copy"><p class="tile-k">Husker pro history</p><h1>The Players</h1>
           <p>Nebraska players who went on to the NFL, MLB, NBA and beyond.</p></div>
-        <img class="tile-bg" src="assets/home-players.jpg" alt="Illustrative artwork of a vintage football player (not a real person)">
+        <img class="tile-bg" src="assets/home-players.jpg?v=2" alt="Illustrative artwork of a vintage football player (not a real person)">
         <span class="tile-tag">Illustrative</span>
       </a>
       <a class="tile-full tile-chase" href="#/checklist" aria-label="The Chase" style="--tile-bg:#c9a46a;--tile-fg:#2a1a08">
         <div class="tile-copy"><h1>The Chase</h1>
           <p>One autograph of every Husker to play in the NFL</p></div>
-        <img class="tile-bg" src="assets/home-chase.jpg" alt="">
+        <img class="tile-bg" src="assets/home-chase.jpg?v=2" alt="">
       </a>
     </div>`;
   }
