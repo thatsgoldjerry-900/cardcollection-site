@@ -1506,10 +1506,11 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tile-players .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% center;z-index:-2}
 .tile-cards::before{background:linear-gradient(90deg,rgba(0,0,0,.6) 0,rgba(0,0,0,.2) 35%,transparent 55%)}
 .tile-cards .tile-copy{max-width:36vw}
-.tile-cards .tile-copy h1{font-size:clamp(56px,7vw,120px)}
+.tile-cards .tile-copy h1{font-size:clamp(44px,5.8vw,104px)}
 .tile-cards .tile-copy p{font-size:clamp(16px,1.6vw,24px)}
 .tile-players::before,.tile-cards::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(40,0,6,.7) 0,rgba(40,0,6,.35) 32%,transparent 48%)}
 .tile-players .tile-copy{max-width:27vw}
+.tile-players .tile-copy p{font-size:clamp(16px,1.6vw,24px)}
 .tile-players .tile-copy h1{font-size:clamp(44px,5.8vw,104px)}
 .tile-full:focus-visible{outline:3px solid currentColor;outline-offset:-10px}
 .tile-tag{position:absolute;right:16px;bottom:14px;z-index:1;background:rgba(0,0,0,.6);color:#fff;font:12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px}
@@ -1528,8 +1529,8 @@ button.c-logo:hover,button.c-logo:focus-visible{transform:translateY(-2px);box-s
 .tile-chase .tile-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
 .tile-chase::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,244,220,.55) 0,rgba(255,244,220,.15) 40%,transparent 60%)}
 .tile-chase .tile-copy{max-width:36vw}
-.tile-chase .tile-copy h1{font-size:clamp(56px,7vw,120px)}
-.tile-chase .tile-copy p{font-size:clamp(16px,1.6vw,24px);font-weight:600}
+.tile-chase .tile-copy h1{font-size:clamp(44px,5.8vw,104px)}
+.tile-chase .tile-copy p{font-size:clamp(16px,1.6vw,24px)}
 .tile-chase .tile-btn{background:#2a1a08;color:#fff8e7}
 @media (max-width:760px){
   .tile-chase .tile-copy{max-width:none}
